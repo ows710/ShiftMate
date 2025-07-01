@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="스케줄 자동생성페이지">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataMap baseNode="map" id="DutyRequestDTO">
+        			<w2:keyInfo>
+        				<w2:key dataType="text" name="간호사 수" id="maxNurses"></w2:key>
+        				<w2:key dataType="date" name="시작일" id="startDate"></w2:key>
+        				<w2:key dataType="date" name="종료일" id="endDate"></w2:key>
+        				<w2:key dataType="" name="간호사 정보" id="nurseList"></w2:key>
+        			</w2:keyInfo>
+        			<w2:data use="true">
+        				<maxNurses><![CDATA[30]]></maxNurses>
+        				<startDate><![CDATA[2025-07-01]]></startDate>
+        				<endDate><![CDATA[2025-07-31]]></endDate>
+        				<nurseList><![CDATA[[{       "nurseId": 1,       "name": "김간호",       "experience": 5,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 2,       "name": "이간호",       "experience": 4,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 3,       "name": "박간호",       "experience": 3,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 4,       "name": "정간호",       "experience": 15,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 5,       "name": "김영희",       "experience": 13,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 6,       "name": "홍길동",       "experience": 14,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 7,       "name": "나지현",       "experience": 17,       "isNightKeep": 1,       "requests": []     },     {       "nurseId": 8,       "name": "박혜진",       "experience": 16,       "isNightKeep": 1,       "requests": []     },     {       "nurseId": 9,       "name": "김소연",       "experience": 15,       "isNightKeep": 1,       "requests": []     },     {       "nurseId": 10,       "name": "이정희",       "experience": 12,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 11,       "name": "김재호",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 12,       "name": "정윤호",       "experience": 72,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 13,       "name": "오수정",       "experience": 38,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 14,       "name": "양지훈",       "experience": 48,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 15,       "name": "최유진",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 16,       "name": "김태희",       "experience": 48,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 17,       "name": "박소라",       "experience": 60,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 18,       "name": "이수진",       "experience": 72,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 19,       "name": "홍정민",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 20,       "name": "박정우",       "experience": 44,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 21,       "name": "최경수",       "experience": 72,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 22,       "name": "강소라",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 23,       "name": "김효진",       "experience": 48,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 24,       "name": "최지민",       "experience": 72,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 25,       "name": "박상미",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 26,       "name": "홍성윤",       "experience": 52,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 27,       "name": "정하늘",       "experience": 58,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 28,       "name": "박진영",       "experience": 60,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 29,       "name": "정민우",       "experience": 36,       "isNightKeep": 0,       "requests": []     },     {       "nurseId": 30,       "name": "이효진",       "experience": 72,       "isNightKeep": 0,       "requests": []     }]]]></nurseList>
+        			</w2:data>
+        		</w2:dataMap>
+        		<w2:dataList baseNode="list" repeatNode="map" id="dlt_response" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column dataType="number" name="근무고유번호" id="schId"></w2:column>
+        				<w2:column dataType="date" name="근무날짜" id="shiftDate"></w2:column>
+        				<w2:column dataType="number" name="간호사고유번호" id="nurseId"></w2:column>
+        				<w2:column dataType="text" name="근무형태" id="shiftType"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        	<xf:submission id="sbm_duty" action="http://192.168.1.155:8080/api/schedule/generate" method="post" mediatype="application/json"
+        		ref="data:json,DutyRequestDTO" target="data:json,dlt_response" encoding="UTF-8" instance="" replace="" errorHandler=""
+        		customHandler="" mode="asynchronous" processMsg="듀티 생성 중" ev:submit="" ev:submitdone="scwin.sbm_duty_submitdone" ev:submiterror=""
+        		abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+    scwin.sbm_duty_submitdone();
+};
+
+scwin.sbm_duty_submitdone = function (e) {
+    DutyRequestDTO.setJSON({
+        "maxNurses": 30,
+        "startDate": "2025-07-01",
+        "endDate": "2025-07-31",
+        "nurseList": [
+            {
+                "nurseId": 1,
+                "name": "김간호",
+                "experience": 5,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 2,
+                "name": "이간호",
+                "experience": 4,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 3,
+                "name": "박간호",
+                "experience": 3,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 4,
+                "name": "정간호",
+                "experience": 15,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 5,
+                "name": "김영희",
+                "experience": 13,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 6,
+                "name": "홍길동",
+                "experience": 14,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 7,
+                "name": "나지현",
+                "experience": 17,
+                "isNightKeep": 1,
+                "requests": []
+            },
+            {
+                "nurseId": 8,
+                "name": "박혜진",
+                "experience": 16,
+                "isNightKeep": 1,
+                "requests": []
+            },
+            {
+                "nurseId": 9,
+                "name": "김소연",
+                "experience": 15,
+                "isNightKeep": 1,
+                "requests": []
+            },
+            {
+                "nurseId": 10,
+                "name": "이정희",
+                "experience": 12,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 11,
+                "name": "김재호",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 12,
+                "name": "정윤호",
+                "experience": 72,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 13,
+                "name": "오수정",
+                "experience": 38,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 14,
+                "name": "양지훈",
+                "experience": 48,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 15,
+                "name": "최유진",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 16,
+                "name": "김태희",
+                "experience": 48,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 17,
+                "name": "박소라",
+                "experience": 60,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 18,
+                "name": "이수진",
+                "experience": 72,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 19,
+                "name": "홍정민",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 20,
+                "name": "박정우",
+                "experience": 44,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 21,
+                "name": "최경수",
+                "experience": 72,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 22,
+                "name": "강소라",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 23,
+                "name": "김효진",
+                "experience": 48,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 24,
+                "name": "최지민",
+                "experience": 72,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 25,
+                "name": "박상미",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 26,
+                "name": "홍성윤",
+                "experience": 52,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 27,
+                "name": "정하늘",
+                "experience": 58,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 28,
+                "name": "박진영",
+                "experience": 60,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 29,
+                "name": "정민우",
+                "experience": 36,
+                "isNightKeep": 0,
+                "requests": []
+            },
+            {
+                "nurseId": 30,
+                "name": "이효진",
+                "experience": 72,
+                "isNightKeep": 0,
+                "requests": []
+            }
+        ]
+    }
+    );
+
+    $c.sbm.execute(sbm_duty);
+
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group class="sub_contents" id="" meta_snippetCategory="00_화면시작" meta_snippetKeyComponent="true" meta_snippetName="0_01 페이지시작"
+    		style="">
+    		<xf:group adaptiveThreshold="" class="gvwbox" id="" meta_snippetCategory="06_그리드" meta_snippetKeyComponent="true"
+    			meta_snippetName="6_01 그리드" style="">
+    			<w2:gridView autoFit="allColumn" checkReadOnlyOnPasteEnable="" class="gvw" dataList="data:dlt_response" focusMode="row"
+    				id="" scrollByColumn="false" scrollByColumnAdaptive="false" style="height: 153px;">
+    				<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    				<w2:header id="header2" style="">
+    					<w2:row id="row3" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="column12" inputType="text" removeBorderStyle="false"
+    							value="근무고유번호" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column11" inputType="text" removeBorderStyle="false"
+    							value="근무날짜" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column10" inputType="text" removeBorderStyle="false"
+    							value="간호사고유번호" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" removeBorderStyle="false"
+    							value="근무형태" width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody2" style="">
+    					<w2:row id="row4" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="schId" inputType="text" removeBorderStyle="false"
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="shiftDate" inputType="text" removeBorderStyle="false"
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="nurseId" inputType="text" removeBorderStyle="false"
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="shiftType" inputType="text" removeBorderStyle="false"
+    							width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>
