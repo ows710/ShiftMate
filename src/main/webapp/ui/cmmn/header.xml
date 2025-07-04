@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map" />
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<style type="text/css">
+			.header-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 15px 30px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 1001;
+				height: 60px;
+			}
+			
+			.logo-section {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+			}
+			
+			.logo-icon {
+				width: 40px;
+				height: 40px;
+				background: rgba(255,255,255,0.2);
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+				font-size: 18px;
+				color: white;
+			}
+			
+			.logo-text {
+				font-size: 24px;
+				font-weight: bold;
+				color: white;
+			}
+			
+			.user-section {
+				display: flex;
+				align-items: center;
+				gap: 20px;
+			}
+			
+			.notification-btn {
+				width: 40px;
+				height: 40px;
+				background: rgba(255,255,255,0.1);
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+			
+			.notification-btn:hover {
+				background: rgba(255,255,255,0.2);
+				transform: scale(1.05);
+			}
+			
+			.user-info {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 8px 16px;
+				background: rgba(255,255,255,0.1);
+				border-radius: 25px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+			
+			.user-info:hover {
+				background: rgba(255,255,255,0.2);
+			}
+			
+			.user-name {
+				font-weight: 600;
+				font-size: 14px;
+			}
+			
+			.user-role {
+				font-size: 12px;
+				opacity: 0.8;
+			}
+		</style>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.showNotifications = function() {
+	alert("������ 새로운 알림이 2개 있습니다.\n\n• 7월 스케줄이 확정되었습니다.\n• 신규 간호사가 배정되었습니다.");
+};
+
+scwin.showUserMenu = function() {
+	var menuOptions = [
+		"������ 내 프로필 수정",
+		"������ 비밀번호 변경", 
+		"⚙️ 개인 설정",
+		"������ 근무 통계",
+		"������ 로그아웃"
+	];
+	
+	var menu = "사용자 메뉴:\n\n" + menuOptions.join("\n");
+	alert(menu);
+};
+
+scwin.updateUserInfo = function(name, role) {
+	console.log("사용자 정보 업데이트:", name, role);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="header-container">
+			<xf:group class="logo-section">
+				<xf:group class="logo-icon">
+					<w2:textbox id="" label="⚕" style="color:white; font-size:20px;"></w2:textbox>
+				</xf:group>
+				<w2:textbox id="" class="logo-text" label="ShiftMate"></w2:textbox>
+			</xf:group>
+			
+			<xf:group class="user-section">
+				<xf:group class="notification-btn" ev:onclick="scwin.showNotifications">
+					<w2:textbox id="" label="🔔" style="font-size:18px;"></w2:textbox>
+				</xf:group>
+				
+				<xf:group class="user-info" ev:onclick="scwin.showUserMenu">
+					<xf:group>
+						<w2:textbox id="" class="user-name" label="김간호" style="color:white; display:block;"></w2:textbox>
+						<w2:textbox id="" class="user-role" label="수간호사" style="color:white; display:block;"></w2:textbox>
+					</xf:group>
+					<w2:textbox id="" label="▼" style="color:white;"></w2:textbox>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

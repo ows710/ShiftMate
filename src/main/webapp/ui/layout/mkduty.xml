@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css">
+            /* 완전한 여백 제거 */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            html, body {
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            
+            /* WFrame 여백 완전 제거 */
+            w2\:wframe {
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            w2\:wframe iframe {
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        </style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    console.log("������ ShiftMate Layout Manager 시작");
+    scwin.initializeLayout();
+    scwin.waitForFramesAndSetup();
+};
+
+scwin.initializeLayout = function() {
+    // 브라우저 스크롤 완전 제거
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    console.log("✅ 레이아웃 초기화 완료");
+};
+
+scwin.waitForFramesAndSetup = function() {
+    var attempts = 0;
+    var maxAttempts = 50;
+    
+    var checkInterval = setInterval(function() {
+        attempts++;
+        
+        try {
+            var headerReady = wfr_header && wfr_header.getWindow && wfr_header.getWindow();
+            var sideMenuReady = wfr_sideMenu && wfr_sideMenu.getWindow && wfr_sideMenu.getWindow();
+            var mainReady = wfr_mainContent && wfr_mainContent.getWindow && wfr_mainContent.getWindow();
+            
+            if (headerReady && sideMenuReady && mainReady) {
+                clearInterval(checkInterval);
+                console.log("✅ 모든 WFrame 로드 완료 (" + attempts + "/50)");
+                scwin.setupFrameCommunication();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.warn("⚠️ WFrame 로드 타임아웃");
+            }
+        } catch (e) {
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error("❌ WFrame 로드 실패:", e);
+            }
+        }
+    }, 100);
+};
+
+scwin.setupFrameCommunication = function() {
+    try {
+        // 사이드메뉴 통신 설정
+        if (wfr_sideMenu && wfr_sideMenu.getWindow) {
+            var sideMenuWindow = wfr_sideMenu.getWindow();
+            if (sideMenuWindow && sideMenuWindow.scwin) {
+                sideMenuWindow.scwin.onMenuClick = scwin.handleMenuClick;
+                console.log("✅ 사이드메뉴 통신 연결");
+            }
+        }
+        
+        // 헤더 통신 설정
+        if (wfr_header && wfr_header.getWindow) {
+            var headerWindow = wfr_header.getWindow();
+            if (headerWindow && headerWindow.scwin) {
+                console.log("✅ 헤더 통신 연결");
+            }
+        }
+        
+        console.log("������ 프레임 간 통신 설정 완료");
+    } catch (e) {
+        console.error("프레임 통신 설정 오류:", e);
+    }
+};
+
+scwin.handleMenuClick = function(menuId, menuUrl) {
+    try {
+        console.log("������ 메뉴 클릭:", menuId, "->", menuUrl);
+        
+        if (wfr_mainContent && menuUrl) {
+            wfr_mainContent.setSrc(menuUrl);
+            console.log("✅ 메인 콘텐츠 변경:", menuUrl);
+        }
+        
+        scwin.updateSideMenuActiveMenu(menuId);
+    } catch (e) {
+        console.error("메뉴 클릭 처리 오류:", e);
+    }
+};
+
+scwin.updateSideMenuActiveMenu = function(menuId) {
+    try {
+        if (wfr_sideMenu && wfr_sideMenu.getWindow) {
+            var sideMenuWindow = wfr_sideMenu.getWindow();
+            if (sideMenuWindow && sideMenuWindow.scwin && sideMenuWindow.scwin.setActiveMenu) {
+                sideMenuWindow.scwin.setActiveMenu(menuId);
+                console.log("✅ 사이드메뉴 활성 메뉴 업데이트:", menuId);
+            }
+        }
+    } catch (e) {
+        console.error("사이드메뉴 업데이트 오류:", e);
+    }
+};
+
+scwin.changeMainContent = function(src) {
+    try {
+        if (wfr_mainContent) {
+            wfr_mainContent.setSrc(src);
+            console.log("✅ 메인 콘텐츠 변경:", src);
+        }
+    } catch (e) {
+        console.error("메인 콘텐츠 변경 오류:", e);
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="width:100%;height:100vh;display:flex;flex-direction:column;margin:0;padding:0;" id="grp_mainContainer">
+            
+            <!-- 헤더 영역 (60px 고정) -->
+            <xf:group style="width:100%;height:60px;position:fixed;top:0;left:0;z-index:1001;" id="grp_headerArea">
+                <w2:wframe id="wfr_header" style="width:100%;height:100%;" src="/InsWebApp/ui/cmmn/header.xml"/>
+            </xf:group>
+            
+            <!-- 메인 콘텐츠 영역 (헤더 아래) -->
+            <xf:group style="width:100%;height:calc(100vh - 60px);margin-top:60px;display:flex;" id="grp_contentArea">
+                
+                <!-- 사이드메뉴 영역 (250px 고정) -->
+                <xf:group style="width:250px;height:100%;position:fixed;left:0;z-index:1000;" id="grp_sideMenuArea">
+                    <w2:wframe id="wfr_sideMenu" style="width:100%;height:100%;" src="/InsWebApp/ui/cmmn/sidebar.xml"/>
+                </xf:group>
+                
+                <!-- 메인 콘텐츠 (나머지 공간 100% 활용) -->
+                <xf:group style="margin-left:250px;width:calc(100% - 250px);height:100%;background-color:#f5f7fa;" id="grp_mainContent">
+                    <w2:wframe id="wfr_mainContent" style="width:100%;height:100%;" src="/InsWebApp/ui/nurse/NurseManage.xml"/>
+                </xf:group>
+                
+            </xf:group>
+            
+        </xf:group>
+    </body>
+</html>

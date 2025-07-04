@@ -585,13 +585,144 @@ span.w2autoComplete_label {padding:0 0 0 8px;text-align:left;color:var(--ws-form
 .fc-basic-view .fc-sun .fc-day-number,
 .fc .fc-day-sun .fc-daygrid-day-number {color:var(--ws-red-500)}
 .w2widget_content .fc-day-grid-container.fc-scroller {height:224px !important}
-.fc-event.fc-event {border-color:transparent;background-color:#FF836D;text-align:center}
+.fc-event.fc-event {border-color:transparent;text-align:center}
 .fc-event .fc-title {font-size:12px;font-weight:400;vertical-align:middle}
+
+/* 근무 신청 유형별 색상 */
+.fc-event.work-normal,
+.fc-event.work-normal .fc-content,
+.fc-event.work-normal .fc-title {background-color:#4CAF50 !important;border-color:#388E3C !important;color:#ffffff !important}      /* 정상근무 - 초록색 */
+
+.fc-event.work-overtime,
+.fc-event.work-overtime .fc-content,
+.fc-event.work-overtime .fc-title {background-color:#FF9800 !important;border-color:#F57C00 !important;color:#ffffff !important}    /* 연장근무 - 주황색 */
+
+.fc-event.work-night,
+.fc-event.work-night .fc-content,
+.fc-event.work-night .fc-title {background-color:#3F51B5 !important;border-color:#303F9F !important;color:#ffffff !important}       /* 야간근무 - 남색 */
+
+.fc-event.work-holiday,
+.fc-event.work-holiday .fc-content,
+.fc-event.work-holiday .fc-title {background-color:#E91E63 !important;border-color:#C2185B !important;color:#ffffff !important}     /* 휴일근무 - 핑크색 */
+
+.fc-event.work-vacation,
+.fc-event.work-vacation .fc-content,
+.fc-event.work-vacation .fc-title {background-color:#9C27B0 !important;border-color:#7B1FA2 !important;color:#ffffff !important}    /* 휴가 - 보라색 */
+
+.fc-event.work-sick,
+.fc-event.work-sick .fc-content,
+.fc-event.work-sick .fc-title {background-color:#F44336 !important;border-color:#D32F2F !important;color:#ffffff !important}        /* 병가 - 빨간색 */
+
+.fc-event.work-business,
+.fc-event.work-business .fc-content,
+.fc-event.work-business .fc-title {background-color:#607D8B !important;border-color:#455A64 !important;color:#ffffff !important}    /* 출장 - 회색 */
+
+.fc-event.work-education,
+.fc-event.work-education .fc-content,
+.fc-event.work-education .fc-title {background-color:#00BCD4 !important;border-color:#0097A7 !important;color:#ffffff !important}   /* 교육 - 청록색 */
+
+/* fc-time 클래스 숨기기 (종일 이벤트에서 시간 표시 제거) */
+.fc-event .fc-time {display:none !important}
+
+/* 모든 이벤트에서 기본 배경색 제거 */
+.fc-event {background-color:transparent !important}
 .fc a.fc-more {font-size:12px}
 .fc .fc-toolbar {gap:4px}
 .fc-today-button {display:none !important}
 .fc .fc-toolbar-title {font-size:16px !important;text-align:center}
 
+/* 근무자 팝업 모달 스타일 */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.popup-overlay.hidden {
+    display: none;
+}
+
+.worker-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-height: 500px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+}
+
+.worker-popup.hidden {
+    display: none;
+}
+
+.popup-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.popup-date {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.popup-content {
+    padding: 20px 24px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.worker-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.worker-item:last-child {
+    border-bottom: none;
+}
+
+.worker-name {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.leader-crown-img {
+    margin-left: 8px !important;
+    margin-right: 0 !important;
+}
+
+.absent-mark-img {
+    margin-left: 8px !important;
+}
+
+.popup-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    background: #f8f9fa;
+    border-radius: 0 0 8px 8px;
+}
+
+.confirm-btn:hover {
+    background: #1e40af !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 /* ############################## Grid ############################## */
 
 /* gridview */

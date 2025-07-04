@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataMap baseNode="map" id="dmp_nurseVo">
+                    <w2:keyInfo>
+                        <w2:key id="nurseId" name="간호사ID" dataType="text"></w2:key>
+                        <w2:key id="nurseName" name="간호사명" dataType="text"></w2:key>
+                        <w2:key id="position" name="직급" dataType="text"></w2:key>
+                        <w2:key id="career" name="경력" dataType="text"></w2:key>
+                        <w2:key id="specialNote" name="특이사항" dataType="text"></w2:key>
+                        <w2:key id="scNurseName" name="검색_간호사명" dataType="text"></w2:key>
+                        <w2:key id="scPosition" name="검색_직급" dataType="text"></w2:key>
+                        <w2:key id="pageIndex" name="페이지번호" dataType="text"></w2:key>
+                        <w2:key id="pageSize" name="페이지크기" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                </w2:dataMap>
+                <w2:dataList baseNode="list" repeatNode="map" id="dlt_nurseList" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="nurseId" name="간호사ID" dataType="text"></w2:column>
+                        <w2:column id="nurseName" name="간호사명" dataType="text"></w2:column>
+                        <w2:column id="position" name="직급" dataType="text"></w2:column>
+                        <w2:column id="career" name="경력" dataType="text"></w2:column>
+                        <w2:column id="specialNote" name="특이사항" dataType="text"></w2:column>
+                        <w2:column id="regDate" name="등록일" dataType="text"></w2:column>
+                        <w2:column id="modDate" name="수정일" dataType="text"></w2:column>
+                        <w2:column id="useYn" name="사용여부" dataType="text"></w2:column>
+                        <w2:column id="delYn" name="삭제여부" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+            <xf:submission id="sbm_selectNurseList" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/list.pwkjson" method="post"
+                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+                processMsg="간호사 목록을 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurseList_submitdone" ev:submiterror="" abortTrigger="">
+            </xf:submission>
+            <xf:submission id="sbm_selectNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/view.pwkjson" method="post"
+                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+                processMsg="간호사 정보를 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurse_submitdone" ev:submiterror="" abortTrigger="">
+            </xf:submission>
+            <xf:submission id="sbm_insertNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/insert.pwkjson" method="post"
+                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+                processMsg="간호사 정보를 등록 중입니다." ev:submit="" ev:submitdone="scwin.sbm_insertNurse_submitdone" ev:submiterror="" abortTrigger="">
+            </xf:submission>
+            <xf:submission id="sbm_updateNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/update.pwkjson" method="post"
+                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+                processMsg="간호사 정보를 수정 중입니다." ev:submit="" ev:submitdone="scwin.sbm_updateNurse_submitdone" ev:submiterror="" abortTrigger="">
+            </xf:submission>
+            <xf:submission id="sbm_deleteNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/delete.pwkjson" method="post"
+                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+                processMsg="간호사 정보를 삭제 중입니다." ev:submit="" ev:submitdone="scwin.sbm_deleteNurse_submitdone" ev:submiterror="" abortTrigger="">
+            </xf:submission>
+        </xf:model>
+        <w2:layoutInfo>
+        </w2:layoutInfo>
+        <w2:publicInfo>
+        </w2:publicInfo>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        
+        scwin.onpageload = function(e) {
+            // 페이지 로드 시 초기 설정
+            dmp_nurseVo.set("pageIndex", 1);
+            dmp_nurseVo.set("pageSize", 10);
+            
+            // 간호사 목록 조회
+            scwin.fn_selectNurseList();
+        };
+        
+        scwin.onpageunload = function() {
+            // 페이지 업로드 시 처리
+        };
+        
+        // 간호사 목록 조회
+        scwin.fn_selectNurseList = function() {
+            $p.executeSubmission("sbm_selectNurseList");
+        };
+        
+        // 간호사 목록 조회 완료
+        scwin.sbm_selectNurseList_submitdone = function(e) {
+            if (e.responseJSON.success) {
+                var result = e.responseJSON.result;
+                dlt_nurseList.setJSON(result.nurseList);
+                
+                // 페이지 정보 설정
+                if (result.totalCount > 0) {
+                    $p.log("총 " + result.totalCount + "건의 간호사 정보가 조회되었습니다.");
+                } else {
+                    $p.log("조회된 간호사 정보가 없습니다.");
+                }
+            } else {
+                $p.alert("간호사 목록 조회에 실패했습니다: " + e.responseJSON.message);
+            }
+        };
+        
+        // 간호사 상세 조회 완료
+        scwin.sbm_selectNurse_submitdone = function(e) {
+            if (e.responseJSON.success) {
+                var nurseInfo = e.responseJSON.result.nurseVo;
+                dmp_nurseVo.setJSON(nurseInfo);
+                $p.log("간호사 정보가 조회되었습니다.");
+            } else {
+                $p.alert("간호사 정보 조회에 실패했습니다: " + e.responseJSON.message);
+            }
+        };
+        
+        // 간호사 등록 완료
+        scwin.sbm_insertNurse_submitdone = function(e) {
+            if (e.responseJSON.success) {
+                $p.alert("간호사 정보가 등록되었습니다.");
+                scwin.fn_clearForm();
+                scwin.fn_selectNurseList();
+            } else {
+                $p.alert("간호사 등록에 실패했습니다: " + e.responseJSON.message);
+            }
+        };
+        
+        // 간호사 수정 완료
+        scwin.sbm_updateNurse_submitdone = function(e) {
+            if (e.responseJSON.success) {
+                $p.alert("간호사 정보가 수정되었습니다.");
+                scwin.fn_selectNurseList();
+            } else {
+                $p.alert("간호사 수정에 실패했습니다: " + e.responseJSON.message);
+            }
+        };
+        
+        // 간호사 삭제 완료
+        scwin.sbm_deleteNurse_submitdone = function(e) {
+            if (e.responseJSON.success) {
+                $p.alert("간호사 정보가 삭제되었습니다.");
+                scwin.fn_clearForm();
+                scwin.fn_selectNurseList();
+            } else {
+                $p.alert("간호사 삭제에 실패했습니다: " + e.responseJSON.message);
+            }
+        };
+        
+        // 검색 버튼 클릭
+        scwin.btn_search_onclick = function() {
+            dmp_nurseVo.set("pageIndex", 1);
+            scwin.fn_selectNurseList();
+        };
+        
+        // 초기화 버튼 클릭
+        scwin.btn_reset_onclick = function() {
+            scwin.fn_clearForm();
+            scwin.fn_selectNurseList();
+        };
+        
+        // 등록 버튼 클릭
+        scwin.btn_insert_onclick = function() {
+            if (scwin.fn_validateForm()) {
+                $p.executeSubmission("sbm_insertNurse");
+            }
+        };
+        
+        // 수정 버튼 클릭
+        scwin.btn_update_onclick = function() {
+            if (scwin.fn_validateForm()) {
+                $p.executeSubmission("sbm_updateNurse");
+            }
+        };
+        
+        // 삭제 버튼 클릭
+        scwin.btn_delete_onclick = function() {
+            if (dmp_nurseVo.get("nurseId")) {
+                if (confirm("선택한 간호사 정보를 삭제하시겠습니까?")) {
+                    $p.executeSubmission("sbm_deleteNurse");
+                }
+            } else {
+                $p.alert("삭제할 간호사를 선택해주세요.");
+            }
+        };
+        
+        // 그리드 행 클릭
+        scwin.grd_nurseList_oncellclick = function(row, col) {
+            var nurseId = dlt_nurseList.getCellData(row, "nurseId");
+            if (nurseId) {
+                dmp_nurseVo.set("nurseId", nurseId);
+                $p.executeSubmission("sbm_selectNurse");
+            }
+        };
+        
+        // 폼 검증
+        scwin.fn_validateForm = function() {
+            var nurseName = dmp_nurseVo.get("nurseName");
+            var position = dmp_nurseVo.get("position");
+            
+            if (!nurseName || nurseName.trim() === "") {
+                $p.alert("간호사명을 입력해주세요.");
+                return false;
+            }
+            
+            if (!position || position.trim() === "") {
+                $p.alert("직급을 입력해주세요.");
+                return false;
+            }
+            
+            return true;
+        };
+        
+        // 폼 초기화
+        scwin.fn_clearForm = function() {
+            dmp_nurseVo.set("nurseId", "");
+            dmp_nurseVo.set("nurseName", "");
+            dmp_nurseVo.set("position", "");
+            dmp_nurseVo.set("career", "");
+            dmp_nurseVo.set("specialNote", "");
+            dmp_nurseVo.set("scNurseName", "");
+            dmp_nurseVo.set("scPosition", "");
+        };
+        
+        // 엑셀 다운로드
+        scwin.btn_excel_onclick = function() {
+            var fileName = "간호사목록_" + new Date().toISOString().slice(0,10).replace(/-/g,"") + ".xlsx";
+            grd_nurseList.exportExcel(fileName);
+        };
+        
+        ]]></script>
+    </head>
+    <body>
+        <xf:group class="sub_contents">
+            <xf:group class="header_area">
+                <w2:textbox class="header_title" id="txt_title" label="간호사 관리"></w2:textbox>
+            </xf:group>
+            
+            <xf:group class="search_area">
+                <xf:group class="search_row">
+                    <xf:group class="search_item">
+                        <w2:textbox class="search_label" id="lbl_nurseName_search" label="간호사명"></w2:textbox>
+                        <xf:input class="search_input" id="ipt_scNurseName" ref="data:dmp_nurseVo.scNurseName"></xf:input>
+                    </xf:group>
+                    <xf:group class="search_item">
+                        <w2:textbox class="search_label" id="lbl_position_search" label="직급"></w2:textbox>
+                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition"></xf:input>
+                    </xf:group>
+                    <xf:group class="search_buttons">
+                        <xf:trigger class="btn_search" id="btn_search" type="button" ev:onclick="scwin.btn_search_onclick">
+                            <xf:label>🔍 검색</xf:label>
+                        </xf:trigger>
+                        <xf:trigger class="btn_reset" id="btn_reset" type="button" ev:onclick="scwin.btn_reset_onclick">
+                            <xf:label>🔄 초기화</xf:label>
+                        </xf:trigger>
+                    </xf:group>
+                </xf:group>
+            </xf:group>
+            
+            <xf:group class="content_area">
+                <xf:group class="grid_section">
+                    <xf:group class="grid_header">
+                        <w2:textbox class="grid_title" id="txt_gridTitle" label="간호사 목록"></w2:textbox>
+                        <xf:group class="grid_buttons">
+                            <xf:trigger class="btn_excel" id="btn_excel" type="button" ev:onclick="scwin.btn_excel_onclick">
+                                <xf:label>📊 엑셀</xf:label>
+                            </xf:trigger>
+                        </xf:group>
+                    </xf:group>
+                    
+                    <w2:gridView class="grid_view" id="grd_nurseList" dataList="data:dlt_nurseList" 
+                        style="width:100%;height:300px;" scrollByColumn="false" defaultCellHeight="35" 
+                        rowNumVisible="true" ev:oncellclick="scwin.grd_nurseList_oncellclick">
+                        <w2:caption id="caption1" value="간호사 목록"></w2:caption>
+                        <w2:header id="header1">
+                            <w2:row id="row1">
+                                <w2:column width="80" inputType="text" style="height:35px" id="column9" value="간호사ID" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="column1" value="간호사명" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="column2" value="직급" displayMode="label"></w2:column>
+                                <w2:column width="80" inputType="text" style="height:35px" id="column3" value="경력" displayMode="label"></w2:column>
+                                <w2:column width="200" inputType="text" style="height:35px" id="column4" value="특이사항" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="column5" value="등록일" displayMode="label"></w2:column>
+                                <w2:column width="80" inputType="text" style="height:35px" id="column6" value="사용여부" displayMode="label"></w2:column>
+                            </w2:row>
+                        </w2:header>
+                        <w2:gBody id="gBody1">
+                            <w2:row id="row2">
+                                <w2:column width="80" inputType="text" style="height:35px" id="nurseId" value="" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
+                                <w2:column width="80" inputType="text" style="height:35px" id="career" value="" displayMode="label"></w2:column>
+                                <w2:column width="200" inputType="text" style="height:35px" id="specialNote" value="" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="regDate" value="" displayMode="label"></w2:column>
+                                <w2:column width="80" inputType="text" style="height:35px" id="useYn" value="" displayMode="label"></w2:column>
+                            </w2:row>
+                        </w2:gBody>
+                    </w2:gridView>
+                </xf:group>
+                
+                <xf:group class="form_section">
+                    <xf:group class="form_header">
+                        <w2:textbox class="form_title" id="txt_formTitle" label="간호사 정보"></w2:textbox>
+                        <xf:group class="form_buttons">
+                            <xf:trigger class="btn_insert" id="btn_insert" type="button" ev:onclick="scwin.btn_insert_onclick">
+                                <xf:label>➕ 등록</xf:label>
+                            </xf:trigger>
+                            <xf:trigger class="btn_update" id="btn_update" type="button" ev:onclick="scwin.btn_update_onclick">
+                                <xf:label>✏️ 수정</xf:label>
+                            </xf:trigger>
+                            <xf:trigger class="btn_delete" id="btn_delete" type="button" ev:onclick="scwin.btn_delete_onclick">
+                                <xf:label>🗑️ 삭제</xf:label>
+                            </xf:trigger>
+                        </xf:group>
+                    </xf:group>
+                    
+                    <xf:group class="form_content">
+                        <xf:group class="form_row">
+                            <xf:group class="form_item">
+                                <w2:textbox class="form_label" id="lbl_nurseId" label="간호사ID"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_nurseId" ref="data:dmp_nurseVo.nurseId" readonly="true"></xf:input>
+                            </xf:group>
+                            <xf:group class="form_item">
+                                <w2:textbox class="form_label required" id="lbl_nurseName_form" label="간호사명"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_nurseName" ref="data:dmp_nurseVo.nurseName"></xf:input>
+                            </xf:group>
+                        </xf:group>
+                        
+                        <xf:group class="form_row">
+                            <xf:group class="form_item">
+                                <w2:textbox class="form_label required" id="lbl_position_form" label="직급"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_position" ref="data:dmp_nurseVo.position"></xf:input>
+                            </xf:group>
+                            <xf:group class="form_item">
+                                <w2:textbox class="form_label" id="lbl_career" label="경력"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_career" ref="data:dmp_nurseVo.career"></xf:input>
+                            </xf:group>
+                        </xf:group>
+                        
+                        <xf:group class="form_row">
+                            <xf:group class="form_item full_width">
+                                <w2:textbox class="form_label" id="lbl_specialNote" label="특이사항"></w2:textbox>
+                                <xf:textarea class="form_textarea" id="txt_specialNote" ref="data:dmp_nurseVo.specialNote" rows="3"></xf:textarea>
+                            </xf:group>
+                        </xf:group>
+                    </xf:group>
+                </xf:group>
+            </xf:group>
+        </xf:group>
+        
+        <w2:linkStyleSheet href="/InsWebApp/src/main/webapp/css/nurse.css"/>
+    </body>
+</html>

@@ -1,0 +1,1426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="희망근무 신청">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dlt_hopeWork" baseNode="list">
+                    <w2:columnInfo>
+                        <w2:column id="id" name="일정ID" dataType="text"/>
+                        <w2:column id="title" name="제목" dataType="text"/>
+                        <w2:column id="start" name="시작일" dataType="text"/>
+                        <w2:column id="end" name="종료일" dataType="text"/>
+                        <w2:column id="allDay" name="종일" dataType="text"/>
+                        <w2:column id="color" name="색상" dataType="text"/>
+                        <w2:column id="backgroundColor" name="배경색상" dataType="text"/>
+                        <w2:column id="borderColor" name="테두리색상" dataType="text"/>
+                        <w2:column id="textColor" name="텍스트색상" dataType="text"/>
+                        <w2:column id="className" name="클래스명" dataType="text"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dlt_monthOptions" baseNode="list">
+                    <w2:columnInfo>
+                        <w2:column id="value" name="값" dataType="text"/>
+                        <w2:column id="label" name="라벨" dataType="text"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataMap baseNode="map" id="dm_selectedInfo">
+                    <w2:keyInfo>
+                        <w2:key id="date" name="선택날짜" dataType="text"/>
+                        <w2:key id="dateFormatted" name="포맷된날짜" dataType="text"/>
+                        <w2:key id="currentWorkType" name="현재근무타입" dataType="text"/>
+                        <w2:key id="selectedWorkType" name="선택된근무타입" dataType="text"/>
+                    </w2:keyInfo>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css">
+            /* 메인 컨테이너 */
+            .hope-work-container {
+                padding: 20px;
+                font-family: Arial, sans-serif;
+            }
+            
+            /* 제목 스타일 */
+            .page-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            /* 희망근무 선택 모달 */
+            .work-select-modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                width: 360px;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+            
+            .modal-header {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px 8px 0 0;
+                border-bottom: 1px solid #e9ecef;
+                text-align: center;
+            }
+            
+            .modal-date {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                margin: 0;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .work-option {
+                padding: 12px 16px;
+                margin-bottom: 8px;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 14px;
+                color: #333;
+                background: white;
+                position: relative;
+                user-select: none;
+            }
+            
+            .work-option:hover {
+                background: #f8f9fa;
+                border-color: #007bff;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .work-option.selected {
+                background: #e8f5e8;
+                border-color: #28a745;
+                color: #155724;
+                transform: translateY(-1px);
+                box-shadow: 0 3px 6px rgba(40, 167, 69, 0.2);
+            }
+            
+            .work-option.clear {
+                background: #f8f9fa;
+                color: #6c757d;
+            }
+            
+            .work-option.clear.selected {
+                background: #f5f5f5;
+                border-color: #6c757d;
+                color: #495057;
+            }
+            
+            .work-option.clear:hover {
+                background: #e9ecef;
+                border-color: #adb5bd;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            /* 개별 근무 타입별 hover 효과 */
+            .work-option:not(.clear):hover {
+                background: #f8f9fa;
+                border-color: #007bff;
+                color: #0056b3;
+            }
+            
+            /* 선택된 상태의 hover 효과 */
+            .work-option.selected:hover {
+                background: #d4edda;
+                border-color: #28a745;
+                color: #155724;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+            }
+            
+            /* 애니메이션 효과 강화 */
+            .work-option:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                transition: all 0.1s ease;
+            }
+            
+            /* 툴팁 제거 */
+            .work-option {
+                pointer-events: auto;
+            }
+            
+            .work-option::before,
+            .work-option::after {
+                display: none !important;
+            }
+            
+            /* title 속성으로 인한 툴팁 제거 */
+            .work-option[title] {
+                position: relative;
+            }
+            
+            .modal-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                padding: 0 20px 20px;
+            }
+            
+            .modal-btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                font-size: 14px;
+                cursor: pointer;
+                min-width: 80px;
+                font-weight: bold;
+            }
+            
+            .btn-cancel {
+                background: #f8f9fa;
+                color: #6c757d;
+                border: 1px solid #dee2e6;
+            }
+            
+            .btn-submit {
+                background: #1e3a8a;
+                color: white;
+            }
+            
+            .btn-cancel:hover {
+                background: #e9ecef;
+                border-color: #adb5bd;
+            }
+            
+            .btn-submit:hover {
+                background: #1e40af;
+            }
+            
+            .hidden {
+                display: none !important;
+            }
+            
+            /* 안내 메시지 */
+            .guide-message {
+                background: #e3f2fd;
+                border: 1px solid #bbdefb;
+                border-radius: 4px;
+                padding: 12px;
+                margin-bottom: 20px;
+                color: #1565c0;
+                text-align: center;
+                font-size: 14px;
+            }
+            
+            /* 월 선택 영역 스타일 */
+            .schbox {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 4px;
+                border: 1px solid #e9ecef;
+            }
+            
+            .schbox_tit {
+                font-weight: bold;
+                color: #495057;
+                margin-right: 10px;
+            }
+        </style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    console.log("희망근무 신청 페이지가 로드되었습니다.");
+    
+    // 초기에 모든 모달창 숨김 처리
+    scwin.hideAllModals();
+    
+    // 컴포넌트 로드 대기 후 초기화
+    setTimeout(function() {
+        console.log("컴포넌트 초기화 시작");
+        scwin.initMonthOptions();
+        
+        // 추가 대기 후 데이터 설정
+        setTimeout(function() {
+            scwin.initHopeWorkData();
+            
+            // 최종 확인
+            setTimeout(function() {
+                scwin.debugComponents();
+            }, 1000);
+        }, 300);
+    }, 200);
+};
+
+// 모든 모달창 숨김 함수
+scwin.hideAllModals = function() {
+    try {
+        // DOM이 준비되면 모달 숨김
+        setTimeout(function() {
+            var modalOverlay = document.getElementById("modal-overlay");
+            var workSelectModal = document.getElementById("work-select-modal");
+            
+            if (modalOverlay) {
+                modalOverlay.classList.add("hidden");
+            }
+            
+            if (workSelectModal) {
+                workSelectModal.classList.add("hidden");
+            }
+            
+            // 툴팁 제거
+            scwin.removeTooltips();
+            
+            console.log("모든 모달창 숨김 처리 완료");
+        }, 100);
+    } catch (e) {
+        console.error("모달 숨김 처리 오류:", e);
+    }
+};
+
+// 툴팁 제거 함수
+scwin.removeTooltips = function() {
+    try {
+        // 모든 work-option 요소에서 title 속성 제거
+        var workOptions = document.querySelectorAll('.work-option');
+        workOptions.forEach(function(option) {
+            option.removeAttribute('title');
+            option.removeAttribute('alt');
+            
+            // 자식 요소들도 확인
+            var children = option.querySelectorAll('*');
+            children.forEach(function(child) {
+                child.removeAttribute('title');
+                child.removeAttribute('alt');
+            });
+        });
+        
+        console.log("툴팁 제거 완료");
+    } catch (e) {
+        console.error("툴팁 제거 오류:", e);
+    }
+};
+
+// 컴포넌트 상태 디버깅 함수
+scwin.debugComponents = function() {
+    console.log("=== 컴포넌트 상태 디버깅 ===");
+    
+    // 데이터리스트 확인
+    if (typeof dlt_monthOptions !== 'undefined') {
+        console.log("dlt_monthOptions 존재:", dlt_monthOptions);
+        console.log("dlt_monthOptions 데이터 수:", dlt_monthOptions.getTotalRow());
+        
+        for (var i = 0; i < dlt_monthOptions.getTotalRow(); i++) {
+            var row = dlt_monthOptions.getRowJSON(i);
+            console.log("데이터 " + i + ":", row);
+        }
+    } else {
+        console.error("dlt_monthOptions 없음");
+    }
+    
+    // 드롭다운 컴포넌트 확인
+    if (typeof sbx_month !== 'undefined') {
+        console.log("sbx_month 존재:", sbx_month);
+        console.log("sbx_month 현재 값:", sbx_month.getValue());
+        console.log("sbx_month 선택 인덱스:", sbx_month.getSelectedIndex());
+    } else {
+        console.error("sbx_month 없음");
+    }
+    
+    console.log("=== 디버깅 완료 ===");
+};
+
+// 수동 테스트 함수들 (콘솔에서 호출 가능)
+scwin.testMonthChange = function(month) {
+    console.log("수동 월 변경 테스트:", month);
+    
+    if (month === "7" || month === "202507") {
+        scwin.sbx_month_onchange({value: "202507"});
+    } else if (month === "8" || month === "202508") {
+        scwin.sbx_month_onchange({value: "202508"});
+    }
+};
+
+scwin.testPageMove = function() {
+    console.log("수동 페이지 이동 테스트");
+    try {
+        window.location.href = "myschedule.xml";
+    } catch (e) {
+        console.error("페이지 이동 테스트 실패:", e);
+    }
+};
+
+scwin.initMonthOptions = function() {
+    try {
+        console.log("월 선택 옵션 초기화 시작");
+        
+        // 2025년 7월과 8월로 고정
+        var monthOptions = [
+            {
+                value: "202507", 
+                label: "2025년 7월"
+            },
+            {
+                value: "202508", 
+                label: "2025년 8월"
+            }
+        ];
+        
+        console.log("월 선택 옵션 데이터:", monthOptions);
+        
+        // 데이터리스트 확인 및 설정
+        if (typeof dlt_monthOptions !== 'undefined') {
+            dlt_monthOptions.removeAll();
+            dlt_monthOptions.setJSON(monthOptions);
+            console.log("dlt_monthOptions 데이터 설정 완료");
+            console.log("총 데이터 수:", dlt_monthOptions.getTotalRow());
+        } else {
+            console.error("dlt_monthOptions를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 드롭다운 컴포넌트 확인 및 설정 (더 긴 대기 시간)
+        setTimeout(function() {
+            if (typeof sbx_month !== 'undefined') {
+                try {
+                    // 컴포넌트 새로고침
+                    sbx_month.refresh();
+                    
+                    // 잠시 대기 후 선택
+                    setTimeout(function() {
+                        sbx_month.setSelectedIndex(1); // 8월을 기본 선택 (0: 7월, 1: 8월)
+                        console.log("sbx_month 기본 선택 설정 완료 (8월)");
+                        
+                        // 현재 선택된 값 확인
+                        var currentValue = sbx_month.getValue();
+                        console.log("현재 선택된 월:", currentValue);
+                        
+                        // 선택된 텍스트 확인 (안전하게)
+                        var currentText = "";
+                        try {
+                            if (sbx_month.getSelectedText) {
+                                currentText = sbx_month.getSelectedText();
+                            } else if (sbx_month.getSelectedLabel) {
+                                currentText = sbx_month.getSelectedLabel();
+                            }
+                        } catch (e) {
+                            console.log("선택된 텍스트 가져오기 실패:", e);
+                        }
+                        
+                        console.log("현재 선택된 텍스트:", currentText);
+                        
+                        // 강제로 라벨 표시 확인
+                        if (!currentText || currentText === "") {
+                            console.log("라벨이 비어있음, 다시 시도");
+                            setTimeout(function() {
+                                sbx_month.setSelectedIndex(1);
+                            }, 100);
+                        }
+                    }, 300);
+                    
+                } catch (e) {
+                    console.error("sbx_month 설정 오류:", e);
+                }
+            } else {
+                console.error("sbx_month를 찾을 수 없습니다.");
+            }
+        }, 500);
+        
+        // 전역 변수에 저장
+        scwin.currentYearMonth = "202507";
+        scwin.nextYearMonth = "202508";
+        
+        console.log("월 선택 옵션 초기화 완료");
+        
+    } catch (e) {
+        console.error("월 선택 옵션 초기화 오류:", e);
+    }
+};
+
+scwin.sbx_month_onchange = function(info) {
+    try {
+        console.log("=== 월 선택 변경 이벤트 시작 ===");
+        console.log("이벤트 정보:", info);
+        
+        var selectedMonth = "";
+        
+        // 여러 방법으로 선택된 값 가져오기
+        if (typeof sbx_month !== 'undefined') {
+            selectedMonth = sbx_month.getValue();
+            console.log("sbx_month.getValue():", selectedMonth);
+        }
+        
+        if (!selectedMonth && info && info.value) {
+            selectedMonth = info.value;
+            console.log("info.value:", selectedMonth);
+        }
+        
+        // 추가 방법: 선택된 인덱스로 값 가져오기
+        if (!selectedMonth && typeof sbx_month !== 'undefined') {
+            try {
+                var selectedIndex = sbx_month.getSelectedIndex();
+                if (selectedIndex === 0) {
+                    selectedMonth = "202507";
+                } else if (selectedIndex === 1) {
+                    selectedMonth = "202508";
+                }
+                console.log("인덱스로 가져온 값:", selectedMonth, "인덱스:", selectedIndex);
+            } catch (e) {
+                console.error("인덱스로 값 가져오기 실패:", e);
+            }
+        }
+        
+        if (!selectedMonth) {
+            console.log("선택된 월이 없습니다. 함수 종료");
+            return;
+        }
+        
+        console.log("최종 선택된 월:", selectedMonth);
+        
+        // 7월 선택 시 myschedule.xml로 이동
+        if (selectedMonth === "202507") {
+            console.log("7월 선택됨 - myschedule.xml로 이동 준비");
+            
+            // 확인 대화상자 표시
+            if (confirm("7월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
+                // myschedule.xml로 이동
+                try {
+                    console.log("페이지 이동 시도 중...");
+                    
+                    // 직접 이동 시도
+                    var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/duty/myschedule.xml";
+                    console.log("이동할 URL:", targetUrl);
+                    
+                    // 방법 1: location.href 사용
+                    window.location.href = targetUrl;
+                    
+                    console.log("페이지 이동 요청 완료");
+                    
+                } catch (e) {
+                    console.error("페이지 이동 오류:", e);
+                    alert("페이지 이동에 실패했습니다. 수동으로 스케줄 조회 페이지로 이동해주세요.");
+                }
+            } else {
+                // 취소한 경우 8월로 다시 선택
+                setTimeout(function() {
+                    sbx_month.setSelectedIndex(1);
+                }, 100);
+            }
+            return;
+        }
+        
+        // 8월 선택 시 현재 페이지 유지 및 데이터 로드
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - 희망근무 신청 데이터 로드");
+            scwin.loadHopeWorkData(selectedMonth);
+            
+            // 캘린더 날짜 이동
+            var year = selectedMonth.substring(0, 4);
+            var month = selectedMonth.substring(4, 6);
+            var gotoDate = year + month + "01";
+            
+            console.log("캘린더 이동 준비:", gotoDate);
+            
+            setTimeout(function() {
+                try {
+                    if (shc_hopeWork && shc_hopeWork.gotoDate) {
+                        shc_hopeWork.gotoDate(gotoDate);
+                        console.log("캘린더 이동됨:", gotoDate);
+                    }
+                    
+                    if (shc_hopeWork && shc_hopeWork.refresh) {
+                        shc_hopeWork.refresh();
+                    }
+                } catch (e) {
+                    console.error("캘린더 이동 오류:", e);
+                }
+            }, 100);
+        }
+        
+        console.log("=== 월 선택 변경 이벤트 완료 ===");
+        
+    } catch (e) {
+        console.error("월 선택 변경 이벤트 전체 오류:", e);
+    }
+};
+
+scwin.initHopeWorkData = function() {
+    // 8월 데이터로 초기화
+    scwin.loadHopeWorkData("202508");
+};
+
+scwin.loadHopeWorkData = function(yearMonth) {
+    try {
+        console.log("희망근무 데이터 로드:", yearMonth);
+        
+        // 기존 데이터 초기화
+        dlt_hopeWork.removeAll();
+        
+        // 해당 월의 데이터 로드 (8월만 희망근무 신청 가능)
+        var scheduleData = [];
+        
+        // 이미지에 표시된 스케줄 데이터 (2025년 8월)
+        var scheduleMap = {
+            2: "E",   // 8월 2일 E (파란색)
+            17: "O",  // 8월 17일 O (초록색)
+            20: "D",  // 8월 20일 D (주황색)
+            26: "N"   // 8월 26일 N (보라색)
+        };
+        
+        var colorMap = {
+            "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
+            "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
+            "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"},
+            "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"}
+        };
+        
+        // 스케줄 데이터 생성
+        for (var day in scheduleMap) {
+            var dayStr = (parseInt(day) < 10 ? "0" : "") + day;
+            var dateStr = "202508" + dayStr; // 202508XX
+            var scheduleType = scheduleMap[day];
+            var colors = colorMap[scheduleType];
+            
+            var scheduleItem = {
+                id: "hope_" + dateStr + "_init",
+                title: scheduleType,
+                start: dateStr,
+                end: dateStr,
+                allDay: true,
+                color: colors.color,
+                backgroundColor: colors.backgroundColor,
+                borderColor: colors.borderColor,
+                textColor: colors.textColor,
+                className: colors.className
+            };
+            
+            console.log("초기 스케줄 데이터:", scheduleItem);
+            scheduleData.push(scheduleItem);
+        }
+        
+        // 데이터리스트에 데이터 설정
+        dlt_hopeWork.setJSON(scheduleData);
+        
+        // 달력을 2025년 8월로 설정
+        if (shc_hopeWork.gotoDate) {
+            shc_hopeWork.gotoDate("20250801");
+        }
+        
+        console.log("2025년 8월 희망근무 데이터가 로드되었습니다.");
+        console.log("로드된 데이터:", scheduleData);
+        
+        // 캘린더 렌더링 후 클래스 적용 강제 실행
+        setTimeout(function() {
+            scwin.applyEventClasses();
+        }, 1000);
+        
+    } catch (e) {
+        console.error("희망근무 데이터 로드 중 오류:", e);
+    }
+};
+
+scwin.shc_hopeWork_onclick = function(dateInfo) {
+    console.log("클릭된 날짜:", dateInfo);
+    
+    if (dateInfo && dateInfo.start) {
+        var clickedDate = dateInfo.start;
+        var dateStr = "";
+        var originalDate = clickedDate; // 원본 날짜 보관
+        
+        // 날짜 형식 처리
+        if (typeof clickedDate === 'string') {
+            if (clickedDate.length === 8) {
+                // YYYYMMDD 형식
+                var year = clickedDate.substring(0, 4);
+                var month = clickedDate.substring(4, 6);
+                var day = clickedDate.substring(6, 8);
+                dateStr = year + "-" + month + "-" + day;
+            } else {
+                dateStr = clickedDate;
+                // YYYY-MM-DD를 YYYYMMDD로 변환
+                originalDate = clickedDate.replace(/-/g, '');
+            }
+        } else if (clickedDate instanceof Date) {
+            dateStr = clickedDate.toISOString().split('T')[0];
+            originalDate = dateStr.replace(/-/g, '');
+        }
+        
+        console.log("처리된 날짜 - 원본:", originalDate, "표시용:", dateStr);
+        
+        // 선택된 날짜 정보 저장
+        var date = new Date(dateStr);
+        var dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        var dayOfWeek = dayNames[date.getDay()];
+        var formattedDate = (date.getMonth() + 1) + "월 " + date.getDate() + "일 (" + dayOfWeek + ")";
+        
+        dm_selectedInfo.set("date", originalDate); // YYYYMMDD 형식으로 저장
+        dm_selectedInfo.set("dateFormatted", formattedDate);
+        
+        // 현재 해당 날짜의 근무 타입 확인 (두 형식 모두 시도)
+        var currentWorkType = scwin.getCurrentWorkType(originalDate);
+        if (!currentWorkType) {
+            currentWorkType = scwin.getCurrentWorkType(dateStr);
+        }
+        
+        console.log("현재 근무타입:", currentWorkType);
+        
+        dm_selectedInfo.set("currentWorkType", currentWorkType);
+        dm_selectedInfo.set("selectedWorkType", currentWorkType);
+        
+        // 모달 표시
+        scwin.showWorkSelectModal();
+    }
+};
+
+scwin.getCurrentWorkType = function(dateStr) {
+    try {
+        console.log("현재 근무타입 조회 - 날짜:", dateStr);
+        
+        var totalRows = dlt_hopeWork.getTotalRow();
+        console.log("총 데이터 수:", totalRows);
+        
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            console.log("데이터 " + i + ":", row);
+            
+            // 다양한 날짜 형식 비교
+            if (row.start === dateStr || 
+                row.start === dateStr.replace(/-/g, '') || 
+                dateStr === row.start.replace(/-/g, '')) {
+                console.log("일치하는 근무 발견:", row.title);
+                return row.title;
+            }
+        }
+        
+        console.log("해당 날짜에 근무 없음");
+        return "";
+    } catch (e) {
+        console.error("현재 근무타입 조회 오류:", e);
+        return "";
+    }
+};
+
+scwin.showWorkSelectModal = function() {
+    try {
+        // 모달 오버레이와 모달 표시
+        var modalOverlay = document.getElementById("modal-overlay");
+        var workSelectModal = document.getElementById("work-select-modal");
+        
+        if (modalOverlay && workSelectModal) {
+            modalOverlay.classList.remove("hidden");
+            workSelectModal.classList.remove("hidden");
+        } else {
+            console.error("모달 요소를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 선택된 날짜 표시
+        var formattedDate = dm_selectedInfo.get("dateFormatted");
+        var modalDate = document.getElementById("modal-date");
+        if (modalDate) {
+            modalDate.textContent = formattedDate;
+        }
+        
+        // 현재 근무타입이 있으면 해당 옵션 선택 상태로 표시
+        var currentWorkType = dm_selectedInfo.get("currentWorkType");
+        
+        // 안전하게 선택 초기화
+        try {
+            scwin.clearWorkOptionSelection();
+        } catch (e) {
+            console.log("선택 초기화 중 오류 (무시):", e);
+        }
+        
+        // 버튼 텍스트 업데이트
+        scwin.updateModalButtons(currentWorkType);
+        
+        // 모달 표시 후 DOM 요소 로드 대기 (더 긴 시간)
+        setTimeout(function() {
+            // 툴팁 제거
+            scwin.removeTooltips();
+            
+            // 모달 옵션 요소 존재 확인
+            var optionsReady = scwin.checkModalOptions();
+            
+            if (optionsReady) {
+                // 기존 선택된 근무타입이 있으면 해당 옵션을 선택된 상태로 표시
+                if (currentWorkType) {
+                    console.log("기존 근무타입 선택 시도:", currentWorkType);
+                    try {
+                        scwin.selectWorkOption(currentWorkType);
+                        dm_selectedInfo.set("selectedWorkType", currentWorkType);
+                    } catch (e) {
+                        console.log("기존 근무타입 선택 실패:", e);
+                    }
+                }
+            } else {
+                console.log("모달 옵션 요소가 아직 준비되지 않음, 재시도");
+                // 더 긴 시간 후 재시도
+                setTimeout(function() {
+                    if (currentWorkType) {
+                        console.log("기존 근무타입 선택 재시도:", currentWorkType);
+                        try {
+                            scwin.selectWorkOption(currentWorkType);
+                            dm_selectedInfo.set("selectedWorkType", currentWorkType);
+                        } catch (e) {
+                            console.log("기존 근무타입 선택 재시도 실패:", e);
+                        }
+                    }
+                }, 1000);
+            }
+        }, 800); // 300ms에서 800ms로 증가
+    } catch (e) {
+        console.error("모달 표시 중 오류:", e);
+    }
+};
+
+// 모달 버튼 텍스트 업데이트 함수
+scwin.updateModalButtons = function(currentWorkType) {
+    try {
+        var submitBtn = document.querySelector("#btn_submit .xf-label");
+        
+        if (currentWorkType && currentWorkType !== "") {
+            // 이미 선택된 근무가 있는 경우
+            if (submitBtn) {
+                submitBtn.textContent = "수정하기";
+            }
+            console.log("버튼 텍스트: 수정하기 (기존 근무:", currentWorkType + ")");
+        } else {
+            // 선택된 근무가 없는 경우
+            if (submitBtn) {
+                submitBtn.textContent = "신청하기";
+            }
+            console.log("버튼 텍스트: 신청하기 (신규 신청)");
+        }
+    } catch (e) {
+        console.error("버튼 텍스트 업데이트 오류:", e);
+    }
+};
+
+// 통합된 워크 옵션 요소 찾기 함수
+scwin.findWorkOption = function(optionId, optionType) {
+    try {
+        // 1. ID로 찾기
+        var option = document.getElementById(optionId);
+        if (option) {
+            console.log("✓ ID로 찾음:", optionId);
+            return option;
+        }
+        
+        // 2. WebSquare 컴포넌트로 찾기
+        try {
+            option = eval(optionId);
+            if (option && option.getElement) {
+                console.log("✓ WebSquare 컴포넌트로 찾음:", optionId);
+                return option.getElement();
+            } else if (option) {
+                console.log("✓ WebSquare 컴포넌트 직접 찾음:", optionId);
+                return option;
+            }
+        } catch (e) {
+            // 무시
+        }
+        
+        // 3. 클래스와 텍스트로 찾기
+        var optionElements = document.querySelectorAll('.work-option');
+        for (var i = 0; i < optionElements.length; i++) {
+            var element = optionElements[i];
+            
+            // ID 매칭
+            if (element.id === optionId) {
+                console.log("✓ 클래스+ID로 찾음:", optionId);
+                return element;
+            }
+            
+            // 텍스트 내용으로 매칭
+            var text = element.textContent || element.innerText || "";
+            var expectedTexts = {
+                "clear": ["비우기", "초기화"],
+                "O": ["Off", "Off 신청"],
+                "D": ["Day", "Day 근무", "Day 근무 신청"],
+                "E": ["Evening", "Evening 근무", "Evening 근무 신청"],
+                "N": ["Night", "Night 근무", "Night 근무 신청"]
+            };
+            
+            if (expectedTexts[optionType]) {
+                for (var j = 0; j < expectedTexts[optionType].length; j++) {
+                    if (text.indexOf(expectedTexts[optionType][j]) !== -1) {
+                        console.log("✓ 텍스트로 찾음:", optionId, "텍스트:", text);
+                        return element;
+                    }
+                }
+            }
+        }
+        
+        // 4. 순서로 찾기 (최후의 수단)
+        var optionOrder = ["clear", "O", "D", "E", "N"];
+        var targetIndex = optionOrder.indexOf(optionType);
+        if (targetIndex !== -1 && optionElements.length > targetIndex) {
+            console.log("✓ 순서로 찾음:", optionId, "인덱스:", targetIndex);
+            return optionElements[targetIndex];
+        }
+        
+        console.log("✗ 찾을 수 없음:", optionId);
+        return null;
+        
+    } catch (e) {
+        console.error("요소 찾기 오류:", e);
+        return null;
+    }
+};
+
+// 모달 옵션 요소 존재 확인 함수
+scwin.checkModalOptions = function() {
+    try {
+        console.log("=== 모달 옵션 요소 확인 ===");
+        var options = ["clear", "O", "D", "E", "N"];
+        var foundCount = 0;
+        
+        // 모든 가능한 선택자로 요소 찾기
+        var allPossibleElements = [];
+        
+        // 1. ID로 찾기
+        for (var i = 0; i < options.length; i++) {
+            var optionId = "option_" + options[i];
+            var option = document.getElementById(optionId);
+            
+            if (option) {
+                console.log("✓ ID로 발견:", optionId);
+                foundCount++;
+                allPossibleElements.push({type: "id", id: optionId, element: option});
+            } else {
+                console.log("✗ ID로 없음:", optionId);
+            }
+        }
+        
+        // 2. 클래스로 찾기
+        var allOptions = document.querySelectorAll('.work-option');
+        console.log("work-option 클래스 요소 수:", allOptions.length);
+        
+        for (var i = 0; i < allOptions.length; i++) {
+            var element = allOptions[i];
+            console.log("- 요소 " + i + ":");
+            console.log("  ID:", element.id);
+            console.log("  클래스:", element.className);
+            console.log("  태그:", element.tagName);
+            console.log("  텍스트:", element.textContent || element.innerText);
+            
+            // WebSquare 컴포넌트 내부 구조 확인
+            if (element.children && element.children.length > 0) {
+                console.log("  자식 요소들:");
+                for (var j = 0; j < element.children.length; j++) {
+                    var child = element.children[j];
+                    console.log("    - 태그:", child.tagName, "클래스:", child.className, "텍스트:", child.textContent || child.innerText);
+                }
+            }
+            
+            allPossibleElements.push({type: "class", element: element});
+        }
+        
+        // 3. WebSquare 컴포넌트 직접 확인
+        console.log("WebSquare 컴포넌트 확인:");
+        for (var i = 0; i < options.length; i++) {
+            var optionId = "option_" + options[i];
+            try {
+                var component = eval(optionId);
+                if (component) {
+                    console.log("✓ WebSquare 컴포넌트 발견:", optionId);
+                    console.log("  컴포넌트 타입:", typeof component);
+                    console.log("  컴포넌트 정보:", component);
+                }
+            } catch (e) {
+                console.log("✗ WebSquare 컴포넌트 없음:", optionId);
+            }
+        }
+        
+        console.log("총 발견된 옵션:", foundCount + "/5");
+        
+        // 전체 DOM 구조 분석
+        var modal = document.getElementById("work-select-modal");
+        if (modal) {
+            console.log("모달 내부 전체 구조:");
+            console.log(modal.innerHTML);
+        }
+        
+        return foundCount >= 3; // 최소 3개 이상 찾으면 OK
+    } catch (e) {
+        console.error("모달 옵션 확인 오류:", e);
+        return false;
+    }
+};
+
+scwin.hideWorkSelectModal = function() {
+    // 모달 숨기기
+    document.getElementById("modal-overlay").classList.add("hidden");
+    document.getElementById("work-select-modal").classList.add("hidden");
+    
+    // 선택 상태 초기화
+    scwin.clearWorkOptionSelection();
+};
+
+scwin.selectWorkOption = function(optionType) {
+    // 모든 옵션 선택 해제
+    scwin.clearWorkOptionSelection();
+    
+    // 선택된 옵션 활성화
+    try {
+        var optionId = "option_" + (optionType === "clear" ? "clear" : optionType);
+        
+        // DOM 요소 찾기 (여러 방법 시도)
+        var option = scwin.findWorkOption(optionId, optionType);
+        
+        if (option && option.style) {
+            try {
+                // 선택된 스타일 적용
+                option.style.background = "#e8f5e8";
+                option.style.borderColor = "#28a745";
+                option.style.color = "#155724";
+                option.style.transform = "translateY(-1px)";
+                option.style.boxShadow = "0 3px 6px rgba(40, 167, 69, 0.2)";
+                
+                // 선택됨 클래스 추가
+                if (option.classList) {
+                    option.classList.add("selected");
+                }
+                
+                console.log("옵션 선택됨:", optionType);
+            } catch (e) {
+                console.error("스타일 적용 실패:", e);
+            }
+        } else {
+            console.error("옵션 요소를 찾을 수 없음:", optionId);
+            console.log("사용 가능한 요소들:");
+            var allOptions = document.querySelectorAll('.work-option');
+            for (var i = 0; i < allOptions.length; i++) {
+                console.log("- ID:", allOptions[i].id, "클래스:", allOptions[i].className);
+            }
+        }
+        dm_selectedInfo.set("selectedWorkType", optionType);
+    } catch (e) {
+        console.error("옵션 선택 오류:", e);
+    }
+};
+
+scwin.clearWorkOptionSelection = function() {
+    var options = ["clear", "O", "D", "E", "N"];
+    for (var i = 0; i < options.length; i++) {
+        try {
+            var optionId = "option_" + options[i];
+            
+            // 통합된 요소 찾기 함수 사용
+            var option = scwin.findWorkOption(optionId, options[i]);
+            
+            if (option && option.classList) {
+                // 선택됨 클래스 제거
+                try {
+                    option.classList.remove("selected");
+                } catch (e) {
+                    console.log("클래스 제거 실패:", e);
+                }
+                
+                // 스타일 초기화
+                try {
+                    if (options[i] === "clear") {
+                        option.style.background = "#f8f9fa";
+                        option.style.borderColor = "#e9ecef";
+                        option.style.color = "#6c757d";
+                    } else {
+                        option.style.background = "white";
+                        option.style.borderColor = "#e9ecef";
+                        option.style.color = "#333";
+                    }
+                    
+                    // transform과 shadow 초기화
+                    option.style.transform = "";
+                    option.style.boxShadow = "";
+                } catch (e) {
+                    console.log("스타일 초기화 실패:", e);
+                }
+            }
+        } catch (e) {
+            console.error("옵션 초기화 오류:", e);
+        }
+    }
+    dm_selectedInfo.set("selectedWorkType", "");
+};
+
+scwin.option_clear_onclick = function() {
+    try {
+        scwin.selectWorkOption("clear");
+    } catch (e) {
+        console.error("clear 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_O_onclick = function() {
+    try {
+        scwin.selectWorkOption("O");
+    } catch (e) {
+        console.error("O 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_D_onclick = function() {
+    try {
+        scwin.selectWorkOption("D");
+    } catch (e) {
+        console.error("D 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_E_onclick = function() {
+    try {
+        scwin.selectWorkOption("E");
+    } catch (e) {
+        console.error("E 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_N_onclick = function() {
+    try {
+        scwin.selectWorkOption("N");
+    } catch (e) {
+        console.error("N 옵션 선택 오류:", e);
+    }
+};
+
+scwin.btn_submit_onclick = function() {
+    var selectedDate = dm_selectedInfo.get("date");
+    var selectedWorkType = dm_selectedInfo.get("selectedWorkType");
+    var currentWorkType = dm_selectedInfo.get("currentWorkType");
+    
+    if (!selectedWorkType) {
+        alert("근무 타입을 선택해주세요.");
+        return;
+    }
+    
+    console.log("희망근무 신청:", selectedDate, selectedWorkType, "기존:", currentWorkType);
+    
+    if (selectedWorkType === "clear") {
+        // 초기화 = 신청 취소
+        if (!currentWorkType) {
+            alert("초기화할 희망근무가 없습니다.");
+            scwin.hideWorkSelectModal();
+            return;
+        }
+        
+        // 확실하게 해당 날짜의 모든 데이터 삭제
+        scwin.removeAllWorkForDate(selectedDate);
+        
+        // 달력 새로고침
+        scwin.refreshCalendar();
+        
+        alert("희망근무가 초기화되었습니다.");
+    } else {
+        // 새 근무 타입 신청 (기존 것이 있으면 덮어쓰기)
+        console.log("새 근무 타입 신청 처리 시작");
+        
+        // 1. 해당 날짜의 기존 데이터 완전 삭제
+        var deletedCount = scwin.removeAllWorkForDate(selectedDate);
+        console.log("삭제된 기존 데이터 수:", deletedCount);
+        
+        // 2. 새 데이터 추가
+        var colorMap = {
+            "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
+            "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
+            "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"},
+            "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"}
+        };
+        
+        var colors = colorMap[selectedWorkType];
+        var newWork = {
+            id: "hope_" + selectedDate + "_" + new Date().getTime(), // 유니크 ID 보장
+            title: selectedWorkType,
+            start: selectedDate,
+            end: selectedDate,
+            allDay: true,
+            color: colors.color,
+            backgroundColor: colors.backgroundColor,
+            borderColor: colors.borderColor,
+            textColor: colors.textColor,
+            className: colors.className
+        };
+        
+        console.log("새로 추가할 데이터:", newWork);
+        
+        // 3. 새 데이터 삽입
+        try {
+            dlt_hopeWork.insertRow();
+            var lastIndex = dlt_hopeWork.getTotalRow() - 1;
+            dlt_hopeWork.setRowJSON(lastIndex, newWork);
+            
+            console.log("새 데이터 삽입 완료, 인덱스:", lastIndex);
+            console.log("현재 총 데이터 수:", dlt_hopeWork.getTotalRow());
+            
+            // 데이터 변경 알림
+            dlt_hopeWork.broadcast();
+            
+        } catch (e) {
+            console.error("새 데이터 삽입 오류:", e);
+        }
+        
+        // 4. 달력 새로고침
+        scwin.refreshCalendar();
+        
+        // 5. 클래스 적용 (약간의 지연 후)
+        setTimeout(function() {
+            scwin.applyEventClasses();
+        }, 500);
+        
+        var workTypeNames = {
+            "E": "Evening 근무",
+            "O": "Off",
+            "D": "Day 근무",
+            "N": "Night 근무"
+        };
+        
+        var message = currentWorkType ? 
+            (currentWorkType + "에서 " + selectedWorkType + "로 변경되었습니다.") :
+            (workTypeNames[selectedWorkType] + " 신청이 완료되었습니다.");
+            
+        alert(message);
+        
+        console.log("희망근무 처리 완료 - 날짜:", selectedDate, "타입:", selectedWorkType);
+    }
+    
+    scwin.hideWorkSelectModal();
+};
+
+scwin.removeAllWorkForDate = function(dateStr) {
+    try {
+        console.log("날짜별 근무 삭제 시작 - 날짜:", dateStr);
+        
+        // 해당 날짜의 모든 데이터를 확실하게 삭제 (중복 방지)
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var removedCount = 0;
+        
+        console.log("삭제 전 총 데이터 수:", totalRows);
+        
+        // 역순으로 삭제 (인덱스 변경 방지)
+        for (var i = totalRows - 1; i >= 0; i--) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            
+            // 다양한 날짜 형식으로 비교
+            var shouldDelete = false;
+            
+            if (row.start === dateStr ||
+                row.start === dateStr.replace(/-/g, '') ||
+                dateStr === row.start.replace(/-/g, '') ||
+                row.start.replace(/-/g, '') === dateStr.replace(/-/g, '')) {
+                shouldDelete = true;
+            }
+            
+            if (shouldDelete) {
+                console.log("삭제할 데이터:", row);
+                dlt_hopeWork.deleteRow(i);
+                removedCount++;
+                console.log("삭제된 데이터:", row.title, "날짜:", row.start);
+            }
+        }
+        
+        console.log("총 삭제된 항목 수:", removedCount);
+        console.log("삭제 후 총 데이터 수:", dlt_hopeWork.getTotalRow());
+        
+        // 데이터 변경 알림
+        if (removedCount > 0) {
+            dlt_hopeWork.broadcast();
+        }
+        
+        return removedCount;
+    } catch (e) {
+        console.error("날짜별 근무 삭제 오류:", e);
+        return 0;
+    }
+};
+
+scwin.refreshCalendar = function() {
+    // 달력 새로고침 통합 함수
+    try {
+        if (shc_hopeWork.refresh) {
+            shc_hopeWork.refresh();
+        } else if (shc_hopeWork.render) {
+            shc_hopeWork.render();
+        }
+        
+        // 데이터 변경 알림
+        dlt_hopeWork.broadcast();
+        
+        console.log("달력 새로고침 완료");
+    } catch (e) {
+        console.error("달력 새로고침 오류:", e);
+    }
+};
+
+// 기존 함수 유지 (호환성을 위해)
+scwin.removeExistingWork = function(dateStr) {
+    return scwin.removeAllWorkForDate(dateStr);
+};
+
+scwin.btn_cancel_onclick = function() {
+    scwin.hideWorkSelectModal();
+};
+
+// 이벤트 클래스 강제 적용 함수
+scwin.applyEventClasses = function() {
+    try {
+        console.log("이벤트 클래스 적용 시작");
+        
+        // 모든 fc-event 요소 찾기
+        var events = document.querySelectorAll('.fc-event');
+        console.log("찾은 이벤트 수:", events.length);
+        
+        events.forEach(function(event, index) {
+            var title = event.querySelector('.fc-title');
+            if (title) {
+                var workType = title.textContent.trim();
+                console.log("이벤트 " + index + " 근무타입:", workType);
+                
+                // 기존 work- 클래스 제거
+                event.classList.remove('work-normal', 'work-overtime', 'work-night', 'work-vacation');
+                
+                // 근무 타입에 따라 클래스 추가
+                switch(workType) {
+                    case 'O':
+                        event.classList.add('work-normal');
+                        console.log("work-normal 클래스 추가");
+                        break;
+                    case 'D':
+                        event.classList.add('work-overtime');
+                        console.log("work-overtime 클래스 추가");
+                        break;
+                    case 'E':
+                        event.classList.add('work-night');
+                        console.log("work-night 클래스 추가");
+                        break;
+                    case 'N':
+                        event.classList.add('work-vacation');
+                        console.log("work-vacation 클래스 추가");
+                        break;
+                }
+                
+                console.log("최종 클래스:", event.className);
+            }
+        });
+    } catch (e) {
+        console.error("클래스 적용 중 오류:", e);
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group class="hope-work-container">
+            <div class="page-title">희망근무 신청</div>
+            
+            <!-- 월 선택 드롭다운 -->
+            <xf:group class="schbox" id="" style="margin-bottom: 10px;">
+                <w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
+                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions"
+                	chooseOptionLabel="월을 선택하세요" nodeset="." ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption=""
+                	chooseOption="true">
+                	<xf:itemset nodeset=".">
+                		<xf:label ref="label"></xf:label>
+                		<xf:value ref="value"></xf:value>
+                	</xf:itemset>
+                	<xf:choices></xf:choices>
+                </xf:select1>
+            </xf:group>
+            
+            <div class="guide-message">
+                달력에서 날짜를 클릭하여 희망근무를 신청하세요.
+            </div>
+            
+            <w2:scheduleCalendar 
+                id="shc_hopeWork" 
+                style="width:800px;height:600px;" 
+                dataList="data:dlt_hopeWork" 
+                defaultDate="20250801"
+                editable="false" 
+                endColumn="end" 
+                allDayColumn="allDay"
+                eventLimit="true" 
+                headerLeftBtn="true" 
+                headerRightBtn="true" 
+                headerTitle="true" 
+                idColumn="id" 
+                ioFormat="yyyyMMdd" 
+                lang="ko" 
+                locale="ko" 
+                selectable="true" 
+                startColumn="start"
+                titleColumn="title" 
+                colorColumn="color"
+                backgroundColorColumn="backgroundColor"
+                borderColorColumn="borderColor"
+                textColorColumn="textColor"
+                classNameColumn="className"
+                tooltipDisplay="false"
+                version="3.6"
+                ev:onclick="scwin.shc_hopeWork_onclick"
+                noUsePrompt="true">
+            </w2:scheduleCalendar>
+            
+            <!-- 근무타입 선택 모달 오버레이 -->
+            <div id="modal-overlay" class="modal-overlay hidden" onclick="scwin.hideWorkSelectModal()"></div>
+            
+            <!-- 근무타입 선택 모달 -->
+            <div id="work-select-modal" class="work-select-modal hidden">
+                <div class="modal-header">
+                    <h3 id="modal-date" class="modal-date">8월 21일 (토)</h3>
+                </div>
+                <div class="modal-content">
+                    <xf:trigger class="work-option clear" id="option_clear" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #6c757d; background: #f8f9fa; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_clear_onclick" title="">
+                        <xf:label>비우기</xf:label>
+                    </xf:trigger>
+                    <xf:trigger class="work-option" id="option_O" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_O_onclick" title="">
+                        <xf:label>Off 신청</xf:label>
+                    </xf:trigger>
+                    <xf:trigger class="work-option" id="option_D" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_D_onclick" title="">
+                        <xf:label>Day 근무 신청</xf:label>
+                    </xf:trigger>
+                    <xf:trigger class="work-option" id="option_E" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_E_onclick" title="">
+                        <xf:label>Evening 근무 신청</xf:label>
+                    </xf:trigger>
+                    <xf:trigger class="work-option" id="option_N" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_N_onclick" title="">
+                        <xf:label>Night 근무 신청</xf:label>
+                    </xf:trigger>
+                </div>
+                <div class="modal-buttons">
+                    <xf:trigger class="modal-btn btn-cancel" id="btn_cancel" style="background: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6; padding: 10px 20px; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 80px; font-weight: bold;" ev:onclick="scwin.btn_cancel_onclick">
+                        <xf:label>취소</xf:label>
+                    </xf:trigger>
+                    <xf:trigger class="modal-btn btn-submit" id="btn_submit" style="background: #1e3a8a; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 80px; font-weight: bold;" ev:onclick="scwin.btn_submit_onclick">
+                        <xf:label>신청하기</xf:label>
+                    </xf:trigger>
+                </div>
+            </div>
+        </xf:group>
+    </body>
+</html>

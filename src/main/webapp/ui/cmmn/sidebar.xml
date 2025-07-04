@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dl_menuItems" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="menu_id" name="메뉴ID" dataType="text"></w2:column>
+						<w2:column id="menu_name" name="메뉴명" dataType="text"></w2:column>
+						<w2:column id="menu_icon" name="아이콘" dataType="text"></w2:column>
+						<w2:column id="menu_url" name="URL" dataType="text"></w2:column>
+						<w2:column id="is_active" name="활성여부" dataType="text"></w2:column>
+						<w2:column id="menu_group" name="메뉴그룹" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<menu_id>dashboard</menu_id>
+							<menu_name>대시보드</menu_name>
+							<menu_icon>📊</menu_icon>
+							<menu_url>/dashboard</menu_url>
+							<is_active>N</is_active>
+							<menu_group>main</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>duty_manage</menu_id>
+							<menu_name>근무지 관리</menu_name>
+							<menu_icon>🏥</menu_icon>
+							<menu_url>/duty/manage</menu_url>
+							<is_active>N</is_active>
+							<menu_group>main</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>schedule_manage</menu_id>
+							<menu_name>스케줄 관리</menu_name>
+							<menu_icon>📅</menu_icon>
+							<menu_url>/schedule/manage</menu_url>
+							<is_active>Y</is_active>
+							<menu_group>main</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>my_schedule</menu_id>
+							<menu_name>내 스케줄 보기</menu_name>
+							<menu_icon>👤</menu_icon>
+							<menu_url>/schedule/my</menu_url>
+							<is_active>N</is_active>
+							<menu_group>main</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>nurse_manage</menu_id>
+							<menu_name>간호사 관리</menu_name>
+							<menu_icon>👩‍⚕️</menu_icon>
+							<menu_url>/nurse/manage</menu_url>
+							<is_active>N</is_active>
+							<menu_group>manage</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>statistics</menu_id>
+							<menu_name>통계 및 분석</menu_name>
+							<menu_icon>📈</menu_icon>
+							<menu_url>/statistics</menu_url>
+							<is_active>N</is_active>
+							<menu_group>manage</menu_group>
+						</w2:row>
+						<w2:row>
+							<menu_id>settings</menu_id>
+							<menu_name>시스템 설정</menu_name>
+							<menu_icon>⚙️</menu_icon>
+							<menu_url>/settings</menu_url>
+							<is_active>N</is_active>
+							<menu_group>system</menu_group>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<style type="text/css">
+			.sidebar-container {
+			width: 250px;
+			height: 100vh;
+			background: #2c3e50;
+			color: white;
+			position: fixed;
+			left: 0;
+			top: 60px;
+			z-index: 1000;
+			overflow-y: auto;
+			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+			}
+
+			.sidebar-header {
+			padding: 20px;
+			border-bottom: 1px solid #34495e;
+			background: #34495e;
+			}
+
+			.sidebar-title {
+			font-size: 18px;
+			font-weight: 600;
+			color: #ecf0f1;
+			margin: 0;
+			}
+
+			.menu-section {
+			padding: 20px 0;
+			}
+
+			.menu-group-title {
+			padding: 0 20px 10px 20px;
+			font-size: 12px;
+			color: #bdc3c7;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			font-weight: 600;
+			}
+
+			.menu-item {
+			display: flex;
+			align-items: center;
+			padding: 12px 20px;
+			color: #ecf0f1;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			cursor: pointer;
+			border-left: 3px solid transparent;
+			position: relative;
+			}
+
+			.menu-item:hover {
+			background: #34495e;
+			border-left-color: #3498db;
+			padding-left: 25px;
+			}
+
+			.menu-item.active {
+			background: #34495e;
+			border-left-color: #e74c3c;
+			color: #e74c3c;
+			font-weight: 600;
+			}
+
+			.menu-icon {
+			width: 24px;
+			margin-right: 12px;
+			font-size: 16px;
+			text-align: center;
+			}
+
+			.menu-text {
+			flex: 1;
+			font-size: 14px;
+			}
+
+			.sidebar-footer {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 20px;
+			background: #34495e;
+			border-top: 1px solid #2c3e50;
+			}
+
+			.footer-info {
+			text-align: center;
+			font-size: 12px;
+			color: #95a5a6;
+			line-height: 1.5;
+			}
+		</style>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	scwin.updateMenuStyles();
+};
+
+scwin.navigateMenu = function(e) {
+	try {
+		var target = e.target || e.srcElement;
+		var rowIndex = target.getAttribute("rowIndex");
+		
+		if (!rowIndex) {
+			var parent = target.parentNode;
+			while (parent && !rowIndex) {
+				rowIndex = parent.getAttribute("rowIndex");
+				parent = parent.parentNode;
+			}
+		}
+		
+		if (rowIndex) {
+			var menuData = dl_menuItems.getRowJSON(parseInt(rowIndex));
+			
+			for (var i = 0; i < dl_menuItems.getRowCount(); i++) {
+				dl_menuItems.setCellData(i, "is_active", "N");
+			}
+			
+			dl_menuItems.setCellData(parseInt(rowIndex), "is_active", "Y");
+			
+			scwin.updateMenuStyles();
+			
+			console.log("Navigate to: " + menuData.menu_url);
+			alert("������ " + menuData.menu_name + " 페이지로 이동합니다.");
+		}
+	} catch (error) {
+		console.error("메뉴 네비게이션 오류:", error);
+	}
+};
+
+scwin.updateMenuStyles = function() {
+	try {
+		if (rpt_mainMenu) rpt_mainMenu.refresh();
+		if (rpt_manageMenu) rpt_manageMenu.refresh();
+		if (rpt_systemMenu) rpt_systemMenu.refresh();
+	} catch (error) {
+		console.error("메뉴 스타일 업데이트 오류:", error);
+	}
+};
+
+scwin.setActiveMenu = function(menuId) {
+	try {
+		for (var i = 0; i < dl_menuItems.getRowCount(); i++) {
+			var currentMenuId = dl_menuItems.getCellData(i, "menu_id");
+			if (currentMenuId === menuId) {
+				dl_menuItems.setCellData(i, "is_active", "Y");
+			} else {
+				dl_menuItems.setCellData(i, "is_active", "N");
+			}
+		}
+		scwin.updateMenuStyles();
+	} catch (error) {
+		console.error("메뉴 활성화 오류:", error);
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sidebar-container">
+			<xf:group class="sidebar-header">
+				<w2:textbox id="" class="sidebar-title" label="🗂️ 메뉴"></w2:textbox>
+			</xf:group>
+
+			<xf:group class="menu-section">
+				<w2:textbox id="" class="menu-group-title" label="주요 기능"></w2:textbox>
+
+				<w2:repeat id="rpt_mainMenu" dataList="dl_menuItems" nodeset=".[menu_group='main']">
+					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
+						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
+						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
+					</xf:group>
+				</w2:repeat>
+
+				<w2:textbox id="" class="menu-group-title" label="관리 기능" style="margin-top:20px;"></w2:textbox>
+
+				<w2:repeat id="rpt_manageMenu" dataList="dl_menuItems" nodeset=".[menu_group='manage']">
+					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
+						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
+						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
+					</xf:group>
+				</w2:repeat>
+
+				<w2:textbox id="" class="menu-group-title" label="시스템" style="margin-top:20px;"></w2:textbox>
+
+				<w2:repeat id="rpt_systemMenu" dataList="dl_menuItems" nodeset=".[menu_group='system']">
+					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
+						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
+						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
+					</xf:group>
+				</w2:repeat>
+			</xf:group>
+
+			<xf:group class="sidebar-footer">
+				<xf:group class="footer-info">
+					<w2:textbox id="" label="ShiftMate v1.0.0" style="display:block; color:#bdc3c7; font-weight:600;"></w2:textbox>
+					<w2:textbox id="" label="© 2025 간호사 듀티 시스템" style="display:block; color:#95a5a6; margin-top:5px;"></w2:textbox>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
