@@ -1,284 +1,269 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
-	xmlns:xf="http://www.w3.org/2002/xforms">
-	<head>
-		<w2:type>COMPONENT</w2:type>
-		<w2:buildDate />
-		<w2:MSA />
-		<xf:model>
-			<w2:dataCollection baseNode="map">
-				<w2:dataList baseNode="list" id="dl_menuItems" repeatNode="map">
-					<w2:columnInfo>
-						<w2:column id="menu_id" name="메뉴ID" dataType="text"></w2:column>
-						<w2:column id="menu_name" name="메뉴명" dataType="text"></w2:column>
-						<w2:column id="menu_icon" name="아이콘" dataType="text"></w2:column>
-						<w2:column id="menu_url" name="URL" dataType="text"></w2:column>
-						<w2:column id="is_active" name="활성여부" dataType="text"></w2:column>
-						<w2:column id="menu_group" name="메뉴그룹" dataType="text"></w2:column>
-					</w2:columnInfo>
-					<w2:data use="true">
-						<w2:row>
-							<menu_id>dashboard</menu_id>
-							<menu_name>대시보드</menu_name>
-							<menu_icon>📊</menu_icon>
-							<menu_url>/dashboard</menu_url>
-							<is_active>N</is_active>
-							<menu_group>main</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>duty_manage</menu_id>
-							<menu_name>근무지 관리</menu_name>
-							<menu_icon>🏥</menu_icon>
-							<menu_url>/duty/manage</menu_url>
-							<is_active>N</is_active>
-							<menu_group>main</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>schedule_manage</menu_id>
-							<menu_name>스케줄 관리</menu_name>
-							<menu_icon>📅</menu_icon>
-							<menu_url>/schedule/manage</menu_url>
-							<is_active>Y</is_active>
-							<menu_group>main</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>my_schedule</menu_id>
-							<menu_name>내 스케줄 보기</menu_name>
-							<menu_icon>👤</menu_icon>
-							<menu_url>/schedule/my</menu_url>
-							<is_active>N</is_active>
-							<menu_group>main</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>nurse_manage</menu_id>
-							<menu_name>간호사 관리</menu_name>
-							<menu_icon>👩‍⚕️</menu_icon>
-							<menu_url>/nurse/manage</menu_url>
-							<is_active>N</is_active>
-							<menu_group>manage</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>statistics</menu_id>
-							<menu_name>통계 및 분석</menu_name>
-							<menu_icon>📈</menu_icon>
-							<menu_url>/statistics</menu_url>
-							<is_active>N</is_active>
-							<menu_group>manage</menu_group>
-						</w2:row>
-						<w2:row>
-							<menu_id>settings</menu_id>
-							<menu_name>시스템 설정</menu_name>
-							<menu_icon>⚙️</menu_icon>
-							<menu_url>/settings</menu_url>
-							<is_active>N</is_active>
-							<menu_group>system</menu_group>
-						</w2:row>
-					</w2:data>
-				</w2:dataList>
-			</w2:dataCollection>
-			<w2:workflowCollection />
-		</xf:model>
-		<w2:layoutInfo />
-		<w2:publicInfo method="" />
-		<style type="text/css">
-			.sidebar-container {
-			width: 250px;
-			height: 100vh;
-			background: #2c3e50;
-			color: white;
-			position: fixed;
-			left: 0;
-			top: 60px;
-			z-index: 1000;
-			overflow-y: auto;
-			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-			}
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css">
+            .sidebar-container {
+                width: 250px;
+                height: calc(100vh - 90px);
+                background: white;
+                color: #333;
+                position: fixed;
+                left: 0;
+                top: 90px;
+                z-index: 1000;
+                overflow-y: auto;
+                border-bottom: 1px solid #e0e0e0;
+                display: flex;
+                flex-direction: column;
+            }
 
-			.sidebar-header {
-			padding: 20px;
-			border-bottom: 1px solid #34495e;
-			background: #34495e;
-			}
+            .menu-list {
+                padding: 0;
+                margin: 0;
+                flex: 1;
+            }
 
-			.sidebar-title {
-			font-size: 18px;
-			font-weight: 600;
-			color: #ecf0f1;
-			margin: 0;
-			}
+            .menu-item {
+                display: flex;
+                align-items: center;
+                padding: 16px 20px;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 15px;
+                font-weight: bold;
+                position: relative;
+                background: white;
+                border: none;
+                width: 100%;
+                text-align: left;
+                outline: none;
+                color: #333;
+            }
 
-			.menu-section {
-			padding: 20px 0;
-			}
+            .menu-item:hover {
+                border-radius: 10px;
+                margin: 0 10px;
+            }
 
-			.menu-group-title {
-			padding: 0 20px 10px 20px;
-			font-size: 12px;
-			color: #bdc3c7;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			font-weight: 600;
-			}
+            .menu-item.active {
+                background: #1C3D6B;
+                color: white;
+                font-weight: bold;
+                border-radius: 10px;
+                margin: 0 10px;
+            }
 
-			.menu-item {
-			display: flex;
-			align-items: center;
-			padding: 12px 20px;
-			color: #ecf0f1;
-			text-decoration: none;
-			transition: all 0.3s ease;
-			cursor: pointer;
-			border-left: 3px solid transparent;
-			position: relative;
-			}
+            .customer-center {
+                background: #4A90E2;
+                color: white;
+                padding: 20px;
+                border-radius: 15px;
+                margin: 20px;
+                margin-top: auto;
+                flex-shrink: 0;
+            }
 
-			.menu-item:hover {
-			background: #34495e;
-			border-left-color: #3498db;
-			padding-left: 25px;
-			}
+            .customer-center-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 15px;
+            }
 
-			.menu-item.active {
-			background: #34495e;
-			border-left-color: #e74c3c;
-			color: #e74c3c;
-			font-weight: 600;
-			}
+            .customer-center-title {
+                font-size: 16px;
+                font-weight: bold;
+            }
 
-			.menu-icon {
-			width: 24px;
-			margin-right: 12px;
-			font-size: 16px;
-			text-align: center;
-			}
+            .customer-center-icon {
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
 
-			.menu-text {
-			flex: 1;
-			font-size: 14px;
-			}
+            .customer-center-content {
+                font-size: 13px;
+                line-height: 1.6;
+            }
 
-			.sidebar-footer {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			padding: 20px;
-			background: #34495e;
-			border-top: 1px solid #2c3e50;
-			}
+            .customer-center-phone {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 8px 0;
+            }
 
-			.footer-info {
-			text-align: center;
-			font-size: 12px;
-			color: #95a5a6;
-			line-height: 1.5;
-			}
-		</style>
-		<script lazy="false" type="text/javascript"><![CDATA[
+            .customer-center-email {
+                font-size: 13px;
+                margin-top: 10px;
+            }
+
+            .customer-center-desc {
+                font-size: 12px;
+                margin: 5px 0;
+            }
+        </style>
+        <script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function() {
-	scwin.updateMenuStyles();
+    console.log("사이드바 로드 완료");
+
+    // DOM이 완전히 로드될 때까지 여러 번 시도
+    scwin.applyActiveMenu();
 };
 
-scwin.navigateMenu = function(e) {
-	try {
-		var target = e.target || e.srcElement;
-		var rowIndex = target.getAttribute("rowIndex");
-		
-		if (!rowIndex) {
-			var parent = target.parentNode;
-			while (parent && !rowIndex) {
-				rowIndex = parent.getAttribute("rowIndex");
-				parent = parent.parentNode;
-			}
-		}
-		
-		if (rowIndex) {
-			var menuData = dl_menuItems.getRowJSON(parseInt(rowIndex));
-			
-			for (var i = 0; i < dl_menuItems.getRowCount(); i++) {
-				dl_menuItems.setCellData(i, "is_active", "N");
-			}
-			
-			dl_menuItems.setCellData(parseInt(rowIndex), "is_active", "Y");
-			
-			scwin.updateMenuStyles();
-			
-			console.log("Navigate to: " + menuData.menu_url);
-			alert("������ " + menuData.menu_name + " 페이지로 이동합니다.");
-		}
-	} catch (error) {
-		console.error("메뉴 네비게이션 오류:", error);
-	}
+scwin.applyActiveMenu = function() {
+    var attempts = 0;
+    var maxAttempts = 10;
+    
+    var checkAndApply = function() {
+        attempts++;
+        console.log("메뉴 활성화 시도:", attempts + "/" + maxAttempts);
+        
+        // 모든 메뉴 요소가 로드되었는지 확인
+        var allMenusExist = document.getElementById("menu_duty_manage") && 
+                           document.getElementById("menu_schedule_manage") && 
+                           document.getElementById("menu_my_schedule") && 
+                           document.getElementById("menu_work_input");
+        
+        if (allMenusExist) {
+            console.log("✅ 모든 메뉴 요소 확인됨");
+            
+            // 이전에 저장한 메뉴 ID를 가져와서 active 적용
+            var activeMenuId = localStorage.getItem("activeMenuId");
+            console.log("저장된 activeMenuId:", activeMenuId);
+            
+            if (activeMenuId) {
+                // 저장된 메뉴 활성화
+                var selectedMenu = document.getElementById(activeMenuId);
+                if (selectedMenu) {
+                    selectedMenu.classList.add("active");
+                    console.log("✅ 메뉴 active 적용 성공:", activeMenuId);
+                } else {
+                    console.warn("⚠️ 저장된 메뉴 ID를 찾을 수 없음:", activeMenuId);
+                }
+            } else {
+                console.log("저장된 activeMenuId가 없습니다.");
+            }
+        } else {
+            console.log("메뉴 요소들이 아직 로드되지 않음, 재시도...");
+            
+            // 아직 모든 요소가 로드되지 않았고 시도 횟수가 남았으면 다시 시도
+            if (attempts < maxAttempts) {
+                setTimeout(checkAndApply, 500);
+            } else {
+                console.warn("⚠️ 최대 시도 횟수 초과. DOM 로딩 타임아웃");
+            }
+        }
+    };
+    
+    // 즉시 시도
+    checkAndApply();
 };
 
-scwin.updateMenuStyles = function() {
-	try {
-		if (rpt_mainMenu) rpt_mainMenu.refresh();
-		if (rpt_manageMenu) rpt_manageMenu.refresh();
-		if (rpt_systemMenu) rpt_systemMenu.refresh();
-	} catch (error) {
-		console.error("메뉴 스타일 업데이트 오류:", error);
-	}
+scwin.navigateMenu = function(menuId, targetPage) {
+    try {
+        // 모든 메뉴 비활성화
+        var menuItems = document.querySelectorAll('.menu-item');
+        for (var i = 0; i < menuItems.length; i++) {
+            menuItems[i].classList.remove('active');
+        }
+        
+        // 선택한 메뉴 활성화
+        var selectedMenu = document.getElementById(menuId);
+        if (selectedMenu) {
+            selectedMenu.classList.add('active');
+        }
+        
+        // 클릭한 메뉴 ID 저장
+        localStorage.setItem("activeMenuId", menuId);
+        
+        console.log("메뉴 클릭:", menuId);
+
+        // 페이지 이동
+        window.location.href = targetPage;
+
+    } catch (error) {
+        console.error("메뉴 네비게이션 오류:", error);
+        alert("페이지 이동 중 오류가 발생했습니다: " + error.message);
+    }
 };
 
-scwin.setActiveMenu = function(menuId) {
-	try {
-		for (var i = 0; i < dl_menuItems.getRowCount(); i++) {
-			var currentMenuId = dl_menuItems.getCellData(i, "menu_id");
-			if (currentMenuId === menuId) {
-				dl_menuItems.setCellData(i, "is_active", "Y");
-			} else {
-				dl_menuItems.setCellData(i, "is_active", "N");
-			}
-		}
-		scwin.updateMenuStyles();
-	} catch (error) {
-		console.error("메뉴 활성화 오류:", error);
-	}
+// 근무자 관리 메뉴 클릭
+scwin.goDutyManage = function() {
+    scwin.navigateMenu("menu_duty_manage", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml");
+};
+
+// 스케줄 관리 메뉴 클릭
+scwin.goScheduleManage = function() {
+    scwin.navigateMenu("menu_schedule_manage", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml");
+};
+
+// 내 스케줄 보기 메뉴 클릭
+scwin.goMySchedule = function() {
+    scwin.navigateMenu("menu_my_schedule", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml");
+};
+
+// 희망 근무 입력 메뉴 클릭
+scwin.goWorkInput = function() {
+    scwin.navigateMenu("menu_work_input", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkhope.xml");
 };
 ]]></script>
-	</head>
-	<body ev:onpageload="scwin.onpageload">
-		<xf:group class="sidebar-container">
-			<xf:group class="sidebar-header">
-				<w2:textbox id="" class="sidebar-title" label="🗂️ 메뉴"></w2:textbox>
-			</xf:group>
 
-			<xf:group class="menu-section">
-				<w2:textbox id="" class="menu-group-title" label="주요 기능"></w2:textbox>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group class="sidebar-container">
+            <!-- 메뉴 리스트 -->
+            <xf:group class="menu-list">
+                <xf:trigger id="menu_duty_manage" class="menu-item" ev:onclick="scwin.goDutyManage">
+                    <xf:label>근무자 관리</xf:label>
+                </xf:trigger>
+                <xf:trigger id="menu_schedule_manage" class="menu-item" ev:onclick="scwin.goScheduleManage">
+                    <xf:label>스케줄 관리</xf:label>
+                </xf:trigger>
+                <xf:trigger id="menu_my_schedule" class="menu-item" ev:onclick="scwin.goMySchedule">
+                    <xf:label>내 스케줄 보기</xf:label>
+                </xf:trigger>
+                <xf:trigger id="menu_work_input" class="menu-item" ev:onclick="scwin.goWorkInput">
+                    <xf:label>희망 근무 입력</xf:label>
+                </xf:trigger>
+            </xf:group>
 
-				<w2:repeat id="rpt_mainMenu" dataList="dl_menuItems" nodeset=".[menu_group='main']">
-					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
-						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
-						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
-					</xf:group>
-				</w2:repeat>
-
-				<w2:textbox id="" class="menu-group-title" label="관리 기능" style="margin-top:20px;"></w2:textbox>
-
-				<w2:repeat id="rpt_manageMenu" dataList="dl_menuItems" nodeset=".[menu_group='manage']">
-					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
-						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
-						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
-					</xf:group>
-				</w2:repeat>
-
-				<w2:textbox id="" class="menu-group-title" label="시스템" style="margin-top:20px;"></w2:textbox>
-
-				<w2:repeat id="rpt_systemMenu" dataList="dl_menuItems" nodeset=".[menu_group='system']">
-					<xf:group class="menu-item" ev:onclick="scwin.navigateMenu">
-						<w2:textbox id="" class="menu-icon" ref="menu_icon"></w2:textbox>
-						<w2:textbox id="" class="menu-text" ref="menu_name"></w2:textbox>
-					</xf:group>
-				</w2:repeat>
-			</xf:group>
-
-			<xf:group class="sidebar-footer">
-				<xf:group class="footer-info">
-					<w2:textbox id="" label="ShiftMate v1.0.0" style="display:block; color:#bdc3c7; font-weight:600;"></w2:textbox>
-					<w2:textbox id="" label="© 2025 간호사 듀티 시스템" style="display:block; color:#95a5a6; margin-top:5px;"></w2:textbox>
-				</xf:group>
-			</xf:group>
-		</xf:group>
-	</body>
+            <!-- 고객센터 섹션 -->
+            <xf:group class="customer-center">
+                <xf:group class="customer-center-header">
+                    <w2:textbox class="customer-center-title" label="Customer Center" id=""></w2:textbox>
+                    <xf:group class="customer-center-icon">
+                        <w2:textbox label="🎧" style="font-size:18px;" id=""></w2:textbox>
+                    </xf:group>
+                </xf:group>
+                <xf:group class="customer-center-content">
+                    <w2:textbox label="제품문의" id=""></w2:textbox>
+                    <xf:group class="customer-center-phone">
+                        <w2:textbox label="010-1234-5678" id=""></w2:textbox>
+                    </xf:group>
+                    <w2:textbox class="customer-center-desc" label="고객님의 소중한 의견을 들어주세요" id=""></w2:textbox>
+                    <w2:textbox class="customer-center-desc" label="제품 문의 및 기술 지원" id=""></w2:textbox>
+                    <xf:group class="customer-center-email">
+                        <w2:textbox label="ows0710@gmail.com" id=""></w2:textbox>
+                    </xf:group>
+                </xf:group>
+            </xf:group>
+        </xf:group>
+    </body>
 </html>

@@ -239,6 +239,58 @@
                 font-size: 14px;
             }
             
+            /* 신청 현황 섹션 */
+            .application-status {
+                background: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .status-title {
+                font-weight: bold;
+                color: #495057;
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+            
+            .status-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .status-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 8px;
+                background: white;
+                border: 1px solid #dee2e6;
+                border-radius: 3px;
+                font-size: 12px;
+                color: #6c757d;
+            }
+            
+            .status-badge {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 2px;
+                margin-right: 3px;
+            }
+            
+            .status-badge.work-o { background-color: #4CAF50; }
+            .status-badge.work-d { background-color: #FF9800; }
+            .status-badge.work-e { background-color: #3F51B5; }
+            .status-badge.work-n { background-color: #9C27B0; }
+            
+            .status-count {
+                font-weight: bold;
+                color: #495057;
+            }
+            
             /* 월 선택 영역 스타일 */
             .schbox {
                 display: flex;
@@ -257,6 +309,17 @@
             }
         </style>
         <script lazy="false" type="text/javascript"><![CDATA[
+// 글로벌 변수 - 다른 사람들의 신청 현황 시뮬레이션 데이터
+scwin.otherApplications = {
+    // 날짜별 다른 사람들의 신청 현황 (더미 데이터)
+    "20250801": {"O": 2, "D": 1, "E": 0, "N": 1},
+    "20250802": {"O": 1, "D": 2, "E": 1, "N": 0},
+    "20250803": {"O": 3, "D": 0, "E": 1, "N": 1},
+    "20250815": {"O": 0, "D": 3, "E": 2, "N": 0},
+    "20250820": {"O": 1, "D": 1, "E": 1, "N": 2},
+    "20250825": {"O": 2, "D": 0, "E": 0, "N": 3}
+};
+
 scwin.onpageload = function() {
     console.log("희망근무 신청 페이지가 로드되었습니다.");
     
@@ -303,6 +366,96 @@ scwin.hideAllModals = function() {
         }, 100);
     } catch (e) {
         console.error("모달 숨김 처리 오류:", e);
+    }
+};
+
+// 신청 현황 업데이트 함수
+scwin.updateApplicationStatus = function(dateStr) {
+    try {
+        console.log("신청 현황 업데이트:", dateStr);
+        
+        var statusList = document.getElementById("status-list");
+        if (!statusList) {
+            console.error("status-list 요소를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 기존 내용 초기화
+        statusList.innerHTML = "";
+        
+        // 해당 날짜의 다른 사람들 신청 현황 가져오기
+        var otherApps = scwin.otherApplications[dateStr] || {};
+        console.log("다른 사람들 신청 현황:", otherApps);
+        
+        // 내 신청 현황 확인
+        var myApplication = scwin.getCurrentWorkType(dateStr);
+        console.log("내 신청 현황:", myApplication);
+        
+        // 전체 신청 현황 계산
+        var totalApplications = {
+            "O": otherApps["O"] || 0,
+            "D": otherApps["D"] || 0, 
+            "E": otherApps["E"] || 0,
+            "N": otherApps["N"] || 0
+        };
+        
+        // 내 신청이 있으면 추가
+        if (myApplication && myApplication !== "") {
+            totalApplications[myApplication] = (totalApplications[myApplication] || 0) + 1;
+        }
+        
+        console.log("전체 신청 현황:", totalApplications);
+        
+        // 신청 현황 HTML 생성
+        var workTypes = [
+            {code: "O", name: "Off", class: "work-o"},
+            {code: "D", name: "Day 근무", class: "work-d"},
+            {code: "E", name: "Evening 근무", class: "work-e"},
+            {code: "N", name: "Night 근무", class: "work-n"}
+        ];
+        
+        var hasApplications = false;
+        
+        workTypes.forEach(function(workType) {
+            var count = totalApplications[workType.code];
+            if (count > 0) {
+                hasApplications = true;
+                
+                var statusItem = document.createElement("div");
+                statusItem.className = "status-item";
+                
+                var badge = document.createElement("span");
+                badge.className = "status-badge " + workType.class;
+                
+                var text = document.createElement("span");
+                text.textContent = workType.name + ": ";
+                
+                var countSpan = document.createElement("span");
+                countSpan.className = "status-count";
+                countSpan.textContent = count + "명";
+                
+                statusItem.appendChild(badge);
+                statusItem.appendChild(text);
+                statusItem.appendChild(countSpan);
+                
+                statusList.appendChild(statusItem);
+            }
+        });
+        
+        // 신청이 없을 경우 메시지 표시
+        if (!hasApplications) {
+            var noApplications = document.createElement("div");
+            noApplications.className = "status-item";
+            noApplications.style.color = "#6c757d";
+            noApplications.style.fontStyle = "italic";
+            noApplications.textContent = "아직 신청한 사람이 없습니다.";
+            statusList.appendChild(noApplications);
+        }
+        
+        console.log("신청 현황 업데이트 완료");
+        
+    } catch (e) {
+        console.error("신청 현황 업데이트 오류:", e);
     }
 };
 
@@ -573,8 +726,28 @@ scwin.sbx_month_onchange = function(info) {
 };
 
 scwin.initHopeWorkData = function() {
-    // 8월 데이터로 초기화
-    scwin.loadHopeWorkData("202508");
+    // 초기에는 빈 데이터로 시작
+    scwin.loadEmptyHopeWorkData("202508");
+};
+
+// 빈 데이터로 초기화하는 함수
+scwin.loadEmptyHopeWorkData = function(yearMonth) {
+    try {
+        console.log("빈 희망근무 데이터 로드:", yearMonth);
+        
+        // 기존 데이터 초기화
+        dlt_hopeWork.removeAll();
+        
+        // 달력을 2025년 8월로 설정
+        if (shc_hopeWork.gotoDate) {
+            shc_hopeWork.gotoDate("20250801");
+        }
+        
+        console.log("2025년 8월 달력이 초기화되었습니다 (빈 상태)");
+        
+    } catch (e) {
+        console.error("빈 희망근무 데이터 로드 중 오류:", e);
+    }
 };
 
 scwin.loadHopeWorkData = function(yearMonth) {
@@ -748,6 +921,10 @@ scwin.showWorkSelectModal = function() {
         if (modalDate) {
             modalDate.textContent = formattedDate;
         }
+        
+        // 신청 현황 업데이트
+        var selectedDate = dm_selectedInfo.get("date");
+        scwin.updateApplicationStatus(selectedDate);
         
         // 현재 근무타입이 있으면 해당 옵션 선택 상태로 표시
         var currentWorkType = dm_selectedInfo.get("currentWorkType");
@@ -1133,7 +1310,8 @@ scwin.btn_submit_onclick = function() {
         }
         
         // 확실하게 해당 날짜의 모든 데이터 삭제
-        scwin.removeAllWorkForDate(selectedDate);
+        var deletedCount = scwin.removeAllWorkForDate(selectedDate);
+        console.log("초기화로 삭제된 데이터 수:", deletedCount);
         
         // 달력 새로고침
         scwin.refreshCalendar();
@@ -1143,11 +1321,19 @@ scwin.btn_submit_onclick = function() {
         // 새 근무 타입 신청 (기존 것이 있으면 덮어쓰기)
         console.log("새 근무 타입 신청 처리 시작");
         
-        // 1. 해당 날짜의 기존 데이터 완전 삭제
+        // 1. 해당 날짜의 기존 데이터 완전 삭제 (중복 방지 강화)
         var deletedCount = scwin.removeAllWorkForDate(selectedDate);
         console.log("삭제된 기존 데이터 수:", deletedCount);
         
-        // 2. 새 데이터 추가
+        // 2. 삭제 후 재확인 (안전장치)
+        var remainingCount = scwin.countWorkForDate(selectedDate);
+        if (remainingCount > 0) {
+            console.warn("여전히 남아있는 데이터가 있음:", remainingCount, "추가 삭제 시도");
+            // 재시도
+            scwin.removeAllWorkForDate(selectedDate);
+        }
+        
+        // 3. 새 데이터 추가
         var colorMap = {
             "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
             "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
@@ -1157,7 +1343,7 @@ scwin.btn_submit_onclick = function() {
         
         var colors = colorMap[selectedWorkType];
         var newWork = {
-            id: "hope_" + selectedDate + "_" + new Date().getTime(), // 유니크 ID 보장
+            id: "hope_" + selectedDate + "_" + selectedWorkType + "_" + new Date().getTime(), // 더 유니크한 ID
             title: selectedWorkType,
             start: selectedDate,
             end: selectedDate,
@@ -1171,7 +1357,7 @@ scwin.btn_submit_onclick = function() {
         
         console.log("새로 추가할 데이터:", newWork);
         
-        // 3. 새 데이터 삽입
+        // 4. 새 데이터 삽입
         try {
             dlt_hopeWork.insertRow();
             var lastIndex = dlt_hopeWork.getTotalRow() - 1;
@@ -1183,14 +1369,33 @@ scwin.btn_submit_onclick = function() {
             // 데이터 변경 알림
             dlt_hopeWork.broadcast();
             
+            // 5. 삽입 후 검증 (안전장치)
+            var finalCount = scwin.countWorkForDate(selectedDate);
+            if (finalCount > 1) {
+                console.error("경고: 한 날짜에 여러 근무가 등록됨. 재정리 필요");
+                // 다시 정리
+                scwin.removeAllWorkForDate(selectedDate);
+                
+                // 다시 한 번만 추가
+                dlt_hopeWork.insertRow();
+                var newLastIndex = dlt_hopeWork.getTotalRow() - 1;
+                dlt_hopeWork.setRowJSON(newLastIndex, newWork);
+                dlt_hopeWork.broadcast();
+                
+                console.log("중복 제거 후 재삽입 완료");
+            }
+            
         } catch (e) {
             console.error("새 데이터 삽입 오류:", e);
+            alert("희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.");
+            scwin.hideWorkSelectModal();
+            return;
         }
         
-        // 4. 달력 새로고침
+        // 6. 달력 새로고침
         scwin.refreshCalendar();
         
-        // 5. 클래스 적용 (약간의 지연 후)
+        // 7. 클래스 적용 (약간의 지연 후)
         setTimeout(function() {
             scwin.applyEventClasses();
         }, 500);
@@ -1257,6 +1462,32 @@ scwin.removeAllWorkForDate = function(dateStr) {
         return removedCount;
     } catch (e) {
         console.error("날짜별 근무 삭제 오류:", e);
+        return 0;
+    }
+};
+
+// 날짜별 근무 개수 계산 함수
+scwin.countWorkForDate = function(dateStr) {
+    try {
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var count = 0;
+        
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            
+            // 다양한 날짜 형식으로 비교
+            if (row.start === dateStr ||
+                row.start === dateStr.replace(/-/g, '') ||
+                dateStr === row.start.replace(/-/g, '') ||
+                row.start.replace(/-/g, '') === dateStr.replace(/-/g, '')) {
+                count++;
+            }
+        }
+        
+        console.log("날짜 " + dateStr + "의 근무 개수:", count);
+        return count;
+    } catch (e) {
+        console.error("날짜별 근무 개수 계산 오류:", e);
         return 0;
     }
 };
@@ -1337,7 +1568,6 @@ scwin.applyEventClasses = function() {
     </head>
     <body ev:onpageload="scwin.onpageload">
         <xf:group class="hope-work-container">
-            <div class="page-title">희망근무 신청</div>
             
             <!-- 월 선택 드롭다운 -->
             <xf:group class="schbox" id="" style="margin-bottom: 10px;">
@@ -1396,6 +1626,13 @@ scwin.applyEventClasses = function() {
                     <h3 id="modal-date" class="modal-date">8월 21일 (토)</h3>
                 </div>
                 <div class="modal-content">
+                    <!-- 신청 현황 섹션 -->
+                    <div class="application-status">
+                        <div class="status-title">이 날짜에 신청한 근무 현황</div>
+                        <div id="status-list" class="status-list">
+                            <!-- 동적으로 생성될 신청 현황 목록 -->
+                        </div>
+                    </div>
                     <xf:trigger class="work-option clear" id="option_clear" style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #6c757d; background: #f8f9fa; display: block; width: 100%; text-align: left;" ev:onclick="scwin.option_clear_onclick" title="">
                         <xf:label>비우기</xf:label>
                     </xf:trigger>

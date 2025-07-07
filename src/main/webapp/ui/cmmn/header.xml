@@ -16,138 +16,487 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 15px 30px;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				color: white;
-				box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+				padding: 0 20px;
+				background: white;
+				color: #333;
 				position: fixed;
 				top: 0;
 				left: 0;
 				right: 0;
 				z-index: 1001;
-				height: 60px;
+				height: 90px;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+				border-bottom: 1px solid #e0e0e0;
 			}
 			
-			.logo-section {
+			.left-section {
 				display: flex;
 				align-items: center;
-				gap: 15px;
+				width: 60px;
 			}
 			
-			.logo-icon {
+			.hamburger-menu {
+				width: 24px;
+				height: 24px;
+				cursor: pointer;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				padding: 4px 0;
+			}
+			
+			.hamburger-line {
+				width: 24px;
+				height: 2px;
+				background: #333;
+				border-radius: 1px;
+			}
+			
+			.center-section {
+				flex: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.logo-container {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+			
+			.logo-image {
 				width: 40px;
 				height: 40px;
-				background: rgba(255,255,255,0.2);
-				border-radius: 8px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-weight: bold;
-				font-size: 18px;
-				color: white;
 			}
 			
 			.logo-text {
 				font-size: 24px;
-				font-weight: bold;
-				color: white;
+				font-weight: 600;
+				color: #4A90E2;
+				letter-spacing: -0.5px;
 			}
 			
-			.user-section {
+			.right-section {
 				display: flex;
 				align-items: center;
-				gap: 20px;
+				gap: 15px;
+				min-width: 180px;
+				justify-content: flex-end;
 			}
 			
-			.notification-btn {
-				width: 40px;
-				height: 40px;
-				background: rgba(255,255,255,0.1);
+			.notification-container {
+				position: relative;
+			}
+			
+			.notification-icon {
+				width: 32px;
+				height: 32px;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 20px;
+				color: #666;
+				position: relative;
+			}
+			
+			.notification-badge {
+				position: absolute;
+				top: -5px;
+				right: -5px;
+				background: #ff4444;
+				color: white;
+				border-radius: 50%;
+				width: 18px;
+				height: 18px;
+				font-size: 11px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+			}
+			
+			.notification-dropdown {
+				position: absolute;
+				top: 45px;
+				right: 0;
+				width: 300px;
+				background: white;
+				border-radius: 8px;
+				box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+				border: 1px solid #e0e0e0;
+				z-index: 1002;
+				display: none;
+				overflow: hidden;
+			}
+			
+			.notification-dropdown.show {
+				display: block !important;
+			}
+			
+			.notification-header {
+				padding: 15px 20px;
+				border-bottom: 1px solid #f0f0f0;
+				font-size: 16px;
+				font-weight: 600;
+				color: #333;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			
+			.notification-item {
+				padding: 15px 20px;
+				border-bottom: 1px solid #f8f8f8;
+				color: #333;
+				display: flex;
+				align-items: flex-start;
+				gap: 12px;
+			}
+			
+			.notification-item:last-child {
+				border-bottom: none;
+			}
+			
+			.notification-icon-small {
+				width: 32px;
+				height: 32px;
+				background: #4CAF50;
 				border-radius: 50%;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				cursor: pointer;
-				transition: all 0.3s ease;
+				flex-shrink: 0;
+				font-size: 16px;
+				color: white;
 			}
 			
-			.notification-btn:hover {
-				background: rgba(255,255,255,0.2);
-				transform: scale(1.05);
+			.notification-content {
+				flex: 1;
+			}
+			
+			.notification-message {
+				font-size: 14px;
+				line-height: 1.4;
+				margin-bottom: 5px;
+				color: #333;
+			}
+			
+			.notification-time {
+				font-size: 12px;
+				color: #999;
+			}
+			
+			.user-container {
+				position: relative;
 			}
 			
 			.user-info {
 				display: flex;
 				align-items: center;
-				gap: 12px;
-				padding: 8px 16px;
-				background: rgba(255,255,255,0.1);
-				border-radius: 25px;
+				gap: 8px;
 				cursor: pointer;
-				transition: all 0.3s ease;
+				padding: 6px 12px;
+				border-radius: 20px;
+				transition: background-color 0.2s;
 			}
 			
 			.user-info:hover {
-				background: rgba(255,255,255,0.2);
+				background: rgba(0,0,0,0.05);
+			}
+			
+			.user-details {
+				text-align: right;
 			}
 			
 			.user-name {
-				font-weight: 600;
 				font-size: 14px;
+				font-weight: 600;
+				color: #333;
+				line-height: 1.2;
 			}
 			
 			.user-role {
 				font-size: 12px;
-				opacity: 0.8;
+				color: #666;
+				line-height: 1.2;
+			}
+			
+			.dropdown-arrow {
+				font-size: 12px;
+				color: #666;
+				margin-left: 4px;
+			}
+			
+			.user-dropdown {
+				position: absolute;
+				top: 45px;
+				right: 0;
+				width: 150px;
+				background: white;
+				border-radius: 8px;
+				box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+				border: 1px solid #e0e0e0;
+				z-index: 1002;
+				display: none;
+				overflow: hidden;
+			}
+			
+			.user-dropdown.show {
+				display: block !important;
+			}
+			
+			.user-menu-item {
+				padding: 12px 20px;
+				color: #333;
+				font-size: 14px;
+				cursor: pointer;
+				transition: background-color 0.2s;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			
+			.user-menu-item:hover {
+				background: #f8f9fa;
+			}
+			
+			.user-menu-item.logout {
+				color: #dc3545;
+			}
+			
+			.user-menu-item.logout:hover {
+				background: #fff5f5;
 			}
 		</style>
 		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.sidebarVisible = false;
+scwin.notificationVisible = false;
+scwin.userMenuVisible = false;
+
 scwin.onpageload = function() {
-	
+	console.log("헤더 초기화 완료");
+	// 초기 상태 설정
+	scwin.hideNotificationDropdown();
+	scwin.hideUserMenu();
 };
 
-scwin.showNotifications = function() {
-	alert("������ 새로운 알림이 2개 있습니다.\n\n• 7월 스케줄이 확정되었습니다.\n• 신규 간호사가 배정되었습니다.");
+scwin.toggleSidebar = function() {
+	console.log("사이드바 토글");
+	scwin.sidebarVisible = !scwin.sidebarVisible;
+	
+	if (scwin.sidebarVisible) {
+		alert("사이드바가 열렸습니다.");
+	} else {
+		alert("사이드바가 닫혔습니다.");
+	}
+};
+
+scwin.toggleNotifications = function() {
+	console.log("알림 토글 함수 호출");
+	
+	// 다른 메뉴 먼저 닫기
+	scwin.hideUserMenu();
+	
+	if (scwin.notificationVisible) {
+		scwin.hideNotificationDropdown();
+	} else {
+		scwin.showNotificationDropdown();
+	}
+};
+
+scwin.showNotificationDropdown = function() {
+	console.log("알림 드롭다운 표시 시도");
+	
+	try {
+		// 전역 jQuery 사용 시도
+		if (typeof $ !== 'undefined') {
+			$('.notification-dropdown').addClass('show');
+			console.log("jQuery로 알림 드롭다운 표시됨");
+		} else if (typeof window.$ !== 'undefined') {
+			window.$('.notification-dropdown').addClass('show');
+			console.log("window.jQuery로 알림 드롭다운 표시됨");
+		} else {
+			// 순수 JavaScript 사용
+			var elements = document.querySelectorAll('.notification-dropdown');
+			for (var i = 0; i < elements.length; i++) {
+				elements[i].classList.add('show');
+			}
+			console.log("순수 JavaScript로 알림 드롭다운 표시됨");
+		}
+		scwin.notificationVisible = true;
+	} catch (e) {
+		console.log("알림 드롭다운 표시 오류:", e);
+	}
+};
+
+scwin.hideNotificationDropdown = function() {
+	console.log("알림 드롭다운 숨김 시도");
+	
+	try {
+		// 전역 jQuery 사용 시도
+		if (typeof $ !== 'undefined') {
+			$('.notification-dropdown').removeClass('show');
+			console.log("jQuery로 알림 드롭다운 숨김");
+		} else if (typeof window.$ !== 'undefined') {
+			window.$('.notification-dropdown').removeClass('show');
+			console.log("window.jQuery로 알림 드롭다운 숨김");
+		} else {
+			// 순수 JavaScript 사용
+			var elements = document.querySelectorAll('.notification-dropdown');
+			for (var i = 0; i < elements.length; i++) {
+				elements[i].classList.remove('show');
+			}
+			console.log("순수 JavaScript로 알림 드롭다운 숨김");
+		}
+		scwin.notificationVisible = false;
+	} catch (e) {
+		console.log("알림 드롭다운 숨김 오류:", e);
+	}
+};
+
+scwin.toggleUserMenu = function() {
+	console.log("사용자 메뉴 토글 함수 호출");
+	
+	// 다른 메뉴 먼저 닫기
+	scwin.hideNotificationDropdown();
+	
+	if (scwin.userMenuVisible) {
+		scwin.hideUserMenu();
+	} else {
+		scwin.showUserMenu();
+	}
 };
 
 scwin.showUserMenu = function() {
-	var menuOptions = [
-		"������ 내 프로필 수정",
-		"������ 비밀번호 변경", 
-		"⚙️ 개인 설정",
-		"������ 근무 통계",
-		"������ 로그아웃"
-	];
+	console.log("사용자 메뉴 표시 시도");
 	
-	var menu = "사용자 메뉴:\n\n" + menuOptions.join("\n");
-	alert(menu);
+	try {
+		// 전역 jQuery 사용 시도
+		if (typeof $ !== 'undefined') {
+			$('.user-dropdown').addClass('show');
+			console.log("jQuery로 사용자 메뉴 표시됨");
+		} else if (typeof window.$ !== 'undefined') {
+			window.$('.user-dropdown').addClass('show');
+			console.log("window.jQuery로 사용자 메뉴 표시됨");
+		} else {
+			// 순수 JavaScript 사용
+			var elements = document.querySelectorAll('.user-dropdown');
+			for (var i = 0; i < elements.length; i++) {
+				elements[i].classList.add('show');
+			}
+			console.log("순수 JavaScript로 사용자 메뉴 표시됨");
+		}
+		scwin.userMenuVisible = true;
+	} catch (e) {
+		console.log("사용자 메뉴 표시 오류:", e);
+	}
 };
 
-scwin.updateUserInfo = function(name, role) {
-	console.log("사용자 정보 업데이트:", name, role);
+scwin.hideUserMenu = function() {
+	console.log("사용자 메뉴 숨김 시도");
+	
+	try {
+		// 전역 jQuery 사용 시도
+		if (typeof $ !== 'undefined') {
+			$('.user-dropdown').removeClass('show');
+			console.log("jQuery로 사용자 메뉴 숨김");
+		} else if (typeof window.$ !== 'undefined') {
+			window.$('.user-dropdown').removeClass('show');
+			console.log("window.jQuery로 사용자 메뉴 숨김");
+		} else {
+			// 순수 JavaScript 사용
+			var elements = document.querySelectorAll('.user-dropdown');
+			for (var i = 0; i < elements.length; i++) {
+				elements[i].classList.remove('show');
+			}
+			console.log("순수 JavaScript로 사용자 메뉴 숨김");
+		}
+		scwin.userMenuVisible = false;
+	} catch (e) {
+		console.log("사용자 메뉴 숨김 오류:", e);
+	}
+};
+
+scwin.logout = function() {
+	if (confirm("로그아웃 하시겠습니까?")) {
+		alert("로그아웃 됩니다.");
+		scwin.hideUserMenu();
+		// 여기에 실제 로그아웃 로직 추가
+	}
+};
+
+// 외부 클릭 시 메뉴 닫기
+scwin.closeMenus = function() {
+	scwin.hideNotificationDropdown();
+	scwin.hideUserMenu();
 };
 ]]></script>
 	</head>
-	<body ev:onpageload="scwin.onpageload">
+	<body ev:onpageload="scwin.onpageload" ev:onclick="scwin.closeMenus">
 		<xf:group class="header-container">
-			<xf:group class="logo-section">
-				<xf:group class="logo-icon">
-					<w2:textbox id="" label="⚕" style="color:white; font-size:20px;"></w2:textbox>
+			<xf:group class="left-section">
+				<xf:group class="hamburger-menu" ev:onclick="scwin.toggleSidebar">
+					<xf:group class="hamburger-line"></xf:group>
+					<xf:group class="hamburger-line"></xf:group>
+					<xf:group class="hamburger-line"></xf:group>
 				</xf:group>
-				<w2:textbox id="" class="logo-text" label="ShiftMate"></w2:textbox>
 			</xf:group>
 			
-			<xf:group class="user-section">
-				<xf:group class="notification-btn" ev:onclick="scwin.showNotifications">
-					<w2:textbox id="" label="🔔" style="font-size:18px;"></w2:textbox>
+			<xf:group class="center-section">
+				<xf:group class="logo-container">
+                    <xf:image src="/InsWebApp/images/logo.png" style="width: 200px;height: 60px;" id=""></xf:image>
+				</xf:group>
+			</xf:group>
+			
+			<xf:group class="right-section">
+				<xf:group class="notification-container">
+					<xf:group class="notification-icon" ev:onclick="scwin.toggleNotifications">
+						<w2:textbox id="" label="🔔"></w2:textbox>
+						<xf:group class="notification-badge">
+							<w2:textbox id="" label="1" style="font-size:11px; color:white; font-weight:bold;"></w2:textbox>
+						</xf:group>
+					</xf:group>
+					
+					<!-- 알림 드롭다운 -->
+					<xf:group id="notificationDropdown" class="notification-dropdown" style="display:none; visibility:hidden; opacity:0;">
+						<xf:group class="notification-header">
+							<w2:textbox id="" label="🔔" style="font-size:16px; color:#4A90E2;"></w2:textbox>
+							<w2:textbox id="" label="알림(1)" style="font-size:16px; font-weight:600; color:#333;"></w2:textbox>
+						</xf:group>
+						<xf:group class="notification-item">
+							<xf:group class="notification-icon-small">
+								<w2:textbox id="" label="✓" style="font-size:16px; color:white;"></w2:textbox>
+							</xf:group>
+							<xf:group class="notification-content">
+								<xf:group class="notification-message">
+									<w2:textbox id="" label="근무표가 확정되었습니다." style="font-size:14px; color:#333;"></w2:textbox>
+								</xf:group>
+								<xf:group class="notification-time">
+									<w2:textbox id="" label="10분 전" style="font-size:12px; color:#999;"></w2:textbox>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
 				</xf:group>
 				
-				<xf:group class="user-info" ev:onclick="scwin.showUserMenu">
-					<xf:group>
-						<w2:textbox id="" class="user-name" label="김간호" style="color:white; display:block;"></w2:textbox>
-						<w2:textbox id="" class="user-role" label="수간호사" style="color:white; display:block;"></w2:textbox>
+				<xf:group class="user-container">
+					<xf:group class="user-info" ev:onclick="scwin.toggleUserMenu">
+						<xf:group class="user-details">
+							<w2:textbox id="" class="user-name" label="김간호" style="display:block;"></w2:textbox>
+							<w2:textbox id="" class="user-role" label="수간호사" style="display:block;"></w2:textbox>
+						</xf:group>
+						<w2:textbox id="" class="dropdown-arrow" label="▼"></w2:textbox>
 					</xf:group>
-					<w2:textbox id="" label="▼" style="color:white;"></w2:textbox>
+
+					<!-- 사용자 드롭다운 메뉴 -->
+					<xf:group id="userDropdown" class="user-dropdown" style="display:none; visibility:hidden; opacity:0;">
+						<xf:group class="user-menu-item logout" ev:onclick="scwin.logout">
+							<w2:textbox id="" label="🚪" style="font-size:14px; color:#dc3545;"></w2:textbox>
+							<w2:textbox id="" label="로그아웃" style="font-size:14px; color:#dc3545;"></w2:textbox>
+						</xf:group>
+					</xf:group>
 				</xf:group>
 			</xf:group>
 		</xf:group>

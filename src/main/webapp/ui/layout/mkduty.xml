@@ -152,13 +152,13 @@ scwin.changeMainContent = function(src) {
     <body ev:onpageload="scwin.onpageload">
         <xf:group style="width:100%;height:100vh;display:flex;flex-direction:column;margin:0;padding:0;" id="grp_mainContainer">
             
-            <!-- 헤더 영역 (60px 고정) -->
-            <xf:group style="width:100%;height:60px;position:fixed;top:0;left:0;z-index:1001;" id="grp_headerArea">
+            <!-- 헤더 영역 (90px 고정) -->
+            <xf:group style="width:100%;height:90px;position:fixed;top:0;left:0;z-index:1001;" id="grp_headerArea">
                 <w2:wframe id="wfr_header" style="width:100%;height:100%;" src="/InsWebApp/ui/cmmn/header.xml"/>
             </xf:group>
             
             <!-- 메인 콘텐츠 영역 (헤더 아래) -->
-            <xf:group style="width:100%;height:calc(100vh - 60px);margin-top:60px;display:flex;" id="grp_contentArea">
+            <xf:group style="width:100%;height:calc(100vh - 90px);margin-top:90px;display:flex;" id="grp_contentArea">
                 
                 <!-- 사이드메뉴 영역 (250px 고정) -->
                 <xf:group style="width:250px;height:100%;position:fixed;left:0;z-index:1000;" id="grp_sideMenuArea">
