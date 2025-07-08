@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ev="http://www.w3.org/2001/xml-events"
     xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
-    <head meta_screenName="희망근무 신청">
+    <head meta_screenName="희망근무 신청 페이지">
         <w2:type>COMPONENT</w2:type>
         <w2:buildDate/>
         <w2:MSA/>
@@ -331,15 +331,15 @@ scwin.onpageload = function() {
         console.log("컴포넌트 초기화 시작");
         scwin.initMonthOptions();
         
-        // 추가 대기 후 데이터 설정
+        // 캘린더를 빈 상태로 초기화
         setTimeout(function() {
-            scwin.initHopeWorkData();
-            
-            // 최종 확인
-            setTimeout(function() {
-                scwin.debugComponents();
-            }, 1000);
-        }, 300);
+            scwin.initEmptyCalendar();
+        }, 1000);
+        
+        // 최종 확인
+        setTimeout(function() {
+            scwin.debugComponents();
+        }, 1500);
     }, 200);
 };
 
@@ -555,48 +555,61 @@ scwin.initMonthOptions = function() {
             dlt_monthOptions.setJSON(monthOptions);
             console.log("dlt_monthOptions 데이터 설정 완료");
             console.log("총 데이터 수:", dlt_monthOptions.getTotalRow());
+            
+            // 데이터 변경 알림
+            dlt_monthOptions.broadcast();
         } else {
             console.error("dlt_monthOptions를 찾을 수 없습니다.");
             return;
         }
         
-        // 드롭다운 컴포넌트 확인 및 설정 (더 긴 대기 시간)
+        // 컴포넌트 새로고침을 위한 다단계 처리
         setTimeout(function() {
             if (typeof sbx_month !== 'undefined') {
                 try {
-                    // 컴포넌트 새로고침
+                    console.log("1단계: 컴포넌트 새로고침 시작");
+                    
+                    // 강제 새로고침 시퀀스
                     sbx_month.refresh();
                     
-                    // 잠시 대기 후 선택
+                    // 추가 새로고침
                     setTimeout(function() {
-                        sbx_month.setSelectedIndex(1); // 8월을 기본 선택 (0: 7월, 1: 8월)
-                        console.log("sbx_month 기본 선택 설정 완료 (8월)");
-                        
-                        // 현재 선택된 값 확인
-                        var currentValue = sbx_month.getValue();
-                        console.log("현재 선택된 월:", currentValue);
-                        
-                        // 선택된 텍스트 확인 (안전하게)
-                        var currentText = "";
                         try {
-                            if (sbx_month.getSelectedText) {
-                                currentText = sbx_month.getSelectedText();
-                            } else if (sbx_month.getSelectedLabel) {
-                                currentText = sbx_month.getSelectedLabel();
+                            console.log("2단계: redraw 시도");
+                            if (sbx_month.redraw) {
+                                sbx_month.redraw();
+                            } else {
+                                sbx_month.refresh();
                             }
                         } catch (e) {
-                            console.log("선택된 텍스트 가져오기 실패:", e);
+                            console.log("redraw 실패, refresh 재시도");
+                            sbx_month.refresh();
                         }
                         
-                        console.log("현재 선택된 텍스트:", currentText);
-                        
-                        // 강제로 라벨 표시 확인
-                        if (!currentText || currentText === "") {
-                            console.log("라벨이 비어있음, 다시 시도");
-                            setTimeout(function() {
-                                sbx_month.setSelectedIndex(1);
-                            }, 100);
-                        }
+                        // 최종 검증 및 강제 업데이트
+                        setTimeout(function() {
+                            try {
+                                console.log("3단계: 최종 업데이트");
+                                
+                                // 컴포넌트 재초기화
+                                sbx_month.refresh();
+                                
+                                // 데이터 재브로드캐스트
+                                dlt_monthOptions.broadcast();
+                                
+                                console.log("sbx_month 컴포넌트 준비 완료");
+                                console.log("데이터 수:", dlt_monthOptions.getTotalRow());
+                                
+                                // 데이터 확인
+                                for (var i = 0; i < dlt_monthOptions.getTotalRow(); i++) {
+                                    var row = dlt_monthOptions.getRowJSON(i);
+                                    console.log("데이터 " + i + ":", row.label, "->", row.value);
+                                }
+                                
+                            } catch (e) {
+                                console.error("최종 업데이트 오류:", e);
+                            }
+                        }, 400);
                     }, 300);
                     
                 } catch (e) {
@@ -668,12 +681,16 @@ scwin.sbx_month_onchange = function(info) {
                 try {
                     console.log("페이지 이동 시도 중...");
                     
-                    // 직접 이동 시도
-                    var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/duty/myschedule.xml";
-                    console.log("이동할 URL:", targetUrl);
-                    
-                    // 방법 1: location.href 사용
-                    window.location.href = targetUrl;
+                    // 메인 프레임의 컨텐츠 변경
+                    if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
+                        window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/duty/myschedule.xml");
+                        console.log("메인 프레임 컨텐츠 변경 완료");
+                    } else {
+                        // 직접 이동 시도
+                        var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/duty/myschedule.xml";
+                        console.log("이동할 URL:", targetUrl);
+                        window.location.href = targetUrl;
+                    }
                     
                     console.log("페이지 이동 요청 완료");
                     
@@ -728,6 +745,35 @@ scwin.sbx_month_onchange = function(info) {
 scwin.initHopeWorkData = function() {
     // 초기에는 빈 데이터로 시작
     scwin.loadEmptyHopeWorkData("202508");
+};
+
+// 캘린더를 완전히 빈 상태로 초기화하는 함수
+scwin.initEmptyCalendar = function() {
+    try {
+        console.log("캘린더 빈 상태로 초기화");
+        
+        // 데이터리스트 완전 초기화
+        if (typeof dlt_hopeWork !== 'undefined') {
+            dlt_hopeWork.removeAll();
+            dlt_hopeWork.broadcast();
+            console.log("희망근무 데이터리스트 초기화 완료");
+        }
+        
+        // 캘린더 새로고침
+        setTimeout(function() {
+            try {
+                if (shc_hopeWork && shc_hopeWork.refresh) {
+                    shc_hopeWork.refresh();
+                }
+                console.log("캘린더 새로고침 완료 - 빈 상태");
+            } catch (e) {
+                console.error("캘린더 새로고침 오류:", e);
+            }
+        }, 100);
+        
+    } catch (e) {
+        console.error("캘린더 빈 상태 초기화 오류:", e);
+    }
 };
 
 // 빈 데이터로 초기화하는 함수
@@ -1572,14 +1618,18 @@ scwin.applyEventClasses = function() {
             <!-- 월 선택 드롭다운 -->
             <xf:group class="schbox" id="" style="margin-bottom: 10px;">
                 <w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
-                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions"
-                	chooseOptionLabel="월을 선택하세요" nodeset="." ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption=""
-                	chooseOption="true">
-                	<xf:itemset nodeset=".">
+                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 7월"
+                	ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="true">
+                	<xf:itemset nodeset="data:dlt_monthOptions">
                 		<xf:label ref="label"></xf:label>
                 		<xf:value ref="value"></xf:value>
                 	</xf:itemset>
-                	<xf:choices></xf:choices>
+                	<xf:choices>
+                		<xf:itemset nodeset="data:dlt_monthOptions">
+                			<xf:label ref="label"></xf:label>
+                			<xf:value ref="value"></xf:value>
+                		</xf:itemset>
+                	</xf:choices>
                 </xf:select1>
             </xf:group>
             
@@ -1596,8 +1646,8 @@ scwin.applyEventClasses = function() {
                 endColumn="end" 
                 allDayColumn="allDay"
                 eventLimit="true" 
-                headerLeftBtn="true" 
-                headerRightBtn="true" 
+                headerLeftBtn="false" 
+                headerRightBtn="false" 
                 headerTitle="true" 
                 idColumn="id" 
                 ioFormat="yyyyMMdd" 

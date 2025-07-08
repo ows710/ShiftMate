@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
 	xmlns:xf="http://www.w3.org/2002/xforms">
-	<head>
+	<head meta_screenName="헤더 페이지">
 		<w2:type>COMPONENT</w2:type>
 		<w2:buildDate />
 		<w2:MSA />
@@ -43,6 +43,7 @@
 				flex-direction: column;
 				justify-content: space-between;
 				padding: 4px 0;
+				position: relative;
 			}
 			
 			.hamburger-line {
@@ -50,6 +51,38 @@
 				height: 2px;
 				background: #333;
 				border-radius: 1px;
+				transition: all 0.3s ease;
+				transform-origin: center;
+			}
+			
+			/* 초기 상태: 사이드바가 열려있으므로 X 모양으로 시작 */
+			.hamburger-menu {
+				/* 초기 collapsed 상태 적용 */
+			}
+			
+			.hamburger-menu .hamburger-line:nth-child(1) {
+				transform: rotate(45deg) translate(5px, 5px);
+			}
+			
+			.hamburger-menu .hamburger-line:nth-child(2) {
+				opacity: 0;
+			}
+			
+			.hamburger-menu .hamburger-line:nth-child(3) {
+				transform: rotate(-45deg) translate(7px, -6px);
+			}
+			
+			/* 햄버거 아이콘 토글 상태 (사이드바가 닫혔을 때 일반 햄버거로 복원) */
+			.hamburger-menu.collapsed .hamburger-line:nth-child(1) {
+				transform: none;
+			}
+			
+			.hamburger-menu.collapsed .hamburger-line:nth-child(2) {
+				opacity: 1;
+			}
+			
+			.hamburger-menu.collapsed .hamburger-line:nth-child(3) {
+				transform: none;
 			}
 			
 			.center-section {
@@ -68,6 +101,15 @@
 			.logo-image {
 				width: 40px;
 				height: 40px;
+			}
+			
+			#logoImage {
+				cursor: pointer;
+				transition: opacity 0.2s ease;
+			}
+			
+			#logoImage:hover {
+				opacity: 0.8;
 			}
 			
 			.logo-text {
@@ -283,13 +325,84 @@ scwin.onpageload = function() {
 };
 
 scwin.toggleSidebar = function() {
-	console.log("사이드바 토글");
-	scwin.sidebarVisible = !scwin.sidebarVisible;
+	console.log("������ 햄버거 아이콘 클릭됨 - 사이드바 토글 시도");
 	
-	if (scwin.sidebarVisible) {
-		alert("사이드바가 열렸습니다.");
-	} else {
-		alert("사이드바가 닫혔습니다.");
+	var success = false;
+	
+	// 방법 1: 부모 프레임에서 직접 함수 호출
+	try {
+		if (window.parent && window.parent.scwin && window.parent.scwin.toggleSidebar) {
+			window.parent.scwin.toggleSidebar();
+			console.log("✅ 방법 1 성공: parent.scwin.toggleSidebar");
+			success = true;
+		}
+	} catch (e) {
+		console.log("방법 1 실패:", e);
+	}
+	
+	// 방법 2: 전역 함수로 등록된 함수 호출
+	if (!success) {
+		try {
+			if (window.parent && window.parent.toggleSidebarFromHeader) {
+				window.parent.toggleSidebarFromHeader();
+				console.log("✅ 방법 2 성공: parent.toggleSidebarFromHeader");
+				success = true;
+			}
+		} catch (e) {
+			console.log("방법 2 실패:", e);
+		}
+	}
+	
+	// 방법 3: 최상위 프레임에서 함수 찾기
+	if (!success) {
+		try {
+			if (window.top && window.top.scwin && window.top.scwin.toggleSidebar) {
+				window.top.scwin.toggleSidebar();
+				console.log("✅ 방법 3 성공: top.scwin.toggleSidebar");
+				success = true;
+			}
+		} catch (e) {
+			console.log("방법 3 실패:", e);
+		}
+	}
+	
+	// 방법 4: postMessage 사용
+	if (!success) {
+		try {
+			window.parent.postMessage({
+				action: 'toggleSidebar',
+				source: 'header'
+			}, '*');
+			console.log("✅ 방법 4 성공: postMessage 전송");
+			success = true;
+		} catch (e) {
+			console.log("방법 4 실패:", e);
+		}
+	}
+	
+	if (!success) {
+		console.error("❌ 모든 통신 방법 실패");
+		alert("사이드바 토글 기능에 문제가 있습니다. 페이지를 새로고침해주세요.");
+	}
+};
+
+// 햄버거 아이콘 업데이트 함수
+scwin.updateHamburgerIcon = function(isVisible) {
+	try {
+		var hamburgerMenu = document.querySelector('.hamburger-menu');
+		if (hamburgerMenu) {
+			if (isVisible) {
+				// 사이드바가 열려있을 때 → X 모양 유지 (collapsed 클래스 제거)
+				hamburgerMenu.classList.remove('collapsed');
+				console.log("✅ 햄버거 아이콘: X 모양 (사이드바 열림)");
+			} else {
+				// 사이드바가 닫혀있을 때 → 일반 햄버거 아이콘 (collapsed 클래스 추가)
+				hamburgerMenu.classList.add('collapsed');
+				console.log("✅ 햄버거 아이콘: 일반 모양 (사이드바 닫힘)");
+			}
+		}
+	} catch (e) {
+		console.error("햄버거 아이콘 업데이트 오류:", e);
 	}
 };
 
@@ -432,6 +545,17 @@ scwin.closeMenus = function() {
 	scwin.hideNotificationDropdown();
 	scwin.hideUserMenu();
 };
+
+// 로고 클릭 시 홈으로 이동
+scwin.goToHome = function() {
+	try {
+		console.log("로고 클릭 - 홈으로 이동");
+		window.location.href = "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
+	} catch (e) {
+		console.error("홈 이동 오류:", e);
+		alert("페이지 이동 중 오류가 발생했습니다.");
+	}
+};
 ]]></script>
 	</head>
 	<body ev:onpageload="scwin.onpageload" ev:onclick="scwin.closeMenus">
@@ -446,7 +570,7 @@ scwin.closeMenus = function() {
 			
 			<xf:group class="center-section">
 				<xf:group class="logo-container">
-                    <xf:image src="/InsWebApp/images/logo.png" style="width: 200px;height: 60px;" id=""></xf:image>
+                    <xf:image src="/InsWebApp/images/logo.png" style="width: 200px;height: 60px;cursor:pointer;" id="logoImage" ev:onclick="scwin.goToHome"></xf:image>
 				</xf:group>
 			</xf:group>
 			

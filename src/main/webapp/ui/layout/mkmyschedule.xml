@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ev="http://www.w3.org/2001/xml-events"
     xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
-    <head>
+    <head meta_screenName="근무자 관리(웹) 실화면">
         <w2:type>COMPONENT</w2:type>
         <w2:buildDate/>
         <w2:MSA/>
@@ -39,12 +39,92 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
+            
+            /* 사이드바 토글 관련 스타일 */
+            .sidebar-collapsed {
+                transform: translateX(-250px) !important;
+                transition: transform 0.3s ease !important;
+            }
+            
+            .sidebar-expanded {
+                transform: translateX(0) !important;
+                transition: transform 0.3s ease !important;
+            }
+            
+            .main-content-collapsed {
+                margin-left: 0 !important;
+                width: 100% !important;
+                transition: margin-left 0.3s ease, width 0.3s ease !important;
+            }
+            
+            .main-content-expanded {
+                margin-left: 250px !important;
+                width: calc(100% - 250px) !important;
+                transition: margin-left 0.3s ease, width 0.3s ease !important;
+            }
         </style>
         <script lazy="false" type="text/javascript"><![CDATA[
+// 사이드바 상태 관리 변수
+scwin.sidebarVisible = true;
+
 scwin.onpageload = function() {
-    console.log("������ ShiftMate Layout Manager 시작");
-    scwin.initializeLayout();
-    scwin.waitForFramesAndSetup();
+    console.log("ShiftMate Layout Manager 시작");
+    
+    // DOM 준비 상태 확인
+    scwin.waitForDOMReady();
+};
+
+// DOM이 완전히 준비될 때까지 기다리는 함수
+scwin.waitForDOMReady = function() {
+    var attempts = 0;
+    var maxAttempts = 50;
+    
+    var checkDOMReady = function() {
+        attempts++;
+        console.log("DOM 준비 상태 확인:", attempts + "/" + maxAttempts);
+        console.log("- document.readyState:", document.readyState);
+        console.log("- document.body:", document.body ? "존재" : "없음");
+        
+        // 필수 요소들이 존재하는지 확인
+        var mainContainer = document.getElementById('grp_mainContainer');
+        var sideMenuArea = document.getElementById('grp_sideMenuArea');
+        var mainContentArea = document.getElementById('grp_mainContent');
+        
+        console.log("- mainContainer:", mainContainer ? "존재" : "없음");
+        console.log("- sideMenuArea:", sideMenuArea ? "존재" : "없음");
+        console.log("- mainContentArea:", mainContentArea ? "존재" : "없음");
+        
+        if (document.readyState === 'complete' && document.body && 
+            mainContainer && sideMenuArea && mainContentArea) {
+            console.log("✅ DOM 준비 완료!");
+            scwin.initializeLayout();
+            scwin.waitForFramesAndSetup();
+            scwin.setupPostMessageListener();
+            
+            // 전역 함수로 등록
+            window.toggleSidebarFromHeader = scwin.toggleSidebar;
+            console.log("✅ 전역 함수 등록 완료");
+            
+            // 초기 햄버거 아이콘 상태 설정 (사이드바가 열려있으므로 일반 햄버거 아이콘)
+            scwin.updateHamburgerIcon(scwin.sidebarVisible);
+            console.log("✅ 초기 햄버거 아이콘 상태 설정 완료");
+        } else if (attempts < maxAttempts) {
+            console.log("DOM이 아직 준비되지 않음, 재시도...");
+            setTimeout(checkDOMReady, 100);
+        } else {
+            console.error("❌ DOM 준비 타임아웃!");
+            // 그래도 시도해보기
+            scwin.initializeLayout();
+            scwin.waitForFramesAndSetup();
+            scwin.setupPostMessageListener();
+            window.toggleSidebarFromHeader = scwin.toggleSidebar;
+            
+            // 타임아웃 후에도 햄버거 아이콘 초기화 시도
+            scwin.updateHamburgerIcon(scwin.sidebarVisible);
+        }
+    };
+    
+    checkDOMReady();
 };
 
 scwin.initializeLayout = function() {
@@ -94,13 +174,8 @@ scwin.setupFrameCommunication = function() {
             }
         }
         
-        // 헤더 통신 설정
-        if (wfr_header && wfr_header.getWindow) {
-            var headerWindow = wfr_header.getWindow();
-            if (headerWindow && headerWindow.scwin) {
-                console.log("✅ 헤더 통신 연결");
-            }
-        }
+        // 헤더 통신 설정 - 더 강력한 방법으로 개선
+        scwin.setupHeaderCommunication();
         
         console.log("������ 프레임 간 통신 설정 완료");
     } catch (e) {
@@ -108,9 +183,292 @@ scwin.setupFrameCommunication = function() {
     }
 };
 
+// 헤더 통신을 별도 함수로 분리하여 재시도 로직 추가
+scwin.setupHeaderCommunication = function() {
+    var attempts = 0;
+    var maxAttempts = 20;
+    
+    var setupHeader = function() {
+        attempts++;
+        console.log("������ 헤더 통신 설정 시도:", attempts + "/" + maxAttempts);
+        
+        try {
+            if (wfr_header && wfr_header.getWindow) {
+                var headerWindow = wfr_header.getWindow();
+                if (headerWindow && headerWindow.scwin) {
+                    // 헤더에서 사이드바 토글 함수 호출할 수 있도록 연결
+                    headerWindow.scwin.toggleSidebar = scwin.toggleSidebar;
+                    
+                    // 추가적인 통신 방법 - 전역 함수로도 등록
+                    headerWindow.toggleSidebarFromHeader = scwin.toggleSidebar;
+                    
+                    console.log("✅ 헤더 통신 연결 완료");
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.log("헤더 통신 설정 시도 중 오류:", e);
+        }
+        
+        if (attempts < maxAttempts) {
+            setTimeout(setupHeader, 200);
+        } else {
+            console.error("❌ 헤더 통신 설정 실패 - 최대 시도 횟수 초과");
+        }
+        
+        return false;
+    };
+    
+    setupHeader();
+};
+
+// 사이드바 토글 함수 (재시도 로직 포함)
+scwin.toggleSidebar = function() {
+    console.log("사이드바 토글 함수 호출됨! 현재 상태:", scwin.sidebarVisible);
+    
+    scwin.toggleSidebarWithRetry(0);
+};
+
+// 재시도 로직이 포함된 사이드바 토글 함수
+scwin.toggleSidebarWithRetry = function(attempt) {
+    var maxAttempts = 10;
+    attempt = attempt || 0;
+    
+    console.log("사이드바 토글 시도:", (attempt + 1) + "/" + maxAttempts);
+    
+    try {
+        // WebSquare에서 확인된 실제 ID 직접 사용
+        var sideMenuArea = document.getElementById('mf_grp_sideMenuArea') || scwin.findElement('grp_sideMenuArea');
+        var mainContentArea = document.getElementById('mf_grp_mainContent') || scwin.findElement('grp_mainContent');
+        
+        console.log("요소 확인:");
+        console.log("- sideMenuArea:", sideMenuArea ? "존재" : "없음");
+        console.log("- mainContentArea:", mainContentArea ? "존재" : "없음");
+        
+        // 실제 ID 확인
+        if (sideMenuArea) console.log("- sideMenuArea 실제 ID:", sideMenuArea.id);
+        if (mainContentArea) console.log("- mainContentArea 실제 ID:", mainContentArea.id);
+        
+        // DOM이 완전히 로드되었는지 확인
+        console.log("- document.readyState:", document.readyState);
+        console.log("- document.body:", document.body ? "존재" : "없음");
+        
+        if (!sideMenuArea || !mainContentArea) {
+            if (attempt < maxAttempts - 1) {
+                console.log("요소를 찾을 수 없음, 재시도합니다... (" + (attempt + 1) + "/" + maxAttempts + ")");
+                setTimeout(function() {
+                    scwin.toggleSidebarWithRetry(attempt + 1);
+                }, 100);
+                return;
+            } else {
+                console.error("❌ 모든 재시도 실패 - 필수 요소를 찾을 수 없습니다!");
+                
+                // 더 상세한 디버깅 정보 출력
+                scwin.debugDOMStructure();
+                
+                alert("사이드바 요소를 찾을 수 없습니다. 페이지를 새로고침해주세요.");
+                return;
+            }
+        }
+        
+        console.log("✅ 요소 검색 성공! 토글 실행 중...");
+        
+        if (scwin.sidebarVisible) {
+            // 사이드바 숨기기
+            console.log("������ 사이드바 숨김 처리");
+            sideMenuArea.classList.remove('sidebar-expanded');
+            sideMenuArea.classList.add('sidebar-collapsed');
+            mainContentArea.classList.remove('main-content-expanded');
+            mainContentArea.classList.add('main-content-collapsed');
+            scwin.sidebarVisible = false;
+            console.log("✅ 사이드바 숨김 완료");
+        } else {
+            // 사이드바 보이기
+            console.log("������ 사이드바 표시 처리");
+            sideMenuArea.classList.remove('sidebar-collapsed');
+            sideMenuArea.classList.add('sidebar-expanded');
+            mainContentArea.classList.remove('main-content-collapsed');
+            mainContentArea.classList.add('main-content-expanded');
+            scwin.sidebarVisible = true;
+            console.log("✅ 사이드바 표시 완료");
+        }
+        
+        // 변경된 클래스 확인
+        console.log("������ 클래스 변경 확인:");
+        console.log("- sideMenuArea 클래스:", sideMenuArea.className);
+        console.log("- mainContentArea 클래스:", mainContentArea.className);
+        
+        // 헤더의 햄버거 아이콘 업데이트
+        scwin.updateHamburgerIcon(scwin.sidebarVisible);
+        
+        console.log("사이드바 토글 완료! 새로운 상태:", scwin.sidebarVisible);
+        
+    } catch (e) {
+        console.error("❌ 사이드바 토글 오류:", e);
+        if (attempt < maxAttempts - 1) {
+            console.log("오류 발생으로 재시도합니다...");
+            setTimeout(function() {
+                scwin.toggleSidebarWithRetry(attempt + 1);
+            }, 100);
+        } else {
+            alert("사이드바 토글 중 오류가 발생했습니다: " + e.message);
+        }
+    }
+};
+
+// 포괄적인 요소 검색 함수
+scwin.findElement = function(elementId) {
+    console.log("요소 검색 시도:", elementId);
+    
+    // 1. 기본 getElementById
+    var element = document.getElementById(elementId);
+    if (element) {
+        console.log("방법 1 성공:", elementId);
+        return element;
+    }
+    
+    // 2. WebSquare에서 추가하는 mf_ 접두사 고려
+    element = document.getElementById('mf_' + elementId);
+    if (element) {
+        console.log("방법 2 성공 (mf_ 접두사):", 'mf_' + elementId);
+        return element;
+    }
+    
+    // 3. querySelector로 ID 검색
+    element = document.querySelector('#' + elementId);
+    if (element) {
+        console.log("방법 3 성공:", elementId);
+        return element;
+    }
+    
+    // 4. mf_ 접두사와 함께 querySelector 검색
+    element = document.querySelector('#mf_' + elementId);
+    if (element) {
+        console.log("방법 4 성공 (mf_ 접두사):", 'mf_' + elementId);
+        return element;
+    }
+    
+    // 5. attribute selector로 검색
+    element = document.querySelector('[id="' + elementId + '"]');
+    if (element) {
+        console.log("방법 5 성공:", elementId);
+        return element;
+    }
+    
+    // 6. mf_ 접두사와 함께 attribute selector 검색
+    element = document.querySelector('[id="mf_' + elementId + '"]');
+    if (element) {
+        console.log("방법 6 성공 (mf_ 접두사):", 'mf_' + elementId);
+        return element;
+    }
+    
+    // 7. WebSquare에서 변환된 ID 검색 (다양한 접두사)
+    var prefixes = ['mf_', 'w2_', 'ws_', 'websquare_', 'wq_'];
+    for (var i = 0; i < prefixes.length; i++) {
+        element = document.getElementById(prefixes[i] + elementId);
+        if (element) {
+            console.log("방법 7 성공 (" + prefixes[i] + " 접두사):", prefixes[i] + elementId);
+            return element;
+        }
+        
+        element = document.querySelector('#' + prefixes[i] + elementId);
+        if (element) {
+            console.log("방법 7-2 성공 (" + prefixes[i] + " 접두사):", prefixes[i] + elementId);
+            return element;
+        }
+    }
+    
+    // 8. 클래스나 data 속성으로 검색
+    element = document.querySelector('[class*="' + elementId + '"]');
+    if (element) {
+        console.log("방법 8 성공 (클래스 검색):", elementId);
+        return element;
+    }
+    
+    // 9. 부분 ID 매칭으로 검색
+    element = document.querySelector('[id*="' + elementId + '"]');
+    if (element) {
+        console.log("방법 9 성공 (부분 ID 매칭):", elementId);
+        return element;
+    }
+    
+    // 10. 태그명과 함께 검색
+    var tagSearches = [
+        'div[id*="' + elementId + '"]',
+        'span[id*="' + elementId + '"]',
+        'xf\\:group[id*="' + elementId + '"]',
+        'group[id*="' + elementId + '"]'
+    ];
+    
+    for (var j = 0; j < tagSearches.length; j++) {
+        element = document.querySelector(tagSearches[j]);
+        if (element) {
+            console.log("방법 10 성공 (태그 검색):", tagSearches[j]);
+            return element;
+        }
+    }
+    
+    console.log("모든 검색 방법 실패:", elementId);
+    return null;
+};
+
+// DOM 구조 디버깅 함수
+scwin.debugDOMStructure = function() {
+    console.log("=== DOM 구조 디버깅 ===");
+    console.log("전체 DOM 요소 수:", document.querySelectorAll('*').length);
+    
+    // ID가 있는 모든 요소 출력
+    var elementsWithId = document.querySelectorAll('[id]');
+    console.log("ID가 있는 요소들 (" + elementsWithId.length + "개):");
+    for (var i = 0; i < Math.min(elementsWithId.length, 20); i++) {
+        console.log("  - " + elementsWithId[i].tagName + "#" + elementsWithId[i].id);
+    }
+    
+    // grp로 시작하는 ID 요소들
+    var grpElements = document.querySelectorAll('[id^="grp"]');
+    console.log("grp로 시작하는 ID 요소들 (" + grpElements.length + "개):");
+    for (var j = 0; j < grpElements.length; j++) {
+        console.log("  - " + grpElements[j].tagName + "#" + grpElements[j].id);
+    }
+    
+    // xf:group 요소들
+    var xfGroups = document.querySelectorAll('xf\\:group, group');
+    console.log("xf:group 요소들 (" + xfGroups.length + "개):");
+    for (var k = 0; k < Math.min(xfGroups.length, 10); k++) {
+        console.log("  - " + xfGroups[k].tagName + (xfGroups[k].id ? "#" + xfGroups[k].id : ""));
+    }
+    
+    // 사이드바 관련 키워드로 검색
+    var sidebarKeywords = ['sidebar', 'side', 'menu', 'content', 'main'];
+    sidebarKeywords.forEach(function(keyword) {
+        var elements = document.querySelectorAll('[id*="' + keyword + '"], [class*="' + keyword + '"]');
+        if (elements.length > 0) {
+            console.log(keyword + " 관련 요소들 (" + elements.length + "개):");
+            for (var l = 0; l < Math.min(elements.length, 5); l++) {
+                console.log("  - " + elements[l].tagName + (elements[l].id ? "#" + elements[l].id : "") + 
+                           (elements[l].className ? "." + elements[l].className : ""));
+            }
+        }
+    });
+};
+
+// 햄버거 아이콘 업데이트
+scwin.updateHamburgerIcon = function(isVisible) {
+    try {
+        if (wfr_header && wfr_header.getWindow) {
+            var headerWindow = wfr_header.getWindow();
+            if (headerWindow && headerWindow.scwin && headerWindow.scwin.updateHamburgerIcon) {
+                headerWindow.scwin.updateHamburgerIcon(isVisible);
+            }
+        }
+    } catch (e) {
+        console.error("햄버거 아이콘 업데이트 오류:", e);
+    }
+};
+
 scwin.handleMenuClick = function(menuId, menuUrl) {
     try {
-        console.log("������ 메뉴 클릭:", menuId, "->", menuUrl);
+        console.log(" 메뉴 클릭:", menuId, "->", menuUrl);
         
         if (wfr_mainContent && menuUrl) {
             wfr_mainContent.setSrc(menuUrl);
@@ -147,9 +505,24 @@ scwin.changeMainContent = function(src) {
         console.error("메인 콘텐츠 변경 오류:", e);
     }
 };
+
+// postMessage 이벤트 리스너 설정
+scwin.setupPostMessageListener = function() {
+    window.addEventListener('message', function(event) {
+        console.log("������ postMessage 수신:", event.data);
+        
+        if (event.data && event.data.action === 'toggleSidebar') {
+            console.log("������ postMessage를 통한 사이드바 토글 요청");
+            scwin.toggleSidebar();
+        }
+    });
+    
+    console.log("✅ postMessage 리스너 설정 완료");
+};
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">
+        
         <xf:group style="width:100%;height:100vh;display:flex;flex-direction:column;margin:0;padding:0;" id="grp_mainContainer">
             
             <!-- 헤더 영역 (90px 고정) -->
@@ -161,13 +534,13 @@ scwin.changeMainContent = function(src) {
             <xf:group style="width:100%;height:calc(100vh - 90px);margin-top:90px;display:flex;" id="grp_contentArea">
                 
                 <!-- 사이드메뉴 영역 (250px 고정) -->
-                <xf:group style="width:250px;height:100%;position:fixed;left:0;z-index:1000;" id="grp_sideMenuArea">
+                <xf:group style="width:250px;height:100%;position:fixed;left:0;z-index:1000;margin-top:-90px;" id="grp_sideMenuArea" class="sidebar-expanded">
                     <w2:wframe id="wfr_sideMenu" style="width:100%;height:100%;" src="/InsWebApp/ui/cmmn/sidebar.xml"/>
                 </xf:group>
                 
-                <!-- 메인 콘텐츠 (나머지 공간 100% 활용) -->
-                <xf:group style="margin-left:250px;width:calc(100% - 250px);height:100%;background-color:#f5f7fa;" id="grp_mainContent">
-                    <w2:wframe id="wfr_mainContent" style="width:100%;height:100%;" src="/InsWebApp/ui/duty/myschedule.xml"/>
+                <!-- 메인 콘텐츠 (나머지 공간 100% 활용, 세로 스크롤 추가) -->
+                <xf:group style="margin-left:250px;width:calc(100% - 250px);height:100%;background-color:#f5f7fa;overflow-y:auto;overflow-x:hidden;" id="grp_mainContent" class="main-content-expanded">
+                    <w2:wframe id="wfr_mainContent" style="width:100%;height:100%;min-height:100%;" src="/InsWebApp/ui/duty/myschedule.xml"/>
                 </xf:group>
                 
             </xf:group>

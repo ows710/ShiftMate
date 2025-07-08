@@ -13,12 +13,12 @@
             <w2:dataCollection baseNode="map">
                 <w2:dataMap baseNode="map" id="dmp_nurseVo">
                     <w2:keyInfo>
-                        <w2:key id="nurseId" name="간호사ID" dataType="text"></w2:key>
-                        <w2:key id="nurseName" name="간호사명" dataType="text"></w2:key>
+                        <w2:key id="nurseName" name="근무자명" dataType="text"></w2:key>
                         <w2:key id="position" name="직급" dataType="text"></w2:key>
-                        <w2:key id="career" name="경력" dataType="text"></w2:key>
+                        <w2:key id="workYear" name="연차" dataType="text"></w2:key>
                         <w2:key id="specialNote" name="특이사항" dataType="text"></w2:key>
-                        <w2:key id="scNurseName" name="검색_간호사명" dataType="text"></w2:key>
+                        <w2:key id="hireDate" name="입사일" dataType="text"></w2:key>
+                        <w2:key id="scNurseName" name="검색_근무자명" dataType="text"></w2:key>
                         <w2:key id="scPosition" name="검색_직급" dataType="text"></w2:key>
                         <w2:key id="pageIndex" name="페이지번호" dataType="text"></w2:key>
                         <w2:key id="pageSize" name="페이지크기" dataType="text"></w2:key>
@@ -27,13 +27,11 @@
                 <w2:dataList baseNode="list" repeatNode="map" id="dlt_nurseList" saveRemovedData="true">
                     <w2:columnInfo>
                         <w2:column id="chk_select" name="선택" dataType="text"></w2:column>
-                        <w2:column id="nurseId" name="간호사ID" dataType="text"></w2:column>
-                        <w2:column id="nurseName" name="간호사명" dataType="text"></w2:column>
+                        <w2:column id="nurseName" name="근무자명" dataType="text"></w2:column>
                         <w2:column id="position" name="직급" dataType="text"></w2:column>
-                        <w2:column id="career" name="경력" dataType="text"></w2:column>
+                        <w2:column id="workYear" name="연차" dataType="text"></w2:column>
                         <w2:column id="specialNote" name="특이사항" dataType="text"></w2:column>
-                        <w2:column id="regDate" name="등록일" dataType="text"></w2:column>
-                        <w2:column id="modDate" name="수정일" dataType="text"></w2:column>
+                        <w2:column id="hireDate" name="입사일" dataType="text"></w2:column>
                         <w2:column id="useYn" name="사용여부" dataType="text"></w2:column>
                         <w2:column id="delYn" name="삭제여부" dataType="text"></w2:column>
                     </w2:columnInfo>
@@ -66,9 +64,16 @@
         <w2:publicInfo>
         </w2:publicInfo>
         <script type="text/javascript" lazy="false"><![CDATA[        
-// 글로벌 변수
-scwin.nurseCounter = 6; // 다음 간호사 ID용 카운터
-scwin.nurseData = []; // 더미 데이터 저장용
+// scwin 객체 초기화 확인 및 생성
+if (typeof scwin === 'undefined') {
+    var scwin = {};
+    console.log("scwin 객체를 새로 생성했습니다.");
+}
+
+// 글로벌 변수 안전하게 초기화
+scwin.nurseCounter = scwin.nurseCounter || 28; // 다음 순번용 카운터
+scwin.nurseData = scwin.nurseData || []; // 간호사 데이터 저장용
+scwin.isExcelUploaded = scwin.isExcelUploaded || false; // 엑셀 업로드 여부
 
 scwin.onpageload = function(e) {
     // 페이지 로드 시 초기 설정
@@ -78,105 +83,153 @@ scwin.onpageload = function(e) {
     // 폼 초기화
     scwin.fn_clearForm();
     
-    // 초기 더미 데이터 생성
-    scwin.fn_initSampleData();
+    // 저장된 데이터 로드
+    scwin.fn_loadSavedData();
     
-    // 간호사 목록 조회
-    scwin.fn_selectNurseList();
+    // 현재 날짜 설정
+    scwin.fn_setCurrentDate();
+    
+    // 엑셀 업로드 상태에 따른 버튼 상태 설정
+    if (scwin.isExcelUploaded) {
+        scwin.fn_disableUploadButton();
+    }
+    
+    // 저장된 데이터가 있으면 자동으로 목록 표시
+    if (scwin.nurseData && scwin.nurseData.length > 0) {
+        console.log("저장된 간호사 데이터 발견:", scwin.nurseData.length + "건 - 자동 표시");
+        scwin.fn_selectNurseList();
+    } else {
+        console.log("저장된 데이터 없음 - 빈 목록 표시");
+        // 빈 목록이라도 표시
+        scwin.fn_selectNurseList();
+    }
     
     console.log("간호사 관리 페이지가 로드되었습니다.");
 };
 
-// 초기 더미 데이터 생성
-scwin.fn_initSampleData = function() {
-    scwin.nurseData = [
-        {
-            chk_select: "0",
-            nurseId: "N001",
-            nurseName: "김지연",
-            position: "수간호사",
-            career: "10년",
-            specialNote: "응급실 전문, 응급처치 교육 담당",
-            regDate: "2023-01-15",
-            modDate: "2024-01-10",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N002", 
-            nurseName: "박민지",
-            position: "간호사",
-            career: "5년",
-            specialNote: "소아과 전문, 아동 심리 상담 가능",
-            regDate: "2023-03-20",
-            modDate: "2024-01-08",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N003",
-            nurseName: "이서연", 
-            position: "주임간호사",
-            career: "8년",
-            specialNote: "중환자실 경험, 야간 근무 가능",
-            regDate: "2022-11-10",
-            modDate: "2024-01-05",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N004",
-            nurseName: "최유진",
-            position: "간호사",
-            career: "3년", 
-            specialNote: "내과 전문, 당뇨 교육 인증",
-            regDate: "2023-06-15",
-            modDate: "2024-01-03",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N005",
-            nurseName: "정하은",
-            position: "간호사",
-            career: "2년",
-            specialNote: "신입 간호사, 정형외과 근무",
-            regDate: "2023-08-01",
-            modDate: "2023-12-20",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N006",
-            nurseName: "한소영",
-            position: "간호사",
-            career: "4년",
-            specialNote: "산부인과 전문, 출산 도우미 자격증",
-            regDate: "2023-02-10",
-            modDate: "2023-12-15",
-            useYn: "Y",
-            delYn: "N"
-        },
-        {
-            chk_select: "0",
-            nurseId: "N007",
-            nurseName: "임수민",
-            position: "주임간호사",
-            career: "12년",
-            specialNote: "수술실 전문, 마취 관리 경험",
-            regDate: "2022-05-01",
-            modDate: "2023-11-20",
-            useYn: "Y",
-            delYn: "N"
-        }
-    ];
+// 현재 날짜 설정
+scwin.fn_setCurrentDate = function() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = String(now.getMonth() + 1).padStart(2, '0');
+    var day = String(now.getDate()).padStart(2, '0');
+    var currentDate = year + "-" + month + "-" + day;
     
-    scwin.nurseCounter = 8; // 다음 ID용
+    if (txt_currentDate) {
+        txt_currentDate.setValue(currentDate);
+    }
+};
+
+// 업로드 버튼 비활성화
+scwin.fn_disableUploadButton = function() {
+    if (btn_excel) {
+        btn_excel.setDisabled(true);
+        btn_excel.setStyle("background-color", "#ccc");
+        btn_excel.setStyle("color", "#666");
+        btn_excel.setStyle("cursor", "not-allowed");
+    }
+    
+    console.log("엑셀 업로드 버튼이 비활성화되었습니다.");
+};
+
+// 업로드 버튼 활성화
+scwin.fn_enableUploadButton = function() {
+    if (btn_excel) {
+        btn_excel.setDisabled(false);
+        btn_excel.setStyle("background-color", "");
+        btn_excel.setStyle("color", "");
+        btn_excel.setStyle("cursor", "");
+    }
+    
+    console.log("엑셀 업로드 버튼이 활성화되었습니다.");
+};
+
+// 저장된 데이터 로드 (localStorage 사용)
+scwin.fn_loadSavedData = function() {
+    try {
+        // localStorage에서 데이터 로드
+        var savedData = localStorage.getItem("nurseManageData");
+        var uploadStatus = localStorage.getItem("nurseExcelUploaded");
+        
+        if (savedData) {
+            var parsedData = JSON.parse(savedData);
+            if (Array.isArray(parsedData) && parsedData.length > 0) {
+                scwin.nurseData = parsedData;
+                console.log("✅ 저장된 간호사 데이터 로드 성공:", scwin.nurseData.length + "건");
+                
+                // nurseCounter 재설정 (기존 데이터 수 + 1)
+                scwin.nurseCounter = scwin.nurseData.length + 1;
+                console.log("nurseCounter 설정:", scwin.nurseCounter);
+            } else {
+                console.log("저장된 데이터가 빈 배열이거나 유효하지 않음");
+                scwin.nurseData = [];
+                scwin.nurseCounter = 1;
+            }
+        } else {
+            // 저장된 데이터가 없으면 빈 배열로 초기화
+            scwin.nurseData = [];
+            scwin.nurseCounter = 1;
+            console.log("������ 저장된 데이터 없음 - 빈 목록으로 초기화");
+        }
+        
+        // 엑셀 업로드 상태 복원
+        if (uploadStatus === "true") {
+            scwin.isExcelUploaded = true;
+            console.log("✅ 엑셀 업로드 상태 복원됨");
+        } else {
+            scwin.isExcelUploaded = false;
+        }
+        
+    } catch (e) {
+        console.error("❌ 데이터 로드 오류:", e);
+        alert("저장된 데이터를 불러오는 중 오류가 발생했습니다.\n데이터가 초기화됩니다.");
+        scwin.nurseData = [];
+        scwin.isExcelUploaded = false;
+        scwin.nurseCounter = 1;
+        
+        // 문제가 있는 데이터 제거
+        localStorage.removeItem("nurseManageData");
+        localStorage.removeItem("nurseExcelUploaded");
+    }
+};
+
+// 데이터 저장 (localStorage 사용)
+scwin.fn_saveData = function() {
+    try {
+        // 데이터 유효성 확인
+        if (!scwin.nurseData) {
+            console.warn("⚠️ 저장할 데이터가 없습니다.");
+            scwin.nurseData = [];
+        }
+        
+        // localStorage 용량 확인 (간단한 체크)
+        var dataString = JSON.stringify(scwin.nurseData);
+        var dataSize = new Blob([dataString]).size;
+        console.log("������ 저장할 데이터 크기:", Math.round(dataSize / 1024) + "KB");
+        
+        // 실제 저장
+        localStorage.setItem("nurseManageData", dataString);
+        localStorage.setItem("nurseExcelUploaded", scwin.isExcelUploaded.toString());
+        
+        // 저장 확인
+        var savedCheck = localStorage.getItem("nurseManageData");
+        if (savedCheck && savedCheck.length > 0) {
+            console.log("✅ 데이터 저장 성공:", scwin.nurseData.length + "건");
+            return true;
+        } else {
+            throw new Error("데이터 저장 확인 실패");
+        }
+        
+    } catch (e) {
+        console.error("❌ 데이터 저장 오류:", e);
+        
+        if (e.name === 'QuotaExceededError') {
+            alert("저장 공간이 부족합니다.\n브라우저의 저장소를 정리하거나 일부 데이터를 삭제해주세요.");
+        } else {
+            alert("데이터 저장 중 오류가 발생했습니다.\n다시 시도해주세요.\n오류: " + e.message);
+        }
+        return false;
+    }
 };
 
 // 간호사 목록 조회
@@ -187,13 +240,22 @@ scwin.fn_selectNurseList = function() {
         // 검색 조건 적용
         var filteredData = scwin.fn_filterData();
         
-        // 페이지네이션 적용
+        // 페이지네이션 적용 (전체조회 시에는 모든 데이터 표시)
         var pageIndex = dmp_nurseVo.get("pageIndex") || 1;
-        var pageSize = dmp_nurseVo.get("pageSize") || 10;
+        var pageSize = scwin.isExcelUploaded ? filteredData.length : (dmp_nurseVo.get("pageSize") || 10);
         var startIdx = (pageIndex - 1) * pageSize;
         var endIdx = startIdx + pageSize;
         
         var pagedData = filteredData.slice(startIdx, endIdx);
+        
+        // 순번이 올바르게 표시되도록 데이터 확인 및 수정
+        pagedData.forEach(function(item, index) {
+            if (!item.rowNum || item.rowNum === "") {
+                item.rowNum = String(index + 1);
+            }
+            // 체크박스 초기화
+            item.chk_select = "0";
+        });
         
         // 데이터 로드
         dlt_nurseList.setJSON(pagedData);
@@ -209,19 +271,45 @@ scwin.fn_selectNurseList = function() {
     }
 };
 
-// 검색 조건에 따른 데이터 필터링
+// 검색 조건에 따른 데이터 필터링 (개선된 버전)
 scwin.fn_filterData = function() {
     var scNurseName = dmp_nurseVo.get("scNurseName") || "";
     var scPosition = dmp_nurseVo.get("scPosition") || "";
     
-    return scwin.nurseData.filter(function(item) {
+    // 검색어 전처리 (앞뒤 공백 제거, 대소문자 통일)
+    scNurseName = scNurseName.trim().toLowerCase();
+    scPosition = scPosition.trim().toLowerCase();
+    
+    console.log("검색 조건 - 근무자명: '" + scNurseName + "', 직급: '" + scPosition + "'");
+    
+    var filteredData = scwin.nurseData.filter(function(item) {
         if (item.delYn === "Y") return false; // 삭제된 데이터 제외
         
-        var nameMatch = !scNurseName || item.nurseName.indexOf(scNurseName) > -1;
-        var positionMatch = !scPosition || item.position.indexOf(scPosition) > -1;
+        // 데이터도 소문자로 변환하여 비교
+        var itemName = (item.nurseName || "").toLowerCase();
+        var itemPosition = (item.position || "").toLowerCase();
         
+        // 검색 조건 체크
+        var nameMatch = true;
+        var positionMatch = true;
+        
+        // 근무자명 검색 (입력했을 경우에만 체크)
+        if (scNurseName !== "") {
+            nameMatch = itemName.indexOf(scNurseName) > -1;
+        }
+        
+        // 직급 검색 (입력했을 경우에만 체크)
+        if (scPosition !== "") {
+            positionMatch = itemPosition.indexOf(scPosition) > -1;
+        }
+        
+        // 둘 다 입력하면 AND 조건, 하나만 입력하면 해당 조건만 체크
         return nameMatch && positionMatch;
     });
+    
+    console.log("검색 결과: " + filteredData.length + "건 (전체: " + scwin.nurseData.length + "건)");
+    
+    return filteredData;
 };
 
 // 간호사 목록 조회 완료 (서버 연동용 - 현재는 더미 데이터 사용)
@@ -231,9 +319,9 @@ scwin.sbm_selectNurseList_submitdone = function(e) {
 };
 
 // 간호사 상세 조회
-scwin.fn_selectNurse = function(nurseId) {
+scwin.fn_selectNurse = function(nurseName) {
     var nurseInfo = scwin.nurseData.find(function(item) {
-        return item.nurseId === nurseId && item.delYn !== "Y";
+        return item.nurseName === nurseName && item.delYn !== "Y";
     });
     
     if (nurseInfo) {
@@ -253,13 +341,11 @@ scwin.sbm_selectNurse_submitdone = function(e) {
 scwin.fn_insertNurse = function() {
     var newNurse = {
         chk_select: "0",
-        nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
         nurseName: dmp_nurseVo.get("nurseName"),
         position: dmp_nurseVo.get("position"),
-        career: dmp_nurseVo.get("career") || "",
+        workYear: dmp_nurseVo.get("workYear") || "",
         specialNote: dmp_nurseVo.get("specialNote") || "",
-        regDate: scwin.fn_getCurrentDate(),
-        modDate: scwin.fn_getCurrentDate(),
+        hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate(),
         useYn: "Y",
         delYn: "N"
     };
@@ -267,11 +353,14 @@ scwin.fn_insertNurse = function() {
     scwin.nurseData.push(newNurse);
     scwin.nurseCounter++;
     
+    // 데이터 영구 저장
+    scwin.fn_saveData();
+    
     alert("간호사 정보가 등록되었습니다.");
     scwin.fn_clearForm();
     scwin.fn_selectNurseList();
     
-    console.log("간호사 등록 완료:", newNurse.nurseName, "(ID: " + newNurse.nurseId + ")");
+    console.log("간호사 등록 완료:", newNurse.nurseName);
 };
 
 // 간호사 등록 완료 (서버 연동용)
@@ -281,22 +370,25 @@ scwin.sbm_insertNurse_submitdone = function(e) {
 
 // 간호사 수정
 scwin.fn_updateNurse = function() {
-    var nurseId = dmp_nurseVo.get("nurseId");
-    if (!nurseId) {
+    var nurseName = dmp_nurseVo.get("nurseName");
+    if (!nurseName) {
         alert("수정할 간호사를 선택해주세요.");
         return;
     }
     
     var index = scwin.nurseData.findIndex(function(item) {
-        return item.nurseId === nurseId;
+        return item.nurseName === nurseName;
     });
     
     if (index > -1) {
         scwin.nurseData[index].nurseName = dmp_nurseVo.get("nurseName");
         scwin.nurseData[index].position = dmp_nurseVo.get("position");
-        scwin.nurseData[index].career = dmp_nurseVo.get("career") || "";
+        scwin.nurseData[index].workYear = dmp_nurseVo.get("workYear") || "";
         scwin.nurseData[index].specialNote = dmp_nurseVo.get("specialNote") || "";
-        scwin.nurseData[index].modDate = scwin.fn_getCurrentDate();
+        scwin.nurseData[index].hireDate = dmp_nurseVo.get("hireDate") || scwin.nurseData[index].hireDate;
+        
+        // 데이터 영구 저장
+        scwin.fn_saveData();
         
         alert("간호사 정보가 수정되었습니다.");
         scwin.fn_selectNurseList();
@@ -313,16 +405,18 @@ scwin.sbm_updateNurse_submitdone = function(e) {
 };
 
 // 간호사 삭제
-scwin.fn_deleteNurse = function(nurseId) {
+scwin.fn_deleteNurse = function(nurseName) {
     var index = scwin.nurseData.findIndex(function(item) {
-        return item.nurseId === nurseId;
+        return item.nurseName === nurseName;
     });
     
     if (index > -1) {
-        scwin.nurseData[index].delYn = "Y";
-        scwin.nurseData[index].modDate = scwin.fn_getCurrentDate();
+        scwin.nurseData.splice(index, 1);
         
-        console.log("간호사 삭제 완료:", scwin.nurseData[index].nurseName);
+        // 데이터 영구 저장
+        scwin.fn_saveData();
+        
+        console.log("간호사 삭제 완료:", nurseName);
         return true;
     }
     return false;
@@ -342,9 +436,55 @@ scwin.sbm_deleteNurse_submitdone = function(e) {
 
 // 검색 버튼 클릭
 scwin.btn_search_onclick = function() {
+    // 먼저 데이터가 있는지 확인
+    if (!scwin.nurseData || scwin.nurseData.length === 0) {
+        alert("검색할 데이터가 없습니다.\n먼저 엑셀 업로드를 진행하거나 간호사 정보를 등록해주세요.");
+        return;
+    }
+    
+    var scNurseName = dmp_nurseVo.get("scNurseName") || "";
+    var scPosition = dmp_nurseVo.get("scPosition") || "";
+    
+    // 검색 조건이 하나도 없으면 안내
+    if (scNurseName.trim() === "" && scPosition.trim() === "") {
+        alert("검색 조건을 입력해주세요.\n• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다.\n• 글자 일부만 입력해도 검색됩니다.\n• 저장된 모든 데이터가 검색 대상에 포함됩니다.");
+        return;
+    }
+    
     dmp_nurseVo.set("pageIndex", 1);
     scwin.fn_selectNurseList();
-    console.log("검색 실행 - 조건: 간호사명='" + (dmp_nurseVo.get("scNurseName") || "") + "', 직급='" + (dmp_nurseVo.get("scPosition") || "") + "'");
+    
+    // 검색 결과 안내
+    setTimeout(function() {
+        var resultCount = dlt_nurseList.getRowCount();
+        console.log("������ 검색 완료 - 조건: 근무자명='" + scNurseName + "', 직급='" + scPosition + "', 결과: " + resultCount + "건");
+        
+        if (resultCount === 0) {
+            alert("검색 결과가 없습니다.\n• 검색어를 다시 확인해주세요.\n• 부분 검색이 가능하니 더 짧은 단어로 검색해보세요.");
+        } else {
+            console.log("✅ 검색 성공: " + resultCount + "건 조회됨");
+        }
+    }, 100);
+};
+
+// 전체조회 버튼 클릭
+scwin.btn_list_all_onclick = function() {
+    // 저장된 데이터가 있는지 확인
+    if (!scwin.nurseData || scwin.nurseData.length === 0) {
+        alert("조회할 데이터가 없습니다.\n먼저 엑셀 업로드를 진행하거나 간호사 정보를 등록해주세요.");
+        return;
+    }
+    
+    // 검색 조건 초기화
+    dmp_nurseVo.set("scNurseName", "");
+    dmp_nurseVo.set("scPosition", "");
+    dmp_nurseVo.set("pageIndex", 1);
+    
+    // 전체 데이터 조회
+    scwin.fn_selectNurseList();
+    
+    console.log("전체조회 완료 - 총 " + scwin.nurseData.length + "건");
+    alert("전체조회 완료!\n총 " + scwin.nurseData.length + "건의 간호사 데이터가 조회되었습니다.");
 };
 
 // 초기화 버튼 클릭
@@ -370,18 +510,147 @@ scwin.btn_update_onclick = function() {
 
 // 삭제 버튼 클릭
 scwin.btn_delete_onclick = function() {
-    var nurseId = dmp_nurseVo.get("nurseId");
-    if (!nurseId) {
-        alert("삭제할 간호사를 선택해주세요.");
+    var nurseName = dmp_nurseVo.get("nurseName");
+    
+    if (!nurseName) {
+        alert("삭제할 간호사를 선택해주세요.\n그리드에서 간호사를 클릭하여 선택하세요.");
         return;
     }
     
-    if (confirm("선택한 간호사 정보를 삭제하시겠습니까?")) {
-        if (scwin.fn_deleteNurse(nurseId)) {
+    if (confirm("선택한 간호사 정보를 삭제하시겠습니까?\n간호사명: " + nurseName)) {
+        if (scwin.fn_deleteNurse(nurseName)) {
             alert("간호사 정보가 삭제되었습니다.");
             scwin.fn_clearForm();
             scwin.fn_selectNurseList();
         }
+    }
+};
+
+// 전체선택 버튼 클릭
+scwin.btn_select_all_onclick = function() {
+    var rowCount = dlt_nurseList.getRowCount();
+    
+    if (rowCount === 0) {
+        alert("표시할 데이터가 없습니다.");
+        return;
+    }
+    
+    var allSelected = true;
+    
+    // 모든 행이 선택되었는지 확인
+    for (var i = 0; i < rowCount; i++) {
+        var isChecked = dlt_nurseList.getCellData(i, "chk_select");
+        if (isChecked !== "1" && isChecked !== true && isChecked !== "true") {
+            allSelected = false;
+            break;
+        }
+    }
+    
+    // 모든 행이 선택되었으면 해제, 아니면 모두 선택
+    var newValue = allSelected ? false : true;
+    for (var i = 0; i < rowCount; i++) {
+        dlt_nurseList.setCellData(i, "chk_select", newValue);
+    }
+    
+    var message = allSelected ? "전체 선택 해제" : "전체 선택";
+    console.log(message + " - " + rowCount + "행");
+    
+    // 버튼 라벨 업데이트
+    if (btn_select_all) {
+        btn_select_all.setValue(allSelected ? "☑️ 전체선택" : "☐ 전체해제");
+    }
+};
+
+// 다중 등록 버튼 클릭
+scwin.btn_insert_multi_onclick = function() {
+    var nursesToAdd = [];
+    var startCounter = scwin.nurseCounter;
+    
+    // 간단한 다중 등록 데이터 (실제로는 팝업 등을 통해 입력받아야 함)
+    var multiData = prompt("다중 등록할 간호사 정보를 입력하세요.\n형식: 간호사명1|직급1|경력1|특이사항1;간호사명2|직급2|경력2|특이사항2\n예: 홍길동|간호사|3년|응급실;김철수|주임간호사|5년|중환자실");
+    
+    if (!multiData) return;
+    
+    var nurseRecords = multiData.split(';');
+    
+    nurseRecords.forEach(function(record) {
+        var parts = record.split('|');
+        if (parts.length >= 2) {
+            var newNurse = {
+                chk_select: "0",
+                nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
+                nurseName: parts[0].trim(),
+                position: parts[1].trim(),
+                career: parts[2] ? parts[2].trim() : "",
+                specialNote: parts[3] ? parts[3].trim() : "",
+                regDate: scwin.fn_getCurrentDate(),
+                modDate: scwin.fn_getCurrentDate(),
+                useYn: "Y",
+                delYn: "N"
+            };
+            
+            nursesToAdd.push(newNurse);
+            scwin.nurseCounter++;
+        }
+    });
+    
+    if (nursesToAdd.length > 0) {
+        scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
+        alert(nursesToAdd.length + "건의 간호사 정보가 등록되었습니다.");
+        scwin.fn_selectNurseList();
+        
+        console.log("다중 등록 완료:", nursesToAdd.length + "건");
+    }
+};
+
+// 다중 수정 버튼 클릭
+scwin.btn_update_multi_onclick = function() {
+    var selectedRows = scwin.fn_getSelectedRows();
+    
+    if (selectedRows.length === 0) {
+        alert("수정할 간호사를 선택해주세요.");
+        return;
+    }
+    
+    var updateField = prompt("수정할 필드를 선택하세요:\n1. 직급\n2. 연차\n3. 특이사항\n번호를 입력하세요 (1-3):");
+    
+    if (!updateField || !["1", "2", "3"].includes(updateField)) {
+        alert("올바른 번호를 입력하세요.");
+        return;
+    }
+    
+    var fieldNames = {"1": "position", "2": "workYear", "3": "specialNote"};
+    var fieldLabels = {"1": "직급", "2": "연차", "3": "특이사항"};
+    var fieldName = fieldNames[updateField];
+    var fieldLabel = fieldLabels[updateField];
+    
+    var newValue = prompt(fieldLabel + "을(를) 입력하세요:");
+    
+    if (newValue === null) return;
+    
+    if (confirm("선택한 " + selectedRows.length + "건의 " + fieldLabel + "을(를) '" + newValue + "'으로 수정하시겠습니까?")) {
+        var updatedCount = 0;
+        
+        selectedRows.forEach(function(row) {
+            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+            var index = scwin.nurseData.findIndex(function(item) {
+                return item.nurseName === nurseName;
+            });
+            
+            if (index > -1) {
+                scwin.nurseData[index][fieldName] = newValue;
+                updatedCount++;
+                console.log("수정된 간호사: " + nurseName + " - " + fieldLabel + ": " + newValue);
+            }
+        });
+        
+        // 데이터 영구 저장
+        scwin.fn_saveData();
+        
+        alert(updatedCount + "건의 간호사 정보가 수정되었습니다.");
+        scwin.fn_selectNurseList();
+        
+        console.log("다중 수정 완료:", updatedCount + "건");
     }
 };
 
@@ -390,17 +659,25 @@ scwin.btn_delete_multi_onclick = function() {
     var selectedRows = scwin.fn_getSelectedRows();
     
     if (selectedRows.length === 0) {
-        alert("삭제할 간호사를 선택해주세요.");
+        alert("삭제할 간호사를 선택해주세요.\n체크박스를 클릭하여 삭제할 간호사를 선택하세요.");
         return;
     }
     
     if (confirm("선택한 " + selectedRows.length + "건의 간호사 정보를 삭제하시겠습니까?")) {
         var deletedCount = 0;
+        var nursesToDelete = [];
         
+        // 먼저 삭제할 간호사들의 이름을 수집
         selectedRows.forEach(function(row) {
-            var nurseId = dlt_nurseList.getCellData(row, "nurseId");
-            if (scwin.fn_deleteNurse(nurseId)) {
+            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+            nursesToDelete.push(nurseName);
+        });
+        
+        // 실제 삭제 실행
+        nursesToDelete.forEach(function(nurseName) {
+            if (scwin.fn_deleteNurse(nurseName)) {
                 deletedCount++;
+                console.log("삭제된 간호사: " + nurseName);
             }
         });
         
@@ -417,11 +694,12 @@ scwin.fn_getSelectedRows = function() {
     
     for (var i = 0; i < rowCount; i++) {
         var isChecked = dlt_nurseList.getCellData(i, "chk_select");
-        if (isChecked === "1" || isChecked === true) {
+        if (isChecked === "1" || isChecked === true || isChecked === "true") {
             selectedRows.push(i);
         }
     }
     
+    console.log("선택된 행 개수: " + selectedRows.length);
     return selectedRows;
 };
 
@@ -429,24 +707,22 @@ scwin.fn_getSelectedRows = function() {
 scwin.fn_clearAllChecks = function() {
     var rowCount = dlt_nurseList.getRowCount();
     for (var i = 0; i < rowCount; i++) {
-        dlt_nurseList.setCellData(i, "chk_select", "0");
+        dlt_nurseList.setCellData(i, "chk_select", false);
     }
+    console.log("모든 체크박스가 해제되었습니다.");
 };
 
 // 그리드 행 클릭
 scwin.grd_nurseList_oncellclick = function(row, col) {
-    // 체크박스 컬럼 클릭 시 체크 상태 토글
-    if (col === 0) {
-        var currentValue = dlt_nurseList.getCellData(row, "chk_select");
-        var newValue = (currentValue === "1" || currentValue === true) ? "0" : "1";
-        dlt_nurseList.setCellData(row, "chk_select", newValue);
-        return;
-    }
+    // 체크박스 컬럼은 자동으로 처리되므로 별도 처리 불필요
     
-    // 다른 컬럼 클릭 시 상세 정보 로드
-    var nurseId = dlt_nurseList.getCellData(row, "nurseId");
-    if (nurseId) {
-        scwin.fn_selectNurse(nurseId);
+    // 체크박스 컬럼이 아닌 경우에만 상세 정보 로드
+    if (col !== 0) {
+        var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+        if (nurseName) {
+            scwin.fn_selectNurse(nurseName);
+            console.log("선택된 간호사: " + nurseName);
+        }
     }
 };
 
@@ -456,13 +732,13 @@ scwin.fn_validateForm = function() {
     var position = dmp_nurseVo.get("position");
     
     if (!nurseName || nurseName.trim() === "") {
-        alert("간호사명을 입력해주세요.");
+        alert("근무자명을 입력해주세요.");
         ipt_nurseName.focus();
         return false;
     }
     
     if (nurseName.trim().length < 2) {
-        alert("간호사명은 2글자 이상 입력해주세요.");
+        alert("근무자명은 2글자 이상 입력해주세요.");
         ipt_nurseName.focus();
         return false;
     }
@@ -474,15 +750,15 @@ scwin.fn_validateForm = function() {
     }
     
     // 중복 검사 (수정 시에는 본인 제외)
-    var nurseId = dmp_nurseVo.get("nurseId");
+    var originalName = dmp_nurseVo.get("nurseName");
     var duplicateNurse = scwin.nurseData.find(function(item) {
         return item.nurseName === nurseName.trim() && 
                item.delYn !== "Y" && 
-               item.nurseId !== nurseId;
+               item.nurseName !== originalName;
     });
     
     if (duplicateNurse) {
-        alert("이미 등록된 간호사명입니다.");
+        alert("이미 등록된 근무자명입니다.");
         ipt_nurseName.focus();
         return false;
     }
@@ -492,11 +768,11 @@ scwin.fn_validateForm = function() {
 
 // 폼 초기화
 scwin.fn_clearForm = function() {
-    dmp_nurseVo.set("nurseId", "");
     dmp_nurseVo.set("nurseName", "");
     dmp_nurseVo.set("position", "");
-    dmp_nurseVo.set("career", "");
+    dmp_nurseVo.set("workYear", "");
     dmp_nurseVo.set("specialNote", "");
+    dmp_nurseVo.set("hireDate", "");
     dmp_nurseVo.set("scNurseName", "");
     dmp_nurseVo.set("scPosition", "");
 };
@@ -531,49 +807,63 @@ scwin.btn_excel_onclick = function() {
     }
 };
 
-// 엑셀 업로드 시뮬레이션 (실제 기능이 없을 경우)
+// 엑셀 업로드 시뮬레이션 (실제 이미지 데이터 기반)
 scwin.fn_simulateExcelUpload = function() {
-    if (confirm("엑셀 업로드 기능을 시뮬레이션하시겠습니까?\n샘플 데이터 3건이 추가됩니다.")) {
-        var sampleUploadData = [
-            {
-                nurseName: "엑셀업로드_김영희",
-                position: "간호사", 
-                career: "1년",
-                specialNote: "엑셀로 업로드된 데이터"
-            },
-            {
-                nurseName: "엑셀업로드_이철수",
-                position: "주임간호사",
-                career: "6년", 
-                specialNote: "엑셀로 업로드된 데이터"
-            },
-            {
-                nurseName: "엑셀업로드_박수진",
-                position: "간호사",
-                career: "2년",
-                specialNote: "엑셀로 업로드된 데이터"
-            }
+    // 기존 데이터가 있는지 확인
+    var hasExistingData = scwin.nurseData && scwin.nurseData.length > 0;
+    
+    var confirmMessage = hasExistingData ? 
+        "기존 데이터 " + scwin.nurseData.length + "건이 있습니다.\n엑셀 업로드를 진행하면 기존 데이터가 덮어쓰입니다.\n계속하시겠습니까?" :
+        "엑셀 업로드 기능을 시뮬레이션하시겠습니까?\n실제 간호사 데이터 27건이 로드되고 영구 저장됩니다.";
+    
+    if (confirm(confirmMessage)) {
+        // 실제 이미지 데이터를 기반으로 한 전체 데이터 (순번 제거)
+        scwin.nurseData = [
+            {chk_select: "0", nurseName: "김하늘", position: "수간호사", workYear: "20년차", specialNote: "육아 중 (6세 이하 자녀 돌봄)", hireDate: "2005-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "이수정", position: "간호사", workYear: "19년차", specialNote: "자녀 학교 등하원 책임 있음", hireDate: "2006-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "박지은", position: "간호사", workYear: "18년차", specialNote: "갓난아이 육아 중 (6세 미만 자녀)", hireDate: "2007-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "윤서연", position: "간호사", workYear: "17년차", specialNote: "최근 결혼 - 배우자와 스케줄 조정 중", hireDate: "2008-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "최유진", position: "간호사", workYear: "16년차", specialNote: "자가운전 출퇴근 (기숙사 미사용)", hireDate: "2009-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "김지수", position: "간호사", workYear: "15년차", specialNote: "최근 수술 후 회복 중 (예: 무릎 수술)", hireDate: "2010-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "정하윤", position: "간호사", workYear: "14년차", specialNote: "주말마다 지방 가족 왕래 있음 (가정사정)", hireDate: "2011-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "한소민", position: "간호사", workYear: "13년차", specialNote: "외부 대학원 수업 이수 중", hireDate: "2012-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "오지민", position: "간호사", workYear: "12년차", specialNote: "장거리 통근 (1시간 이상 소요)", hireDate: "2013-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "이다은", position: "간호사", workYear: "11년차", specialNote: "신혼으로 최근 이사한 상태 (적응 중)", hireDate: "2014-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "박서진", position: "간호사", workYear: "10년차", specialNote: "특별한 특이사항 없음", hireDate: "2015-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "조하늘", position: "간호사", workYear: "9년차", specialNote: "출퇴근 시간 양호, 업무 안정됨", hireDate: "2016-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "정윤아", position: "간호사", workYear: "8년차", specialNote: "신규 간호사 멘토 중", hireDate: "2017-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "김지연", position: "간호사", workYear: "7년차", specialNote: "최근 BLS 교육 이수", hireDate: "2018-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "송예진", position: "간호사", workYear: "6년차", specialNote: "고정 야간 근무 중", hireDate: "2019-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "강지우", position: "간호사", workYear: "5년차", specialNote: "타 병동에서 최근 전입", hireDate: "2020-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "이소을", position: "간호사", workYear: "4년차", specialNote: "병동 적응 완료, 근무 성실", hireDate: "2021-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "문다현", position: "간호사", workYear: "3년차", specialNote: "현재 응급상황 대처 경험 풍부", hireDate: "2022-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "서채원", position: "간호사", workYear: "2년차", specialNote: "신규 직원 OJT 담당 중", hireDate: "2023-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "유하진", position: "간호사", workYear: "1년차", specialNote: "추간 고정 근무 중", hireDate: "2024-03-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "정예린", position: "간호사", workYear: "1년차", specialNote: "병동 QA 담당", hireDate: "2024-05-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "이가은", position: "간호사", workYear: "1년차", specialNote: "복귀 후 일정 기간 단축 근무 중", hireDate: "2024-07-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "김나영", position: "간호사", workYear: "1년차", specialNote: "미만 현재 만족도 피드백 우수", hireDate: "2024-09-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "안서윤", position: "간호사", workYear: "1년차", specialNote: "미만 자녀 돌봄 사유로 근무 일정 조정 중", hireDate: "2024-11-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "오새린", position: "간호사", workYear: "1년차", specialNote: "미만 간갑 회복을 위한 일정 조정 기간", hireDate: "2025-01-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "배수연", position: "간호사", workYear: "1년차", specialNote: "미만 다부서 협력 가능, 스케줄 유동적", hireDate: "2025-02-01", useYn: "Y", delYn: "N"},
+            {chk_select: "0", nurseName: "유소영", position: "간호사", workYear: "1년차", specialNote: "미만 가족 돌봄으로 한시적 업무 배제 중", hireDate: "2025-03-01", useYn: "Y", delYn: "N"}
         ];
         
-        sampleUploadData.forEach(function(data) {
-            var newNurse = {
-                chk_select: "0",
-                nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
-                nurseName: data.nurseName,
-                position: data.position,
-                career: data.career,
-                specialNote: data.specialNote,
-                regDate: scwin.fn_getCurrentDate(),
-                modDate: scwin.fn_getCurrentDate(),
-                useYn: "Y",
-                delYn: "N"
-            };
-            
-            scwin.nurseData.push(newNurse);
-            scwin.nurseCounter++;
-        });
+        // 엑셀 업로드 상태 설정
+        scwin.isExcelUploaded = true;
         
-        alert("엑셀 업로드 완료: " + sampleUploadData.length + "건의 데이터가 추가되었습니다.");
+        // 데이터 영구 저장
+        scwin.fn_saveData();
+        
+        // 업로드 버튼 비활성화
+        scwin.fn_disableUploadButton();
+        
+        var resultMessage = hasExistingData ? 
+            "엑셀 업로드 완료: 기존 데이터를 덮어쓰고 " + scwin.nurseData.length + "건의 새로운 간호사 데이터가 로드되고 영구 저장되었습니다." :
+            "엑셀 업로드 완료: " + scwin.nurseData.length + "건의 간호사 데이터가 로드되고 영구 저장되었습니다.";
+            
+        alert(resultMessage + "\n\n• 이제 조회 시 자동으로 이 데이터가 표시됩니다.\n• 다시 접속해도 데이터가 유지됩니다.\n• 업로드 버튼이 비활성화됩니다.\n• 검색 기능으로 원하는 간호사를 찾을 수 있습니다.");
+        
+        // 즉시 목록 표시
         scwin.fn_selectNurseList();
     }
 };
@@ -615,6 +905,70 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 ]]></script>
         <style type="text/css">
 /* 간호사 관리 페이지 전용 CSS */
+
+/* 병원 헤더 */
+.hospital_header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #1C3D6B;
+    border-radius: 15px;
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(28, 61, 107, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hospital_info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hospital_logo {
+    font-size: 3em !important;
+    color: #1C3D6B !important;
+    margin: 0 !important;
+}
+
+.hospital_details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hospital_name {
+    font-size: 2.2em !important;
+    font-weight: bold !important;
+    color: #1C3D6B !important;
+    margin: 0 !important;
+}
+
+.hospital_dept {
+    font-size: 1.2em !important;
+    color: #666 !important;
+    margin: 0 !important;
+}
+
+.user_info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.current_user {
+    font-size: 1.1em !important;
+    font-weight: 600 !important;
+    color: #1C3D6B !important;
+    margin: 0 !important;
+}
+
+.current_date {
+    font-size: 0.95em !important;
+    color: #666 !important;
+    margin: 0 !important;
+}
 
 /* 전체 컨테이너 */
 .nurse-container {
@@ -665,6 +1019,31 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid #e9ecef;
+}
+
+/* 검색 헤더 스타일 */
+.search_header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search_title {
+    font-size: 1.4em !important;
+    font-weight: 700 !important;
+    color: #1C3D6B !important;
+    margin-bottom: 10px !important;
+    display: block !important;
+}
+
+.search_guide {
+    font-size: 0.95em !important;
+    color: #6c757d !important;
+    background: #f8f9fa !important;
+    padding: 10px 20px !important;
+    border-radius: 20px !important;
+    border: 1px solid #dee2e6 !important;
+    display: inline-block !important;
+    margin: 0 !important;
 }
 
 .nurse-search-form {
@@ -793,6 +1172,68 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 .nurse-btn-warning:hover {
     background: #e0a800;
     transform: translateY(-2px);
+}
+
+.nurse-btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.nurse-btn-info:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+/* 다중 버튼 특별 스타일 */
+.btn_select_all {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+    color: white !important;
+    padding: 12px 20px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1em !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn_select_all:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn_insert_multi {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: white !important;
+    padding: 12px 20px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1em !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn_insert_multi:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn_update_multi {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important;
+    color: #212529 !important;
+    padding: 12px 20px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1em !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn_update_multi:hover {
+    background: linear-gradient(135deg, #e0a800 0%, #dc3545 100%) !important;
+    transform: translateY(-2px) !important;
 }
 
 /* 그리드 영역 */
@@ -1014,6 +1455,34 @@ scwin.fn_excelUploadCallback = function(uploadData) {
         padding: 15px;
     }
     
+    /* 병원 헤더 반응형 */
+    .hospital_header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .hospital_info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .hospital_logo {
+        font-size: 2.5em !important;
+    }
+    
+    .hospital_name {
+        font-size: 1.8em !important;
+    }
+    
+    .hospital_dept {
+        font-size: 1em !important;
+    }
+    
+    .user_info {
+        align-items: center;
+    }
+    
     .nurse-header {
         padding: 20px;
     }
@@ -1026,14 +1495,31 @@ scwin.fn_excelUploadCallback = function(uploadData) {
         grid-template-columns: 1fr;
     }
     
+    /* 검색 헤더 반응형 */
+    .search_header {
+        margin-bottom: 15px;
+    }
+    
+    .search_title {
+        font-size: 1.2em !important;
+    }
+    
+    .search_guide {
+        font-size: 0.85em !important;
+        padding: 8px 15px !important;
+        text-align: center !important;
+        line-height: 1.4 !important;
+    }
+    
     .nurse-grid-header {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
     }
     
-    .nurse-grid-actions {
+    .nurse-grid-actions, .grid_buttons {
         justify-content: center;
+        flex-wrap: wrap;
     }
     
     .nurse-form-row {
@@ -1058,6 +1544,12 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     .nurse-table th,
     .nurse-table td {
         padding: 10px 8px;
+    }
+    
+    /* 다중 버튼 반응형 */
+    .btn_select_all, .btn_insert_multi, .btn_update_multi, .btn_delete_multi, .btn_excel, .btn_list_all {
+        margin-bottom: 5px !important;
+        min-width: 100px !important;
     }
 }
 
@@ -1220,6 +1712,30 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 .btn_reset:hover {
     background: #5a6268 !important;
     transform: translateY(-2px) !important;
+}
+
+.btn_list_all {
+    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1em !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 120px !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+    color: white !important;
+}
+
+.btn_list_all:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3) !important;
 }
 
 .content_area {
@@ -1435,20 +1951,42 @@ scwin.fn_excelUploadCallback = function(uploadData) {
         </style>
     </head>
     <body>
-        <xf:group class="sub_contents">            
+        <xf:group class="sub_contents">
+            <!-- 병원 정보 헤더 -->
+            <xf:group class="hospital_header">
+                <xf:group class="hospital_info">
+                    <w2:textbox class="hospital_logo" id="txt_hospitalLogo" label="🏥"></w2:textbox>
+                    <xf:group class="hospital_details">
+                        <w2:textbox class="hospital_name" id="txt_hospitalName" label="삼육대학교병원"></w2:textbox>
+                        <w2:textbox class="hospital_dept" id="txt_hospitalDept" label="내과병동"></w2:textbox>
+                    </xf:group>
+                </xf:group>
+                <xf:group class="user_info">
+                    <w2:textbox class="current_user" id="txt_currentUser" label="관리자"></w2:textbox>
+                    <w2:textbox class="current_date" id="txt_currentDate" label="2025-07-09"></w2:textbox>
+                </xf:group>
+            </xf:group>
+            
             <xf:group class="search_area">
+                <xf:group class="search_header">
+                    <w2:textbox class="search_title" id="txt_searchTitle" label="🔍 간호사 검색"></w2:textbox>
+                    <w2:textbox class="search_guide" id="txt_searchGuide" label="• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다 • 글자 일부만 입력해도 검색 가능합니다"></w2:textbox>
+                </xf:group>
                 <xf:group class="search_row">
                     <xf:group class="search_item">
-                        <w2:textbox class="search_label" id="lbl_nurseName_search" label="간호사명"></w2:textbox>
-                        <xf:input class="search_input" id="ipt_scNurseName" ref="data:dmp_nurseVo.scNurseName"></xf:input>
+                        <w2:textbox class="search_label" id="lbl_nurseName_search" label="근무자명"></w2:textbox>
+                        <xf:input class="search_input" id="ipt_scNurseName" ref="data:dmp_nurseVo.scNurseName" placeholder="예: 김, 이, 박"></xf:input>
                     </xf:group>
                     <xf:group class="search_item">
                         <w2:textbox class="search_label" id="lbl_position_search" label="직급"></w2:textbox>
-                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition"></xf:input>
+                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition" placeholder="예: 간호사, 주임, 수간호사"></xf:input>
                     </xf:group>
                     <xf:group class="search_buttons">
                         <xf:trigger class="btn_search" id="btn_search" type="button" ev:onclick="scwin.btn_search_onclick">
                             <xf:label>🔍 검색</xf:label>
+                        </xf:trigger>
+                        <xf:trigger class="btn_list_all" id="btn_list_all" type="button" ev:onclick="scwin.btn_list_all_onclick">
+                            <xf:label>📋 전체조회</xf:label>
                         </xf:trigger>
                         <xf:trigger class="btn_reset" id="btn_reset" type="button" ev:onclick="scwin.btn_reset_onclick">
                             <xf:label>🔄 초기화</xf:label>
@@ -1461,9 +1999,18 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                 <xf:group class="grid_section">
                     <xf:group class="grid_header">
                         <w2:textbox class="grid_title" id="txt_gridTitle" label="간호사 목록"></w2:textbox>
-                                                <xf:group class="grid_buttons">
+                        <xf:group class="grid_buttons">
+                            <xf:trigger class="btn_select_all" id="btn_select_all" type="button" ev:onclick="scwin.btn_select_all_onclick">
+                                <xf:label>☑️ 전체선택</xf:label>
+                            </xf:trigger>
                             <xf:trigger class="btn_excel" id="btn_excel" type="button" ev:onclick="scwin.btn_excel_onclick">
                                 <xf:label>📤 엑셀 업로드</xf:label>
+                            </xf:trigger>
+                            <xf:trigger class="btn_insert_multi" id="btn_insert_multi" type="button" ev:onclick="scwin.btn_insert_multi_onclick">
+                                <xf:label>➕ 다중 등록</xf:label>
+                            </xf:trigger>
+                            <xf:trigger class="btn_update_multi" id="btn_update_multi" type="button" ev:onclick="scwin.btn_update_multi_onclick">
+                                <xf:label>✏️ 다중 수정</xf:label>
                             </xf:trigger>
                             <xf:trigger class="btn_delete_multi" id="btn_delete_multi" type="button" ev:onclick="scwin.btn_delete_multi_onclick">
                                 <xf:label>🗑️ 선택 삭제</xf:label>
@@ -1478,25 +2025,21 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                         <w2:header id="header1">
                             <w2:row id="row1">
                                 <w2:column width="50" inputType="checkbox" style="height:35px" id="columnCheck" value="선택" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="column9" value="간호사ID" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="column1" value="간호사명" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="column2" value="직급" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="column3" value="경력" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="column4" value="특이사항" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="column5" value="등록일" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="column6" value="사용여부" displayMode="label"></w2:column>
+                                <w2:column width="140" inputType="text" style="height:35px" id="column2" value="근무자명" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="column3" value="직급" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="column4" value="연차" displayMode="label"></w2:column>
+                                <w2:column width="370" inputType="text" style="height:35px" id="column5" value="특이사항" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="column6" value="입사일" displayMode="label"></w2:column>
                             </w2:row>
                         </w2:header>
                         <w2:gBody id="gBody1">
                             <w2:row id="row2">
-                                <w2:column width="50" inputType="checkbox" style="height:35px" id="chk_select" value="" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="nurseId" value="" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="career" value="" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="specialNote" value="" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="regDate" value="" displayMode="label"></w2:column>
-                                <w2:column width="80" inputType="text" style="height:35px" id="useYn" value="" displayMode="label"></w2:column>
+                                <w2:column width="50" inputType="checkbox" style="height:35px" id="chk_select" value="" displayMode="editType"></w2:column>
+                                <w2:column width="140" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
+                                <w2:column width="100" inputType="text" style="height:35px" id="workYear" value="" displayMode="label"></w2:column>
+                                <w2:column width="370" inputType="text" style="height:35px" id="specialNote" value="" displayMode="label"></w2:column>
+                                <w2:column width="120" inputType="text" style="height:35px" id="hireDate" value="" displayMode="label"></w2:column>
                             </w2:row>
                         </w2:gBody>
                     </w2:gridView>
@@ -1521,11 +2064,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                     <xf:group class="form_content">
                         <xf:group class="form_row">
                             <xf:group class="form_item">
-                                <w2:textbox class="form_label" id="lbl_nurseId" label="간호사ID"></w2:textbox>
-                                <xf:input class="form_input" id="ipt_nurseId" ref="data:dmp_nurseVo.nurseId" readonly="true"></xf:input>
-                            </xf:group>
-                            <xf:group class="form_item">
-                                <w2:textbox class="form_label required" id="lbl_nurseName_form" label="간호사명"></w2:textbox>
+                                <w2:textbox class="form_label required" id="lbl_nurseName_form" label="근무자명"></w2:textbox>
                                 <xf:input class="form_input" id="ipt_nurseName" ref="data:dmp_nurseVo.nurseName"></xf:input>
                             </xf:group>
                         </xf:group>
@@ -1536,8 +2075,15 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                                 <xf:input class="form_input" id="ipt_position" ref="data:dmp_nurseVo.position"></xf:input>
                             </xf:group>
                             <xf:group class="form_item">
-                                <w2:textbox class="form_label" id="lbl_career" label="경력"></w2:textbox>
-                                <xf:input class="form_input" id="ipt_career" ref="data:dmp_nurseVo.career"></xf:input>
+                                <w2:textbox class="form_label" id="lbl_workYear" label="연차"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_workYear" ref="data:dmp_nurseVo.workYear"></xf:input>
+                            </xf:group>
+                        </xf:group>
+                        
+                        <xf:group class="form_row">
+                            <xf:group class="form_item">
+                                <w2:textbox class="form_label" id="lbl_hireDate" label="입사일"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_hireDate" ref="data:dmp_nurseVo.hireDate"></xf:input>
                             </xf:group>
                         </xf:group>
                         

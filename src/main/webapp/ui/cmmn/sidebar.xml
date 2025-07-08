@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ev="http://www.w3.org/2001/xml-events"
     xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
-    <head>
+    <head meta_screenName="좌측 사이드바 페이지">
         <w2:type>COMPONENT</w2:type>
         <w2:buildDate/>
         <w2:MSA/>
@@ -29,7 +29,7 @@
             }
 
             .menu-list {
-                padding: 0;
+                padding: 20px 0 0 0;
                 margin: 0;
                 flex: 1;
             }
@@ -120,63 +120,17 @@
             }
         </style>
         <script lazy="false" type="text/javascript"><![CDATA[
+scwin.activeMenuId = null;
+
 scwin.onpageload = function() {
     console.log("사이드바 로드 완료");
-
-    // DOM이 완전히 로드될 때까지 여러 번 시도
-    scwin.applyActiveMenu();
+    
+    // 기본적으로 첫 번째 메뉴 활성화
+    scwin.setActiveMenu("menu_duty_manage");
 };
 
-scwin.applyActiveMenu = function() {
-    var attempts = 0;
-    var maxAttempts = 10;
-    
-    var checkAndApply = function() {
-        attempts++;
-        console.log("메뉴 활성화 시도:", attempts + "/" + maxAttempts);
-        
-        // 모든 메뉴 요소가 로드되었는지 확인
-        var allMenusExist = document.getElementById("menu_duty_manage") && 
-                           document.getElementById("menu_schedule_manage") && 
-                           document.getElementById("menu_my_schedule") && 
-                           document.getElementById("menu_work_input");
-        
-        if (allMenusExist) {
-            console.log("✅ 모든 메뉴 요소 확인됨");
-            
-            // 이전에 저장한 메뉴 ID를 가져와서 active 적용
-            var activeMenuId = localStorage.getItem("activeMenuId");
-            console.log("저장된 activeMenuId:", activeMenuId);
-            
-            if (activeMenuId) {
-                // 저장된 메뉴 활성화
-                var selectedMenu = document.getElementById(activeMenuId);
-                if (selectedMenu) {
-                    selectedMenu.classList.add("active");
-                    console.log("✅ 메뉴 active 적용 성공:", activeMenuId);
-                } else {
-                    console.warn("⚠️ 저장된 메뉴 ID를 찾을 수 없음:", activeMenuId);
-                }
-            } else {
-                console.log("저장된 activeMenuId가 없습니다.");
-            }
-        } else {
-            console.log("메뉴 요소들이 아직 로드되지 않음, 재시도...");
-            
-            // 아직 모든 요소가 로드되지 않았고 시도 횟수가 남았으면 다시 시도
-            if (attempts < maxAttempts) {
-                setTimeout(checkAndApply, 500);
-            } else {
-                console.warn("⚠️ 최대 시도 횟수 초과. DOM 로딩 타임아웃");
-            }
-        }
-    };
-    
-    // 즉시 시도
-    checkAndApply();
-};
-
-scwin.navigateMenu = function(menuId, targetPage) {
+// 메뉴 활성화 설정
+scwin.setActiveMenu = function(menuId) {
     try {
         // 모든 메뉴 비활성화
         var menuItems = document.querySelectorAll('.menu-item');
@@ -188,40 +142,55 @@ scwin.navigateMenu = function(menuId, targetPage) {
         var selectedMenu = document.getElementById(menuId);
         if (selectedMenu) {
             selectedMenu.classList.add('active');
+            scwin.activeMenuId = menuId;
+            console.log("✅ 메뉴 활성화:", menuId);
+        }
+    } catch (e) {
+        console.error("메뉴 활성화 오류:", e);
+    }
+};
+
+// 부모 프레임과의 통신 함수 (mkduty.xml에서 설정됨)
+scwin.onMenuClick = null;
+
+// 메뉴 클릭 처리
+scwin.handleMenuClick = function(menuId, menuUrl, menuTitle) {
+    try {
+        console.log("메뉴 클릭:", menuId, menuUrl, menuTitle);
+        
+        // 메뉴 활성화
+        scwin.setActiveMenu(menuId);
+        
+        // 부모 프레임에 메뉴 클릭 이벤트 전달
+        if (scwin.onMenuClick) {
+            scwin.onMenuClick(menuId, menuUrl, menuTitle);
+        } else {
+            console.warn("부모 프레임과의 통신이 설정되지 않았습니다.");
         }
         
-        // 클릭한 메뉴 ID 저장
-        localStorage.setItem("activeMenuId", menuId);
-        
-        console.log("메뉴 클릭:", menuId);
-
-        // 페이지 이동
-        window.location.href = targetPage;
-
-    } catch (error) {
-        console.error("메뉴 네비게이션 오류:", error);
-        alert("페이지 이동 중 오류가 발생했습니다: " + error.message);
+    } catch (e) {
+        console.error("메뉴 클릭 처리 오류:", e);
     }
 };
 
 // 근무자 관리 메뉴 클릭
 scwin.goDutyManage = function() {
-    scwin.navigateMenu("menu_duty_manage", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml");
+    scwin.handleMenuClick("menu_duty_manage", "/InsWebApp/ui/nurse/NurseManage.xml", "근무자 관리");
 };
 
 // 스케줄 관리 메뉴 클릭
 scwin.goScheduleManage = function() {
-    scwin.navigateMenu("menu_schedule_manage", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml");
+    scwin.handleMenuClick("menu_schedule_manage", "/InsWebApp/ui/duty/HopeWorkEntry.xml", "스케줄 관리");
 };
 
 // 내 스케줄 보기 메뉴 클릭
 scwin.goMySchedule = function() {
-    scwin.navigateMenu("menu_my_schedule", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml");
+    scwin.handleMenuClick("menu_my_schedule", "/InsWebApp/ui/duty/myschedule.xml", "내 스케줄 보기");
 };
 
 // 희망 근무 입력 메뉴 클릭
 scwin.goWorkInput = function() {
-    scwin.navigateMenu("menu_work_input", "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkhope.xml");
+    scwin.handleMenuClick("menu_work_input", "/InsWebApp/ui/duty/HopeWorkEntry.xml", "희망 근무 입력");
 };
 ]]></script>
 
