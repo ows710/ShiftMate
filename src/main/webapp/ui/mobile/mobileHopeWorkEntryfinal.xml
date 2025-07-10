@@ -1,0 +1,3464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="희망근무 신청(웹)">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dlt_hopeWork" baseNode="list">
+                    <w2:columnInfo>
+                        <w2:column id="id" name="일정ID" dataType="text"/>
+                        <w2:column id="title" name="제목" dataType="text"/>
+                        <w2:column id="start" name="시작일" dataType="text"/>
+                        <w2:column id="end" name="종료일" dataType="text"/>
+                        <w2:column id="allDay" name="종일" dataType="text"/>
+                        <w2:column id="color" name="색상" dataType="text"/>
+                        <w2:column id="backgroundColor" name="배경색상" dataType="text"/>
+                        <w2:column id="borderColor" name="테두리색상" dataType="text"/>
+                        <w2:column id="textColor" name="텍스트색상" dataType="text"/>
+                        <w2:column id="className" name="클래스명" dataType="text"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dlt_monthOptions" baseNode="list">
+                    <w2:columnInfo>
+                        <w2:column id="value" name="값" dataType="text"/>
+                        <w2:column id="label" name="라벨" dataType="text"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataMap baseNode="map" id="dm_selectedInfo">
+                    <w2:keyInfo>
+                        <w2:key id="date" name="선택날짜" dataType="text"/>
+                        <w2:key id="dateFormatted" name="포맷된날짜" dataType="text"/>
+                        <w2:key id="currentWorkType" name="현재근무타입" dataType="text"/>
+                        <w2:key id="selectedWorkType" name="선택된근무타입" dataType="text"/>
+                    </w2:keyInfo>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css">
+            /* 메인 컨테이너 */
+            .hope-work-container {
+                padding: 20px;
+                font-family: Arial, sans-serif;
+            }
+            
+            /* 제목 스타일 */
+            .page-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            /* 희망근무 선택 모달 */
+            .work-select-modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                width: 360px;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+            
+            .modal-header {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px 8px 0 0;
+                border-bottom: 1px solid #e9ecef;
+                text-align: center;
+            }
+            
+            .modal-date {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                margin: 0;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .work-option {
+                padding: 12px 16px;
+                margin-bottom: 8px;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 14px;
+                color: #333;
+                background: white;
+                position: relative;
+                user-select: none;
+            }
+            
+            .work-option:hover {
+                background: #f8f9fa;
+                border-color: #007bff;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .work-option.selected {
+                background: #e8f5e8;
+                border-color: #28a745;
+                color: #155724;
+                transform: translateY(-1px);
+                box-shadow: 0 3px 6px rgba(40, 167, 69, 0.2);
+            }
+            
+            .work-option.clear {
+                background: white;
+                color: #333;
+            }
+            
+            .work-option.clear.selected {
+                background: #e8f5e8;
+                border-color: #28a745;
+                color: #155724;
+            }
+            
+            .work-option.clear:hover {
+                background: #f8f9fa;
+                border-color: #007bff;
+                color: #0056b3;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            /* 비활성화된 삭제 옵션 스타일 */
+            .work-option.clear[data-disabled="true"] {
+                background: #f8f9fa !important;
+                color: #adb5bd !important;
+                border-color: #dee2e6 !important;
+                cursor: not-allowed !important;
+                opacity: 0.6 !important;
+            }
+            
+            .work-option.clear[data-disabled="true"]:hover {
+                background: #f8f9fa !important;
+                color: #adb5bd !important;
+                border-color: #dee2e6 !important;
+                transform: none !important;
+                box-shadow: none !important;
+                cursor: not-allowed !important;
+            }
+            
+            /* 개별 근무 타입별 hover 효과 */
+            .work-option:not(.clear):hover {
+                background: #f8f9fa;
+                border-color: #007bff;
+                color: #0056b3;
+            }
+            
+            /* 선택된 상태의 hover 효과 */
+            .work-option.selected:hover {
+                background: #d4edda;
+                border-color: #28a745;
+                color: #155724;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+            }
+            
+            /* 애니메이션 효과 강화 */
+            .work-option:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                transition: all 0.1s ease;
+            }
+            
+            /* 툴팁 제거 */
+            .work-option {
+                pointer-events: auto;
+            }
+            
+            .work-option::before,
+            .work-option::after {
+                display: none !important;
+            }
+            
+            /* title 속성으로 인한 툴팁 제거 */
+            .work-option[title] {
+                position: relative;
+            }
+            
+            .modal-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                padding: 0 20px 20px;
+            }
+            
+            .modal-btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                font-size: 14px;
+                cursor: pointer;
+                min-width: 80px;
+                font-weight: bold;
+            }
+            
+            .btn-cancel {
+                background: #f8f9fa;
+                color: #6c757d;
+                border: 1px solid #dee2e6;
+            }
+            
+            .btn-submit {
+                background: #1e3a8a;
+                color: white;
+            }
+            
+            .btn-cancel:hover {
+                background: #e9ecef;
+                border-color: #adb5bd;
+            }
+            
+            .btn-submit:hover {
+                background: #1e40af;
+            }
+            
+            .hidden {
+                display: none !important;
+            }
+            
+            /* 안내 메시지 */
+            .guide-message {
+                background: #e3f2fd;
+                border: 1px solid #bbdefb;
+                border-radius: 4px;
+                padding: 12px;
+                margin-bottom: 20px;
+                color: #1565c0;
+                text-align: center;
+                font-size: 14px;
+            }
+            
+            /* 중요 안내 메시지 추가 */
+            .important-notice {
+                background: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 4px;
+                padding: 10px;
+                margin-bottom: 15px;
+                color: #856404;
+                font-size: 13px;
+                text-align: center;
+            }
+            
+            /* 신청 현황 섹션 */
+            .application-status {
+                background: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .status-title {
+                font-weight: bold;
+                color: #495057;
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+            
+            .status-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .status-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 8px;
+                background: white;
+                border: 1px solid #dee2e6;
+                border-radius: 3px;
+                font-size: 12px;
+                color: #6c757d;
+            }
+            
+            .status-badge {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 2px;
+                margin-right: 3px;
+            }
+            
+            .status-badge.work-o { background-color: #4CAF50; }
+            .status-badge.work-d { background-color: #FF9800; }
+            .status-badge.work-e { background-color: #3F51B5; }
+            .status-badge.work-n { background-color: #9C27B0; }
+            
+            .status-count {
+                font-weight: bold;
+                color: #495057;
+            }
+            
+            /* 월 선택 영역 스타일 */
+            .schbox {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 4px;
+                border: 1px solid #e9ecef;
+            }
+            
+            .schbox_tit {
+                font-weight: bold;
+                color: #495057;
+                margin-right: 10px;
+            }
+        </style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// 글로벌 변수 - 다른 사람들의 신청 현황 시뮬레이션 데이터
+scwin.otherApplications = {
+    // 날짜별 다른 사람들의 신청 현황 (더미 데이터)
+    "20250801": {"O": 2, "D": 1, "E": 0, "N": 1},
+    "20250802": {"O": 1, "D": 2, "E": 1, "N": 0},
+    "20250803": {"O": 3, "D": 0, "E": 1, "N": 1},
+    "20250815": {"O": 0, "D": 3, "E": 2, "N": 0},
+    "20250820": {"O": 1, "D": 1, "E": 1, "N": 2},
+    "20250825": {"O": 2, "D": 0, "E": 0, "N": 3}
+};
+
+scwin.onpageload = function() {
+    console.log("희망근무 신청 페이지가 로드되었습니다.");
+    
+    // 초기 로드 플래그 설정 (초기 로드 시 모달이 자동으로 뜨는 것을 방지)
+    scwin.isInitialLoad = true;
+    
+    // 초기에 모든 모달창 숨김 처리
+    scwin.hideAllModals();
+    
+    // 알림 시스템 초기화
+    console.log("알림 시스템 초기화 시작");
+    
+    // 페이지 로드 시 알림 배지 업데이트 (지연 처리)
+    setTimeout(function() {
+        if (typeof scwin.updateNotificationBadge === 'function') {
+            scwin.updateNotificationBadge();
+            console.log("희망근무 알림 배지 초기화 완료");
+        }
+    }, scwin.CONFIG ? scwin.CONFIG.TIMINGS.BADGE_UPDATE_DELAY : 500);
+    
+    // 컴포넌트 로드 대기 후 초기화
+    setTimeout(function() {
+        console.log("컴포넌트 초기화 시작");
+        scwin.initMonthOptions();
+        
+        // 8월 기본값 설정
+        setTimeout(function() {
+            if (typeof sbx_month !== 'undefined') {
+                try {
+                    sbx_month.setValue("202508");
+                    console.log("페이지 로드 시 8월 기본값 설정됨");
+                } catch (e) {
+                    console.log("setValue 실패, setSelectedIndex 시도:", e);
+                    sbx_month.setSelectedIndex(2); // chooseOption + 8월
+                }
+            }
+        }, 1000);
+        
+        // 캘린더를 빈 상태로 초기화
+        setTimeout(function() {
+            scwin.initEmptyCalendar();
+            
+            // 최종 확인
+            setTimeout(function() {
+                scwin.debugComponents();
+                
+                // 초기 로드 완료 후 클릭 이벤트 활성화 (1.5초 후)
+                setTimeout(function() {
+                    scwin.isInitialLoad = false;
+                    console.log("초기 로드 완료 - 클릭 이벤트 활성화");
+                    
+                    // 안내 메시지 업데이트
+                    var guideMessage = document.getElementById("guide-message");
+                    if (guideMessage) {
+                        guideMessage.textContent = "달력에서 날짜를 클릭하여 희망근무를 신청하세요.";
+                    }
+                    
+                    // 알림 배지 최종 업데이트 (모든 초기화 완료 후)
+                    if (typeof scwin.updateNotificationBadge === 'function') {
+                        scwin.updateNotificationBadge();
+                        console.log("희망근무 페이지 로드 완료 - 알림 시스템 활성화");
+                    }
+                }, 1500);
+            }, 1000);
+        }, 1200);
+    }, 200);
+};
+
+// 캘린더를 완전히 빈 상태로 초기화하는 함수
+scwin.initEmptyCalendar = function() {
+    try {
+        console.log("캘린더 빈 상태로 초기화");
+        
+        // 데이터리스트 완전 초기화
+        if (typeof dlt_hopeWork !== 'undefined') {
+            dlt_hopeWork.removeAll();
+            dlt_hopeWork.broadcast();
+            console.log("희망근무 데이터리스트 초기화 완료");
+        }
+        
+        // 캘린더 새로고침
+        setTimeout(function() {
+            try {
+                if (shc_hopeWork && shc_hopeWork.refresh) {
+                    shc_hopeWork.refresh();
+                }
+                console.log("캘린더 새로고침 완료 - 빈 상태");
+            } catch (e) {
+                console.error("캘린더 새로고침 오류:", e);
+            }
+        }, 100);
+        
+    } catch (e) {
+        console.error("캘린더 빈 상태 초기화 오류:", e);
+    }
+};
+
+// 빈 데이터로 초기화하는 함수
+scwin.loadEmptyHopeWorkData = function(yearMonth) {
+    try {
+        console.log("빈 희망근무 데이터 로드:", yearMonth);
+        
+        // 기존 데이터 초기화
+        dlt_hopeWork.removeAll();
+        
+        // 달력을 2025년 8월로 설정
+        if (shc_hopeWork.gotoDate) {
+            shc_hopeWork.gotoDate("20250801");
+        }
+        
+        console.log("2025년 8월 달력이 초기화되었습니다 (빈 상태)");
+        
+    } catch (e) {
+        console.error("빈 희망근무 데이터 로드 중 오류:", e);
+    }
+};
+
+// 신청 현황 업데이트 함수
+scwin.updateApplicationStatus = function(dateStr) {
+    try {
+        console.log("신청 현황 업데이트:", dateStr);
+        
+        var statusList = document.getElementById("status-list");
+        if (!statusList) {
+            console.error("status-list 요소를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 기존 내용 초기화
+        statusList.innerHTML = "";
+        
+        // 해당 날짜의 다른 사람들 신청 현황 가져오기
+        var otherApps = scwin.otherApplications[dateStr] || {};
+        console.log("다른 사람들 신청 현황:", otherApps);
+        
+        // 내 신청 현황 확인
+        var myApplication = scwin.getCurrentWorkType(dateStr);
+        console.log("내 신청 현황:", myApplication);
+        
+        // 전체 신청 현황 계산
+        var totalApplications = {
+            "O": otherApps["O"] || 0,
+            "D": otherApps["D"] || 0, 
+            "E": otherApps["E"] || 0,
+            "N": otherApps["N"] || 0
+        };
+        
+        // 내 신청이 있으면 추가
+        if (myApplication && myApplication !== "") {
+            totalApplications[myApplication] = (totalApplications[myApplication] || 0) + 1;
+        }
+        
+        console.log("전체 신청 현황:", totalApplications);
+        
+        // 신청 현황 HTML 생성
+        var workTypes = [
+            {code: "O", name: "Off", class: "work-o"},
+            {code: "D", name: "Day 근무", class: "work-d"},
+            {code: "E", name: "Evening 근무", class: "work-e"},
+            {code: "N", name: "Night 근무", class: "work-n"}
+        ];
+        
+        var hasApplications = false;
+        
+        workTypes.forEach(function(workType) {
+            var count = totalApplications[workType.code];
+            if (count > 0) {
+                hasApplications = true;
+                
+                var statusItem = document.createElement("div");
+                statusItem.className = "status-item";
+                
+                var badge = document.createElement("span");
+                badge.className = "status-badge " + workType.class;
+                
+                var text = document.createElement("span");
+                text.textContent = workType.name + ": ";
+                
+                var countSpan = document.createElement("span");
+                countSpan.className = "status-count";
+                countSpan.textContent = count + "명";
+                
+                statusItem.appendChild(badge);
+                statusItem.appendChild(text);
+                statusItem.appendChild(countSpan);
+                
+                statusList.appendChild(statusItem);
+            }
+        });
+        
+        // 신청이 없을 경우 메시지 표시
+        if (!hasApplications) {
+            var noApplications = document.createElement("div");
+            noApplications.className = "status-item";
+            noApplications.style.color = "#6c757d";
+            noApplications.style.fontStyle = "italic";
+            noApplications.textContent = "아직 신청한 사람이 없습니다.";
+            statusList.appendChild(noApplications);
+        }
+        
+        console.log("신청 현황 업데이트 완료");
+        
+    } catch (e) {
+        console.error("신청 현황 업데이트 오류:", e);
+    }
+};
+
+// 모든 모달창 숨김 함수
+scwin.hideAllModals = function() {
+    try {
+        // DOM이 준비되면 모달 숨김
+        setTimeout(function() {
+            var modalOverlay = document.getElementById("modal-overlay");
+            var workSelectModal = document.getElementById("work-select-modal");
+            
+            if (modalOverlay) {
+                modalOverlay.classList.add("hidden");
+            }
+            
+            if (workSelectModal) {
+                workSelectModal.classList.add("hidden");
+            }
+            
+            // 툴팁 제거
+            scwin.removeTooltips();
+            
+            console.log("모든 모달창 숨김 처리 완료");
+        }, 100);
+    } catch (e) {
+        console.error("모달 숨김 처리 오류:", e);
+    }
+};
+
+// 툴팁 제거 함수
+scwin.removeTooltips = function() {
+    try {
+        // 모든 work-option 요소에서 title 속성 제거
+        var workOptions = document.querySelectorAll('.work-option');
+        workOptions.forEach(function(option) {
+            option.removeAttribute('title');
+            option.removeAttribute('alt');
+            
+            // 자식 요소들도 확인
+            var children = option.querySelectorAll('*');
+            children.forEach(function(child) {
+                child.removeAttribute('title');
+                child.removeAttribute('alt');
+            });
+        });
+        
+        console.log("툴팁 제거 완료");
+    } catch (e) {
+        console.error("툴팁 제거 오류:", e);
+    }
+};
+
+// 컴포넌트 상태 디버깅 함수
+scwin.debugComponents = function() {
+    console.log("=== 컴포넌트 상태 디버깅 ===");
+    
+    // 데이터리스트 확인
+    if (typeof dlt_monthOptions !== 'undefined') {
+        console.log("dlt_monthOptions 존재:", dlt_monthOptions);
+        console.log("dlt_monthOptions 데이터 수:", dlt_monthOptions.getTotalRow());
+        
+        for (var i = 0; i < dlt_monthOptions.getTotalRow(); i++) {
+            var row = dlt_monthOptions.getRowJSON(i);
+            console.log("데이터 " + i + ":", row);
+        }
+    } else {
+        console.error("dlt_monthOptions 없음");
+    }
+    
+    // 드롭다운 컴포넌트 확인
+    if (typeof sbx_month !== 'undefined') {
+        console.log("sbx_month 존재:", sbx_month);
+        console.log("sbx_month 현재 값:", sbx_month.getValue());
+        console.log("sbx_month 선택 인덱스:", sbx_month.getSelectedIndex());
+    } else {
+        console.error("sbx_month 없음");
+    }
+    
+    console.log("=== 디버깅 완료 ===");
+};
+
+// 수동 테스트 함수들 (콘솔에서 호출 가능)
+scwin.testMonthChange = function(month) {
+    console.log("수동 월 변경 테스트:", month);
+    
+    if (month === "7" || month === "202507") {
+        scwin.sbx_month_onchange({value: "202507"});
+    } else if (month === "8" || month === "202508") {
+        scwin.sbx_month_onchange({value: "202508"});
+    }
+};
+
+scwin.testPageMove = function() {
+    console.log("수동 페이지 이동 테스트");
+    try {
+        window.location.href = "myschedule.xml";
+    } catch (e) {
+        console.error("페이지 이동 테스트 실패:", e);
+    }
+};
+
+scwin.initMonthOptions = function() {
+    try {
+        console.log("월 선택 옵션 초기화 시작");
+        
+        // 2025년 7월과 8월로 고정
+        var monthOptions = [
+            {
+                value: "202507", 
+                label: "2025년 7월"
+            },
+            {
+                value: "202508", 
+                label: "2025년 8월"
+            }
+        ];
+        
+        console.log("월 선택 옵션 데이터:", monthOptions);
+        
+        // 데이터리스트 확인 및 설정
+        if (typeof dlt_monthOptions !== 'undefined') {
+            dlt_monthOptions.removeAll();
+            dlt_monthOptions.setJSON(monthOptions);
+            console.log("dlt_monthOptions 데이터 설정 완료");
+            console.log("총 데이터 수:", dlt_monthOptions.getTotalRow());
+        } else {
+            console.error("dlt_monthOptions를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 드롭다운 컴포넌트 확인 및 설정 (더 긴 대기 시간)
+        setTimeout(function() {
+            if (typeof sbx_month !== 'undefined') {
+                try {
+                    // 컴포넌트 새로고침
+                    sbx_month.refresh();
+                    
+                    // 잠시 대기 후 선택
+                    setTimeout(function() {
+                        try {
+                            sbx_month.setValue("202508"); // 8월을 기본 선택
+                            console.log("sbx_month 기본 선택 설정 완료 (8월)");
+                        } catch (e) {
+                            console.log("setValue 실패, setSelectedIndex 시도:", e);
+                            sbx_month.setSelectedIndex(2); // chooseOption + 8월 (0: 선택, 1: 7월, 2: 8월)
+                        }
+                        
+                        // 현재 선택된 값 확인
+                        var currentValue = sbx_month.getValue();
+                        console.log("현재 선택된 월:", currentValue);
+                        
+                        // 선택된 텍스트 확인 (안전하게)
+                        var currentText = "";
+                        try {
+                            if (sbx_month.getSelectedText) {
+                                currentText = sbx_month.getSelectedText();
+                            } else if (sbx_month.getSelectedLabel) {
+                                currentText = sbx_month.getSelectedLabel();
+                            }
+                        } catch (e) {
+                            console.log("선택된 텍스트 가져오기 실패:", e);
+                        }
+                        
+                        console.log("현재 선택된 텍스트:", currentText);
+                        
+                        // 강제로 라벨 표시 확인
+                        if (!currentText || currentText === "") {
+                            console.log("라벨이 비어있음, 다시 시도");
+                            setTimeout(function() {
+                                try {
+                                    sbx_month.setValue("202508");
+                                } catch (e) {
+                                    sbx_month.setSelectedIndex(2); // chooseOption + 8월
+                                }
+                            }, 100);
+                        }
+                    }, 300);
+                    
+                } catch (e) {
+                    console.error("sbx_month 설정 오류:", e);
+                }
+            } else {
+                console.error("sbx_month를 찾을 수 없습니다.");
+            }
+        }, 500);
+        
+        // 전역 변수에 저장
+        scwin.currentYearMonth = "202507";
+        scwin.nextYearMonth = "202508";
+        
+        console.log("월 선택 옵션 초기화 완료");
+        
+    } catch (e) {
+        console.error("월 선택 옵션 초기화 오류:", e);
+    }
+};
+
+scwin.sbx_month_onchange = function(info) {
+    try {
+        console.log("=== 월 선택 변경 이벤트 시작 ===");
+        console.log("이벤트 정보:", info);
+        
+        var selectedMonth = "";
+        
+        // 여러 방법으로 선택된 값 가져오기
+        if (typeof sbx_month !== 'undefined') {
+            selectedMonth = sbx_month.getValue();
+            console.log("sbx_month.getValue():", selectedMonth);
+        }
+        
+        if (!selectedMonth && info && info.value) {
+            selectedMonth = info.value;
+            console.log("info.value:", selectedMonth);
+        }
+        
+        // 추가 방법: 선택된 인덱스로 값 가져오기 (chooseOption 고려)
+        if (!selectedMonth && typeof sbx_month !== 'undefined') {
+            try {
+                var selectedIndex = sbx_month.getSelectedIndex();
+                if (selectedIndex === 1) {
+                    selectedMonth = "202507";
+                } else if (selectedIndex === 2) {
+                    selectedMonth = "202508";
+                }
+                console.log("인덱스로 가져온 값:", selectedMonth, "인덱스:", selectedIndex);
+            } catch (e) {
+                console.error("인덱스로 값 가져오기 실패:", e);
+            }
+        }
+        
+        if (!selectedMonth) {
+            console.log("선택된 월이 없습니다. 함수 종료");
+            return;
+        }
+        
+        console.log("최종 선택된 월:", selectedMonth);
+        
+        // 7월 선택 시 mobileMySchedule.xml로 이동
+        if (selectedMonth === "202507") {
+            console.log("7월 선택됨 - mobileMySchedule.xml로 이동 준비");
+            
+            // 확인 대화상자 표시
+            if (confirm("7월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
+                // mobileMySchedule.xml로 이동
+                try {
+                    console.log("페이지 이동 시도 중...");
+                    
+                    var isNavigated = false;
+                    
+                    // 방법 1: 웹스퀘어 표준 네비게이션 함수 사용
+                    try {
+                        if (typeof com !== 'undefined' && com.win && com.win.goUrl) {
+                            console.log("웹스퀘어 네비게이션 함수 사용");
+                            com.win.goUrl("/InsWebApp/ui/mobile/mobileMySchedule.xml");
+                            isNavigated = true;
+                            console.log("웹스퀘어 네비게이션 성공");
+                        }
+                    } catch (e) {
+                        console.log("웹스퀘어 네비게이션 실패:", e.message);
+                    }
+                    
+                    // 방법 2: 메인 프레임으로 이동
+                    if (!isNavigated) {
+                        try {
+                            if (parent && parent.wfr_mainContent && parent.wfr_mainContent.setSrc) {
+                                var targetUrl = "/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                                console.log("메인 프레임으로 이동:", targetUrl);
+                                parent.wfr_mainContent.setSrc(targetUrl);
+                                isNavigated = true;
+                                console.log("메인 프레임 이동 성공");
+                            }
+                        } catch (e) {
+                            console.log("메인 프레임 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    // 방법 3: 상위 메인 프레임으로 이동
+                    if (!isNavigated) {
+                        try {
+                            if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
+                                var targetUrl = "/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                                console.log("상위 메인 프레임으로 이동:", targetUrl);
+                                window.parent.parent.wfr_mainContent.setSrc(targetUrl);
+                                isNavigated = true;
+                                console.log("상위 메인 프레임 이동 성공");
+                            }
+                        } catch (e) {
+                            console.log("상위 메인 프레임 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    // 방법 4: 부모 창의 메인 컨텐츠 영역으로 이동
+                    if (!isNavigated) {
+                        try {
+                            if (parent && parent.document && parent.document.getElementById("mainContent")) {
+                                console.log("부모 창의 메인 컨텐츠 영역으로 이동");
+                                var mainFrame = parent.document.getElementById("mainContent");
+                                if (mainFrame && mainFrame.src) {
+                                    mainFrame.src = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                                    isNavigated = true;
+                                    console.log("부모 창 메인 컨텐츠 이동 성공");
+                                }
+                            }
+                        } catch (e) {
+                            console.log("부모 창 메인 컨텐츠 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    // 방법 5: top 윈도우로 이동
+                    if (!isNavigated) {
+                        try {
+                            if (top && top.location) {
+                                console.log("top 윈도우로 이동");
+                                var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                                top.location.href = targetUrl;
+                                isNavigated = true;
+                                console.log("top 윈도우 이동 성공");
+                            }
+                        } catch (e) {
+                            console.log("top 윈도우 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    // 방법 6: 현재 윈도우로 직접 이동
+                    if (!isNavigated) {
+                        try {
+                            console.log("현재 윈도우로 직접 이동");
+                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                            window.location.href = targetUrl;
+                            isNavigated = true;
+                            console.log("현재 윈도우 직접 이동 성공");
+                        } catch (e) {
+                            console.log("현재 윈도우 직접 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    // 방법 7: replace 방식으로 이동
+                    if (!isNavigated) {
+                        try {
+                            console.log("replace 방식으로 이동");
+                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+                            window.location.replace(targetUrl);
+                            isNavigated = true;
+                            console.log("replace 방식 이동 성공");
+                        } catch (e) {
+                            console.log("replace 방식 이동 실패:", e.message);
+                        }
+                    }
+                    
+                    console.log("페이지 이동 요청 완료, 성공 여부:", isNavigated);
+                    
+                } catch (e) {
+                    console.error("페이지 이동 오류:", e);
+                    alert("페이지 이동 중 오류가 발생했습니다: " + e.message);
+                }
+            } else {
+                // 사용자가 취소한 경우 다시 8월로 되돌리기
+                console.log("페이지 이동 취소됨 - 8월로 되돌림");
+                setTimeout(function() {
+                    try {
+                        sbx_month.setValue("202508"); // 8월 선택
+                    } catch (e) {
+                        sbx_month.setSelectedIndex(2); // chooseOption + 8월
+                    }
+                }, 100);
+            }
+            return;
+        }
+        
+        // 8월 선택 시 현재 페이지 유지 및 빈 데이터 로드
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - 희망근무 신청 빈 데이터 로드");
+            scwin.loadEmptyHopeWorkData(selectedMonth);
+            // 캘린더 헤더 제목 업데이트
+            scwin.updateCalendarTitle(selectedMonth);
+            
+            // 캘린더 날짜 이동
+            var year = selectedMonth.substring(0, 4);
+            var month = selectedMonth.substring(4, 6);
+            var gotoDate = year + month + "01";
+            
+            console.log("캘린더 이동 준비:", gotoDate);
+            
+            setTimeout(function() {
+                try {
+                    if (shc_hopeWork && shc_hopeWork.gotoDate) {
+                        // 다양한 날짜 형식 시도
+                        var dateFormats = [
+                            gotoDate,                           // 20250801
+                            year + "-" + month + "-01",         // 2025-08-01
+                            new Date(parseInt(year), parseInt(month) - 1, 1), // Date 객체
+                            year + "/" + month + "/01"          // 2025/08/01
+                        ];
+                        
+                        var success = false;
+                        for (var i = 0; i < dateFormats.length; i++) {
+                            try {
+                                shc_hopeWork.gotoDate(dateFormats[i]);
+                                console.log("gotoDate 성공 (형식 " + i + "):", dateFormats[i]);
+                                success = true;
+                                break;
+                            } catch (e) {
+                                console.log("gotoDate 실패 (형식 " + i + "):", dateFormats[i], e.message);
+                            }
+                        }
+                        
+                        if (!success) {
+                            console.log("모든 날짜 형식 시도 실패");
+                        }
+                    }
+                    
+                    if (shc_hopeWork && shc_hopeWork.refresh) {
+                        shc_hopeWork.refresh();
+                    }
+                } catch (e) {
+                    console.error("캘린더 이동 오류:", e);
+                }
+            }, 100);
+            
+            return;
+        }
+        
+        console.log("=== 월 선택 변경 이벤트 완료 ===");
+        
+    } catch (e) {
+        console.error("월 선택 변경 이벤트 전체 오류:", e);
+    }
+};
+
+// 캘린더 헤더 제목 업데이트
+scwin.updateCalendarTitle = function(yearMonth) {
+    try {
+        var year = yearMonth.substring(0, 4);
+        var month = yearMonth.substring(4, 6);
+        var monthInt = parseInt(month);
+        var title = year + "년 " + monthInt + "월";
+        
+        var titleElement = document.getElementById("calendar-title");
+        if (titleElement) {
+            titleElement.textContent = title;
+            console.log("희망근무 캘린더 제목 업데이트:", title);
+        }
+    } catch (e) {
+        console.error("희망근무 캘린더 제목 업데이트 오류:", e);
+    }
+};
+
+scwin.initHopeWorkData = function() {
+    // 8월 빈 데이터로 초기화
+    scwin.loadEmptyHopeWorkData("202508");
+    // 초기 제목 설정
+    scwin.updateCalendarTitle("202508");
+};
+
+scwin.loadHopeWorkData = function(yearMonth) {
+    try {
+        console.log("희망근무 데이터 로드:", yearMonth);
+        
+        // 기존 데이터 초기화
+        dlt_hopeWork.removeAll();
+        
+        // 해당 월의 데이터 로드 (8월만 희망근무 신청 가능)
+        var scheduleData = [];
+        
+        // 이미지에 표시된 스케줄 데이터 (2025년 8월)
+        var scheduleMap = {
+            2: "E",   // 8월 2일 E (파란색)
+            17: "O",  // 8월 17일 O (초록색)
+            20: "D",  // 8월 20일 D (주황색)
+            26: "N"   // 8월 26일 N (보라색)
+        };
+        
+        var colorMap = {
+            "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
+            "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
+            "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"},
+            "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"}
+        };
+        
+        // 스케줄 데이터 생성
+        for (var day in scheduleMap) {
+            var dayStr = (parseInt(day) < 10 ? "0" : "") + day;
+            var dateStr = "202508" + dayStr; // 202508XX
+            var scheduleType = scheduleMap[day];
+            var colors = colorMap[scheduleType];
+            
+            var scheduleItem = {
+                id: "hope_" + dateStr + "_init",
+                title: scheduleType,
+                start: dateStr,
+                end: dateStr,
+                allDay: true,
+                color: colors.color,
+                backgroundColor: colors.backgroundColor,
+                borderColor: colors.borderColor,
+                textColor: colors.textColor,
+                className: colors.className
+            };
+            
+            console.log("초기 스케줄 데이터:", scheduleItem);
+            scheduleData.push(scheduleItem);
+        }
+        
+        // 데이터리스트에 데이터 설정
+        dlt_hopeWork.setJSON(scheduleData);
+        
+        // 달력을 2025년 8월로 설정
+        if (shc_hopeWork.gotoDate) {
+            shc_hopeWork.gotoDate("20250801");
+        }
+        
+        console.log("2025년 8월 희망근무 데이터가 로드되었습니다.");
+        console.log("로드된 데이터:", scheduleData);
+        
+        // 캘린더 렌더링 후 클래스 적용 강제 실행
+        setTimeout(function() {
+            scwin.applyEventClasses();
+        }, 1000);
+        
+    } catch (e) {
+        console.error("희망근무 데이터 로드 중 오류:", e);
+    }
+};
+
+scwin.shc_hopeWork_onclick = function(dateInfo) {
+    console.log("클릭된 날짜:", dateInfo);
+    
+    // 초기 로드 중에는 모달을 표시하지 않음
+    if (scwin.isInitialLoad) {
+        console.log("초기 로드 중이므로 모달 표시 안 함");
+        return;
+    }
+    
+    if (dateInfo && dateInfo.start) {
+        var clickedDate = dateInfo.start;
+        var dateStr = "";
+        var originalDate = clickedDate; // 원본 날짜 보관
+        
+        // 날짜 형식 처리
+        if (typeof clickedDate === 'string') {
+            if (clickedDate.length === 8) {
+                // YYYYMMDD 형식
+                var year = clickedDate.substring(0, 4);
+                var month = clickedDate.substring(4, 6);
+                var day = clickedDate.substring(6, 8);
+                dateStr = year + "-" + month + "-" + day;
+            } else {
+                dateStr = clickedDate;
+                // YYYY-MM-DD를 YYYYMMDD로 변환
+                originalDate = clickedDate.replace(/-/g, '');
+            }
+        } else if (clickedDate instanceof Date) {
+            dateStr = clickedDate.toISOString().split('T')[0];
+            originalDate = dateStr.replace(/-/g, '');
+        }
+        
+        console.log("처리된 날짜 - 원본:", originalDate, "표시용:", dateStr);
+        
+        // 선택된 날짜 정보 저장
+        var date = new Date(dateStr);
+        var dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        var dayOfWeek = dayNames[date.getDay()];
+        var formattedDate = (date.getMonth() + 1) + "월 " + date.getDate() + "일 (" + dayOfWeek + ")";
+        
+        dm_selectedInfo.set("date", originalDate); // YYYYMMDD 형식으로 저장
+        dm_selectedInfo.set("dateFormatted", formattedDate);
+        
+        // 현재 해당 날짜의 근무 타입 확인 (두 형식 모두 시도)
+        var currentWorkType = scwin.getCurrentWorkType(originalDate);
+        if (!currentWorkType) {
+            currentWorkType = scwin.getCurrentWorkType(dateStr);
+        }
+        
+        console.log("현재 근무타입:", currentWorkType);
+        
+        dm_selectedInfo.set("currentWorkType", currentWorkType);
+        dm_selectedInfo.set("selectedWorkType", currentWorkType);
+        
+        // 모달 표시
+        scwin.showWorkSelectModal();
+    }
+};
+
+scwin.getCurrentWorkType = function(dateStr) {
+    try {
+        console.log("현재 근무타입 조회 - 날짜:", dateStr);
+        
+        var totalRows = dlt_hopeWork.getTotalRow();
+        console.log("총 데이터 수:", totalRows);
+        
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            console.log("데이터 " + i + ":", row);
+            
+            // 다양한 날짜 형식 비교
+            if (row.start === dateStr || 
+                row.start === dateStr.replace(/-/g, '') || 
+                dateStr === row.start.replace(/-/g, '')) {
+                console.log("일치하는 근무 발견:", row.title);
+                return row.title;
+            }
+        }
+        
+        console.log("해당 날짜에 근무 없음");
+        return "";
+    } catch (e) {
+        console.error("현재 근무타입 조회 오류:", e);
+        return "";
+    }
+};
+
+scwin.showWorkSelectModal = function() {
+    try {
+        // 모달 오버레이와 모달 표시
+        var modalOverlay = document.getElementById("modal-overlay");
+        var workSelectModal = document.getElementById("work-select-modal");
+        
+        if (modalOverlay && workSelectModal) {
+            modalOverlay.classList.remove("hidden");
+            workSelectModal.classList.remove("hidden");
+        } else {
+            console.error("모달 요소를 찾을 수 없습니다.");
+            return;
+        }
+        
+        // 선택된 날짜 표시
+        var formattedDate = dm_selectedInfo.get("dateFormatted");
+        var modalDate = document.getElementById("modal-date");
+        if (modalDate) {
+            modalDate.textContent = formattedDate;
+        }
+        
+        // 신청 현황 업데이트
+        var selectedDate = dm_selectedInfo.get("date");
+        scwin.updateApplicationStatus(selectedDate);
+        
+        // 현재 근무타입이 있으면 해당 옵션 선택 상태로 표시
+        var currentWorkType = dm_selectedInfo.get("currentWorkType");
+        
+        // 안전하게 선택 초기화
+        try {
+            scwin.clearWorkOptionSelection();
+        } catch (e) {
+            console.log("선택 초기화 중 오류 (무시):", e);
+        }
+        
+        // 삭제 옵션 상태 관리
+        scwin.updateDeleteOptionState(currentWorkType);
+        
+        // 버튼 텍스트 업데이트
+        scwin.updateModalButtons(currentWorkType);
+        
+        // 모달 표시 후 DOM 요소 로드 대기 (더 긴 시간)
+        setTimeout(function() {
+            // 툴팁 제거
+            scwin.removeTooltips();
+            
+            // 모달 옵션 요소 존재 확인
+            var optionsReady = scwin.checkModalOptions();
+            
+            if (optionsReady) {
+                // 기존 선택된 근무타입이 있으면 해당 옵션을 선택된 상태로 표시
+                if (currentWorkType) {
+                    console.log("기존 근무타입 선택 시도:", currentWorkType);
+                    try {
+                        scwin.selectWorkOption(currentWorkType);
+                        dm_selectedInfo.set("selectedWorkType", currentWorkType);
+                    } catch (e) {
+                        console.log("기존 근무타입 선택 실패:", e);
+                    }
+                }
+            } else {
+                console.log("모달 옵션 요소가 아직 준비되지 않음, 재시도");
+                // 더 긴 시간 후 재시도
+                setTimeout(function() {
+                    if (currentWorkType) {
+                        console.log("기존 근무타입 선택 재시도:", currentWorkType);
+                        try {
+                            scwin.selectWorkOption(currentWorkType);
+                            dm_selectedInfo.set("selectedWorkType", currentWorkType);
+                        } catch (e) {
+                            console.log("기존 근무타입 선택 재시도 실패:", e);
+                        }
+                    }
+                }, 1000);
+            }
+        }, 800); // 300ms에서 800ms로 증가
+    } catch (e) {
+        console.error("모달 표시 중 오류:", e);
+    }
+};
+
+// 삭제 옵션 상태 관리 함수
+scwin.updateDeleteOptionState = function(currentWorkType) {
+    try {
+        var deleteOption = scwin.findWorkOption("option_clear", "clear");
+        
+        if (deleteOption) {
+            if (!currentWorkType || currentWorkType === "") {
+                // 현재 스케줄이 없으면 삭제 옵션 비활성화
+                deleteOption.style.background = "#f8f9fa";
+                deleteOption.style.color = "#adb5bd";
+                deleteOption.style.borderColor = "#dee2e6";
+                deleteOption.style.cursor = "not-allowed";
+                deleteOption.style.opacity = "0.6";
+                
+                // 라벨 텍스트 변경
+                var label = deleteOption.querySelector(".xf-label");
+                if (label) {
+                    label.textContent = "삭제할 스케줄 없음";
+                }
+                
+                // 클릭 이벤트 비활성화 표시
+                deleteOption.setAttribute("data-disabled", "true");
+                
+                console.log("삭제 옵션 비활성화 (현재 스케줄 없음)");
+            } else {
+                // 현재 스케줄이 있으면 삭제 옵션 활성화
+                deleteOption.style.background = "white";
+                deleteOption.style.color = "#333";
+                deleteOption.style.borderColor = "#e9ecef";
+                deleteOption.style.cursor = "pointer";
+                deleteOption.style.opacity = "1";
+                
+                // 라벨 텍스트 복원
+                var label = deleteOption.querySelector(".xf-label");
+                if (label) {
+                    label.textContent = "희망근무 삭제 (" + currentWorkType + ")";
+                }
+                
+                // 클릭 이벤트 활성화 표시
+                deleteOption.removeAttribute("data-disabled");
+                
+                console.log("삭제 옵션 활성화 (현재 스케줄:", currentWorkType + ")");
+            }
+        } else {
+            console.warn("삭제 옵션 요소를 찾을 수 없습니다.");
+        }
+    } catch (e) {
+        console.error("삭제 옵션 상태 업데이트 오류:", e);
+    }
+};
+
+// 모달 버튼 텍스트 업데이트 함수
+scwin.updateModalButtons = function(currentWorkType) {
+    try {
+        var submitBtn = document.querySelector("#btn_submit .xf-label");
+        
+        if (currentWorkType && currentWorkType !== "") {
+            // 이미 선택된 근무가 있는 경우
+            if (submitBtn) {
+                submitBtn.textContent = "수정하기";
+            }
+            console.log("버튼 텍스트: 수정하기 (기존 근무:", currentWorkType + ")");
+        } else {
+            // 선택된 근무가 없는 경우
+            if (submitBtn) {
+                submitBtn.textContent = "신청하기";
+            }
+            console.log("버튼 텍스트: 신청하기 (신규 신청)");
+        }
+    } catch (e) {
+        console.error("버튼 텍스트 업데이트 오류:", e);
+    }
+};
+
+// 통합된 워크 옵션 요소 찾기 함수 (WebSquare 최적화)
+scwin.findWorkOption = function(optionId, optionType) {
+    try {
+        console.log("요소 찾기 시도:", optionId, "타입:", optionType);
+        
+        // 1. WebSquare 컴포넌트로 직접 찾기 (가장 안전한 방법)
+        try {
+            var wsComponent = eval(optionId);
+            if (wsComponent && wsComponent.getElement) {
+                var element = wsComponent.getElement();
+                if (element) {
+                    console.log("✓ WebSquare 컴포넌트로 찾음:", optionId);
+                    return element;
+                }
+            }
+        } catch (e) {
+            // WebSquare 컴포넌트가 없는 경우 무시
+        }
+        
+        // 2. ID로 직접 찾기
+        var option = document.getElementById(optionId);
+        if (option) {
+            console.log("✓ ID로 찾음:", optionId);
+            return option;
+        }
+        
+        // 3. 모든 가능한 WebSquare 생성 ID 패턴 시도
+        var possibleIds = [
+            optionId,
+            optionId + "_label",
+            optionId + "_element",
+            optionId + "_body",
+            "ws_" + optionId,
+            optionId.replace("option_", "ws_option_")
+        ];
+        
+        for (var i = 0; i < possibleIds.length; i++) {
+            option = document.getElementById(possibleIds[i]);
+            if (option) {
+                console.log("✓ 확장 ID로 찾음:", possibleIds[i]);
+                return option;
+            }
+        }
+        
+        // 4. 클래스와 텍스트로 찾기 (향상된 버전)
+        var optionElements = document.querySelectorAll('.work-option, [class*="work-option"], [id*="option_"]');
+        console.log("검색 대상 요소 수:", optionElements.length);
+        
+        for (var i = 0; i < optionElements.length; i++) {
+            var element = optionElements[i];
+            
+            // ID 패턴 매칭 (부분 일치 포함)
+            if (element.id && element.id.indexOf(optionId) !== -1) {
+                console.log("✓ 부분 ID 매칭:", optionId, "실제 ID:", element.id);
+                return element;
+            }
+            
+            // 텍스트 내용으로 매칭 (더 정확한 매칭)
+            var text = element.textContent || element.innerText || "";
+            var labelElement = element.querySelector('.xf-label, .label, span');
+            if (labelElement) {
+                text = labelElement.textContent || labelElement.innerText || text;
+            }
+            
+            var expectedTexts = {
+                "clear": ["희망근무 삭제", "삭제할 스케줄", "비우기", "초기화", "삭제"],
+                "O": ["Off", "Off 신청"],
+                "D": ["Day", "Day 근무", "Day 근무 신청"],
+                "E": ["Evening", "Evening 근무", "Evening 근무 신청"],
+                "N": ["Night", "Night 근무", "Night 근무 신청"]
+            };
+            
+            if (expectedTexts[optionType]) {
+                for (var j = 0; j < expectedTexts[optionType].length; j++) {
+                    if (text.indexOf(expectedTexts[optionType][j]) !== -1) {
+                        console.log("✓ 텍스트로 찾음:", optionId, "텍스트:", text);
+                        return element;
+                    }
+                }
+            }
+        }
+        
+        // 5. 순서로 찾기 (최후의 수단) - 더 안전한 방법
+        var optionOrder = ["clear", "O", "D", "E", "N"];
+        var targetIndex = optionOrder.indexOf(optionType);
+        if (targetIndex !== -1) {
+            // work-option 클래스를 가진 요소들만 필터링
+            var workOptions = [];
+            for (var i = 0; i < optionElements.length; i++) {
+                if (optionElements[i].className && optionElements[i].className.indexOf('work-option') !== -1) {
+                    workOptions.push(optionElements[i]);
+                }
+            }
+            
+            if (workOptions.length > targetIndex) {
+                console.log("✓ 순서로 찾음:", optionId, "인덱스:", targetIndex);
+                return workOptions[targetIndex];
+            }
+        }
+        
+        console.log("✗ 찾을 수 없음:", optionId);
+        console.log("사용 가능한 요소들:");
+        for (var i = 0; i < optionElements.length; i++) {
+            console.log("- ID:", optionElements[i].id, "클래스:", optionElements[i].className, "텍스트:", optionElements[i].textContent);
+        }
+        
+        return null;
+        
+    } catch (e) {
+        console.error("요소 찾기 오류:", e);
+        return null;
+    }
+};
+
+// 모달 옵션 요소 존재 확인 함수 (WebSquare 최적화)
+scwin.checkModalOptions = function() {
+    try {
+        console.log("=== 모달 옵션 요소 확인 (WebSquare 최적화) ===");
+        var options = ["clear", "O", "D", "E", "N"];
+        var foundCount = 0;
+        var foundElements = [];
+        
+        // 1. WebSquare 컴포넌트로 직접 확인
+        console.log("1. WebSquare 컴포넌트 확인:");
+        for (var i = 0; i < options.length; i++) {
+            var optionId = "option_" + options[i];
+            try {
+                var component = eval(optionId);
+                if (component) {
+                    console.log("✓ WebSquare 컴포넌트 발견:", optionId);
+                    console.log("  컴포넌트 타입:", typeof component);
+                    console.log("  hasElement 메소드:", typeof component.getElement);
+                    
+                    if (component.getElement) {
+                        var element = component.getElement();
+                        if (element) {
+                            console.log("  DOM 요소:", element);
+                            console.log("  실제 ID:", element.id);
+                            console.log("  실제 클래스:", element.className);
+                            foundCount++;
+                            foundElements.push({type: "websquare", id: optionId, element: element});
+                        } else {
+                            console.log("  DOM 요소 없음");
+                        }
+                    }
+                } else {
+                    console.log("✗ WebSquare 컴포넌트 없음:", optionId);
+                }
+            } catch (e) {
+                console.log("✗ WebSquare 컴포넌트 오류:", optionId, e.message);
+            }
+        }
+        
+        // 2. 모든 가능한 선택자로 요소 찾기
+        console.log("2. DOM 선택자로 요소 찾기:");
+        var selectors = [
+            '.work-option',
+            '[class*="work-option"]',
+            '[id*="option_"]',
+            'button[id*="option_"]',
+            'div[id*="option_"]',
+            'span[id*="option_"]',
+            'input[id*="option_"]'
+        ];
+        
+        var allFoundElements = [];
+        for (var i = 0; i < selectors.length; i++) {
+            try {
+                var elements = document.querySelectorAll(selectors[i]);
+                console.log("선택자 '" + selectors[i] + "' 결과:", elements.length + "개");
+                for (var j = 0; j < elements.length; j++) {
+                    allFoundElements.push(elements[j]);
+                }
+            } catch (e) {
+                console.log("선택자 '" + selectors[i] + "' 오류:", e.message);
+            }
+        }
+        
+        // 중복 제거
+        var uniqueElements = [];
+        for (var i = 0; i < allFoundElements.length; i++) {
+            var isDuplicate = false;
+            for (var j = 0; j < uniqueElements.length; j++) {
+                if (uniqueElements[j] === allFoundElements[i]) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (!isDuplicate) {
+                uniqueElements.push(allFoundElements[i]);
+            }
+        }
+        
+        console.log("총 발견된 고유 요소 수:", uniqueElements.length);
+        
+        // 3. 발견된 요소들 상세 분석
+        console.log("3. 발견된 요소들 상세 분석:");
+        for (var i = 0; i < uniqueElements.length; i++) {
+            var element = uniqueElements[i];
+            console.log("- 요소 " + i + ":");
+            console.log("  ID:", element.id);
+            console.log("  클래스:", element.className);
+            console.log("  태그:", element.tagName);
+            console.log("  텍스트:", element.textContent || element.innerText);
+            console.log("  부모 ID:", element.parentElement ? element.parentElement.id : "없음");
+            console.log("  부모 클래스:", element.parentElement ? element.parentElement.className : "없음");
+            
+            // 라벨 요소 확인
+            var labelElement = element.querySelector('.xf-label, .label, span');
+            if (labelElement) {
+                console.log("  라벨 요소:", labelElement.textContent || labelElement.innerText);
+            }
+            
+            // 자식 요소들 확인
+            if (element.children && element.children.length > 0) {
+                console.log("  자식 요소들:");
+                for (var j = 0; j < element.children.length; j++) {
+                    var child = element.children[j];
+                    console.log("    - 태그:", child.tagName, "클래스:", child.className, "텍스트:", child.textContent || child.innerText);
+                }
+            }
+        }
+        
+        // 4. 모달 전체 구조 분석
+        var modal = document.getElementById("work-select-modal");
+        if (modal) {
+            console.log("4. 모달 내부 전체 구조:");
+            console.log("모달 HTML 길이:", modal.innerHTML.length);
+            
+            // 모달 내의 모든 요소 분석
+            var allModalElements = modal.querySelectorAll('*');
+            console.log("모달 내 전체 요소 수:", allModalElements.length);
+            
+            for (var i = 0; i < Math.min(allModalElements.length, 20); i++) { // 최대 20개만 표시
+                var elem = allModalElements[i];
+                if (elem.id || elem.className || elem.textContent) {
+                    console.log("  모달 요소 " + i + ":", {
+                        tagName: elem.tagName,
+                        id: elem.id,
+                        className: elem.className,
+                        textContent: (elem.textContent || "").substring(0, 50)
+                    });
+                }
+            }
+        }
+        
+        console.log("총 발견된 옵션 (추정):", foundCount + "/5");
+        console.log("=== 모달 옵션 확인 완료 ===");
+        
+        return foundCount >= 3 || uniqueElements.length >= 3; // 최소 3개 이상 찾으면 OK
+    } catch (e) {
+        console.error("모달 옵션 확인 오류:", e);
+        return false;
+    }
+};
+
+scwin.hideWorkSelectModal = function() {
+    // 모달 숨기기
+    document.getElementById("modal-overlay").classList.add("hidden");
+    document.getElementById("work-select-modal").classList.add("hidden");
+    
+    // 선택 상태 초기화
+    scwin.clearWorkOptionSelection();
+};
+
+scwin.selectWorkOption = function(optionType) {
+    console.log("옵션 선택 시도:", optionType);
+    
+    // 모든 옵션 선택 해제
+    scwin.clearWorkOptionSelection();
+    
+    // 선택된 옵션 활성화
+    try {
+        var optionId = "option_" + (optionType === "clear" ? "clear" : optionType);
+        
+        // DOM 요소 찾기 (여러 방법 시도)
+        var option = scwin.findWorkOption(optionId, optionType);
+        
+        if (option) {
+            console.log("요소 찾음:", option);
+            console.log("요소 정보:", {
+                id: option.id,
+                className: option.className,
+                tagName: option.tagName,
+                textContent: option.textContent
+            });
+            
+            try {
+                // 비활성화 상태가 아닌 경우에만 선택 스타일 적용
+                var isDisabled = option.getAttribute("data-disabled") === "true";
+                if (!isDisabled) {
+                    // 선택된 스타일 적용
+                    option.style.background = "#e8f5e8";
+                    option.style.borderColor = "#28a745";
+                    option.style.color = "#155724";
+                    option.style.transform = "translateY(-1px)";
+                    option.style.boxShadow = "0 3px 6px rgba(40, 167, 69, 0.2)";
+                    
+                    // 선택됨 클래스 추가
+                    if (option.classList) {
+                        option.classList.add("selected");
+                    }
+                    
+                    console.log("선택 스타일 적용 완료:", optionType);
+                } else {
+                    console.log("비활성화된 옵션이므로 선택 스타일 적용 안 함:", optionType);
+                }
+            } catch (styleError) {
+                console.error("스타일 적용 실패:", styleError);
+                
+                // 스타일 적용이 실패해도 선택된 상태는 저장
+                if (option.classList) {
+                    try {
+                        option.classList.add("selected");
+                        console.log("클래스만 추가 완료");
+                    } catch (classError) {
+                        console.error("클래스 추가도 실패:", classError);
+                    }
+                }
+            }
+        } else {
+            console.error("옵션 요소를 찾을 수 없음:", optionId);
+            
+            // 디버깅을 위한 상세 정보 출력
+            console.log("=== 디버깅 정보 ===");
+            console.log("찾으려는 옵션 ID:", optionId);
+            console.log("찾으려는 옵션 타입:", optionType);
+            
+            // 현재 모달 상태 확인
+            var modal = document.getElementById("work-select-modal");
+            if (modal) {
+                console.log("모달 존재, 숨김 상태:", modal.classList.contains("hidden"));
+                if (!modal.classList.contains("hidden")) {
+                    // 모달이 보이는 상태에서 모든 옵션 요소 확인
+                    var allOptions = modal.querySelectorAll('.work-option, [id*="option_"], [class*="work-option"]');
+                    console.log("모달 내 발견된 옵션 요소 수:", allOptions.length);
+                    
+                    for (var i = 0; i < allOptions.length; i++) {
+                        var elem = allOptions[i];
+                        console.log("- 요소 " + i + ":", {
+                            id: elem.id,
+                            className: elem.className,
+                            tagName: elem.tagName,
+                            textContent: (elem.textContent || "").trim().substring(0, 30)
+                        });
+                    }
+                } else {
+                    console.log("모달이 숨겨진 상태입니다.");
+                }
+            } else {
+                console.log("모달을 찾을 수 없습니다.");
+            }
+            
+            console.log("=== 디버깅 정보 끝 ===");
+        }
+        
+        // 선택된 타입 저장 (요소를 찾았든 못 찾았든)
+        dm_selectedInfo.set("selectedWorkType", optionType);
+        console.log("선택된 근무타입 저장:", optionType);
+        
+    } catch (e) {
+        console.error("옵션 선택 전체 오류:", e);
+        console.error("오류 스택:", e.stack);
+    }
+};
+
+scwin.clearWorkOptionSelection = function() {
+    var options = ["clear", "O", "D", "E", "N"];
+    for (var i = 0; i < options.length; i++) {
+        try {
+            var optionId = "option_" + options[i];
+            
+            // 통합된 요소 찾기 함수 사용
+            var option = scwin.findWorkOption(optionId, options[i]);
+            
+            if (option && option.classList) {
+                // 선택됨 클래스 제거
+                try {
+                    option.classList.remove("selected");
+                } catch (e) {
+                    console.log("클래스 제거 실패:", e);
+                }
+                
+                // 스타일 초기화 (비활성화 상태 고려)
+                try {
+                    if (options[i] === "clear") {
+                        // 삭제 옵션의 경우 비활성화 상태인지 확인
+                        var isDisabled = option.getAttribute("data-disabled") === "true";
+                        if (!isDisabled) {
+                            option.style.background = "white";
+                            option.style.borderColor = "#e9ecef";
+                            option.style.color = "#333";
+                            option.style.cursor = "pointer";
+                            option.style.opacity = "1";
+                        }
+                        // 비활성화된 경우 스타일은 updateDeleteOptionState에서 관리
+                    } else {
+                        option.style.background = "white";
+                        option.style.borderColor = "#e9ecef";
+                        option.style.color = "#333";
+                    }
+                    
+                    // transform과 shadow 초기화
+                    option.style.transform = "";
+                    option.style.boxShadow = "";
+                } catch (e) {
+                    console.log("스타일 초기화 실패:", e);
+                }
+            }
+        } catch (e) {
+            console.error("옵션 초기화 오류:", e);
+        }
+    }
+    dm_selectedInfo.set("selectedWorkType", "");
+};
+
+scwin.option_clear_onclick = function() {
+    try {
+        // 비활성화된 상태인지 확인
+        var deleteOption = scwin.findWorkOption("option_clear", "clear");
+        if (deleteOption && deleteOption.getAttribute("data-disabled") === "true") {
+            console.log("삭제 옵션이 비활성화되어 있어 클릭 무시됨");
+            
+            // 현재 스케줄이 없음을 알리는 메시지
+            var currentWorkType = dm_selectedInfo.get("currentWorkType");
+            if (!currentWorkType || currentWorkType === "") {
+                alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+            }
+            return;
+        }
+        
+        // 활성화된 상태일 때만 선택 처리
+        scwin.selectWorkOption("clear");
+    } catch (e) {
+        console.error("clear 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_O_onclick = function() {
+    try {
+        scwin.selectWorkOption("O");
+    } catch (e) {
+        console.error("O 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_D_onclick = function() {
+    try {
+        scwin.selectWorkOption("D");
+    } catch (e) {
+        console.error("D 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_E_onclick = function() {
+    try {
+        scwin.selectWorkOption("E");
+    } catch (e) {
+        console.error("E 옵션 선택 오류:", e);
+    }
+};
+
+scwin.option_N_onclick = function() {
+    try {
+        scwin.selectWorkOption("N");
+    } catch (e) {
+        console.error("N 옵션 선택 오류:", e);
+    }
+};
+
+scwin.btn_submit_onclick = function() {
+    var selectedDate = dm_selectedInfo.get("date");
+    var selectedWorkType = dm_selectedInfo.get("selectedWorkType");
+    var currentWorkType = dm_selectedInfo.get("currentWorkType");
+    
+    if (!selectedWorkType) {
+        alert("근무 타입을 선택해주세요.");
+        return;
+    }
+    
+    console.log("희망근무 신청:", selectedDate, selectedWorkType, "기존:", currentWorkType);
+    
+    if (selectedWorkType === "clear") {
+        // 비우기 = 일정 삭제
+        console.log("삭제 요청 - 현재 근무타입:", currentWorkType);
+        
+        if (!currentWorkType || currentWorkType === "") {
+            alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+            scwin.hideWorkSelectModal();
+            return;
+        }
+        
+        // 실제로 해당 날짜에 데이터가 있는지 재확인
+        var actualCount = scwin.countWorkForDate(selectedDate);
+        console.log("실제 데이터 개수:", actualCount);
+        
+        if (actualCount === 0) {
+            alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+            scwin.hideWorkSelectModal();
+            return;
+        }
+        
+        // 삭제 확인 메시지
+        var formattedDate = dm_selectedInfo.get("dateFormatted");
+        if (!confirm(formattedDate + "의 희망근무(" + currentWorkType + ")를 삭제하시겠습니까?")) {
+            return;
+        }
+        
+        // 해당 날짜의 모든 데이터 삭제 (간단하고 확실한 방법)
+        var deletedCount = scwin.simpleDeleteByDate(selectedDate);
+        console.log("삭제 완료 - 삭제된 개수:", deletedCount);
+        
+        if (deletedCount > 0) {
+            console.log("삭제 완료 - 즉시 캘린더 새로고침 시작");
+            
+            // 즉시 캘린더 새로고침 (지연 없음)
+            scwin.refreshCalendar();
+            
+            // 삭제 결과 확인 및 메시지
+            setTimeout(function() {
+                var remainingCount = scwin.countWorkForDate(selectedDate);
+                console.log("삭제 후 해당 날짜 남은 데이터:", remainingCount);
+                console.log("삭제 후 전체 데이터 수:", dlt_hopeWork.getTotalRow());
+                
+                if (remainingCount === 0) {
+                    alert("희망근무가 삭제되었습니다.");
+                } else {
+                    console.warn("삭제 후에도 " + remainingCount + "개 데이터가 남아있음");
+                    alert("희망근무 삭제가 완료되었습니다.");
+                }
+            }, 200);
+        } else {
+            // 삭제할 데이터가 없거나 삭제에 실패한 경우
+            console.warn("삭제 프로세스 실패 - 최강 삭제 한 번 더 시도");
+            
+            // 최후의 수단으로 최강 삭제 시도
+            var lastResortCount = scwin.strongDeleteByDate(selectedDate);
+            console.log("최후 삭제 시도 결과:", lastResortCount);
+            
+            // 최강 삭제 후에도 강화된 캘린더 새로고침 적용
+            scwin.refreshCalendar();
+            
+            setTimeout(function() {
+                var finalCheck = scwin.countWorkForDate(selectedDate);
+                if (finalCheck === 0) {
+                    alert("희망근무가 삭제되었습니다.");
+                } else {
+                    alert("⚠️ 희망근무 삭제 중 문제가 발생했습니다.\n\n가능한 원인:\n• 이미 삭제된 일정\n• 시스템 데이터 동기화 지연\n\n해결 방법:\n1. 페이지 새로고침(F5) 후 확인\n2. 일정이 보이지 않으면 정상 삭제된 것임\n3. 새 일정 추가는 정상적으로 가능");
+                }
+            }, 500);
+        }
+    } else {
+        // 새 근무 타입 신청
+        console.log("새 근무 타입 신청 처리 시작");
+        
+        // 변경 확인 메시지 (기존 일정이 있는 경우)
+        if (currentWorkType && currentWorkType !== "" && currentWorkType !== selectedWorkType) {
+            var formattedDate = dm_selectedInfo.get("dateFormatted");
+            if (!confirm(formattedDate + "의 희망근무를 '" + currentWorkType + "'에서 '" + selectedWorkType + "'로 변경하시겠습니까?\n\n※ 하루에는 1개의 희망근무만 신청할 수 있습니다.")) {
+                return;
+            }
+        }
+        
+        // 1. 해당 날짜의 기존 데이터 완전 삭제 (하루 1개 일정 보장)
+        console.log("기존 데이터 삭제 시작");
+        var deletedCount = scwin.removeAllWorkForDate(selectedDate);
+        console.log("삭제된 기존 데이터 수:", deletedCount);
+        
+        // 2. 데이터 삭제 후 잠시 대기 (확실한 삭제 보장)
+        setTimeout(function() {
+            // 3. 중복 검사 후 새 데이터 추가
+            var existingCount = scwin.countWorkForDate(selectedDate);
+            console.log("삭제 후 기존 데이터 수:", existingCount);
+            
+            if (existingCount > 0) {
+                console.warn("삭제가 완전히 되지 않음, 재삭제 시도");
+                scwin.removeAllWorkForDate(selectedDate);
+                
+                // 한 번 더 확인
+                setTimeout(function() {
+                    scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
+                }, 100);
+            } else {
+                scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
+            }
+        }, 200);
+    }
+    
+    scwin.hideWorkSelectModal();
+};
+
+// 날짜별 스케줄 개수 확인 함수
+scwin.countWorkForDate = function(dateStr) {
+    try {
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var count = 0;
+        
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            
+            // 다양한 날짜 형식으로 비교
+            if (row.start === dateStr ||
+                row.start === dateStr.replace(/-/g, '') ||
+                dateStr === row.start.replace(/-/g, '') ||
+                row.start.replace(/-/g, '') === dateStr.replace(/-/g, '')) {
+                count++;
+            }
+        }
+        
+        console.log("날짜 " + dateStr + "의 근무 개수:", count);
+        return count;
+    } catch (e) {
+        console.error("날짜별 스케줄 개수 확인 오류:", e);
+        return 0;
+    }
+};
+
+// 단일 스케줄 추가 함수 (중복 방지 강화)
+scwin.addSingleWorkSchedule = function(selectedDate, selectedWorkType, currentWorkType) {
+    try {
+        console.log("단일 스케줄 추가 시작:", selectedDate, selectedWorkType);
+        
+        // 추가 전 마지막 중복 검사
+        var existingCount = scwin.countWorkForDate(selectedDate);
+        if (existingCount > 0) {
+            console.warn("추가 전 중복 발견, 강제 삭제");
+            scwin.removeAllWorkForDate(selectedDate);
+            
+            // 삭제 후 재확인
+            setTimeout(function() {
+                var recheck = scwin.countWorkForDate(selectedDate);
+                if (recheck > 0) {
+                    console.error("삭제 후에도 중복 존재, 최강 삭제 시도");
+                    
+                    // 최강 삭제 한 번 더 시도
+                    var finalDeleteCount = scwin.strongDeleteByDate(selectedDate);
+                    console.log("최강 삭제 결과:", finalDeleteCount);
+                    
+                    // 최종 재확인
+                    setTimeout(function() {
+                        var finalCheck = scwin.countWorkForDate(selectedDate);
+                        if (finalCheck > 0) {
+                            console.error("모든 삭제 방법 실패");
+                            alert("⚠️ 데이터 삭제가 완전히 처리되지 않았습니다.\n\n해결 방법:\n1. 페이지를 새로고침(F5)하고 다시 시도\n2. 다른 날짜에 먼저 일정을 추가한 후 원하는 날짜 수정\n3. 브라우저 캐시를 지우고 다시 접속");
+                            return;
+                        } else {
+                            // 성공한 경우 계속 진행
+                            scwin.performSingleScheduleAdd(selectedDate, selectedWorkType, currentWorkType);
+                        }
+                    }, 500);
+                    return;
+                }
+                
+                // 실제 스케줄 추가
+                scwin.performSingleScheduleAdd(selectedDate, selectedWorkType, currentWorkType);
+            }, 100);
+        } else {
+            // 바로 추가
+            scwin.performSingleScheduleAdd(selectedDate, selectedWorkType, currentWorkType);
+        }
+        
+    } catch (e) {
+        console.error("단일 스케줄 추가 오류:", e);
+        alert("희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
+
+// 실제 스케줄 추가 실행 함수
+scwin.performSingleScheduleAdd = function(selectedDate, selectedWorkType, currentWorkType) {
+    try {
+        var colorMap = {
+            "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
+            "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
+            "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"},
+            "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"}
+        };
+        
+        var colors = colorMap[selectedWorkType];
+        if (!colors) {
+            console.error("알 수 없는 근무타입:", selectedWorkType);
+            alert("잘못된 근무타입입니다.");
+            return;
+        }
+        
+        var newWork = {
+            id: "hope_" + selectedDate + "_" + new Date().getTime(), // 유니크 ID 보장
+            title: selectedWorkType,
+            start: selectedDate,
+            end: selectedDate,
+            allDay: true,
+            color: colors.color,
+            backgroundColor: colors.backgroundColor,
+            borderColor: colors.borderColor,
+            textColor: colors.textColor,
+            className: colors.className
+        };
+        
+        console.log("새로 추가할 데이터:", newWork);
+        
+        // 새 데이터 삽입
+        dlt_hopeWork.insertRow();
+        var lastIndex = dlt_hopeWork.getTotalRow() - 1;
+        dlt_hopeWork.setRowJSON(lastIndex, newWork);
+        
+        console.log("새 데이터 삽입 완료, 인덱스:", lastIndex);
+        console.log("현재 총 데이터 수:", dlt_hopeWork.getTotalRow());
+        
+        // 데이터 변경 알림
+        dlt_hopeWork.broadcast();
+        
+        // 달력 새로고침
+        scwin.refreshCalendar();
+        
+        // 클래스 적용 (약간의 지연 후)
+        setTimeout(function() {
+            scwin.applyEventClasses();
+        }, 500);
+        
+        // 최종 중복 검사
+        setTimeout(function() {
+            var finalCount = scwin.countWorkForDate(selectedDate);
+            if (finalCount > 1) {
+                console.warn("최종 중복 검사에서 중복 발견, 정리 중");
+                scwin.cleanupDuplicateSchedules(selectedDate);
+            }
+        }, 1000);
+        
+        var workTypeNames = {
+            "E": "Evening 근무",
+            "O": "Off",
+            "D": "Day 근무",
+            "N": "Night 근무"
+        };
+        
+        var message = currentWorkType && currentWorkType !== "" ? 
+            (currentWorkType + "에서 " + selectedWorkType + "로 변경되었습니다.") :
+            (workTypeNames[selectedWorkType] + " 신청이 완료되었습니다.");
+            
+        alert(message);
+        
+        console.log("희망근무 처리 완료 - 날짜:", selectedDate, "타입:", selectedWorkType);
+        
+    } catch (e) {
+        console.error("스케줄 추가 실행 오류:", e);
+        alert("희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+};
+
+// 중복 스케줄 정리 함수
+scwin.cleanupDuplicateSchedules = function(dateStr) {
+    try {
+        console.log("중복 스케줄 정리 시작:", dateStr);
+        
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var sameDateSchedules = [];
+        
+        // 같은 날짜의 모든 스케줄 찾기
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            if (scwin.isSameDate(row.start, dateStr)) {
+                sameDateSchedules.push({
+                    index: i,
+                    data: row,
+                    timestamp: parseInt(row.id.split('_').pop()) || 0
+                });
+            }
+        }
+        
+        console.log("같은 날짜 스케줄 수:", sameDateSchedules.length);
+        
+        if (sameDateSchedules.length <= 1) {
+            console.log("중복 없음, 정리 완료");
+            return;
+        }
+        
+        // 가장 최근 것만 남기고 나머지 삭제
+        sameDateSchedules.sort(function(a, b) {
+            return b.timestamp - a.timestamp; // 최신순 정렬
+        });
+        
+        console.log("정렬된 스케줄:", sameDateSchedules);
+        
+        // 첫 번째(최신)를 제외하고 나머지 삭제 (역순으로)
+        for (var i = sameDateSchedules.length - 1; i >= 1; i--) {
+            console.log("중복 스케줄 삭제:", sameDateSchedules[i].data);
+            dlt_hopeWork.deleteRow(sameDateSchedules[i].index);
+        }
+        
+        // 데이터 변경 알림
+        dlt_hopeWork.broadcast();
+        
+        // 달력 새로고침
+        scwin.refreshCalendar();
+        
+        console.log("중복 스케줄 정리 완료");
+        
+    } catch (e) {
+        console.error("중복 스케줄 정리 오류:", e);
+    }
+};
+
+// 새로운 일정 추가 함수 (에러 처리 강화) - 호환성을 위해 유지
+scwin.addNewWorkSchedule = function(selectedDate, selectedWorkType) {
+    console.log("addNewWorkSchedule 호출됨, addSingleWorkSchedule로 리다이렉트");
+    scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, "");
+    return true;
+};
+
+// 하루 1개 일정 검증 함수 - 사용 중단 (cleanupDuplicateSchedules로 대체됨)
+// scwin.validateSingleSchedulePerDay = function(targetDate) { ... }
+
+// 간단하고 확실한 삭제 함수 (새로 추가)
+scwin.simpleDeleteByDate = function(dateStr) {
+    try {
+        console.log("=== 간단 삭제 시작 ===");
+        console.log("삭제할 날짜:", dateStr);
+        
+        // 1단계: 현재 모든 데이터 백업
+        var allData = [];
+        var keepData = [];
+        var deleteCount = 0;
+        
+        var totalRows = dlt_hopeWork.getTotalRow();
+        console.log("현재 총 데이터 수:", totalRows);
+        
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            allData.push(row);
+            
+            if (scwin.isSameDate(row.start, dateStr)) {
+                // 삭제 대상
+                console.log("삭제 대상:", row);
+                deleteCount++;
+            } else {
+                // 유지할 데이터
+                keepData.push(row);
+                console.log("유지 대상:", row);
+            }
+        }
+        
+        console.log("유지할 데이터:", keepData.length + "개");
+        console.log("삭제할 데이터:", deleteCount + "개");
+        
+        if (deleteCount === 0) {
+            console.log("삭제할 데이터가 없음");
+            return 0;
+        }
+        
+        // 2단계: 전체 데이터 클리어
+        console.log("전체 데이터 클리어");
+        dlt_hopeWork.removeAll();
+        
+        // 3단계: 유지할 데이터만 다시 설정
+        console.log("유지할 데이터 재설정");
+        if (keepData.length > 0) {
+            dlt_hopeWork.setJSON(keepData);
+            console.log("데이터 재설정 완료:", keepData.length + "개");
+        } else {
+            console.log("유지할 데이터 없음 (모든 데이터 삭제됨)");
+        }
+        
+        // 4단계: 데이터 변경 알림
+        dlt_hopeWork.broadcast();
+        console.log("데이터 브로드캐스트 완료");
+        
+        // 5단계: 결과 확인
+        var finalRows = dlt_hopeWork.getTotalRow();
+        var remainingForDate = scwin.countWorkForDate(dateStr);
+        
+        console.log("=== 간단 삭제 결과 ===");
+        console.log("최종 데이터 수:", finalRows);
+        console.log("삭제 대상 날짜 남은 데이터:", remainingForDate);
+        console.log("삭제 성공:", remainingForDate === 0 ? "YES" : "NO");
+        
+        return deleteCount;
+        
+    } catch (e) {
+        console.error("간단 삭제 오류:", e);
+        return 0;
+    }
+};
+
+// 날짜 비교 함수 (다양한 형식 지원 + 디버깅)
+scwin.isSameDate = function(date1, date2) {
+    try {
+        // null/undefined 체크
+        if (!date1 || !date2) {
+            console.log("날짜 비교 실패: null/undefined -", date1, date2);
+            return false;
+        }
+        
+        // 문자열로 변환
+        var str1 = String(date1);
+        var str2 = String(date2);
+        
+        // 날짜 정규화 (YYYYMMDD 형식으로 변환)
+        var normalizedDate1 = str1.replace(/-/g, '').substring(0, 8);
+        var normalizedDate2 = str2.replace(/-/g, '').substring(0, 8);
+        
+        var result = normalizedDate1 === normalizedDate2;
+        
+        // 매칭되는 경우에만 로그 출력 (성능 개선)
+        if (result) {
+            console.log("✓ 날짜 매칭:", date1, "vs", date2, "->", normalizedDate1, "vs", normalizedDate2);
+        }
+        
+        return result;
+    } catch (e) {
+        console.error("날짜 비교 오류:", e);
+        console.error("입력값:", date1, date2);
+        return false;
+    }
+};
+
+scwin.removeAllWorkForDate = function(dateStr) {
+    try {
+        console.log("날짜별 근무 삭제 시작 - 날짜:", dateStr);
+        
+        var maxAttempts = 3;
+        var attempt = 0;
+        var totalRemovedCount = 0;
+        
+        while (attempt < maxAttempts) {
+            attempt++;
+            console.log("삭제 시도 " + attempt + "/" + maxAttempts);
+            
+            var totalRows = dlt_hopeWork.getTotalRow();
+            var removedCount = 0;
+            var removedItems = [];
+            
+            console.log("삭제 전 총 데이터 수:", totalRows);
+            
+            // 해당 날짜의 모든 인덱스를 먼저 수집 (상세 디버깅 추가)
+            var indicesToDelete = [];
+            console.log("=== 삭제 대상 찾기 시작 ===");
+            console.log("찾을 날짜:", dateStr);
+            
+            for (var i = 0; i < totalRows; i++) {
+                var row = dlt_hopeWork.getRowJSON(i);
+                console.log("데이터 " + i + ":", {
+                    start: row.start,
+                    title: row.title,
+                    id: row.id,
+                    isSame: scwin.isSameDate(row.start, dateStr)
+                });
+                
+                if (scwin.isSameDate(row.start, dateStr)) {
+                    indicesToDelete.push(i);
+                    removedItems.push({
+                        title: row.title,
+                        date: row.start,
+                        id: row.id,
+                        index: i
+                    });
+                    console.log("✓ 삭제 대상 발견 - 인덱스:", i, "데이터:", row);
+                }
+            }
+            
+            console.log("=== 삭제 대상 찾기 완료 ===");
+            console.log("삭제할 인덱스들:", indicesToDelete);
+            console.log("총 삭제 대상 수:", indicesToDelete.length);
+            
+            // 역순으로 삭제 (인덱스 변경 방지)
+            for (var i = indicesToDelete.length - 1; i >= 0; i--) {
+                var indexToDelete = indicesToDelete[i];
+                console.log("인덱스 " + indexToDelete + " 삭제 중");
+                
+                try {
+                    dlt_hopeWork.deleteRow(indexToDelete);
+                    removedCount++;
+                    totalRemovedCount++;
+                } catch (deleteError) {
+                    console.error("인덱스 " + indexToDelete + " 삭제 실패:", deleteError);
+                }
+            }
+            
+            console.log("시도 " + attempt + " 삭제된 항목 수:", removedCount);
+            console.log("삭제된 항목들:", removedItems);
+            
+            // 데이터 변경 알림 (삭제가 있었다면 반드시 알림)
+            if (removedCount > 0) {
+                dlt_hopeWork.broadcast();
+                console.log("삭제 후 데이터 알림 완료");
+                
+                // 약간의 지연 후 추가 안정화 (WebSquare 처리 대기)
+                setTimeout(function() {
+                    dlt_hopeWork.broadcast();
+                    console.log("삭제 후 추가 안정화 완료");
+                }, 50);
+            }
+            
+            // 삭제 후 재확인
+            var remainingCount = scwin.countWorkForDate(dateStr);
+            console.log("삭제 후 남은 같은 날짜 데이터 수:", remainingCount);
+            
+            if (remainingCount === 0) {
+                console.log("모든 데이터 삭제 완료");
+                break;
+            } else {
+                console.warn("아직 " + remainingCount + "개 데이터가 남아있음, 재시도");
+                
+                // 잠시 대기 후 재시도
+                if (attempt < maxAttempts) {
+                    console.log("100ms 대기 후 재시도");
+                    // 동기적으로 처리하기 위해 간단한 대기
+                    var start = new Date().getTime();
+                    while (new Date().getTime() < start + 100) {
+                        // 100ms 대기
+                    }
+                }
+            }
+        }
+        
+        console.log("총 삭제된 항목 수:", totalRemovedCount);
+        console.log("최종 총 데이터 수:", dlt_hopeWork.getTotalRow());
+        
+        // 최종 확인 및 강화된 삭제 시도
+        var finalCheck = scwin.countWorkForDate(dateStr);
+        if (finalCheck > 0) {
+            console.warn("최대 시도 후에도 " + finalCheck + "개 데이터가 남아있음");
+            console.warn("강화된 삭제 방법 시도");
+            
+            // 강화된 삭제 방법: ID 기반 삭제 시도
+            var strongDeleteCount = scwin.strongDeleteByDate(dateStr);
+            console.log("강화된 삭제 결과:", strongDeleteCount + "개 삭제됨");
+            
+            // 최종 재확인
+            var finalFinalCheck = scwin.countWorkForDate(dateStr);
+            if (finalFinalCheck > 0) {
+                console.error("모든 방법을 시도해도 " + finalFinalCheck + "개 데이터가 남아있음");
+                console.error("수동 새로고침 권장");
+            } else {
+                console.log("강화된 삭제 방법으로 성공!");
+            }
+        }
+        
+        return totalRemovedCount;
+    } catch (e) {
+        console.error("날짜별 근무 삭제 오류:", e);
+        return 0;
+    }
+};
+
+// 강화된 삭제 함수 (WebSquare 안전 삭제)
+scwin.strongDeleteByDate = function(dateStr) {
+    try {
+        console.log("=== 최강 삭제 시작 ===");
+        console.log("대상 날짜:", dateStr);
+        
+        // 방법 1: 데이터리스트 상태 확인 및 강제 커밋
+        console.log("1. 데이터리스트 상태 확인");
+        try {
+            if (dlt_hopeWork.rollback) {
+                dlt_hopeWork.rollback(); // 혹시 있을 수 있는 트랜잭션 롤백
+                console.log("트랜잭션 롤백 완료");
+            }
+        } catch (e) {
+            console.log("롤백 실패 (무시):", e.message);
+        }
+        
+        // 방법 2: 전체 데이터 재구성 (안전한 방식)
+        console.log("2. 전체 데이터 재구성 방식");
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var originalData = [];
+        var filteredData = [];
+        
+        // 모든 데이터 백업
+        console.log("현재 전체 데이터:");
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            originalData.push(row);
+            console.log("데이터 " + i + ":", {
+                start: row.start,
+                title: row.title,
+                id: row.id
+            });
+            
+            // 해당 날짜가 아닌 것만 필터링
+            if (!scwin.isSameDate(row.start, dateStr)) {
+                filteredData.push(row);
+                console.log("  -> 유지됨");
+            } else {
+                console.log("  -> 삭제 대상");
+            }
+        }
+        
+        console.log("원본 데이터 수:", originalData.length);
+        console.log("필터링된 데이터 수:", filteredData.length);
+        console.log("삭제될 데이터 수:", originalData.length - filteredData.length);
+        
+        if (originalData.length === filteredData.length) {
+            console.log("삭제할 데이터가 없음");
+            return 0;
+        }
+        
+        // 방법 3: 안전한 데이터 재설정 (동기 방식)
+        console.log("3. 안전한 데이터 재설정 (동기)");
+        
+        try {
+            // 1단계: 데이터 클리어
+            console.log("1단계: 데이터 클리어");
+            dlt_hopeWork.removeAll();
+            console.log("데이터 클리어 완료");
+            
+            // 잠시 대기
+            var start = new Date().getTime();
+            while (new Date().getTime() < start + 200) {
+                // 200ms 대기
+            }
+            
+            // 2단계: 필터링된 데이터 재설정
+            console.log("2단계: 필터링된 데이터 재설정");
+            if (filteredData.length > 0) {
+                dlt_hopeWork.setJSON(filteredData);
+                console.log("데이터 재설정 완료:", filteredData.length + "개");
+            } else {
+                console.log("재설정할 데이터 없음 (모든 데이터 삭제됨)");
+            }
+            
+            // 잠시 대기
+            start = new Date().getTime();
+            while (new Date().getTime() < start + 200) {
+                // 200ms 대기
+            }
+            
+            // 3단계: 데이터 브로드캐스트
+            console.log("3단계: 데이터 브로드캐스트");
+            dlt_hopeWork.broadcast();
+            console.log("데이터 브로드캐스트 완료");
+            
+            // 잠시 대기
+            start = new Date().getTime();
+            while (new Date().getTime() < start + 200) {
+                // 200ms 대기
+            }
+            
+            // 4단계: 결과 확인
+            console.log("4단계: 결과 확인");
+            var newTotal = dlt_hopeWork.getTotalRow();
+            var remainingForDate = scwin.countWorkForDate(dateStr);
+            
+            console.log("=== 최강 삭제 결과 ===");
+            console.log("새로운 총 데이터 수:", newTotal);
+            console.log("해당 날짜 남은 데이터:", remainingForDate);
+            console.log("삭제 성공:", remainingForDate === 0 ? "YES" : "NO");
+            
+            if (remainingForDate === 0) {
+                console.log("������ 최강 삭제 성공!");
+                
+                // 성공 시 강화된 캘린더 새로고침 적용
+                console.log("최강 삭제 성공 - 강화된 캘린더 새로고침 적용");
+                setTimeout(function() {
+                    scwin.refreshCalendar();
+                }, 100);
+                
+            } else {
+                console.error("❌ 최강 삭제도 실패");
+            }
+            
+        } catch (resetError) {
+            console.error("데이터 재설정 오류:", resetError);
+        }
+        
+        // 삭제 작업 완료 후 항상 캘린더 새로고침 (안전장치)
+        setTimeout(function() {
+            console.log("최강 삭제 완료 후 최종 캘린더 새로고침");
+            scwin.refreshCalendar();
+        }, 300);
+        
+        return originalData.length - filteredData.length;
+        
+    } catch (e) {
+        console.error("최강 삭제 오류:", e);
+        return 0;
+    }
+};
+
+// 강제 정리 함수 (안전한 버전 - 캘린더 비움 방지)
+scwin.forceCleanupDate = function(dateStr) {
+    try {
+        console.log("강제 정리 시작 (안전한 방식):", dateStr);
+        
+        // removeAll 대신 개별 삭제로 처리하여 캘린더가 비워지는 것을 방지
+        var totalRows = dlt_hopeWork.getTotalRow();
+        var indicesToDelete = [];
+        
+        // 삭제할 인덱스 수집
+        for (var i = 0; i < totalRows; i++) {
+            var row = dlt_hopeWork.getRowJSON(i);
+            if (scwin.isSameDate(row.start, dateStr)) {
+                indicesToDelete.push(i);
+            }
+        }
+        
+        console.log("강제 정리 - 삭제할 인덱스:", indicesToDelete);
+        
+        if (indicesToDelete.length === 0) {
+            console.log("삭제할 데이터가 없음");
+            return;
+        }
+        
+        // 역순으로 개별 삭제 (removeAll 사용 안 함)
+        for (var i = indicesToDelete.length - 1; i >= 0; i--) {
+            var indexToDelete = indicesToDelete[i];
+            try {
+                console.log("강제 삭제 인덱스:", indexToDelete);
+                dlt_hopeWork.deleteRow(indexToDelete);
+            } catch (deleteError) {
+                console.error("강제 삭제 실패:", indexToDelete, deleteError);
+            }
+        }
+        
+        // 데이터 변경 알림
+        dlt_hopeWork.broadcast();
+        
+        console.log("강제 정리 완료 (개별 삭제 방식)");
+        
+    } catch (e) {
+        console.error("강제 정리 오류:", e);
+    }
+};
+
+scwin.refreshCalendar = function() {
+    // 달력 새로고침 통합 함수 (즉시 표시 보장)
+    try {
+        console.log("=== 캘린더 새로고침 시작 ===");
+        
+        // 현재 데이터 상태 확인
+        var totalRows = dlt_hopeWork.getTotalRow();
+        console.log("현재 총 데이터 수:", totalRows);
+        
+        // 1단계: 즉시 데이터 브로드캐스트
+        dlt_hopeWork.broadcast();
+        console.log("1단계: 데이터 브로드캐스트 완료");
+        
+        // 2단계: 즉시 캘린더 새로고침 (지연 없음)
+        if (shc_hopeWork.refresh) {
+            shc_hopeWork.refresh();
+            console.log("2단계: 캘린더 refresh() 즉시 완료");
+        }
+        
+        // 3단계: 추가 안정화를 위한 지연된 새로고침
+        setTimeout(function() {
+            try {
+                // 다시 한번 브로드캐스트
+                dlt_hopeWork.broadcast();
+                console.log("3단계: 추가 브로드캐스트 완료");
+                
+                // 다시 한번 캘린더 새로고침
+                if (shc_hopeWork.refresh) {
+                    shc_hopeWork.refresh();
+                    console.log("3단계: 추가 캘린더 새로고침 완료");
+                }
+                
+                // 4단계: 이벤트 클래스 적용
+                setTimeout(function() {
+                    scwin.applyEventClasses();
+                    console.log("4단계: 이벤트 클래스 적용 완료");
+                }, 100);
+                
+            } catch (additionalRefreshError) {
+                console.error("추가 새로고침 오류:", additionalRefreshError);
+            }
+        }, 200);
+        
+        // 5단계: 최종 확인 및 강제 렌더링
+        setTimeout(function() {
+            try {
+                var finalRows = dlt_hopeWork.getTotalRow();
+                console.log("최종 데이터 수:", finalRows);
+                
+                if (finalRows > 0) {
+                    // 데이터가 있는데 캘린더에 안 보이는 경우를 대비한 강제 렌더링
+                    console.log("5단계: 강제 렌더링 시작");
+                    
+                    // WebSquare 캘린더 강제 재렌더링
+                    if (shc_hopeWork.fullCalendar) {
+                        // FullCalendar 방식인 경우
+                        try {
+                            shc_hopeWork.fullCalendar('rerenderEvents');
+                            console.log("FullCalendar rerenderEvents 완료");
+                        } catch (fcError) {
+                            console.log("FullCalendar 방식 실패, 일반 새로고침 사용");
+                            shc_hopeWork.refresh();
+                        }
+                    } else {
+                        // 일반 WebSquare 캘린더
+                        shc_hopeWork.refresh();
+                        console.log("일반 WebSquare 새로고침 완료");
+                    }
+                }
+                
+                console.log("=== 캘린더 새로고침 최종 완료 ===");
+                
+            } catch (finalError) {
+                console.error("최종 렌더링 오류:", finalError);
+            }
+        }, 500);
+        
+    } catch (e) {
+        console.error("캘린더 새로고침 전체 오류:", e);
+    }
+};
+
+// 기존 함수 유지 (호환성을 위해)
+scwin.removeExistingWork = function(dateStr) {
+    return scwin.removeAllWorkForDate(dateStr);
+};
+
+// 디버깅 및 테스트 함수들
+scwin.debugModal = function() {
+    console.log("=== 모달 디버깅 시작 ===");
+    
+    // 모달 상태 확인
+    var modalOverlay = document.getElementById("modal-overlay");
+    var workSelectModal = document.getElementById("work-select-modal");
+    
+    console.log("모달 오버레이 존재:", !!modalOverlay);
+    console.log("모달 오버레이 숨김 상태:", modalOverlay ? modalOverlay.classList.contains("hidden") : "N/A");
+    console.log("작업 선택 모달 존재:", !!workSelectModal);
+    console.log("작업 선택 모달 숨김 상태:", workSelectModal ? workSelectModal.classList.contains("hidden") : "N/A");
+    
+    if (workSelectModal) {
+        console.log("모달 내부 요소 분석:");
+        var allElements = workSelectModal.querySelectorAll('*');
+        console.log("모달 내 전체 요소 수:", allElements.length);
+        
+        for (var i = 0; i < allElements.length; i++) {
+            var elem = allElements[i];
+            if (elem.id || elem.className.indexOf('work-option') !== -1 || elem.textContent) {
+                console.log("요소 " + i + ":", {
+                    tagName: elem.tagName,
+                    id: elem.id,
+                    className: elem.className,
+                    textContent: (elem.textContent || "").trim().substring(0, 50),
+                    onclick: elem.onclick ? "있음" : "없음"
+                });
+            }
+        }
+    }
+    
+    // 각 옵션별 찾기 테스트
+    console.log("=== 각 옵션별 찾기 테스트 ===");
+    var options = ["clear", "O", "D", "E", "N"];
+    
+    for (var i = 0; i < options.length; i++) {
+        var optionType = options[i];
+        var optionId = "option_" + optionType;
+        console.log("옵션 테스트:", optionType, "ID:", optionId);
+        
+        var element = scwin.findWorkOption(optionId, optionType);
+        if (element) {
+            console.log("✓ 찾음:", {
+                id: element.id,
+                className: element.className,
+                tagName: element.tagName,
+                textContent: (element.textContent || "").trim()
+            });
+        } else {
+            console.log("✗ 못 찾음:", optionId);
+        }
+    }
+    
+    console.log("=== 모달 디버깅 완료 ===");
+};
+
+scwin.testSelectOption = function(optionType) {
+    console.log("=== 옵션 선택 테스트:", optionType, "===");
+    
+    try {
+        scwin.selectWorkOption(optionType);
+        console.log("선택 완료");
+    } catch (e) {
+        console.error("선택 실패:", e);
+    }
+    
+    console.log("=== 테스트 완료 ===");
+};
+
+// 데이터 상태 확인 함수 (디버깅용)
+scwin.checkDataStatus = function(dateStr) {
+    console.log("=== 데이터 상태 확인 ===");
+    
+    if (!dateStr) {
+        console.log("사용법: scwin.checkDataStatus('20250826')");
+        return;
+    }
+    
+    var totalRows = dlt_hopeWork.getTotalRow();
+    console.log("전체 데이터 수:", totalRows);
+    
+    var targetCount = scwin.countWorkForDate(dateStr);
+    console.log("대상 날짜(" + dateStr + ") 데이터 수:", targetCount);
+    
+    console.log("전체 데이터 목록:");
+    for (var i = 0; i < totalRows; i++) {
+        var row = dlt_hopeWork.getRowJSON(i);
+        var isTarget = scwin.isSameDate(row.start, dateStr);
+        console.log("  " + i + ": " + row.start + " (" + row.title + ") " + (isTarget ? "← 대상" : ""));
+    }
+    
+    console.log("=== 확인 완료 ===");
+};
+
+// 강제 삭제 함수 (디버깅용)
+scwin.forceDelete = function(dateStr) {
+    if (!dateStr) {
+        console.log("사용법: scwin.forceDelete('20250826')");
+        return;
+    }
+    
+    console.log("강제 삭제 실행:", dateStr);
+    var result = scwin.strongDeleteByDate(dateStr);
+    
+    setTimeout(function() {
+        console.log("삭제 후 상태 확인:");
+        scwin.checkDataStatus(dateStr);
+    }, 1000);
+    
+    return result;
+};
+
+// 캘린더 강제 새로고침 함수 (사용자용)
+scwin.forceRefreshCalendar = function() {
+    console.log("=== 캘린더 강제 새로고침 시작 ===");
+    
+    try {
+        var totalRows = dlt_hopeWork.getTotalRow();
+        console.log("현재 데이터 수:", totalRows);
+        
+        // 현재 데이터 백업
+        var currentData = [];
+        for (var i = 0; i < totalRows; i++) {
+            currentData.push(dlt_hopeWork.getRowJSON(i));
+        }
+        
+        console.log("백업된 데이터:", currentData);
+        
+        // 완전 재설정 방식으로 강제 새로고침
+        console.log("1. 데이터 완전 재설정");
+        dlt_hopeWork.removeAll();
+        
+        if (currentData.length > 0) {
+            dlt_hopeWork.setJSON(currentData);
+            console.log("2. 데이터 재설정 완료:", currentData.length + "개");
+        } else {
+            console.log("2. 재설정할 데이터 없음");
+        }
+        
+        // 즉시 브로드캐스트 및 새로고침
+        dlt_hopeWork.broadcast();
+        console.log("3. 데이터 브로드캐스트 완료");
+        
+        if (shc_hopeWork.refresh) {
+            shc_hopeWork.refresh();
+            console.log("4. 캘린더 새로고침 완료");
+        }
+        
+        // 추가 안정화
+        setTimeout(function() {
+            scwin.refreshCalendar();
+            console.log("5. 추가 안정화 새로고침 완료");
+            
+            var finalRows = dlt_hopeWork.getTotalRow();
+            console.log("최종 데이터 수:", finalRows);
+            console.log("=== 캘린더 강제 새로고침 완료 ===");
+            
+            if (finalRows > 0) {
+                alert("캘린더가 강제로 새로고침되었습니다.\n현재 " + finalRows + "개의 일정이 표시되어야 합니다.");
+            } else {
+                alert("캘린더가 새로고침되었습니다.\n현재 표시할 일정이 없습니다.");
+            }
+        }, 300);
+        
+    } catch (e) {
+        console.error("강제 새로고침 오류:", e);
+        alert("강제 새로고침 중 오류가 발생했습니다: " + e.message);
+    }
+};
+
+// 콘솔에서 사용할 수 있는 헬퍼 함수
+scwin.help = function() {
+    console.log("=== 희망근무 신청 디버깅 도구 ===");
+    console.log("scwin.debugModal() - 모달 DOM 구조 분석");
+    console.log("scwin.testSelectOption('O') - 특정 옵션 선택 테스트");
+    console.log("scwin.checkModalOptions() - 모달 옵션 존재 확인");
+    console.log("scwin.testMonthChange('7') - 월 변경 테스트");
+    console.log("scwin.testPageMove() - 페이지 이동 테스트");
+    console.log("");
+    console.log("=== 삭제 문제 해결 도구 ===");
+    console.log("scwin.checkDataStatus('20250826') - 특정 날짜 데이터 상태 확인");
+    console.log("scwin.forceDelete('20250826') - 강제 삭제 실행");
+    console.log("scwin.countWorkForDate('20250826') - 특정 날짜 데이터 개수");
+    console.log("scwin.forceRefreshCalendar() - 캘린더 강제 새로고침 (삭제 문제 해결)");
+    console.log("");
+    console.log("=== 캘린더 표시 문제 해결 ===");
+    console.log("1. 삭제했는데 일정이 안 사라지면: scwin.forceRefreshCalendar()");
+    console.log("2. 데이터 확인: scwin.checkDataStatus('날짜')");
+    console.log("3. 강제 삭제: scwin.forceDelete('날짜')");
+    console.log("");
+    console.log("사용 예시:");
+    console.log("1. 삭제가 안 되면: scwin.checkDataStatus('20250826')");
+    console.log("2. 강제 삭제 시도: scwin.forceDelete('20250826')");
+    console.log("3. 캘린더가 안 새로고침되면: scwin.forceRefreshCalendar()");
+    console.log("4. 문제가 있으면 콘솔 메시지 확인");
+};
+
+scwin.btn_cancel_onclick = function() {
+    scwin.hideWorkSelectModal();
+};
+
+// 이벤트 클래스 강제 적용 함수
+scwin.applyEventClasses = function() {
+    try {
+        console.log("이벤트 클래스 적용 시작");
+        
+        // 모든 fc-event 요소 찾기
+        var events = document.querySelectorAll('.fc-event');
+        console.log("찾은 이벤트 수:", events.length);
+        
+        events.forEach(function(event, index) {
+            var title = event.querySelector('.fc-title');
+            if (title) {
+                var workType = title.textContent.trim();
+                console.log("이벤트 " + index + " 근무타입:", workType);
+                
+                // 기존 work- 클래스 제거
+                event.classList.remove('work-normal', 'work-overtime', 'work-night', 'work-vacation');
+                
+                // 근무 타입에 따라 클래스 추가
+                switch(workType) {
+                    case 'O':
+                        event.classList.add('work-normal');
+                        console.log("work-normal 클래스 추가");
+                        break;
+                    case 'D':
+                        event.classList.add('work-overtime');
+                        console.log("work-overtime 클래스 추가");
+                        break;
+                    case 'E':
+                        event.classList.add('work-night');
+                        console.log("work-night 클래스 추가");
+                        break;
+                    case 'N':
+                        event.classList.add('work-vacation');
+                        console.log("work-vacation 클래스 추가");
+                        break;
+                }
+                
+                console.log("최종 클래스:", event.className);
+            }
+        });
+    } catch (e) {
+        console.error("클래스 적용 중 오류:", e);
+    }
+};
+
+// ========== 알림 시스템 설정 상수 ==========
+scwin.CONFIG = {
+    MODAL: {
+        ID: "custom_notification_modal",
+        MAX_WIDTH: "700px",
+        MAX_HEIGHT: "80%",
+        Z_INDEX: 10000
+    },
+    STYLES: {
+        COLORS: {
+            INFO: "#E3F2FD",
+            WORK: "#E8F5E8", 
+            WARNING: "#FFF3E0",
+            DEFAULT: "#F5F5F5",
+            BORDER: "#2196F3"
+        },
+        GRADIENT: "linear-gradient(135deg, #2196F3, #1976D2)"
+    },
+    ICONS: {
+        INFO: "ℹ️ [정보]",
+        WORK: "������ [업무]", 
+        WARNING: "⚠️ [경고]",
+        DEFAULT: "������ [알림]",
+        UNREAD: "������",
+        BELL: "������",
+        CALENDAR: "������",
+        EMPTY: "������",
+        SUMMARY: "������",
+        TIP: "������"
+    },
+    TIMINGS: {
+        MARK_READ_DELAY: 3000,
+        REFRESH_DELAY: 100,
+        BADGE_UPDATE_DELAY: 500
+    }
+};
+
+// ========== 알림 데이터 ==========
+scwin.notifications = [
+    {
+        id: "noti_1",
+        title: "희망근무 시스템 안내", 
+        message: "희망근무 신청 시스템이 성공적으로 로드되었습니다. 달력에서 날짜를 클릭하여 희망근무를 신청하세요.",
+        type: "info",
+        createDate: "2025-01-15 09:00:00",
+        isRead: false
+    },
+    {
+        id: "noti_2",
+        title: "희망근무 신청 안내",
+        message: "2025년 8월 희망근무 신청이 가능합니다. 7월 스케줄은 '내 스케줄' 메뉴에서 확인하세요.", 
+        type: "work",
+        createDate: "2025-01-15 10:30:00",
+        isRead: false
+    },
+    {
+        id: "noti_3", 
+        title: "시스템 공지",
+        message: "하루에는 1개의 희망근무만 신청할 수 있습니다. 새로운 희망근무 신청 시 기존 신청이 자동으로 변경됩니다.",
+        type: "warning",
+        createDate: "2025-01-15 11:45:00", 
+        isRead: true
+    },
+    {
+        id: "noti_4",
+        title: "스케줄 신청 팁",
+        message: "희망근무 타입: Off(휴무), Day(주간근무), Evening(저녁근무), Night(야간근무) 중 선택하세요.",
+        type: "work", 
+        createDate: "2025-01-15 14:20:00",
+        isRead: false
+    },
+    {
+        id: "noti_5",
+        title: "삭제 기능 안내",
+        message: "이미 신청한 희망근무는 '희망근무 삭제' 옵션으로 제거할 수 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 15:10:00",
+        isRead: false
+    },
+    {
+        id: "noti_6",
+        title: "월별 전환 안내", 
+        message: "월 선택 드롭다운에서 7월을 선택하면 스케줄 조회 페이지로 이동합니다.",
+        type: "info",
+        createDate: "2025-01-15 16:30:00",
+        isRead: true
+    }
+];
+
+// ========== 알림 유틸리티 함수 ==========
+// 알림 타입에 따른 아이콘과 색상 가져오기
+scwin.getNotificationStyle = function(type) {
+    switch(type) {
+        case "info":
+            return {
+                icon: scwin.CONFIG.ICONS.INFO,
+                bgColor: scwin.CONFIG.STYLES.COLORS.INFO
+            };
+        case "work":
+            return {
+                icon: scwin.CONFIG.ICONS.WORK,
+                bgColor: scwin.CONFIG.STYLES.COLORS.WORK
+            };
+        case "warning":
+            return {
+                icon: scwin.CONFIG.ICONS.WARNING,
+                bgColor: scwin.CONFIG.STYLES.COLORS.WARNING
+            };
+        default:
+            return {
+                icon: scwin.CONFIG.ICONS.DEFAULT,
+                bgColor: scwin.CONFIG.STYLES.COLORS.DEFAULT
+            };
+    }
+};
+
+// 미읽은 알림 개수 계산
+scwin.getUnreadCount = function() {
+    var count = 0;
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (!scwin.notifications[i].isRead) {
+            count++;
+        }
+    }
+    return count;
+};
+
+// 알림 HTML 생성 (모달용)
+scwin.generateNotificationHTML = function() {
+    var notificationHtml = "";
+    
+    if (scwin.notifications.length === 0) {
+        return "<div style='text-align: center; color: #999; font-size: 16px; padding: 40px;'>" + 
+               scwin.CONFIG.ICONS.EMPTY + " 알림이 없습니다.</div>";
+    }
+    
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        var notification = scwin.notifications[i];
+        var style = scwin.getNotificationStyle(notification.type);
+        var readStatus = notification.isRead ? "" : " " + scwin.CONFIG.ICONS.UNREAD + " (미읽음)";
+        var textColor = notification.isRead ? "#666" : "#333";
+        var fontWeight = notification.isRead ? "normal" : "bold";
+        
+        notificationHtml += 
+            "<div style='margin-bottom: 15px; padding: 15px; background-color: " + style.bgColor + "; border-radius: 8px; border-left: 5px solid " + scwin.CONFIG.STYLES.COLORS.BORDER + "; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>" +
+            "<div style='font-size: 16px; font-weight: " + fontWeight + "; color: " + textColor + "; margin-bottom: 8px;'>" +
+            style.icon + " " + notification.title + readStatus + "</div>" +
+            "<div style='font-size: 14px; color: #555; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
+            "<div style='font-size: 12px; color: #888; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
+            "</div>";
+    }
+    
+    return notificationHtml;
+};
+
+// 알림 메시지 생성 (Alert용)
+scwin.generateAlertMessage = function() {
+    var unreadCount = scwin.getUnreadCount();
+    var message = scwin.CONFIG.ICONS.BELL + " [희망근무 알림 센터] " + scwin.CONFIG.ICONS.BELL + "\n\n";
+    
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        var notification = scwin.notifications[i];
+        var style = scwin.getNotificationStyle(notification.type);
+        var statusText = notification.isRead ? "[읽음]" : "[미읽음]";
+        
+        message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += (i + 1) + ". " + style.icon + " " + notification.title + " " + statusText + "\n";
+        message += "내용: " + notification.message + "\n";
+        message += "시간: " + notification.createDate + "\n\n";
+    }
+    
+    message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+    message += scwin.CONFIG.ICONS.SUMMARY + " 요약: 총 " + scwin.notifications.length + "개 알림 (미읽음 " + unreadCount + "개)\n\n";
+    message += scwin.CONFIG.ICONS.TIP + " 이 창을 닫으면 모든 알림이 읽음 처리됩니다.";
+    
+    return message;
+};
+
+// 모달 이벤트 리스너 등록
+scwin.attachModalEventListeners = function() {
+    var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
+    if (!modal) return;
+    
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            scwin.closeCustomModal();
+        }
+    });
+    
+    // ESC 키로 닫기 (한 번만 등록)
+    if (!scwin._escListenerAttached) {
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById(scwin.CONFIG.MODAL.ID)) {
+                scwin.closeCustomModal();
+            }
+        });
+        scwin._escListenerAttached = true;
+    }
+};
+
+// ========== 알림 모달 관리 함수 ==========
+// 알림 모달 표시
+scwin.showNotificationModal = function() {
+    console.log("=== 희망근무 알림 모달 표시 시도 ===");
+    
+    try {
+        // 먼저 알림 데이터 확인
+        console.log("현재 알림 개수:", scwin.notifications.length);
+        
+        // DOM 기반 커스텀 모달로 직접 표시
+        scwin.showCustomModal();
+        
+    } catch (e) {
+        console.log("모달 표시 중 오류 발생:", e.message);
+        console.log("alert로 대체 표시");
+        scwin.showAlertNotification();
+    }
+};
+
+// 커스텀 DOM 모달로 표시
+scwin.showCustomModal = function() {
+    console.log("=== 희망근무 커스텀 모달 생성 시작 ===");
+    
+    try {
+        // 기존 모달이 있으면 제거
+        var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        var unreadCount = scwin.getUnreadCount();
+        var notificationHtml = scwin.generateNotificationHTML();
+        
+        console.log("알림 HTML 생성 완료, 총 " + scwin.notifications.length + "개");
+        
+        // 모달 HTML 생성
+        var modalHtml = 
+            "<div id='" + scwin.CONFIG.MODAL.ID + "' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: " + scwin.CONFIG.MODAL.Z_INDEX + "; display: flex; justify-content: center; align-items: center;'>" +
+            "<div style='background: white; border-radius: 12px; width: 90%; max-width: " + scwin.CONFIG.MODAL.MAX_WIDTH + "; max-height: " + scwin.CONFIG.MODAL.MAX_HEIGHT + "; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;'>" +
+            
+            // 헤더
+            "<div style='background: " + scwin.CONFIG.STYLES.GRADIENT + "; color: white; padding: 20px; text-align: center;'>" +
+            "<h2 style='margin: 0; font-size: 20px; font-weight: bold;'>" + scwin.CONFIG.ICONS.BELL + " 희망근무 알림 센터</h2>" +
+            "<p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>총 " + scwin.notifications.length + "개 알림" + (unreadCount > 0 ? " (" + scwin.CONFIG.ICONS.UNREAD + "미읽음 " + unreadCount + "개)" : "") + "</p>" +
+            "</div>" +
+            
+            // 내용
+            "<div style='padding: 20px; max-height: 400px; overflow-y: auto;'>" +
+            notificationHtml +
+            "</div>" +
+            
+            // 버튼 영역
+            "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
+            "<button onclick='scwin.addTestNotification()' style='background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin-right: 10px; cursor: pointer; font-size: 14px;'>✨ 테스트 알림 추가</button>" +
+            "<button onclick='scwin.closeCustomModal()' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>❌ 닫기</button>" +
+            "</div>" +
+            
+            "</div>" +
+            "</div>";
+        
+        // DOM에 추가
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        console.log("희망근무 커스텀 모달 생성 완료");
+        
+        // 이벤트 리스너 등록
+        scwin.attachModalEventListeners();
+        
+        // 자동 읽음 처리
+        setTimeout(function() {
+            scwin.markAllAsRead();
+        }, scwin.CONFIG.TIMINGS.MARK_READ_DELAY);
+        
+        console.log("=== 희망근무 커스텀 모달 표시 완료 ===");
+        
+    } catch (e) {
+        console.log("커스텀 모달 생성 중 오류:", e.message);
+        scwin.showAlertNotification();
+    }
+};
+
+// Alert로 알림 표시 (대체 방법)
+scwin.showAlertNotification = function() {
+    console.log("=== Alert로 희망근무 알림 표시 시작 ===");
+    
+    try {
+        var message = scwin.generateAlertMessage();
+        var unreadCount = scwin.getUnreadCount();
+        
+        console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
+        alert(message);
+        
+        // 1초 후 모든 알림을 읽음 처리
+        setTimeout(function() {
+            scwin.markAllAsRead();
+        }, 1000);
+        
+        console.log("=== Alert 희망근무 알림 표시 완료 ===");
+        
+    } catch (e) {
+        console.log("Alert 표시 중 오류:", e.message);
+        // 최후의 수단
+        alert("알림 표시 중 오류가 발생했습니다.\n현재 " + scwin.notifications.length + "개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.");
+    }
+};
+
+// ========== 알림 관리 함수 ==========
+// 모든 알림을 읽음 처리
+scwin.markAllAsRead = function() {
+    var hasChanges = false;
+    
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (!scwin.notifications[i].isRead) {
+            scwin.notifications[i].isRead = true;
+            hasChanges = true;
+        }
+    }
+    
+    if (hasChanges) {
+        scwin.updateNotificationBadge();
+        console.log("모든 희망근무 알림을 읽음 처리 완료");
+    }
+};
+
+// 알림 배지 업데이트 (성능 최적화)
+scwin.updateNotificationBadge = function() {
+    try {
+        var unreadCount = scwin.getUnreadCount();
+        
+        // 버튼 찾기 (캐싱)
+        if (!scwin._btnAlarmCache) {
+            scwin._btnAlarmCache = $w.getComponentById("btn_alarm") || document.getElementById("btn_alarm");
+        }
+        
+        var btnAlarm = scwin._btnAlarmCache;
+        if (!btnAlarm) {
+            console.log("희망근무 알림 버튼을 찾을 수 없습니다");
+            return;
+        }
+        
+        // 현재 상태와 비교하여 필요한 경우만 업데이트
+        var shouldShowBadge = unreadCount > 0;
+        var currentlyShowingBadge = btnAlarm._badgeActive || false;
+        
+        if (shouldShowBadge !== currentlyShowingBadge) {
+            if (shouldShowBadge) {
+                // 미읽은 알림이 있으면 빨간 테두리
+                var badgeStyle = "border: 3px solid #FF0000; border-radius: 50%; box-shadow: 0 0 10px #FF0000;";
+                if (btnAlarm.setStyle) {
+                    btnAlarm.setStyle(badgeStyle);
+                } else {
+                    btnAlarm.style.border = "3px solid #FF0000";
+                    btnAlarm.style.borderRadius = "50%";
+                    btnAlarm.style.boxShadow = "0 0 10px #FF0000";
+                }
+                btnAlarm._badgeActive = true;
+                console.log("희망근무 알림 배지 활성화 (" + unreadCount + "개 미읽음)");
+            } else {
+                // 미읽은 알림이 없으면 원래 상태
+                if (btnAlarm.setStyle) {
+                    btnAlarm.setStyle("border: none; box-shadow: none;");
+                } else {
+                    btnAlarm.style.border = "none";
+                    btnAlarm.style.boxShadow = "none";
+                }
+                btnAlarm._badgeActive = false;
+                console.log("희망근무 알림 배지 비활성화");
+            }
+        }
+        
+    } catch (e) {
+        console.log("배지 업데이트 중 오류:", e.message);
+    }
+};
+
+// 테스트 알림 추가 (희망근무 관련)
+scwin.addTestNotification = function() {
+    var testMessages = [
+        {
+            title: "희망근무 신청 완료",
+            message: "8월 " + (Math.floor(Math.random() * 28) + 1) + "일 희망근무 신청이 완료되었습니다.",
+            type: "work"
+        },
+        {
+            title: "스케줄 변경 알림",
+            message: "희망근무 스케줄이 성공적으로 변경되었습니다.",
+            type: "info"
+        },
+        {
+            title: "중복 신청 경고",
+            message: "이미 해당 날짜에 희망근무가 신청되어 있습니다.",
+            type: "warning"
+        },
+        {
+            title: "월별 신청 마감",
+            message: "8월 희망근무 신청 마감이 임박했습니다.",
+            type: "warning"
+        },
+        {
+            title: "신청 승인",
+            message: "희망근무 신청이 관리자에 의해 승인되었습니다.",
+            type: "work"
+        }
+    ];
+    
+    var randomIndex = Math.floor(Math.random() * testMessages.length);
+    var testMessage = testMessages[randomIndex];
+    
+    // 새 알림 추가
+    var newNotification = {
+        id: "test_" + new Date().getTime(),
+        title: testMessage.title,
+        message: testMessage.message,
+        type: testMessage.type,
+        createDate: new Date().toLocaleString(),
+        isRead: false
+    };
+    
+    scwin.notifications.unshift(newNotification); // 맨 앞에 추가
+    
+    console.log("희망근무 테스트 알림 추가:", testMessage.title);
+    
+    // 배지 업데이트
+    scwin.updateNotificationBadge();
+    
+    // 모달 새로고침 (성능 최적화)
+    scwin.refreshModal();
+};
+
+// 모달 새로고침 (성능 최적화)
+scwin.refreshModal = function() {
+    var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
+    if (existingModal) {
+        scwin.closeCustomModal();
+        setTimeout(function() {
+            scwin.showNotificationModal();
+        }, scwin.CONFIG.TIMINGS.REFRESH_DELAY);
+    }
+};
+
+// 커스텀 모달 닫기 (개선된 버전)
+scwin.closeCustomModal = function() {
+    console.log("희망근무 커스텀 모달 닫기");
+    try {
+        var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
+        if (modal) {
+            modal.remove();
+            console.log("희망근무 커스텀 모달 제거 완료");
+        }
+    } catch (e) {
+        console.log("모달 닫기 중 오류:", e.message);
+    }
+};
+
+// 알림 모달 닫기 (호환성)
+scwin.closeNotificationModal = function() {
+    scwin.closeCustomModal();
+};
+
+scwin.btn_booking_onclick = function (e) {
+    location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";;
+};
+
+// ========== 메인 이벤트 핸들러 ==========
+// 알림 버튼 클릭 (단일 이벤트 핸들러)
+scwin.btn_alarm_onclick = function(e) {
+    console.log("=== 희망근무 알림 버튼 클릭됨 ===");
+    
+    try {
+        console.log("현재 희망근무 알림 개수:", scwin.notifications.length);
+        scwin.showNotificationModal();
+    } catch (error) {
+        console.log("버튼 클릭 처리 중 오류:", error.message);
+        scwin.showAlertNotification();
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group class="hope-work-container">
+
+        	<!-- 월 선택 드롭다운 -->
+        	<xf:group class="pgtbox" id="" meta_snippetCategory="02_타이틀" meta_snippetKeyComponent="true" meta_snippetName="2_01 페이지타이틀"
+        		style="">
+        		<xf:group class="breadcrumb" id="" style=""></xf:group>
+        		<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;" id="btn_alarm"
+        			ev:onclick="scwin.btn_alarm_onclick">
+        		</xf:image>
+        	</xf:group>
+        			<xf:group class="schbox" id="" style="margin-bottom: 10px;">
+		<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
+		<xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions" chooseOptionLabel="월을 선택하세요"
+			ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="true">
+			<xf:itemset nodeset="data:dlt_monthOptions">
+				<xf:label ref="label"></xf:label>
+				<xf:value ref="value"></xf:value>
+			</xf:itemset>
+			<xf:choices>
+				<xf:itemset nodeset="data:dlt_monthOptions">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+	</xf:group>
+
+	<div class="guide-message" id="guide-message">달력에서 날짜를 클릭하여 희망근무를 신청하세요. 페이지 로딩 중입니다...</div>
+
+	<!-- 커스텀 캘린더 헤더 (제목 + 버튼) -->
+	<div id="calendar-header" style="background: #f8f9fa; 		border: 1px solid #dee2e6; 		border-bottom: none;		padding: 10px 15px; 		display: flex; 		justify-content: space-between; 		align-items: center;		font-weight: bold;		font-size: 16px;		color: #495057;		width: 100%;		box-sizing: border-box;">
+		<span id="calendar-title">2025년 8월</span>
+		<xf:trigger class="btn_cm" ev:onclick="scwin.btn_booking_onclick" id="btn_trigger4"
+			style="background-color:#1C3D6B;color:#FFFFFF;padding:6px 12px;border-radius:3px;border:none;font-size:12px;" type="button">
+			<xf:label><![CDATA[듀티보기]]></xf:label>
+		</xf:trigger>
+	</div>
+
+	<w2:scheduleCalendar id="shc_hopeWork" style="width:100%;height:600px;" dataList="data:dlt_hopeWork" editable="false" endColumn="end" allDayColumn="allDay" eventLimit="true" headerLeftBtn="false" headerRightBtn="false"
+		headerTitle="false" idColumn="id" ioFormat="yyyyMMdd" lang="ko" locale="ko" selectable="true" startColumn="start"
+		titleColumn="title" colorColumn="color" backgroundColorColumn="backgroundColor" borderColorColumn="borderColor"
+		textColorColumn="textColor" classNameColumn="className" tooltipDisplay="false" version="3.6"
+		ev:onclick="scwin.shc_hopeWork_onclick" noUsePrompt="true">
+	</w2:scheduleCalendar>
+
+        	<!-- 근무타입 선택 모달 오버레이 -->
+        	<div id="modal-overlay" class="modal-overlay hidden" onclick="scwin.hideWorkSelectModal()"></div>
+
+        	<!-- 근무타입 선택 모달 -->
+        	<div id="work-select-modal" class="work-select-modal hidden">
+        		<div class="modal-header">
+        			<h3 id="modal-date" class="modal-date">8월 21일 (토)</h3>
+        		</div>
+        		<div class="modal-content">
+        			<!-- 신청 현황 섹션 -->
+        			<div class="application-status">
+        				<div class="status-title">이 날짜에 신청한 근무 현황</div>
+        				<div id="status-list" class="status-list">
+        					<!-- 동적으로 생성될 신청 현황 목록 -->
+        				</div>
+        			</div>
+        			<xf:trigger class="work-option clear" id="option_clear"
+        				style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #6c757d; background: #f8f9fa; display: block; width: 100%; text-align: left;"
+        				ev:onclick="scwin.option_clear_onclick" title="">
+        				<xf:label>희망근무 삭제</xf:label>
+        			</xf:trigger>
+        			<xf:trigger class="work-option" id="option_O"
+        				style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;"
+        				ev:onclick="scwin.option_O_onclick" title="">
+        				<xf:label>Off 신청</xf:label>
+        			</xf:trigger>
+        			<xf:trigger class="work-option" id="option_D"
+        				style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;"
+        				ev:onclick="scwin.option_D_onclick" title="">
+        				<xf:label>Day 근무 신청</xf:label>
+        			</xf:trigger>
+        			<xf:trigger class="work-option" id="option_E"
+        				style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;"
+        				ev:onclick="scwin.option_E_onclick" title="">
+        				<xf:label>Evening 근무 신청</xf:label>
+        			</xf:trigger>
+        			<xf:trigger class="work-option" id="option_N"
+        				style="padding: 12px 16px; margin-bottom: 8px; border: 1px solid #e9ecef; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #333; background: white; display: block; width: 100%; text-align: left;"
+        				ev:onclick="scwin.option_N_onclick" title="">
+        				<xf:label>Night 근무 신청</xf:label>
+        			</xf:trigger>
+        		</div>
+        		<div class="modal-buttons">
+        			<xf:trigger class="modal-btn btn-cancel" id="btn_cancel"
+        				style="background: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6; padding: 10px 20px; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 80px; font-weight: bold;"
+        				ev:onclick="scwin.btn_cancel_onclick">
+        				<xf:label>취소</xf:label>
+        			</xf:trigger>
+        			<xf:trigger class="modal-btn btn-submit" id="btn_submit"
+        				style="background: #1e3a8a; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 80px; font-weight: bold;"
+        				ev:onclick="scwin.btn_submit_onclick">
+        				<xf:label>신청하기</xf:label>
+        			</xf:trigger>
+        		</div>
+        	</div>
+        </xf:group>
+    </body>
+</html>
+

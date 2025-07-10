@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="로그인 페이지">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_login">
+					<w2:keyInfo>
+						<w2:key dataType="text" name="id" id="id"></w2:key>
+						<w2:key dataType="text" name="pw" id="pw"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+			<xf:submission id="sbm_login" action="/InsWebApp/CmmLogin.pwkjson" method="post" mediatype="application/json"
+				ref='data:json,{"id":"dma_login","key":"elData"}' target="" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler=""
+				mode="asynchronous" processMsg="로그인 처리중..." ev:submit="" ev:submitdone="scwin.sbm_login_submitdone" ev:submiterror="" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    // $p.url(w2xPath, options)
+
+	//$c.win.moveUrl("/ui/dept/Dept.xml"); // 페이지 이동 메소드
+};
+
+scwin.ui_id_onkeydown = function (e) {
+    if (e.keyCode === 13) { // Enter 키
+        ui_password.focus();
+    }
+};
+
+scwin.ui_password_onkeydown = function (e) {
+    if (e.keyCode === 13) { // Enter 키
+        btn_login.focus();
+        scwin.inputCheck();
+    }
+};
+
+// 로그인 버튼 클릭시 로그인 처리
+scwin.btn_login_onclick = function (e) {
+    
+    $c.sbm.execute(sbm_login);
+};
+
+// 정상 처리 후 dept.xml 이동처리
+scwin.sbm_login_submitdone = function (e) {
+    
+    var elHeader = e.responseJSON.elHeader; // 응답 전문 elHeader
+    if(elHeader != "" && elHeader != null && elHeader != "undefined") {
+        if(elHeader.resSuc == true) {
+            //setCookie("userId", elHeader.userId);
+            //moveLocation("html/emp/empList.html");
+            //$p.url("/ui/dept/Dept.xml");
+            //$c.win.moveUrl("/InsWebApp/ui/dept/Dept.xml");
+            //location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/dept/Dept.xml";
+            location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+        } else {
+            //exceptionAlert("로그인", elHeader.resCode, elHeader.resMsg);
+            alert(elHeader.resMsg);
+        }
+        
+    }
+};
+
+scwin.inputCheck = function() {
+    var id = ui_id.getValue();
+    var pw = ui_password.getValue();
+
+    if (!id || id.trim() === "") {
+        alert("사원번호를 입력하세요.");
+        ui_id.focus();
+        return false;
+    }
+
+    if (!pw || pw.trim() === "") {
+        alert("관리자번호를 입력하세요.");
+        ui_password.focus();
+        return false;
+    }
+    
+    return true;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;margin:0;padding:0;"
+			id="grp_main_wrapper">
+
+
+			<xf:group style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px;"
+				id="grp_login_container">
+
+
+				<xf:group style="text-align:center;" id="grp_logo">
+					<xf:image src="/InsWebApp/images/logo.png"
+						style="width:300px;height:100px;background-size:contain;background-repeat:no-repeat;" id="img_logo">
+					</xf:image>
+				</xf:group>
+
+
+				<xf:group style="display:flex;align-items:center;justify-content:center;position:relative;" id="grp_email">
+					<xf:image src="/InsWebApp/images/email.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
+						id="img_email">
+					</xf:image>
+					<xf:input class="" id="ui_id" placeholder="사원번호"
+						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
+						ev:onkeydown="scwin.ui_id_onkeydown" ref="data:dma_login.id">
+					</xf:input>
+				</xf:group>
+
+				<xf:group style="display:flex;align-items:center;justify-content:center;position:relative;" id="grp_password">
+					<xf:image src="/InsWebApp/images/pwd.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
+						id="img_password">
+					</xf:image>
+					<xf:input class="" id="ui_password" type="password" placeholder="관리자번호"
+						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
+						ev:onkeydown="scwin.ui_password_onkeydown" ref="data:dma_login.pw">
+					</xf:input>
+				</xf:group>
+
+				<xf:group style="text-align:center;" id="grp_button">
+					<xf:trigger class="" id="btn_login"
+						style="width:300px;height:50px;background-color:#1C3D6B;color:white;border:none;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer;"
+						type="button" ev:onclick="scwin.btn_login_onclick">
+						<xf:label><![CDATA[로그인]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

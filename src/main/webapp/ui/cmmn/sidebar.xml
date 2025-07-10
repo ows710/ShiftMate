@@ -180,7 +180,7 @@ scwin.goDutyManage = function() {
 
 // 스케줄 관리 메뉴 클릭
 scwin.goScheduleManage = function() {
-    scwin.handleMenuClick("menu_schedule_manage", "/InsWebApp/ui/duty/HopeWorkEntry.xml", "스케줄 관리");
+    scwin.handleMenuClick("menu_schedule_manage", "/InsWebApp/ui/schedule/mainEdit.xml", "스케줄 관리");
 };
 
 // 내 스케줄 보기 메뉴 클릭

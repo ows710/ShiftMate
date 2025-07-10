@@ -1,0 +1,3278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<style type="text/css">
+			/* 기본 스타일 */
+			* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			}
+
+			body {
+			font-family: 'Segoe
+			UI', Tahoma, Geneva, Verdana,
+			sans-serif;
+			background-color: #f8f9fa;
+			height: 100vh;
+			overflow: auto;
+			}
+
+			/* 메인 컨테이너 */
+			.main-container {
+			width: 100%;
+			min-height: 100vh;
+			background-color: #f8f9fa; /* 배경색으로 구분감 추가 */
+			overflow: visible; /* 스크롤 문제 방지 */
+			padding-bottom: 30px; /* 하단 여백 */
+			}
+
+			/* 상단 컨트롤 영역 */
+			.control-header {
+			background: #ffffff;
+			padding: 20px 30px;
+			margin-bottom: 20px;
+			border-bottom: 1px solid
+			#e9ecef;
+			box-shadow: 0
+			2px 4px rgba(0,
+			0, 0, 0.08);
+			position: relative;
+			z-index: 100;
+			}
+
+			.control-row {
+			display:
+			flex;
+			align-items: center;
+			justify-content:
+			space-between;
+			margin-bottom:
+			20px;
+			}
+
+			.control-left,
+			.control-right {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+			}
+
+			/* 월 선택
+			컨트롤 */
+			.month-control {
+			display: flex;
+			align-items:
+			center;
+			gap: 8px;
+			background: white;
+			border-radius: 12px;
+			padding: 8px 12px;
+			box-shadow: 0
+			2px 8px rgba(28, 61, 107,
+			0.2);
+			border:
+			2px solid
+			#1C3D6B;
+			}
+
+			.month-arrow {
+			width: 32px !important;
+			height: 32px !important;
+			background:
+			#1C3D6B !important;
+			color: white
+			!important;
+			border: none
+			!important;
+			border-radius: 6px !important;
+			cursor: pointer !important;
+			display: flex
+			!important;
+			align-items: center
+			!important;
+			justify-content: center !important;
+			font-weight: bold !important;
+			transition: all 0.2s ease
+			!important;
+			font-size: 14px
+			!important;
+			}
+
+			.month-arrow:hover {
+			background: #103E6B !important;
+			transform: scale(1.05) !important;
+			}
+
+			.month-display {
+			font-weight: 700
+			!important;
+			font-size: 16px !important;
+			color: #1C3D6B !important;
+			min-width: 100px !important;
+			text-align:
+			center !important;
+			}
+
+			/* 버튼 공통 스타일 */
+			.btn {
+			padding: 12px 24px !important;
+			border: none !important;
+			border-radius: 12px !important;
+			font-weight: 600 !important;
+			cursor: pointer
+			!important;
+			transition: all 0.3s ease !important;
+			font-size: 14px !important;
+			outline: none
+			!important;
+			}
+
+			.btn-settings {
+			background: #ffffff
+			!important;
+			color: #1C3D6B !important;
+			border: 2px solid #1C3D6B !important;
+			box-shadow: 0
+			2px 8px rgba(28, 61, 107, 0.2) !important;
+			}
+
+			.btn-generate {
+			background: #5CD6C0 !important;
+			color: #1C3D6B !important;
+			font-weight: 700
+			!important;
+			box-shadow: 0 2px 8px rgba(92, 214,
+			192, 0.3) !important;
+			}
+
+			/* 진행률 표시 */
+			.progress-section {
+			background: white;
+			padding: 50px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			border-bottom: none; /* 경계선 제거
+			*/
+			display:
+			none;
+			margin: 0 30px 30px 30px; /* 여백 추가 */
+			border-radius: 12px; /* 모서리 둥글게 */
+			}
+
+			.progress-section.active {
+			display: block;
+			}
+
+			.progress-title {
+			text-align: center;
+			font-size:
+			18px;
+			font-weight: 600;
+			color: #1C3D6B;
+			margin-bottom: 25px;
+			}
+
+			.progress-container {
+			width:
+			100%;
+			max-width: 600px;
+			margin: 0 auto 15px;
+			height:
+			12px;
+			background: #C3F4E6;
+			border-radius:
+			6px;
+			overflow: hidden;
+			}
+
+			.progress-bar {
+			height:
+			100%;
+			background:
+			linear-gradient(90deg, #5CD6C0 0%,
+			#1C3D6B 100%);
+			width: 0%;
+			transition: width
+			1s ease;
+			border-radius: 6px;
+			}
+
+			.progress-text
+			{
+			text-align: center;
+			font-weight: 600;
+			color: #1C3D6B;
+			font-size: 16px;
+			}
+
+			/* 모달 스타일 */
+			.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width:
+			100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: none;
+			z-index: 1000;
+			justify-content: center;
+			align-items: center;
+			}
+
+			.modal-overlay.active {
+			display: flex;
+			}
+
+			.modal-container {
+			background: white;
+			border-radius:
+			12px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+			width: 600px;
+			max-height: 80vh;
+			overflow-y: auto;
+			}
+
+			.modal-header {
+			background: #1C3D6B;
+			color: white;
+			padding: 20px;
+			border-radius: 12px 12px 0
+			0;
+			display:
+			flex;
+			justify-content: space-between;
+			align-items: center;
+			}
+
+			.modal-title {
+			font-size: 18px;
+			font-weight: 600;
+			}
+
+			.modal-close {
+			background: none;
+			border: none;
+			color: white;
+			font-size:
+			24px;
+			cursor: pointer;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			}
+
+			.modal-body {
+			padding: 20px;
+			max-height: 400px;
+			overflow-y: auto;
+			}
+
+			.setting-section {
+			margin-bottom: 25px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid
+			#e9ecef;
+			}
+
+			.setting-section:last-child {
+			border-bottom:
+			none;
+			margin-bottom: 0;
+			}
+
+			.section-title {
+			font-size: 16px;
+			font-weight: 600;
+			color:
+			#1C3D6B;
+			margin-bottom: 15px;
+			}
+
+			.setting-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+			padding: 12px;
+			background: #f8f9fa;
+			border-radius: 8px;
+			}
+
+			.setting-item:last-child {
+			margin-bottom: 0;
+			}
+
+			.setting-label {
+			font-weight: 500;
+			color: #333;
+			}
+
+			.setting-description {
+			font-size: 12px;
+			color:
+			#666;
+			margin-top: 4px;
+			}
+
+			.setting-control {
+			display: flex;
+			align-items: center;
+			gap:
+			10px;
+			}
+
+			.number-input {
+			width: 60px;
+			padding: 6px 8px;
+			border:
+			1px solid #ddd;
+			border-radius: 4px;
+			text-align: center;
+			font-weight: 600;
+			}
+
+			/* 토글 스위치 개선 */
+			.toggle-switch {
+			position: relative !important;
+			width: 50px !important;
+			height: 24px
+			!important;
+			background: #ccc !important;
+			border-radius: 12px !important;
+			cursor: pointer !important;
+			transition: background 0.3s ease
+			!important;
+			display: inline-block !important;
+			user-select: none !important;
+			}
+
+			.toggle-switch:hover {
+			background: #bbb !important;
+			}
+
+			.toggle-switch.active {
+			background: #5CD6C0 !important;
+			}
+
+			.toggle-switch.active:hover {
+			background: #4ac5b0 !important;
+			}
+
+			.toggle-slider {
+			position: absolute !important;
+			top: 2px !important;
+			left: 2px !important;
+			width: 20px !important;
+			height: 20px !important;
+			background: white
+			!important;
+			border-radius: 50% !important;
+			transition: transform 0.3s ease !important;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+			pointer-events: none !important;
+			}
+
+			.toggle-switch.active .toggle-slider {
+			transform: translateX(26px) !important;
+			}
+
+			/* 설정 아이템 내부 정렬 개선 */
+			.setting-control {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			min-height: 30px; /* 최소 높이 보장 */
+			}
+
+			.modal-footer {
+			padding:
+			20px;
+			border-top:
+			1px solid
+			#e9ecef;
+			display: flex;
+			justify-content:
+			flex-end;
+			gap: 12px;
+			}
+
+			.btn-modal-cancel {
+			background: #f8f9fa
+			!important;
+			color: #666
+			!important;
+			border: 1px solid #ddd !important;
+			padding:
+			10px 20px !important;
+			border-radius: 6px
+			!important;
+			font-weight: 600
+			!important;
+			cursor: pointer
+			!important;
+			}
+
+			.btn-modal-save {
+			background:
+			#5CD6C0 !important;
+			color: #1C3D6B
+			!important;
+			border:
+			none !important;
+			padding: 10px
+			20px
+			!important;
+			border-radius: 6px !important;
+			font-weight: 600 !important;
+			cursor: pointer
+			!important;
+			}
+
+			.violation-tooltip {
+			position:
+			absolute;
+			background: rgba(0, 0, 0, 0.9);
+			color:
+			white;
+			padding: 8px 12px;
+			border-radius: 6px;
+			font-size: 12px;
+			font-weight: 500;
+			z-index: 10000;
+			max-width: 250px;
+			word-wrap: break-word;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+			pointer-events: none;
+			white-space: nowrap;
+			}
+
+			.violation-tooltip::after {
+			content: '';
+			position:
+			absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -5px;
+			border: 5px solid
+			transparent;
+			border-top-color: rgba(0, 0, 0, 0.9);
+			}
+
+			/* 상단 컨트롤 영역 */
+			.control-header {
+			background: #ffffff;
+			padding: 20px
+			30px;
+			border-bottom:
+			1px solid
+			#e9ecef;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+			position: relative;
+			z-index: 100;
+			margin-bottom: 30px; /*
+			피벗과의 여백 추가 */
+			}
+
+			/* 피벗 테이블
+			영역 */
+			.pivot-section {
+			background: white;
+			padding: 30px; /*
+			내부 여백 추가 */
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			border-radius: 12px; /* 모서리
+			둥글게
+			*/
+			margin: 0 30px 30px 30px; /* 외부 여백 추가 */
+			}
+
+			.section-content {
+			width: 100%;
+			}
+
+			.grid-container {
+			width: 100%;
+			height: 600px; /* 고정 높이 설정 */
+			overflow: hidden; /* 외부 스크롤만 제거 */
+			}
+
+			#gv_pivotSchedule {
+			height: 600px !important;
+			}
+
+			/* 소계 섹션 스타일 수정 */
+			.summary-section {
+			background: white;
+			padding: 20px 30px;
+			/* border-top: 1px solid #e9ecef; 이 줄 제거 또는 주석처리 */
+			box-shadow:
+			0
+			2px 4px rgba(0, 0,
+			0, 0.05); /* 위쪽
+			그림자도 제거하거나 수정 */
+			margin: 0 30px; /* 좌우 여백 추가 */
+			border-radius: 12px; /* 모서리 둥글게 */
+			}
+
+			.summary-grid-container {
+			width: 100%;
+			border-radius: 8px;
+			overflow:
+			hidden;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			}
+
+			/* 소계 그리드뷰 자체의 상단 경계선도
+			제거 */
+			#gv_summarySchedule {
+			border-top:
+			none !important;
+			}
+
+			#gv_summarySchedule .w2grid_header {
+			border-top: none !important;
+			}
+
+			#gv_pivotSchedule .w2gridview tr:hover,
+			#gv_pivotSchedule .w2gridview tbody tr:hover,
+			#gv_pivotSchedule tr:hover,
+			#gv_pivotSchedule tbody tr:hover {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			#gv_summarySchedule .w2gridview tr:hover,
+			#gv_summarySchedule .w2gridview tbody tr:hover,
+			#gv_summarySchedule tr:hover,
+			#gv_summarySchedule tbody tr:hover {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			/* 그리드뷰 셀 선택 시 노란색 제거 */
+			#gv_pivotSchedule .w2gridview td.w2grid_selected,
+			#gv_pivotSchedule .w2gridview td.selected,
+			#gv_pivotSchedule td.w2grid_selected,
+			#gv_pivotSchedule td.selected,
+			#gv_pivotSchedule .w2grid_selected,
+			#gv_pivotSchedule .selected {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			}
+
+			#gv_summarySchedule .w2gridview td.w2grid_selected,
+			#gv_summarySchedule .w2gridview td.selected,
+			#gv_summarySchedule td.w2grid_selected,
+			#gv_summarySchedule td.selected,
+			#gv_summarySchedule .w2grid_selected,
+			#gv_summarySchedule .selected {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			}
+
+			/* 그리드뷰 셀 포커스 시 효과 제거 */
+			#gv_pivotSchedule .w2gridview td:focus,
+			#gv_pivotSchedule td:focus,
+			#gv_pivotSchedule .w2gridview input:focus,
+			#gv_pivotSchedule input:focus,
+			#gv_pivotSchedule .w2gridview select:focus,
+			#gv_pivotSchedule select:focus {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			box-shadow: none !important;
+			}
+
+			#gv_summarySchedule .w2gridview td:focus,
+			#gv_summarySchedule td:focus,
+			#gv_summarySchedule .w2gridview input:focus,
+			#gv_summarySchedule input:focus {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			box-shadow: none !important;
+			}
+
+			/* 그리드뷰 행 선택 효과 제거 */
+			#gv_pivotSchedule .w2gridview tr.w2grid_selected,
+			#gv_pivotSchedule .w2gridview tr.selected,
+			#gv_pivotSchedule tr.w2grid_selected,
+			#gv_pivotSchedule tr.selected {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			#gv_summarySchedule .w2gridview tr.w2grid_selected,
+			#gv_summarySchedule .w2gridview tr.selected,
+			#gv_summarySchedule tr.w2grid_selected,
+			#gv_summarySchedule tr.selected {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			/* 그리드뷰 편집 모드 시 효과 제거 */
+			#gv_pivotSchedule .w2gridview .w2grid_editing,
+			#gv_pivotSchedule .w2grid_editing,
+			#gv_pivotSchedule .editing {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			}
+
+			/* 웹스퀘어 기본 스타일 무력화 */
+			.w2gridview .w2grid_selected_cell {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			}
+
+			.w2gridview .w2grid_hover_row {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			.w2gridview .w2grid_selected_row {
+			background-color: transparent !important;
+			background: transparent !important;
+			}
+
+			/* 인라인 편집기 스타일 제거 */
+			.w2gridview input[type="text"],
+			.w2gridview select,
+			.w2gridview .w2input,
+			.w2gridview .w2select {
+			background-color: transparent !important;
+			border: none !important;
+			outline: none !important;
+			box-shadow: none !important;
+			}
+
+			/* 특정 웹스퀘어 클래스들 무력화 */
+			.w2grid_cell_selected,
+			.w2grid_row_selected,
+			.w2grid_cell_hover,
+			.w2grid_row_hover,
+			.w2grid_cell_editing,
+			.w2grid_cell_focus {
+			background-color: transparent !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			}
+		</style>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<!-- 간호사 목록 데이터 -->
+				<w2:dataList baseNode="list" id="dl_nurseList" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="nurseId" name="간호사ID" dataType="text" />
+						<w2:column id="nurseName" name="간호사명" dataType="text" />
+						<w2:column id="team" name="팀" dataType="text" />
+						<w2:column id="experience" name="경력" dataType="number" />
+						<w2:column id="isNightKeep" name="야간고정" dataType="boolean" />
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<nurseId>
+								1<![CDATA[1]]></nurseId>
+							<nurseName>
+								김간호<![CDATA[가]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>5</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								2<![CDATA[2]]></nurseId>
+							<nurseName>
+								이간호<![CDATA[나]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>3</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								3<![CDATA[3]]></nurseId>
+							<nurseName>
+								박간호<![CDATA[다]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>7</experience>
+							<isNightKeep>true</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								4<![CDATA[4]]></nurseId>
+							<nurseName>
+								최간호<![CDATA[라]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>2</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								5<![CDATA[5]]></nurseId>
+							<nurseName>
+								정간호<![CDATA[마]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>4</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								6<![CDATA[6]]></nurseId>
+							<nurseName>
+								강간호<![CDATA[바]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>6</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								7<![CDATA[7]]></nurseId>
+							<nurseName>
+								윤간호<![CDATA[사]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>8</experience>
+							<isNightKeep>true</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								8<![CDATA[8]]></nurseId>
+							<nurseName>
+								장간호<![CDATA[아]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								9<![CDATA[9]]></nurseId>
+							<nurseName>
+								홍간호<![CDATA[자]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>9</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								10<![CDATA[10]]></nurseId>
+							<nurseName>
+								하간호<![CDATA[차]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>6</experience>
+							<isNightKeep>true</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								11<![CDATA[11]]></nurseId>
+							<nurseName>
+								나간호<![CDATA[카]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>3</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								12<![CDATA[12]]></nurseId>
+							<nurseName>
+								다간호<![CDATA[타]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>7</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								13<![CDATA[13]]></nurseId>
+							<nurseName>
+								라간호<![CDATA[파]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>4</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								14<![CDATA[14]]></nurseId>
+							<nurseName>
+								마간호<![CDATA[하]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>2</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								15<![CDATA[15]]></nurseId>
+							<nurseName>
+								바간호<![CDATA[아]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>8</experience>
+							<isNightKeep>true</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								16<![CDATA[16]]></nurseId>
+							<nurseName>
+								사간호<![CDATA[야]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>5</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								17<![CDATA[17]]></nurseId>
+							<nurseName>
+								아간호<![CDATA[어]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								18<![CDATA[18]]></nurseId>
+							<nurseName>
+								자간호<![CDATA[여]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>9</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								19<![CDATA[19]]></nurseId>
+							<nurseName>
+								차간호<![CDATA[오]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>3</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								20<![CDATA[20]]></nurseId>
+							<nurseName>
+								카간호<![CDATA[요]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>6</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								21<![CDATA[21]]></nurseId>
+							<nurseName>
+								타간호<![CDATA[우]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>4</experience>
+							<isNightKeep>true</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								22<![CDATA[22]]></nurseId>
+							<nurseName>
+								파간호<![CDATA[유]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>7</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								23<![CDATA[23]]></nurseId>
+							<nurseName>
+								하간호2<![CDATA[으]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>2</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+
+				<!-- 생성된 스케줄 데이터 -->
+				<w2:dataList baseNode="list" id="dl_scheduleData" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="nurseId" name="간호사ID" dataType="text" />
+						<w2:column id="nurseName" name="간호사명" dataType="text" />
+						<w2:column id="shiftDate" name="근무일" dataType="text" />
+						<w2:column id="shiftType" name="근무타입" dataType="text" />
+						<w2:column id="isRequest" name="요청사항여부" dataType="boolean" />
+						<w2:column id="hasViolation" name="위반사항여부" dataType="boolean" />
+						<w2:column id="violationMsg" name="위반메시지" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+
+				<!-- 근무 형태 -->
+				<w2:dataList baseNode="list" id="dl_shiftTypes" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="value" name="값" dataType="text" />
+						<w2:column id="label" name="표시명" dataType="text" />
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<value>D</value>
+							<label>D</label>
+						</w2:row>
+						<w2:row>
+							<value>E</value>
+							<label>E</label>
+						</w2:row>
+						<w2:row>
+							<value>N</value>
+							<label>N</label>
+						</w2:row>
+						<w2:row>
+							<value>X</value>
+							<label>X</label>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+
+				<!-- 피벗 데이터 (31일 정적 컬럼) -->
+				<w2:dataList baseNode="list" id="dl_pivotData" repeatNode="map" ev:oncelldatachange="scwin.dl_pivotData_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="nurseId" name="간호사ID" dataType="text" />
+						<w2:column id="nurseName" name="간호사명" dataType="text" />
+						<w2:column id="day1" name="1일" dataType="text" />
+						<w2:column id="day2" name="2일" dataType="text" />
+						<w2:column id="day3" name="3일" dataType="text" />
+						<w2:column id="day4" name="4일" dataType="text" />
+						<w2:column id="day5" name="5일" dataType="text" />
+						<w2:column id="day6" name="6일" dataType="text" />
+						<w2:column id="day7" name="7일" dataType="text" />
+						<w2:column id="day8" name="8일" dataType="text" />
+						<w2:column id="day9" name="9일" dataType="text" />
+						<w2:column id="day10" name="10일" dataType="text" />
+						<w2:column id="day11" name="11일" dataType="text" />
+						<w2:column id="day12" name="12일" dataType="text" />
+						<w2:column id="day13" name="13일" dataType="text" />
+						<w2:column id="day14" name="14일" dataType="text" />
+						<w2:column id="day15" name="15일" dataType="text" />
+						<w2:column id="day16" name="16일" dataType="text" />
+						<w2:column id="day17" name="17일" dataType="text" />
+						<w2:column id="day18" name="18일" dataType="text" />
+						<w2:column id="day19" name="19일" dataType="text" />
+						<w2:column id="day20" name="20일" dataType="text" />
+						<w2:column id="day21" name="21일" dataType="text" />
+						<w2:column id="day22" name="22일" dataType="text" />
+						<w2:column id="day23" name="23일" dataType="text" />
+						<w2:column id="day24" name="24일" dataType="text" />
+						<w2:column id="day25" name="25일" dataType="text" />
+						<w2:column id="day26" name="26일" dataType="text" />
+						<w2:column id="day27" name="27일" dataType="text" />
+						<w2:column id="day28" name="28일" dataType="text" />
+						<w2:column id="day29" name="29일" dataType="text" />
+						<w2:column id="day30" name="30일" dataType="text" />
+						<w2:column id="day31" name="31일" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+
+				<!-- 소계 데이터 -->
+				<w2:dataList baseNode="list" id="dl_summaryData" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="shiftType" name="근무타입" dataType="text" />
+						<w2:column id="shiftLabel" name="근무타입명" dataType="text" />
+						<w2:column id="day1" name="1일" dataType="number" />
+						<w2:column id="day2" name="2일" dataType="number" />
+						<w2:column id="day3" name="3일" dataType="number" />
+						<w2:column id="day4" name="4일" dataType="number" />
+						<w2:column id="day5" name="5일" dataType="number" />
+						<w2:column id="day6" name="6일" dataType="number" />
+						<w2:column id="day7" name="7일" dataType="number" />
+						<w2:column id="day8" name="8일" dataType="number" />
+						<w2:column id="day9" name="9일" dataType="number" />
+						<w2:column id="day10" name="10일" dataType="number" />
+						<w2:column id="day11" name="11일" dataType="number" />
+						<w2:column id="day12" name="12일" dataType="number" />
+						<w2:column id="day13" name="13일" dataType="number" />
+						<w2:column id="day14" name="14일" dataType="number" />
+						<w2:column id="day15" name="15일" dataType="number" />
+						<w2:column id="day16" name="16일" dataType="number" />
+						<w2:column id="day17" name="17일" dataType="number" />
+						<w2:column id="day18" name="18일" dataType="number" />
+						<w2:column id="day19" name="19일" dataType="number" />
+						<w2:column id="day20" name="20일" dataType="number" />
+						<w2:column id="day21" name="21일" dataType="number" />
+						<w2:column id="day22" name="22일" dataType="number" />
+						<w2:column id="day23" name="23일" dataType="number" />
+						<w2:column id="day24" name="24일" dataType="number" />
+						<w2:column id="day25" name="25일" dataType="number" />
+						<w2:column id="day26" name="26일" dataType="number" />
+						<w2:column id="day27" name="27일" dataType="number" />
+						<w2:column id="day28" name="28일" dataType="number" />
+						<w2:column id="day29" name="29일" dataType="number" />
+						<w2:column id="day30" name="30일" dataType="number" />
+						<w2:column id="day31" name="31일" dataType="number" />
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<shiftType>D</shiftType>
+							<shiftLabel>D</shiftLabel>
+						</w2:row>
+						<w2:row>
+							<shiftType>E</shiftType>
+							<shiftLabel>E</shiftLabel>
+						</w2:row>
+						<w2:row>
+							<shiftType>N</shiftType>
+							<shiftLabel>N</shiftLabel>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+
+				<!-- 화면 제어 데이터 -->
+				<w2:dataMap baseNode="map" id="dm_control">
+					<w2:keyInfo>
+						<w2:key id="currentYear" name="현재년도" dataType="number" />
+						<w2:key id="currentMonth" name="현재월" dataType="number" />
+						<w2:key id="selectedTeam" name="선택팀" dataType="text" />
+						<w2:key id="isGenerating" name="생성중여부" dataType="boolean" />
+						<w2:key id="generationProgress" name="생성진행률" dataType="number" />
+						<w2:key id="pivotMode" name="피벗모드" dataType="text" />
+						<w2:key id="daysInMonth" name="월일수" dataType="number" />
+						<w2:key id="offDays" name="기본휴무일" dataType="number" />
+						<w2:key id="maxWorkDays" name="최대연속근무일" dataType="number" />
+						<w2:key id="maxNightDays" name="최대연속야간근무" dataType="number" />
+					</w2:keyInfo>
+					<w2:data>
+						<currentYear>2025</currentYear>
+						<currentMonth>7</currentMonth>
+						<selectedTeam>전체</selectedTeam>
+						<isGenerating>false</isGenerating>
+						<generationProgress>0</generationProgress>
+						<pivotMode>nurseByDay</pivotMode>
+						<daysInMonth>31</daysInMonth>
+						<offDays>10</offDays>
+						<maxWorkDays>4</maxWorkDays>
+						<maxNightDays>3</maxNightDays>
+					</w2:data>
+				</w2:dataMap>
+
+				<!-- 요청용 데이터맵 - dataCollection 안으로 이동 -->
+				<w2:dataMap baseNode="map" id="dma_sample">
+					<w2:keyInfo>
+						<w2:key dataType="number" name="간호사수" id="maxNurses"></w2:key>
+						<w2:key dataType="date" name="시작일" id="startDate"></w2:key>
+						<w2:key dataType="date" name="종료일" id="endDate"></w2:key>
+						<w2:key dataType="" name="간호사정보" id="nurseList"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+
+				<!-- 응답용 데이터리스트 - dataCollection 안으로 이동 -->
+				<w2:dataList baseNode="list" id="dlt_sample" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="schId" name="스케줄ID" dataType="number" />
+						<w2:column id="shiftDate" name="근무일" dataType="text" />
+						<w2:column id="nurseId" name="간호사ID" dataType="number" />
+						<w2:column id="shiftType" name="근무타입" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+
+			</w2:dataCollection>
+			<xf:submission id="sbm_generateSchedule" action="http://192.168.210.3:8080/api/schedule/generate" method="post"
+				mediatype="application/json" ref="data:json,dma_sample" target="data:json,dlt_sample" encoding="UTF-8" instance="" replace=""
+				errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_generateSchedule_submitdone"
+				ev:submiterror="scwin.sbm_generateSchedule_submiterror" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// 페이지 로드
+scwin.onpageload = function () {
+    scwin.isUpdating = false;
+    scwin.initializePage();
+    scwin.setCurrentMonth();
+
+    setTimeout(function () {
+        scwin.initializePivotData();
+        scwin.initializeSummaryData();
+        scwin.refreshGrids();
+        scwin.updateColumnVisibility();
+        scwin.initializeTooltip();
+
+        scwin.initializeToggles();
+
+        scwin.removeGridEffects();
+    }, 500);
+
+    setTimeout(function() {
+        scwin.removeGridEffects();
+    }, 2000);
+};
+
+// JavaScript에서 그리드뷰 속성 수정
+scwin.removeGridEffects = function() {
+    console.log("그리드 효과 제거 시작");
+    
+    try {
+        // 피벗 그리드뷰 효과 제거
+        if (gv_pivotSchedule) {
+            // 마우스 오버 색상 제거
+            if (typeof gv_pivotSchedule.setRowMouseOverColor === 'function') {
+                gv_pivotSchedule.setRowMouseOverColor('transparent');
+            }
+            
+            // 선택된 셀 색상 제거
+            if (typeof gv_pivotSchedule.setSelectedCellColor === 'function') {
+                gv_pivotSchedule.setSelectedCellColor('transparent');
+            }
+            
+            // 선택된 행 색상 제거
+            if (typeof gv_pivotSchedule.setSelectedRowColor === 'function') {
+                gv_pivotSchedule.setSelectedRowColor('transparent');
+            }
+            
+            // 선택된 행 오버 색상 제거
+            if (typeof gv_pivotSchedule.setSelectedRowOverColor === 'function') {
+                gv_pivotSchedule.setSelectedRowOverColor('transparent');
+            }
+            
+            console.log("피벗 그리드 효과 제거 완료");
+        }
+        
+        // 요약 그리드뷰 효과 제거
+        if (gv_summarySchedule) {
+            // 마우스 오버 색상 제거
+            if (typeof gv_summarySchedule.setRowMouseOverColor === 'function') {
+                gv_summarySchedule.setRowMouseOverColor('transparent');
+            }
+            
+            // 선택된 셀 색상 제거
+            if (typeof gv_summarySchedule.setSelectedCellColor === 'function') {
+                gv_summarySchedule.setSelectedCellColor('transparent');
+            }
+            
+            // 선택된 행 색상 제거
+            if (typeof gv_summarySchedule.setSelectedRowColor === 'function') {
+                gv_summarySchedule.setSelectedRowColor('transparent');
+            }
+            
+            // 선택된 행 오버 색상 제거
+            if (typeof gv_summarySchedule.setSelectedRowOverColor === 'function') {
+                gv_summarySchedule.setSelectedRowOverColor('transparent');
+            }
+            
+            console.log("요약 그리드 효과 제거 완료");
+        }
+        
+    } catch (e) {
+        console.error("그리드 효과 제거 중 오류:", e);
+    }
+};
+
+// ===== 제약 조건 검사 및 셀 스타일 함수 =====
+
+// 셀 스타일 함수 (그리드뷰에서 자동 호출)
+scwin.pivotCellStyleFunction = function (rowIndex, colIndex, colID, value) {
+    // 간호사명 컬럼은 스타일 적용 안함
+    if (colID === "nurseName" || colID === "nurseId" || !colID.startsWith("day")) {
+        return null;
+    }
+
+    // 제약 조건 검사
+    var violations = scwin.checkConstraintViolations(rowIndex, colID, value);
+
+    if (violations.length > 0) {
+        // 심각한 위반 (연속 근무 초과)
+        if (violations.some(v => v.type === "error")) {
+            return {
+                backgroundColor: "#ffebee",
+                border: "2px solid #f44336",
+                color: "#c62828",
+                fontWeight: "bold"
+            };
+        }
+        // 경고 (패턴 위반)
+        else {
+            return {
+                backgroundColor: "#fff3e0",
+                border: "2px solid #ff9800",
+                color: "#ef6c00",
+                fontWeight: "bold"
+            };
+        }
+    }
+
+    return null;
+};
+
+// 제약 조건 검사 함수
+scwin.checkConstraintViolations = function (rowIndex, colID, currentValue) {
+    var violations = [];
+    var maxWorkDays = dm_control.get("maxWorkDays") || 4;
+    var maxNightDays = dm_control.get("maxNightDays") || 3;
+    var currentDay = parseInt(colID.replace("day", ""));
+
+    // 1. 연속 근무일 체크
+    var workStreak = scwin.getWorkStreak(rowIndex, currentDay, currentValue);
+    if (workStreak > maxWorkDays) {
+        violations.push({
+            type: "error",
+            message: `연속 근무 ${workStreak}일 (최대 ${maxWorkDays}일)`
+        });
+    }
+
+    // 2. 연속 야간 근무 체크
+    if (currentValue === "N") {
+        var nightStreak = scwin.getNightStreak(rowIndex, currentDay, currentValue);
+        if (nightStreak > maxNightDays) {
+            violations.push({
+                type: "error",
+                message: `연속 야간 ${nightStreak}일 (최대 ${maxNightDays}일)`
+            });
+        }
+    }
+
+    // 3. 금지 패턴 체크
+    var forbiddenPattern = scwin.checkForbiddenPatterns(rowIndex, currentDay, currentValue);
+    if (forbiddenPattern) {
+        violations.push({
+            type: "warning",
+            message: `금지 패턴: ${forbiddenPattern}`
+        });
+    }
+
+    return violations;
+};
+
+// 연속 근무일 계산
+scwin.getWorkStreak = function (rowIndex, currentDay, currentValue) {
+    var streak = 0;
+    var daysInMonth = dm_control.get("daysInMonth");
+
+    // 현재 값이 근무가 아니면 0 반환
+    if (currentValue === "X" || !currentValue) return 0;
+
+    // 현재일부터 역순으로 연속 근무 계산
+    for (var day = currentDay; day >= 1; day--) {
+        var value = day === currentDay ? currentValue : dl_pivotData.getCellData(rowIndex, "day" + day);
+        if (value === "D" || value === "E" || value === "N") {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    // 현재일 이후 순차적으로 연속 근무 계산
+    for (var day = currentDay + 1; day <= daysInMonth; day++) {
+        var value = dl_pivotData.getCellData(rowIndex, "day" + day);
+        if (value === "D" || value === "E" || value === "N") {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    return streak;
+};
+
+// 연속 야간 근무 계산
+scwin.getNightStreak = function (rowIndex, currentDay, currentValue) {
+    var streak = 0;
+    var daysInMonth = dm_control.get("daysInMonth");
+
+    // 현재일부터 역순으로 연속 야간 계산
+    for (var day = currentDay; day >= 1; day--) {
+        var value = day === currentDay ? currentValue : dl_pivotData.getCellData(rowIndex, "day" + day);
+        if (value === "N") {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    // 현재일 이후 순차적으로 연속 야간 계산  
+    for (var day = currentDay + 1; day <= daysInMonth; day++) {
+        var value = dl_pivotData.getCellData(rowIndex, "day" + day);
+        if (value === "N") {
+            streak++;
+        } else {
+            break;
+        }
+    }
+
+    return streak;
+};
+
+// 금지 패턴 체크
+scwin.checkForbiddenPatterns = function (rowIndex, currentDay, currentValue) {
+    // 3일 연속 패턴 체크 (DEN, NED, etc.)
+    for (var startDay = Math.max(1, currentDay - 2); startDay <= Math.min(currentDay, dm_control.get("daysInMonth") - 2); startDay++) {
+        var pattern = "";
+        for (var i = 0; i < 3; i++) {
+            var day = startDay + i;
+            var value = day === currentDay ? currentValue : dl_pivotData.getCellData(rowIndex, "day" + day);
+            pattern += value || "";
+        }
+
+        // 금지 패턴 목록
+        var forbidden = ["DEN", "NED", "END", "DNE", "EDN", "NDE"];
+        if (forbidden.includes(pattern)) {
+            return pattern;
+        }
+    }
+
+    // 2일 연속 패턴 체크 (NE, EN)
+    for (var startDay = Math.max(1, currentDay - 1); startDay <= Math.min(currentDay, dm_control.get("daysInMonth") - 1); startDay++) {
+        var pattern = "";
+        for (var i = 0; i < 2; i++) {
+            var day = startDay + i;
+            var value = day === currentDay ? currentValue : dl_pivotData.getCellData(rowIndex, "day" + day);
+            pattern += value || "";
+        }
+
+        if (pattern === "NE" || pattern === "EN") {
+            return pattern;
+        }
+    }
+
+    return null;
+};
+
+// 간소화된 refreshGridStyles 함수
+scwin.refreshGridStyles = function () {
+    console.log("refreshGridStyles 호출됨");
+
+    // 그리드 새로고침
+    if (gv_pivotSchedule && typeof gv_pivotSchedule.refresh === 'function') {
+        gv_pivotSchedule.refresh();
+    }
+
+    // 제약 조건 스타일 적용 (툴팁 이벤트는 별도로)
+    setTimeout(function () {
+        scwin.applyConstraintStylesOnly();
+
+        // 툴팁 이벤트는 더 늦게 추가 (그리드 완전히 렌더링 후)
+        setTimeout(function () {
+            scwin.addTooltipEvents();
+        }, 1000);
+    }, 300);
+};
+
+// 툴팁 엘리먼트 생성 및 초기화
+scwin.initializeTooltip = function () {
+    console.log("툴팁 초기화 시작...");
+
+    // 기존 툴팁이 있으면 제거
+    var existingTooltip = document.getElementById('constraint-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+        console.log("기존 툴팁 제거됨");
+    }
+
+    // 새 툴팁 엘리먼트 생성
+    var tooltip = document.createElement('div');
+    tooltip.id = 'constraint-tooltip';
+    tooltip.className = 'constraint-tooltip';
+
+    // 초기 스타일 직접 설정 (CSS가 적용 안 될 경우 대비)
+    tooltip.style.position = 'fixed';
+    tooltip.style.background = 'linear-gradient(135deg, #333, #555)';
+    tooltip.style.color = 'white';
+    tooltip.style.padding = '12px 16px';
+    tooltip.style.borderRadius = '8px';
+    tooltip.style.fontSize = '13px';
+    tooltip.style.fontWeight = '500';
+    tooltip.style.zIndex = '10000';
+    tooltip.style.maxWidth = '300px';
+    tooltip.style.wordWrap = 'break-word';
+    tooltip.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
+    tooltip.style.pointerEvents = 'none';
+    tooltip.style.opacity = '0';
+    tooltip.style.transform = 'translateY(10px)';
+    tooltip.style.transition = 'all 0.3s ease';
+    tooltip.style.border = '1px solid rgba(255,255,255,0.2)';
+
+    document.body.appendChild(tooltip);
+
+    console.log("툴팁 엘리먼트 생성 완료:", tooltip);
+    console.log("툴팁 부모:", tooltip.parentNode);
+
+    return tooltip;
+};
+
+// 툴팁 표시 함수
+scwin.showTooltip = function (event, message) {
+    console.log("showTooltip 호출됨:", message);
+
+    var tooltip = document.getElementById('constraint-tooltip');
+    if (!tooltip) {
+        console.log("툴팁 요소가 없어서 재생성");
+        tooltip = scwin.initializeTooltip();
+    }
+
+    if (!tooltip) {
+        console.error("툴팁 생성 실패!");
+        return;
+    }
+
+    console.log("툴팁 요소 상태:", {
+        id: tooltip.id,
+        className: tooltip.className,
+        parentNode: tooltip.parentNode ? tooltip.parentNode.tagName : 'null',
+        currentOpacity: tooltip.style.opacity
+    });
+
+    tooltip.innerHTML = message;
+    tooltip.style.opacity = '1';
+    tooltip.style.transform = 'translateY(0px)';
+    tooltip.style.display = 'block'; // 명시적으로 표시
+
+    // 마우스 위치에 따라 툴팁 위치 조정
+    var x = event.clientX || event.pageX || 0;
+    var y = event.clientY || event.pageY || 0;
+
+    console.log("마우스 위치:", x, y);
+
+    // 안전한 위치 계산
+    var windowWidth = window.innerWidth || document.documentElement.clientWidth;
+    var windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+    // 툴팁이 화면을 벗어나지 않도록 조정
+    if (x + 300 > windowWidth) {
+        x = windowWidth - 320;
+    }
+    if (y + 100 > windowHeight) {
+        y = y - 120;
+    } else {
+        y = y + 20;
+    }
+
+    tooltip.style.left = Math.max(10, x) + 'px';
+    tooltip.style.top = Math.max(10, y) + 'px';
+
+    console.log("툴팁 최종 위치:", tooltip.style.left, tooltip.style.top);
+    console.log("툴팁 최종 스타일:", {
+        opacity: tooltip.style.opacity,
+        transform: tooltip.style.transform,
+        display: tooltip.style.display,
+        zIndex: tooltip.style.zIndex
+    });
+};
+
+// 툴팁 숨김 함수
+scwin.hideTooltip = function () {
+    console.log("hideTooltip 호출됨");
+
+    var tooltip = document.getElementById('constraint-tooltip');
+    if (tooltip) {
+        tooltip.style.opacity = '0';
+        tooltip.style.transform = 'translateY(10px)';
+        // display는 숨기지 않음 (애니메이션을 위해)
+        console.log("툴팁 숨김 완료");
+    } else {
+        console.log("숨길 툴팁이 없음");
+    }
+};
+
+scwin.injectTooltipStyles = function () {
+    var existingStyle = document.getElementById('constraint-tooltip-styles');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+
+    var style = document.createElement('style');
+    style.id = 'constraint-tooltip-styles';
+    style.textContent = `
+        .constraint-tooltip {
+            position: fixed !important;
+            background: linear-gradient(135deg, #333, #555) !important;
+            color: white !important;
+            padding: 12px 16px !important;
+            border-radius: 8px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            z-index: 10000 !important;
+            max-width: 300px !important;
+            word-wrap: break-word !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+            pointer-events: none !important;
+            opacity: 0 !important;
+            transform: translateY(10px) !important;
+            transition: all 0.3s ease !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+        }
+    `;
+
+    document.head.appendChild(style);
+    console.log("툴팁 CSS 스타일 강제 주입 완료");
+};
+
+// 그리드 셀에 툴팁 이벤트 리스너 추가
+scwin.addTooltipEvents = function () {
+    console.log("툴팁 이벤트 추가 시작");
+
+    // 여러 시도로 그리드 요소 찾기
+    var attemptCount = 0;
+    var maxAttempts = 10;
+
+    function tryAddTooltips() {
+        attemptCount++;
+        console.log(`툴팁 이벤트 추가 시도 ${attemptCount}/${maxAttempts}`);
+
+        // 다양한 방법으로 그리드 요소 찾기
+        var gridElement = document.getElementById('gv_pivotSchedule') ||
+            document.querySelector('[id*="gv_pivotSchedule"]') ||
+            document.querySelector('.w2gridview') ||
+            document.querySelector('table');
+
+        if (!gridElement) {
+            console.log(`그리드 요소를 찾을 수 없음 (시도 ${attemptCount})`);
+
+            if (attemptCount < maxAttempts) {
+                setTimeout(tryAddTooltips, 500); // 0.5초 후 재시도
+                return;
+            } else {
+                console.error("최대 시도 횟수 초과 - 그리드 요소를 찾을 수 없습니다");
+                return;
+            }
+        }
+
+        console.log("그리드 요소 발견:", gridElement);
+
+        // tbody 찾기
+        var tbody = gridElement.querySelector('tbody');
+        if (!tbody) {
+            console.log("tbody 요소를 찾을 수 없음, table 전체에서 tr 찾기");
+            var rows = gridElement.querySelectorAll('tr');
+            if (rows.length === 0) {
+                console.error("테이블 행을 찾을 수 없습니다");
+                return;
+            }
+            // 첫 번째 행이 헤더일 가능성이 높으므로 제외
+            rows = Array.from(rows).slice(1);
+        } else {
+            var rows = tbody.querySelectorAll('tr');
+        }
+
+        if (rows.length === 0) {
+            console.error("데이터 행을 찾을 수 없습니다");
+            return;
+        }
+
+        console.log(`발견된 행 수: ${rows.length}, 데이터 행 수: ${dl_pivotData.getRowCount()}`);
+
+        var daysInMonth = dm_control.get("daysInMonth");
+        var tooltipCount = 0;
+
+        for (var rowIdx = 0; rowIdx < Math.min(rows.length, dl_pivotData.getRowCount()); rowIdx++) {
+            var row = rows[rowIdx];
+            var cells = row.querySelectorAll('td');
+
+            if (cells.length === 0) continue;
+
+            for (var day = 1; day <= daysInMonth; day++) {
+                // 웹스퀘어 그리드에서 첫 번째 컬럼은 간호사명이므로 day 컬럼은 1부터 시작
+                var colIndex = day;
+
+                if (colIndex < cells.length) {
+                    var cell = cells[colIndex];
+                    var colID = "day" + day;
+                    var value = dl_pivotData.getCellData(rowIdx, colID);
+
+                    if (!value || value === "X" || value === "") continue;
+
+                    var violations = scwin.checkConstraintViolations(rowIdx, colID, value);
+
+                    if (violations.length > 0) {
+                        // 툴팁 메시지 생성
+                        var nurseName = dl_pivotData.getCellData(rowIdx, "nurseName");
+                        var messages = [];
+
+                        messages.push(`<strong>${nurseName}</strong> - ${day}일 ${value}근무`);
+                        messages.push(''); // 빈 줄
+
+                        violations.forEach(function (violation) {
+                            var icon = violation.type === 'error' ? '❌' : '⚠️';
+                            messages.push(`${icon} ${violation.message}`);
+                        });
+
+                        var tooltipMessage = messages.join('<br>');
+
+                        // 기존 이벤트 리스너 제거 (중복 방지)
+                        cell.removeEventListener('mouseenter', cell._tooltipEnterHandler);
+                        cell.removeEventListener('mousemove', cell._tooltipMoveHandler);
+                        cell.removeEventListener('mouseleave', cell._tooltipLeaveHandler);
+
+                        // 새 이벤트 리스너 추가 (클로저 사용)
+                        (function (cellElement, message) {
+                            cellElement._tooltipEnterHandler = function (e) {
+                                scwin.showTooltip(e, message);
+                            };
+
+                            cellElement._tooltipMoveHandler = function (e) {
+                                scwin.showTooltip(e, message);
+                            };
+
+                            cellElement._tooltipLeaveHandler = function () {
+                                scwin.hideTooltip();
+                            };
+
+                            cellElement.addEventListener('mouseenter', cellElement._tooltipEnterHandler);
+                            cellElement.addEventListener('mousemove', cellElement._tooltipMoveHandler);
+                            cellElement.addEventListener('mouseleave', cellElement._tooltipLeaveHandler);
+
+                            // 셀 스타일 추가 (호버 효과)
+                            cellElement.style.cursor = 'help';
+
+                        })(cell, tooltipMessage);
+
+                        tooltipCount++;
+                        console.log(`툴팁 이벤트 추가: ${nurseName} ${day}일 (총 ${tooltipCount}개)`);
+                    }
+                }
+            }
+        }
+
+        console.log(`✅ 툴팁 이벤트 추가 완료 - 총 ${tooltipCount}개 셀에 툴팁 적용`);
+    }
+
+    // 첫 번째 시도는 바로 실행
+    tryAddTooltips();
+};
+
+scwin.applyConstraintStylesOnly = function () {
+    var daysInMonth = dm_control.get("daysInMonth");
+    console.log("제약 조건 스타일만 적용 시작");
+
+    // 1. 모든 셀 배경색 초기화
+    for (var row = 0; row < dl_pivotData.getRowCount(); row++) {
+        for (var day = 1; day <= daysInMonth; day++) {
+            var colID = "day" + day;
+            try {
+                gv_pivotSchedule.setCellBackgroundColor(row, colID, "");
+            } catch (e) {
+                // 에러 무시하고 계속
+            }
+        }
+    }
+
+    // 2. 제약 위반 셀에 색상 적용
+    var violationCount = 0;
+    for (var row = 0; row < dl_pivotData.getRowCount(); row++) {
+        for (var day = 1; day <= daysInMonth; day++) {
+            var colID = "day" + day;
+            var value = dl_pivotData.getCellData(row, colID);
+
+            // 빈 값이나 휴무는 건너뛰기
+            if (!value || value === "X" || value === "") continue;
+
+            // 제약 조건 검사
+            var violations = scwin.checkConstraintViolations(row, colID, value);
+
+            if (violations.length > 0) {
+                violationCount++;
+                try {
+                    // 심각한 위반 (연속 근무/야간 초과) - 빨간색
+                    if (violations.some(v => v.type === "error")) {
+                        gv_pivotSchedule.setCellBackgroundColor(row, colID, "#ffebee");
+                    }
+                    // 경고 (패턴 위반) - 주황색
+                    else {
+                        gv_pivotSchedule.setCellBackgroundColor(row, colID, "#fff3e0");
+                    }
+                } catch (e) {
+                    console.error(`배경색 설정 실패: row=${row}, col=${colID}`, e);
+                }
+            }
+        }
+    }
+
+    console.log(`✅ 스타일만 적용 완료 - 총 ${violationCount}개 위반사항 발견`);
+    return violationCount;
+};
+
+// 데이터 변경 이벤트 개선
+scwin.dl_pivotData_oncelldatachange = function (row, col, newValue, oldValue) {
+    // 매개변수 정규화
+    var rowIndex, colID, actualNewValue, actualOldValue;
+
+    if (typeof row === 'object' && row !== null) {
+        rowIndex = row.rowIndex;
+        colID = row.colID;
+        actualNewValue = row.newValue;
+        actualOldValue = row.oldValue;
+    } else {
+        rowIndex = row;
+        colID = col;
+        actualNewValue = newValue;
+        actualOldValue = oldValue;
+    }
+
+    // 컬럼 ID 확인
+    if (!colID && typeof col === 'number') {
+        var columnInfo = dl_pivotData.getColumnInfo();
+        if (columnInfo && columnInfo[col]) {
+            colID = columnInfo[col].id;
+        }
+    }
+
+    // 기본 컬럼이나 day 컬럼이 아니면 리턴
+    if (colID === "nurseName" || colID === "nurseId" || !colID || !colID.startsWith("day")) {
+        return;
+    }
+
+    // 업데이트 중이면 리턴
+    if (scwin.isUpdating) return;
+
+    console.log("데이터 변경됨:", rowIndex, colID, actualOldValue, "→", actualNewValue);
+
+    scwin.isUpdating = true;
+
+    setTimeout(function () {
+        try {
+            scwin.updateSummaryFromPivot();
+            scwin.refreshGridStyles();
+        } catch (e) {
+            console.error("업데이트 중 오류:", e);
+        } finally {
+            scwin.isUpdating = false;
+        }
+    }, 100);
+};
+
+// ===== 설정 모달 관리 =====
+
+scwin.editSettings = function () {
+    if (div_settingsModal) {
+        div_settingsModal.addClass("active");
+    }
+};
+
+scwin.closeSettingsModal = function () {
+    if (div_settingsModal) {
+        div_settingsModal.removeClass("active");
+    }
+};
+
+// 야간 근무 후 오프 토글 함수
+scwin.toggleNightOff = function () {
+    console.log("toggleNightOff 함수 호출됨");
+
+    // DOM 요소 찾기 - 여러 방법으로 시도
+    var element = document.getElementById('toggle_nightOff');
+
+    if (!element) {
+        // ID로 찾을 수 없으면 다른 방법으로 시도
+        var toggleElements = document.querySelectorAll('[id*="toggle_nightOff"]');
+        if (toggleElements.length > 0) {
+            element = toggleElements[0];
+        }
+    }
+
+    if (element) {
+        console.log("요소 찾음:", element);
+        console.log("현재 클래스:", element.className);
+
+        // active 클래스 토글
+        if (element.classList.contains("active")) {
+            element.classList.remove("active");
+            console.log("active 클래스 제거됨");
+        } else {
+            element.classList.add("active");
+            console.log("active 클래스 추가됨");
+        }
+
+        console.log("변경 후 클래스:", element.className);
+        console.log("토글 상태:", element.classList.contains("active"));
+    } else {
+        console.error("toggle_nightOff 요소를 찾을 수 없습니다");
+
+        // 모든 토글 요소 찾아보기
+        var allToggles = document.querySelectorAll('.toggle-switch');
+        console.log("발견된 토글 요소들:", allToggles);
+
+        // 첫 번째 토글을 야간 오프 토글로 가정
+        if (allToggles.length > 0) {
+            element = allToggles[0];
+            if (element.classList.contains("active")) {
+                element.classList.remove("active");
+            } else {
+                element.classList.add("active");
+            }
+            console.log("첫 번째 토글 요소 상태 변경됨:", element.classList.contains("active"));
+        }
+    }
+};
+
+// 패턴 제한 토글 함수  
+scwin.togglePatterns = function () {
+    console.log("togglePatterns 함수 호출됨");
+
+    // DOM 요소 찾기
+    var element = document.getElementById('toggle_patterns');
+
+    if (!element) {
+        var toggleElements = document.querySelectorAll('[id*="toggle_patterns"]');
+        if (toggleElements.length > 0) {
+            element = toggleElements[0];
+        }
+    }
+
+    if (element) {
+        console.log("요소 찾음:", element);
+        console.log("현재 클래스:", element.className);
+
+        // active 클래스 토글
+        if (element.classList.contains("active")) {
+            element.classList.remove("active");
+            console.log("active 클래스 제거됨");
+        } else {
+            element.classList.add("active");
+            console.log("active 클래스 추가됨");
+        }
+
+        console.log("변경 후 클래스:", element.className);
+        console.log("토글 상태:", element.classList.contains("active"));
+    } else {
+        console.error("toggle_patterns 요소를 찾을 수 없습니다");
+
+        // 모든 토글 요소 찾아보기
+        var allToggles = document.querySelectorAll('.toggle-switch');
+        console.log("발견된 토글 요소들:", allToggles);
+
+        // 두 번째 토글을 패턴 토글로 가정
+        if (allToggles.length > 1) {
+            element = allToggles[1];
+            if (element.classList.contains("active")) {
+                element.classList.remove("active");
+            } else {
+                element.classList.add("active");
+            }
+            console.log("두 번째 토글 요소 상태 변경됨:", element.classList.contains("active"));
+        }
+    }
+};
+
+// 설정 저장 함수도 수정 (토글 상태 읽기 개선)
+scwin.saveSettings = function () {
+    var maxWorkDays = inp_maxWorkDays.getValue();
+    var maxNightDays = inp_maxNightDays.getValue();
+
+    // 토글 상태 읽기 - 개선된 방법
+    var nightOffElement = document.getElementById('toggle_nightOff');
+    var patternsElement = document.getElementById('toggle_patterns');
+
+    // ID로 찾을 수 없으면 클래스로 찾기
+    if (!nightOffElement) {
+        var toggles = document.querySelectorAll('.toggle-switch');
+        nightOffElement = toggles[0];
+        patternsElement = toggles[1];
+    }
+
+    var nightOffEnabled = nightOffElement ? nightOffElement.classList.contains("active") : false;
+    var patternsEnabled = patternsElement ? patternsElement.classList.contains("active") : false;
+
+    dm_control.set("maxWorkDays", parseInt(maxWorkDays));
+    dm_control.set("maxNightDays", parseInt(maxNightDays));
+
+    console.log("설정 저장됨:", {
+        maxWorkDays: maxWorkDays,
+        maxNightDays: maxNightDays,
+        nightOffEnabled: nightOffEnabled,
+        patternsEnabled: patternsEnabled
+    });
+
+    alert("설정이 저장되었습니다!");
+    scwin.closeSettingsModal();
+};
+
+// 페이지 로드 시 토글 초기화 함수 추가
+scwin.initializeToggles = function () {
+    console.log("토글 초기화 시작");
+
+    // 모든 토글 요소 찾기
+    var toggles = document.querySelectorAll('.toggle-switch');
+    console.log("발견된 토글 수:", toggles.length);
+
+    // 각 토글에 클릭 이벤트 추가 (백업용)
+    toggles.forEach(function (toggle, index) {
+        console.log("토글 " + index + " 초기화:", toggle.id);
+
+        // 기본 active 상태 설정
+        if (!toggle.classList.contains("active")) {
+            toggle.classList.add("active");
+        }
+
+        // 직접 이벤트 리스너 추가 (백업용)
+        toggle.addEventListener('click', function () {
+            console.log("토글 직접 클릭됨:", toggle.id);
+            if (toggle.classList.contains("active")) {
+                toggle.classList.remove("active");
+            } else {
+                toggle.classList.add("active");
+            }
+            console.log("토글 상태 변경됨:", toggle.classList.contains("active"));
+        });
+    });
+};
+
+// ===== 기존 시스템 함수들 =====
+
+scwin.updateSummaryFromPivot = function () {
+    var daysInMonth = dm_control.get("daysInMonth");
+
+    for (var i = 0; i < dl_summaryData.getRowCount(); i++) {
+        for (var day = 1; day <= daysInMonth; day++) {
+            dl_summaryData.setCellData(i, "day" + day, 0);
+        }
+    }
+
+    for (var day = 1; day <= daysInMonth; day++) {
+        var columnName = "day" + day;
+        var dCount = 0, eCount = 0, nCount = 0;
+
+        for (var i = 0; i < dl_pivotData.getRowCount(); i++) {
+            var shiftType = dl_pivotData.getCellData(i, columnName);
+            if (shiftType === "D") dCount++;
+            else if (shiftType === "E") eCount++;
+            else if (shiftType === "N") nCount++;
+        }
+
+        dl_summaryData.setCellData(0, columnName, dCount);
+        dl_summaryData.setCellData(1, columnName, eCount);
+        dl_summaryData.setCellData(2, columnName, nCount);
+    }
+
+    if (gv_summarySchedule && typeof gv_summarySchedule.refresh === 'function') {
+        gv_summarySchedule.refresh();
+    }
+};
+
+scwin.initializePage = function () {
+    var today = new Date();
+    dm_control.set("currentYear", today.getFullYear());
+    dm_control.set("currentMonth", today.getMonth() + 1);
+    dm_control.set("selectedTeam", "전체");
+    dm_control.set("isGenerating", false);
+    dm_control.set("generationProgress", 0);
+    dm_control.set("maxWorkDays", 4);
+    dm_control.set("maxNightDays", 3);
+};
+
+scwin.setCurrentMonth = function () {
+    var year = dm_control.get("currentYear");
+    var month = dm_control.get("currentMonth");
+    var daysInMonth = new Date(year, month, 0).getDate();
+
+    dm_control.set("daysInMonth", daysInMonth);
+
+    if (out_monthDisplay) {
+        out_monthDisplay.setValue(year + "년 " + month + "월");
+    }
+
+    setTimeout(function () {
+        scwin.updateColumnVisibility();
+    }, 100);
+};
+
+scwin.changeMonth = function (direction) {
+    var currentYear = dm_control.get("currentYear");
+    var currentMonth = dm_control.get("currentMonth");
+    var newMonth = currentMonth + direction;
+    var newYear = currentYear;
+
+    if (newMonth < 1) {
+        newMonth = 12;
+        newYear--;
+    } else if (newMonth > 12) {
+        newMonth = 1;
+        newYear++;
+    }
+
+    dm_control.set("currentYear", newYear);
+    dm_control.set("currentMonth", newMonth);
+
+    scwin.setCurrentMonth();
+    scwin.clearScheduleData();
+};
+
+scwin.initializePivotData = function () {
+    scwin.isUpdating = true;
+    dl_pivotData.removeAll();
+
+    for (var i = 0; i < dl_nurseList.getRowCount(); i++) {
+        var nurse = dl_nurseList.getRowJSON(i);
+        var newRowIndex = dl_pivotData.insertRow(dl_pivotData.getRowCount());
+
+        dl_pivotData.setCellData(newRowIndex, "nurseId", nurse.nurseId);
+        dl_pivotData.setCellData(newRowIndex, "nurseName", nurse.nurseName);
+
+        for (var day = 1; day <= 31; day++) {
+            dl_pivotData.setCellData(newRowIndex, "day" + day, "");
+        }
+    }
+
+    setTimeout(function () {
+        scwin.isUpdating = false;
+    }, 200);
+};
+
+scwin.initializeSummaryData = function () {
+    for (var i = 0; i < dl_summaryData.getRowCount(); i++) {
+        for (var day = 1; day <= 31; day++) {
+            dl_summaryData.setCellData(i, "day" + day, 0);
+        }
+    }
+};
+
+scwin.refreshGrids = function () {
+    if (scwin.isUpdating) return;
+
+    if (gv_pivotSchedule && typeof gv_pivotSchedule.refresh === 'function') {
+        gv_pivotSchedule.refresh();
+
+        // 스크롤 완전 제거
+        setTimeout(function () {
+            try {
+                // 그리드 스크롤 설정 비활성화
+                gv_pivotSchedule.setScrollByRow(false);
+                gv_pivotSchedule.setScrollByColumn(false);
+
+                // DOM 요소에서도 스크롤 제거
+                var gridElement = document.getElementById('gv_pivotSchedule');
+                if (gridElement) {
+                    var scrollElements = gridElement.querySelectorAll('[style*="overflow"]');
+                    scrollElements.forEach(function (el) {
+                        el.style.overflow = 'visible';
+                        el.style.maxHeight = 'none';
+                    });
+                }
+            } catch (e) {
+                console.log("그리드 스크롤 설정 실패:", e);
+            }
+        }, 100);
+    }
+
+    if (gv_summarySchedule && typeof gv_summarySchedule.refresh === 'function') {
+        gv_summarySchedule.refresh();
+    }
+};
+
+scwin.clearScheduleData = function () {
+    dl_scheduleData.removeAll();
+    scwin.initializePivotData();
+    scwin.initializeSummaryData();
+    scwin.refreshGrids();
+};
+
+scwin.updateColumnVisibility = function () {
+    var daysInMonth = dm_control.get("daysInMonth");
+
+    if (gv_pivotSchedule && gv_pivotSchedule.setColumnVisible) {
+        for (var day = 1; day <= 31; day++) {
+            gv_pivotSchedule.setColumnVisible("day" + day, day <= daysInMonth);
+        }
+    }
+    if (gv_summarySchedule && gv_summarySchedule.setColumnVisible) {
+        for (var day = 1; day <= 31; day++) {
+            gv_summarySchedule.setColumnVisible("day" + day, day <= daysInMonth);
+        }
+    }
+};
+
+scwin.generateSchedule = function () {
+    if (dm_control.get("isGenerating")) {
+        alert("이미 생성 중입니다.");
+        return;
+    }
+
+    dm_control.set("isGenerating", true);
+    dm_control.set("generationProgress", 0);
+
+    if (div_progressSection) {
+        div_progressSection.addClass("active");
+    }
+
+    scwin.startProgressSimulation();
+    scwin.prepareApiRequestData();
+    $p.executeSubmission("sbm_generateSchedule");
+};
+
+scwin.prepareApiRequestData = function () {
+    var year = dm_control.get("currentYear");
+    var month = dm_control.get("currentMonth");
+    var daysInMonth = dm_control.get("daysInMonth");
+
+    var startDate = year + "-" + (month < 10 ? "0" + month : month) + "-01";
+    var endDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (daysInMonth < 10 ? "0" + daysInMonth : daysInMonth);
+
+    var nurseList = [];
+    for (var i = 0; i < dl_nurseList.getRowCount(); i++) {
+        var nurse = dl_nurseList.getRowJSON(i);
+        nurseList.push({
+            "nurseId": parseInt(nurse.nurseId),
+            "name": nurse.nurseName,
+            "experience": parseInt(nurse.experience),
+            "isNightKeep": nurse.isNightKeep ? 1 : 0,
+            "requests": []
+        });
+    }
+
+    dma_sample.set("maxNurses", dl_nurseList.getRowCount());
+    dma_sample.set("startDate", startDate);
+    dma_sample.set("endDate", endDate);
+    dma_sample.set("nurseList", nurseList);
+};
+
+scwin.startProgressSimulation = function () {
+    var progressInterval = setInterval(function () {
+        var currentProgress = dm_control.get("generationProgress");
+        var newProgress = currentProgress + (100 / 30);
+
+        if (newProgress >= 90) {
+            newProgress = 90;
+            clearInterval(progressInterval);
+        }
+
+        dm_control.set("generationProgress", newProgress);
+        scwin.updateProgressBar(newProgress);
+    }, 1000);
+
+    dm_control.set("progressInterval", progressInterval);
+};
+
+scwin.updateProgressBar = function (progress) {
+    var progressBar = document.getElementById("div_progressBar");
+    if (progressBar) {
+        progressBar.style.width = progress + "%";
+    }
+    if (out_progressText) {
+        out_progressText.setValue("생성 중... " + Math.round(progress) + "%");
+    }
+};
+
+scwin.sbm_generateSchedule_submitdone = function (e) {
+    scwin.updatePivotWithSchedule();
+    scwin.updateSummaryWithSchedule();
+    scwin.updateColumnVisibility();
+    scwin.completeApiGeneration();
+    alert("✅ 스케줄이 성공적으로 생성되었습니다!");
+};
+
+scwin.sbm_generateSchedule_submiterror = function (e) {
+    scwin.handleGenerationError("API 요청 중 오류가 발생했습니다.");
+};
+
+scwin.completeApiGeneration = function () {
+    dm_control.set("isGenerating", false);
+    dm_control.set("generationProgress", 100);
+    scwin.updateProgressBar(100);
+
+    var progressInterval = dm_control.get("progressInterval");
+    if (progressInterval) {
+        clearInterval(progressInterval);
+    }
+
+    if (div_progressSection) {
+        setTimeout(function () {
+            div_progressSection.removeClass("active");
+        }, 2000);
+    }
+};
+
+scwin.handleGenerationError = function (message) {
+    dm_control.set("isGenerating", false);
+    dm_control.set("generationProgress", 0);
+    scwin.updateProgressBar(0);
+
+    var progressInterval = dm_control.get("progressInterval");
+    if (progressInterval) {
+        clearInterval(progressInterval);
+    }
+
+    if (div_progressSection) {
+        div_progressSection.removeClass("active");
+    }
+
+    alert(message);
+};
+
+scwin.updatePivotWithSchedule = function () {
+    var scheduleData = dlt_sample.getAllJSON();
+    if (scheduleData.length === 0) return;
+
+    var nurseScheduleMap = {};
+    for (var i = 0; i < scheduleData.length; i++) {
+        var schedule = scheduleData[i];
+        var nurseId = schedule.nurseId;
+        var dayColumn = scwin.convertDateToColumnName(schedule.shiftDate);
+        var shiftType = scwin.convertShiftType(schedule.shiftType);
+
+        if (!nurseScheduleMap[nurseId]) {
+            nurseScheduleMap[nurseId] = {};
+        }
+        nurseScheduleMap[nurseId][dayColumn] = shiftType;
+    }
+
+    for (var i = 0; i < dl_pivotData.getRowCount(); i++) {
+        for (var day = 1; day <= 31; day++) {
+            dl_pivotData.setCellData(i, "day" + day, "");
+        }
+    }
+
+    for (var nurseId in nurseScheduleMap) {
+        var rowIndex = scwin.findNurseRowIndex(nurseId);
+        if (rowIndex >= 0) {
+            var scheduleMap = nurseScheduleMap[nurseId];
+            for (var dayColumn in scheduleMap) {
+                dl_pivotData.setCellData(rowIndex, dayColumn, scheduleMap[dayColumn]);
+            }
+        }
+    }
+
+    setTimeout(function () {
+        scwin.refreshGridStyles();
+    }, 200);
+};
+
+scwin.updateSummaryWithSchedule = function () {
+    var year = dm_control.get("currentYear");
+    var month = dm_control.get("currentMonth");
+
+    scwin.initializeSummaryData();
+
+    var scheduleData = dlt_sample.getAllJSON();
+    for (var i = 0; i < scheduleData.length; i++) {
+        var schedule = scheduleData[i];
+        var scheduleDate = new Date(schedule.shiftDate);
+
+        if (scheduleDate.getFullYear() === year && scheduleDate.getMonth() + 1 === month) {
+            var day = scheduleDate.getDate();
+            var shiftType = schedule.shiftType;
+
+            for (var j = 0; j < dl_summaryData.getRowCount(); j++) {
+                if (dl_summaryData.getCellData(j, "shiftType") === shiftType) {
+                    var columnName = "day" + day;
+                    var currentCount = dl_summaryData.getCellData(j, columnName) || 0;
+                    dl_summaryData.setCellData(j, columnName, currentCount + 1);
+                    break;
+                }
+            }
+        }
+    }
+};
+
+scwin.findNurseRowIndex = function (nurseId) {
+    for (var i = 0; i < dl_pivotData.getRowCount(); i++) {
+        if (dl_pivotData.getCellData(i, "nurseId") == nurseId) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+scwin.convertDateToColumnName = function (dateString) {
+    var dateParts = dateString.split("-");
+    var day = parseInt(dateParts[2]);
+    return "day" + day;
+};
+
+scwin.convertShiftType = function (serverShiftType) {
+    var shiftTypeMap = {
+        "D": "D",
+        "E": "E",
+        "N": "N",
+        "Off": "X"
+    };
+    return shiftTypeMap[serverShiftType] || "X";
+};]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<!-- 메인 컨테이너 -->
+		<xf:group class="main-container">
+			<!-- 상단 컨트롤 영역 -->
+			<xf:group class="control-header">
+				<xf:group class="control-row">
+					<!-- 좌측 컨트롤 - 화살표 버튼 방식 -->
+					<xf:group class="control-left">
+						<xf:group class="month-control">
+							<xf:trigger class="month-arrow" ev:onclick="scwin.changeMonth(-1)">
+								<xf:label>◀</xf:label>
+							</xf:trigger>
+							<w2:output id="out_monthDisplay" class="month-display" value="2025년 7월" />
+							<xf:trigger class="month-arrow" ev:onclick="scwin.changeMonth(1)">
+								<xf:label>▶</xf:label>
+							</xf:trigger>
+						</xf:group>
+					</xf:group>
+
+					<!-- 우측 컨트롤 -->
+					<xf:group class="control-right">
+						<xf:trigger class="btn btn-settings" ev:onclick="scwin.editSettings">
+							<xf:label>설정 편집</xf:label>
+						</xf:trigger>
+						<xf:trigger class="btn btn-generate" ev:onclick="scwin.generateSchedule">
+							<xf:label>자동 생성</xf:label>
+						</xf:trigger>
+					</xf:group>
+				</xf:group>
+
+				<!-- 진행률 표시 영역 -->
+				<xf:group id="div_progressSection" class="progress-section">
+					<w2:textbox class="progress-title" label="AI가 최적의 스케줄을 생성하고 있습니다" />
+					<xf:group class="progress-container">
+						<xf:group id="div_progressBar" class="progress-bar"></xf:group>
+					</xf:group>
+					<w2:output id="out_progressText" class="progress-text" value="생성 중... 0%" />
+				</xf:group>
+
+				<!-- 피벗 테이블 영역 -->
+				<xf:group class="pivot-section">
+					<xf:group class="section-content">
+						<xf:group class="grid-container">
+							<!-- 피벗 그리드뷰 (31일 정적 컬럼) -->
+							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:600px;" scrollByColumn="false"
+								scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
+								cellStyleFunction="scwin.pivotCellStyleFunction" rowMouseOverColor="transparent" selectedCellColor="transparent"
+								selectedRowColor="transparent" selectedRowOverColor="transparent" evenRowBackgroundColor="#ffffff" oddRowBackgroundColor="#f8f9fa"
+								oddEvenColorDisplay="true" rowMouseOver="false">
+								<w2:header id="header1" style="height:70px;background-color:#1C3D6B;color:white;font-weight:bold;"
+									applyAllColumnStyle="true" evenRowBackgroundColor="#ffffff" oddRowBackgroundColor="#f8f9fa" oddEvenColorDisplay="true"
+									rowMouseOverColor="#e3f2fd" selectedCellColor="#bbdefb" selectedRowColor="#e3f2fd" selectedRowOverColor="#d1c4e9"
+									rowNumBackgroundColor="#f5f5f5">
+									<w2:row id="row1" style="height:35px;background-color:#1C3D6B;color:white;">
+										<w2:column width="80" inputType="text" value=""
+											style="background-color:#103E6B;color:white;font-weight:bold;border:none;"></w2:column>
+										<w2:column width="50" inputType="text" value="1"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="2"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="3"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="4"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="5"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="6"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="7"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="8"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="9"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="10"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="11"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="12"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="13"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="14"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="15"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="16"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="17"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="18"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="19"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="20"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="21"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="22"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="23"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="24"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="25"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="26"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="27"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="28"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="29"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="30"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+										<w2:column width="50" inputType="text" value="31"
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									</w2:row>
+								</w2:header>
+								<w2:gBody>
+									<w2:row id="row2" style="height:35px">
+										<!-- 간호사명 컬럼 - 스타일 직접 지정 -->
+										<w2:column width="80" inputType="text" id="nurseName"
+											style="background-color:#C3F4E6;font-weight:bold;text-align:center;"></w2:column>
+
+										<w2:column width="50" inputType="select" id="day1" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day2" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day3" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day4" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day5" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day6" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day7" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day8" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day9" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day10" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day11" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day12" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day13" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day14" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day15" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day16" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day17" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day18" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day19" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day20" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day21" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day22" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day23" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day24" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day25" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day26" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day27" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day28" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day29" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day30" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+										<w2:column width="50" inputType="select" id="day31" chooseOption="false" displayMode="label">
+											<w2:choices>
+												<w2:item>
+													<w2:label>D</w2:label>
+													<w2:value>D</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>E</w2:label>
+													<w2:value>E</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>N</w2:label>
+													<w2:value>N</w2:value>
+												</w2:item>
+												<w2:item>
+													<w2:label>X</w2:label>
+													<w2:value>X</w2:value>
+												</w2:item>
+											</w2:choices>
+										</w2:column>
+
+									</w2:row>
+								</w2:gBody>
+							</w2:gridView>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+
+			<!-- 일별 소계 영역 -->
+			<xf:group class="summary-section">
+				<xf:group class="section-content">
+					<xf:group class="summary-grid-container">
+						<!-- 소계 그리드뷰 (31일 정적 컬럼) -->
+						<w2:gridView id="gv_summarySchedule" dataList="dl_summaryData" style="width:100%;height:300px;" scrollByColumn="false"
+							scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" readOnly="true" applyAllColumnStyle="true"
+							rowMouseOverColor="transparent" selectedCellColor="transparent" selectedRowColor="transparent" selectedRowOverColor="transparent"
+							evenRowBackgroundColor="#ffffff" oddRowBackgroundColor="#f8f9fa" oddEvenColorDisplay="true">
+							<w2:header id="header2" style="height:35px;background-color:#1C3D6B;color:white;font-weight:bold;"
+								applyAllColumnStyle="true">
+								<w2:row id="row3" style="height:35px;background-color:#1C3D6B;color:white;">
+									<w2:column width="60" inputType="text" id="shiftLabel" value="" readOnly="true"
+										style="background-color:#103E6B;color:white;font-weight:bold;border:none;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day1" value="1" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day2" value="2" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day3" value="3" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day4" value="4" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day5" value="5" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day6" value="6" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day7" value="7" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day8" value="8" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day9" value="9" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day10" value="10" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day11" value="11" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day12" value="12" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day13" value="13" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day14" value="14" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day15" value="15" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day16" value="16" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day17" value="17" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day18" value="18" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day19" value="19" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day20" value="20" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day21" value="21" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day22" value="22" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day23" value="23" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day24" value="24" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day25" value="25" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day26" value="26" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day27" value="27" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day28" value="28" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day29" value="29" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day30" value="30" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day31" value="31" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody>
+								<w2:row id="row4" style="height:35px">
+									<w2:column width="60" inputType="text" id="shiftLabel" readOnly="true"
+										style="background-color:#C3F4E6;font-weight:bold;text-align:center;"></w2:column>
+									<w2:column width="50" inputType="text" id="day1" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day2" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day3" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day4" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day5" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day6" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day7" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day8" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day9" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day10" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day11" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day12" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day13" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day14" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day15" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day16" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day17" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day18" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day19" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day20" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day21" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day22" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day23" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day24" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day25" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day26" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day27" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day28" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day29" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day30" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+									<w2:column width="50" inputType="text" id="day31" readOnly="true" style="text-align:center;font-weight:600;"></w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+		<!-- 설정 편집 모달 -->
+		<xf:group id="div_settingsModal" class="modal-overlay">
+			<xf:group class="modal-container">
+				<!-- 모달 헤더 -->
+				<xf:group class="modal-header">
+					<w2:textbox class="modal-title" label="스케줄 설정" />
+					<xf:trigger class="modal-close" ev:onclick="scwin.closeSettingsModal">
+						<xf:label>×</xf:label>
+					</xf:trigger>
+				</xf:group>
+
+				<!-- 모달 바디 -->
+				<xf:group class="modal-body">
+					<!-- 기본 설정 섹션 -->
+					<xf:group class="setting-section">
+						<xf:group class="section-title">
+							<w2:textbox label="기본 설정" />
+						</xf:group>
+
+						<xf:group class="setting-item">
+							<xf:group>
+								<w2:textbox class="setting-label" label="최대 연속 근무일" />
+								<w2:textbox class="setting-description" label="연속으로 근무할 수 있는 최대 일수" />
+							</xf:group>
+							<xf:group class="setting-control">
+								<w2:input id="inp_maxWorkDays" class="number-input" style="width:60px;" ref="data:dm_control.maxWorkDays" />
+								<w2:textbox label="일" />
+							</xf:group>
+						</xf:group>
+
+						<xf:group class="setting-item">
+							<xf:group>
+								<w2:textbox class="setting-label" label="최대 연속 야간 근무" />
+								<w2:textbox class="setting-description" label="연속으로 야간 근무할 수 있는 최대 일수" />
+							</xf:group>
+							<xf:group class="setting-control">
+								<w2:input id="inp_maxNightDays" class="number-input" style="width:60px;" ref="data:dm_control.maxNightDays" />
+								<w2:textbox label="일" />
+							</xf:group>
+						</xf:group>
+					</xf:group>
+
+					<!-- 근무 타입 설정 섹션 -->
+					<xf:group class="setting-section">
+						<xf:group class="section-title">
+							<w2:textbox label="근무 타입 설정" />
+						</xf:group>
+
+						<xf:group class="setting-item">
+							<xf:group>
+								<w2:textbox class="setting-label" label="야간 근무 후 오프 배정" />
+								<w2:textbox class="setting-description" label="야간 근무 다음날 자동으로 휴무 배정" />
+							</xf:group>
+							<xf:group class="setting-control">
+								<xf:group id="toggle_nightOff" class="toggle-switch active">
+
+									<xf:group class="toggle-slider"></xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+
+						<xf:group class="setting-item">
+							<xf:group>
+								<w2:textbox class="setting-label" label="ND / ED / NE / NOD 근무 패턴 불가능" />
+								<w2:textbox class="setting-description" label="연속된 특정 근무 패턴 조합 제한" />
+							</xf:group>
+							<xf:group class="setting-control">
+								<xf:group id="toggle_patterns" class="toggle-switch active">
+									<xf:group class="toggle-slider"></xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+
+				<!-- 모달 푸터 -->
+				<xf:group class="modal-footer">
+					<xf:trigger class="btn-modal-cancel" ev:onclick="scwin.closeSettingsModal">
+						<xf:label>취소</xf:label>
+					</xf:trigger>
+					<xf:trigger class="btn-modal-save" ev:onclick="scwin.saveSettings">
+						<xf:label>저장</xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

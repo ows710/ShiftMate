@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper      
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	@subject	 : 근무신청정보 관련 처리를 하는 SQL Mapper
+	@description : 근무신청정보 관련 처리를 하는 SQL Mapper
+	@author		 : 개발팀
+	@since 		 : 2025/07/10
+	@modification
+	===========================================================
+	DATE              AUTHOR             NOTE
+	===========================================================
+	2025/07/10		개발팀			최초 생성
+ -->
+<mapper namespace="com.demo.proworks.dutyrequest">
+
+	<insert id="insertDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">
+		<!-- 근무신청 정보를 등록 처리한다. -->
+        INSERT INTO dutyrequest /* QueryID : com.demo.proworks.dutyrequest.insertDutyRequest */
+        ( 
+        req_id
+        <if test="reqDate != null"> , req_date </if>
+        <if test="submittedAt != null"> , submitted_at </if>
+        <if test="createdAt != null"> , created_at </if>
+        <if test="updatedAt != null"> , updated_at </if>
+        <if test="nurseId != null"> , nurse_id </if>
+        )
+        VALUES  
+        ( 
+         #{reqId}   
+        <if test="reqDate != null"> , STR_TO_DATE(#{reqDate}, '%Y-%m-%d') </if>
+        <if test="submittedAt != null"> , STR_TO_DATE(#{submittedAt}, '%Y-%m-%d') </if>
+        <if test="createdAt != null"> , STR_TO_DATE(#{createdAt}, '%Y-%m-%d') </if>
+        <if test="updatedAt != null"> , STR_TO_DATE(#{updatedAt}, '%Y-%m-%d') </if>
+        <if test="nurseId != null"> , #{nurseId} </if>
+        )          
+	</insert>	
+	
+	<update id="updateDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">
+		<!-- 근무신청 정보를 갱신 처리한다. -->
+        UPDATE dutyrequest    /* QueryID : com.demo.proworks.dutyrequest.updateDutyRequest */      
+      	  <trim prefix="SET" prefixOverrides=",">             
+             <if test="reqDate != null">, req_date = STR_TO_DATE(#{reqDate}, '%Y-%m-%d') </if>
+             <if test="submittedAt != null">, submitted_at = STR_TO_DATE(#{submittedAt}, '%Y-%m-%d') </if>
+             <if test="updatedAt != null">, updated_at = STR_TO_DATE(#{updatedAt}, '%Y-%m-%d') </if>
+             <if test="nurseId != null">, nurse_id = #{nurseId} </if>
+         </trim>          
+        WHERE   req_id = #{reqId}
+	</update>
+	
+	<delete id="deleteDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">
+		<!-- 근무신청 정보를 삭제 처리한다. -->
+		<![CDATA[
+        DELETE FROM dutyrequest   /* QueryID : com.demo.proworks.dutyrequest.deleteDutyRequest */  
+        WHERE   req_id = #{reqId}    
+		]]>
+	</delete>
+	
+	<select id="selectDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo" resultType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">
+		<!-- 근무신청 정보를 상세 조회한다. -->
+		<![CDATA[
+        SELECT   /* QueryID : com.demo.proworks.dutyrequest.selectDutyRequest */  
+              dr.req_id AS reqId,
+              DATE_FORMAT(dr.req_date, '%Y-%m-%d') AS reqDate,
+              DATE_FORMAT(dr.submitted_at, '%Y-%m-%d') AS submittedAt,
+              DATE_FORMAT(dr.created_at, '%Y-%m-%d') AS createdAt,
+              DATE_FORMAT(dr.updated_at, '%Y-%m-%d') AS updatedAt,
+              dr.nurse_id AS nurseId,
+              n.position AS nursePosition,
+              n.ward_id AS wardId,
+              w.ward_name AS wardName
+        FROM dutyrequest dr
+        LEFT JOIN nurse n ON dr.nurse_id = n.nurse_id
+        LEFT JOIN ward w ON n.ward_id = w.ward_id
+        WHERE dr.req_id = #{reqId}  
+		]]>
+	</select>
+		
+	<select id="selectListDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo" resultType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">
+		<!-- 근무신청 정보 목록을 조회한다. -->
+		<![CDATA[
+	       SELECT    /* QueryID : com.demo.proworks.dutyrequest.selectListDutyRequest */  
+              dr.req_id AS reqId,
+              DATE_FORMAT(dr.req_date, '%Y-%m-%d') AS reqDate,
+              DATE_FORMAT(dr.submitted_at, '%Y-%m-%d') AS submittedAt,
+              DATE_FORMAT(dr.created_at, '%Y-%m-%d') AS createdAt,
+              DATE_FORMAT(dr.updated_at, '%Y-%m-%d') AS updatedAt,
+              dr.nurse_id AS nurseId,
+              n.position AS nursePosition,
+              n.ward_id AS wardId,
+              w.ward_name AS wardName
+	       FROM (
+		       SELECT  S.*, CEIL( (@ROWNUM:=@ROWNUM+1) / #{pageSize} ) AS PAGE
+			   FROM (				
+			        SELECT 
+			              dr.*, n.position, n.ward_id, w.ward_name
+			        FROM dutyrequest dr
+			        LEFT JOIN nurse n ON dr.nurse_id = n.nurse_id
+			        LEFT JOIN ward w ON n.ward_id = w.ward_id
+			        WHERE  1=1    		
+		]]>
+						<if test="scReqId != null and scReqId != ''">
+							AND dr.req_id = #{scReqId}
+						</if>		     
+						<if test="scNurseId != null and scNurseId != ''">
+							AND dr.nurse_id = #{scNurseId}
+						</if>
+						<if test="scWardId != null and scWardId != ''">
+							AND n.ward_id = #{scWardId}
+						</if>
+						<if test="scReqDateFrom != null and scReqDateFrom != ''">
+							<![CDATA[ AND dr.req_date >= STR_TO_DATE(#{scReqDateFrom}, '%Y-%m-%d') ]]>
+						</if>
+						<if test="scReqDateTo != null and scReqDateTo != ''">
+							<![CDATA[ AND dr.req_date <= STR_TO_DATE(#{scReqDateTo}, '%Y-%m-%d') ]]>
+						</if>
+		<![CDATA[
+					ORDER BY dr.req_id DESC																		
+				) S, (SELECT @ROWNUM := 0) TMP
+			 ) A
+			 LEFT JOIN nurse n ON A.nurse_id = n.nurse_id
+			 LEFT JOIN ward w ON n.ward_id = w.ward_id
+		  WHERE PAGE = #{pageIndex}
+		]]>
+	</select>	
+	
+	<select id="selectListCountDutyRequest" parameterType="com.demo.proworks.dutyrequest.vo.DutyRequestVo" resultType="long">
+		<!-- 근무신청 정보 목록 건수를 조회한다. -->
+		<![CDATA[
+	        SELECT    /* QueryID : com.demo.proworks.dutyrequest.selectListCountDutyRequest */
+	            COUNT(*) totcnt  		                  
+	        FROM dutyrequest dr
+	        LEFT JOIN nurse n ON dr.nurse_id = n.nurse_id
+	        LEFT JOIN ward w ON n.ward_id = w.ward_id
+	        WHERE  1=1    		
+		]]>
+				<if test="scReqId != null and scReqId != ''">
+					AND dr.req_id = #{scReqId}
+				</if>		     
+				<if test="scNurseId != null and scNurseId != ''">
+					AND dr.nurse_id = #{scNurseId}
+				</if>
+				<if test="scWardId != null and scWardId != ''">
+					AND n.ward_id = #{scWardId}
+				</if>
+				<if test="scReqDateFrom != null and scReqDateFrom != ''">
+					<![CDATA[ AND dr.req_date >= STR_TO_DATE(#{scReqDateFrom}, '%Y-%m-%d') ]]>
+				</if>
+				<if test="scReqDateTo != null and scReqDateTo != ''">
+					<![CDATA[ AND dr.req_date <= STR_TO_DATE(#{scReqDateTo}, '%Y-%m-%d') ]]>
+				</if>
+	</select>
+	
+	<select id="selectListNurse" parameterType="java.util.HashMap" resultType="com.demo.proworks.nurse.vo.NurseVo">
+		<!-- 간호사 정보 목록을 조회한다. -->
+		   SELECT   /* QueryID : com.demo.proworks.dutyrequest.selectListNurse */
+		      n.nurse_id AS nurseId, n.position,
+		      n.ward_id AS wardId, w.ward_name AS wardName
+	       FROM nurse n
+	       LEFT JOIN ward w ON n.ward_id = w.ward_id 
+	       ORDER BY n.nurse_id ASC
+	</select>
+	
+</mapper> 

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper      
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	@subject	 : 병동정보 관련 처리를 하는 SQL Mapper
+	@description : 병동정보 관련 처리를 하는 SQL Mapper
+	@author		 : 개발팀
+	@since 		 : 2025/07/10
+	@modification
+	===========================================================
+	DATE              AUTHOR             NOTE
+	===========================================================
+	2025/07/10		개발팀			최초 생성
+ -->
+<mapper namespace="com.demo.proworks.ward">
+
+	<insert id="insertWard" parameterType="com.demo.proworks.ward.vo.WardVo">
+		<!-- 병동 정보를 등록 처리한다. -->
+        INSERT INTO ward /* QueryID : com.demo.proworks.ward.insertWard */
+        ( 
+        ward_id
+        <if test="wardName != null"> , ward_name </if>   
+        )
+        VALUES  
+        ( 
+         #{wardId}   
+        <if test="wardName != null"> , #{wardName} </if>   
+        )          
+	</insert>	
+	
+	<update id="updateWard" parameterType="com.demo.proworks.ward.vo.WardVo">
+		<!-- 병동 정보를 갱신 처리한다. -->
+        UPDATE ward    /* QueryID : com.demo.proworks.ward.updateWard */      
+      	  <trim prefix="SET" prefixOverrides=",">             
+             <if test="wardName != null">, ward_name = #{wardName} </if>
+         </trim>          
+        WHERE   ward_id = #{wardId}
+	</update>
+	
+	<delete id="deleteWard" parameterType="com.demo.proworks.ward.vo.WardVo">
+		<!-- 병동 정보를 삭제 처리한다. -->
+		<![CDATA[
+        DELETE FROM ward   /* QueryID : com.demo.proworks.ward.deleteWard */  
+        WHERE   ward_id = #{wardId}    
+		]]>
+	</delete>
+	
+	<select id="selectWard" parameterType="com.demo.proworks.ward.vo.WardVo" resultType="com.demo.proworks.ward.vo.WardVo">
+		<!-- 병동 정보를 상세 조회한다. -->
+		<![CDATA[
+        SELECT   /* QueryID : com.demo.proworks.ward.selectWard */  
+              ward_id AS wardId, ward_name AS wardName
+        FROM ward
+        WHERE ward_id = #{wardId}  
+		]]>
+	</select>
+		
+	<select id="selectListWard" parameterType="com.demo.proworks.ward.vo.WardVo" resultType="com.demo.proworks.ward.vo.WardVo">
+		<!-- 병동 정보 목록을 조회한다. -->
+	       SELECT    /* QueryID : com.demo.proworks.ward.selectListWard */  
+			  ward_id AS wardId, ward_name AS wardName
+	       FROM (
+		       SELECT  S.*, CEIL( (@ROWNUM:=@ROWNUM+1) / #{pageSize} ) AS PAGE
+			   FROM (				
+			        SELECT 
+			              *  		                  
+			        FROM ward
+			        WHERE  1=1    		
+						<if test="!( scWardId == null  or scWardId == ''  )">
+							AND ward_id = #{scWardId}
+						</if>		     
+						<if test="!( scWardName == null  or scWardName == '' )">
+							AND ward_name LIKE CONCAT('%',#{scWardName},'%')
+						</if>					
+					ORDER BY ward_id ASC																		
+				) S, (SELECT @ROWNUM := 0) TMP
+			 ) A
+		  WHERE PAGE = #{pageIndex}
+	</select>	
+	
+	<select id="selectListCountWard" parameterType="com.demo.proworks.ward.vo.WardVo" resultType="long">
+		<!-- 병동 정보 목록 건수를 조회한다. -->
+	        SELECT    /* QueryID : com.demo.proworks.ward.selectListCountWard */
+	            COUNT(*) totcnt  		                  
+	        FROM ward
+	        WHERE  1=1    		
+				<if test="!( scWardId == null  or scWardId == ''  )">
+					AND ward_id = #{scWardId}
+				</if>		     
+				<if test="!( scWardName == null  or scWardName == '' )">
+					AND ward_name LIKE CONCAT('%',#{scWardName},'%')
+				</if>					
+	</select>
+	
+</mapper> 

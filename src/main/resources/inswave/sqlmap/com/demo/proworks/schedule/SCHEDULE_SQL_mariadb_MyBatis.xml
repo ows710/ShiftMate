@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper      
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	@subject	 : 스케줄정보 관련 처리를 하는 SQL Mapper
+	@description : 스케줄정보 관련 처리를 하는 SQL Mapper
+	@author		 : 개발팀
+	@since 		 : 2025/07/10
+	@modification
+	===========================================================
+	DATE              AUTHOR             NOTE
+	===========================================================
+	2025/07/10		개발팀			최초 생성
+ -->
+<mapper namespace="com.demo.proworks.schedule">
+
+	<insert id="insertSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo">
+		<!-- 스케줄 정보를 등록 처리한다. -->
+        INSERT INTO schedule /* QueryID : com.demo.proworks.schedule.insertSchedule */
+        ( 
+        shift_date, 
+        nurse_id
+        <if test="isAuto != null"> , is_auto </if>
+        <if test="createdAt != null"> , created_at </if>
+        <if test="updatedAt != null"> , updated_at </if>
+        <if test="nurseName != null"> , nurse_name </if>
+        <if test="hireDate != null"> , hire_date </if>
+        <if test="shiftType != null"> , shift_type </if>
+        )
+        VALUES  
+        ( 
+         STR_TO_DATE(#{shiftDate}, '%Y-%m-%d'),
+         #{nurseId}
+        <if test="isAuto != null"> , #{isAuto} </if>
+        <if test="createdAt != null"> , STR_TO_DATE(#{createdAt}, '%Y-%m-%d') </if>
+        <if test="updatedAt != null"> , STR_TO_DATE(#{updatedAt}, '%Y-%m-%d') </if>
+        <if test="nurseName != null"> , #{nurseName} </if>
+        <if test="hireDate != null"> , STR_TO_DATE(#{hireDate}, '%Y-%m-%d') </if>
+        <if test="shiftType != null"> , #{shiftType} </if>
+        )          
+	</insert>	
+	
+	<update id="updateSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo">
+		<!-- 스케줄 정보를 갱신 처리한다. -->
+        UPDATE schedule    /* QueryID : com.demo.proworks.schedule.updateSchedule */      
+      	  <trim prefix="SET" prefixOverrides=",">             
+             <if test="isAuto != null">, is_auto = #{isAuto} </if>
+             <if test="updatedAt != null">, updated_at = STR_TO_DATE(#{updatedAt}, '%Y-%m-%d') </if>
+             <if test="nurseName != null">, nurse_name = #{nurseName} </if>
+             <if test="hireDate != null">, hire_date = STR_TO_DATE(#{hireDate}, '%Y-%m-%d') </if>
+             <if test="shiftType != null">, shift_type = #{shiftType} </if>
+         </trim>          
+        WHERE   shift_date = STR_TO_DATE(#{shiftDate}, '%Y-%m-%d')
+          AND   nurse_id = #{nurseId}
+	</update>
+	
+	<delete id="deleteSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo">
+		<!-- 스케줄 정보를 삭제 처리한다. -->
+		<![CDATA[
+        DELETE FROM schedule   /* QueryID : com.demo.proworks.schedule.deleteSchedule */  
+        WHERE   shift_date = STR_TO_DATE(#{shiftDate}, '%Y-%m-%d')
+          AND   nurse_id = #{nurseId}
+		]]>
+	</delete>
+	
+	<select id="selectSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo" resultType="com.demo.proworks.schedule.vo.ScheduleVo">
+		<!-- 스케줄 정보를 상세 조회한다. -->
+		<![CDATA[
+        SELECT   /* QueryID : com.demo.proworks.schedule.selectSchedule */  
+              DATE_FORMAT(s.shift_date, '%Y-%m-%d') AS shiftDate,
+              s.nurse_id AS nurseId,
+              s.is_auto AS isAuto,
+              DATE_FORMAT(s.created_at, '%Y-%m-%d') AS createdAt,
+              DATE_FORMAT(s.updated_at, '%Y-%m-%d') AS updatedAt,
+              s.nurse_name AS nurseName,
+              DATE_FORMAT(s.hire_date, '%Y-%m-%d') AS hireDate,
+              s.shift_type AS shiftType,
+              n.position AS nursePosition,
+              n.ward_id AS wardId,
+              w.ward_name AS wardName
+        FROM schedule s
+        LEFT JOIN nurse n ON s.nurse_id = n.nurse_id
+        LEFT JOIN ward w ON n.ward_id = w.ward_id
+        WHERE s.shift_date = STR_TO_DATE(#{shiftDate}, '%Y-%m-%d')
+          AND s.nurse_id = #{nurseId}
+		]]>
+	</select>
+		
+	<select id="selectListSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo" resultType="com.demo.proworks.schedule.vo.ScheduleVo">
+		<!-- 스케줄 정보 목록을 조회한다. -->
+		<![CDATA[
+	       SELECT    /* QueryID : com.demo.proworks.schedule.selectListSchedule */  
+              DATE_FORMAT(s.shift_date, '%Y-%m-%d') AS shiftDate,
+              s.nurse_id AS nurseId,
+              s.is_auto AS isAuto,
+              DATE_FORMAT(s.created_at, '%Y-%m-%d') AS createdAt,
+              DATE_FORMAT(s.updated_at, '%Y-%m-%d') AS updatedAt,
+              s.nurse_name AS nurseName,
+              DATE_FORMAT(s.hire_date, '%Y-%m-%d') AS hireDate,
+              s.shift_type AS shiftType,
+              n.position AS nursePosition,
+              n.ward_id AS wardId,
+              w.ward_name AS wardName
+	       FROM (
+		       SELECT  S.*, CEIL( (@ROWNUM:=@ROWNUM+1) / #{pageSize} ) AS PAGE
+			   FROM (				
+			        SELECT 
+			              s.*, n.position, n.ward_id, w.ward_name
+			        FROM schedule s
+			        LEFT JOIN nurse n ON s.nurse_id = n.nurse_id
+			        LEFT JOIN ward w ON n.ward_id = w.ward_id
+			        WHERE  1=1    		
+		]]>
+						<if test="scNurseId != null and scNurseId != ''">
+							AND s.nurse_id = #{scNurseId}
+						</if>		     
+						<if test="scWardId != null and scWardId != ''">
+							AND n.ward_id = #{scWardId}
+						</if>
+						<if test="scShiftType != null and scShiftType != ''">
+							AND s.shift_type = #{scShiftType}
+						</if>
+						<if test="scIsAuto != null and scIsAuto != ''">
+							AND s.is_auto = #{scIsAuto}
+						</if>
+						<if test="scShiftDateFrom != null and scShiftDateFrom != ''">
+							<![CDATA[ AND s.shift_date >= STR_TO_DATE(#{scShiftDateFrom}, '%Y-%m-%d') ]]>
+						</if>
+						<if test="scShiftDateTo != null and scShiftDateTo != ''">
+							<![CDATA[ AND s.shift_date <= STR_TO_DATE(#{scShiftDateTo}, '%Y-%m-%d') ]]>
+						</if>
+		<![CDATA[
+					ORDER BY s.shift_date DESC, s.nurse_id DESC																		
+				) S, (SELECT @ROWNUM := 0) TMP
+			 ) A
+			 LEFT JOIN nurse n ON A.nurse_id = n.nurse_id
+			 LEFT JOIN ward w ON n.ward_id = w.ward_id
+		  WHERE PAGE = #{pageIndex}
+		]]>
+	</select>	
+	
+	<select id="selectListCountSchedule" parameterType="com.demo.proworks.schedule.vo.ScheduleVo" resultType="long">
+		<!-- 스케줄 정보 목록 건수를 조회한다. -->
+		<![CDATA[
+	        SELECT    /* QueryID : com.demo.proworks.schedule.selectListCountSchedule */
+	            COUNT(*) totcnt  		                  
+	        FROM schedule s
+	        LEFT JOIN nurse n ON s.nurse_id = n.nurse_id
+	        LEFT JOIN ward w ON n.ward_id = w.ward_id
+	        WHERE  1=1    		
+		]]>
+				<if test="scNurseId != null and scNurseId != ''">
+					AND s.nurse_id = #{scNurseId}
+				</if>		     
+				<if test="scWardId != null and scWardId != ''">
+					AND n.ward_id = #{scWardId}
+				</if>
+				<if test="scShiftType != null and scShiftType != ''">
+					AND s.shift_type = #{scShiftType}
+				</if>
+				<if test="scIsAuto != null and scIsAuto != ''">
+					AND s.is_auto = #{scIsAuto}
+				</if>
+				<if test="scShiftDateFrom != null and scShiftDateFrom != ''">
+					<![CDATA[ AND s.shift_date >= STR_TO_DATE(#{scShiftDateFrom}, '%Y-%m-%d') ]]>
+				</if>
+				<if test="scShiftDateTo != null and scShiftDateTo != ''">
+					<![CDATA[ AND s.shift_date <= STR_TO_DATE(#{scShiftDateTo}, '%Y-%m-%d') ]]>
+				</if>
+	</select>
+	
+	<select id="selectListNurse" parameterType="java.util.HashMap" resultType="com.demo.proworks.nurse.vo.NurseVo">
+		<!-- 간호사 정보 목록을 조회한다. -->
+		   SELECT   /* QueryID : com.demo.proworks.schedule.selectListNurse */
+		      n.nurse_id AS nurseId, n.position,
+		      n.ward_id AS wardId, w.ward_name AS wardName
+	       FROM nurse n
+	       LEFT JOIN ward w ON n.ward_id = w.ward_id 
+	       ORDER BY n.nurse_id ASC
+	</select>
+	
+</mapper> 
