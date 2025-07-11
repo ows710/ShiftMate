@@ -540,22 +540,26 @@
 			}
 
 			#gv_pivotSchedule .w2gridview tr:hover,
-			#gv_pivotSchedule .w2gridview tbody tr:hover,
+			#gv_pivotSchedule .w2gridview
+			tbody tr:hover,
 			#gv_pivotSchedule tr:hover,
 			#gv_pivotSchedule tbody tr:hover {
 			background-color: transparent !important;
-			background: transparent !important;
+			background:
+			transparent !important;
 			}
 
 			#gv_summarySchedule .w2gridview tr:hover,
 			#gv_summarySchedule .w2gridview tbody tr:hover,
-			#gv_summarySchedule tr:hover,
+			#gv_summarySchedule
+			tr:hover,
 			#gv_summarySchedule tbody tr:hover {
 			background-color: transparent !important;
 			background: transparent !important;
 			}
 
-			/* 그리드뷰 셀 선택 시 노란색 제거 */
+			/* 그리드뷰 셀 선택 시
+			노란색 제거 */
 			#gv_pivotSchedule .w2gridview td.w2grid_selected,
 			#gv_pivotSchedule .w2gridview td.selected,
 			#gv_pivotSchedule td.w2grid_selected,
@@ -572,11 +576,13 @@
 			#gv_summarySchedule .w2gridview td.selected,
 			#gv_summarySchedule td.w2grid_selected,
 			#gv_summarySchedule td.selected,
-			#gv_summarySchedule .w2grid_selected,
+			#gv_summarySchedule
+			.w2grid_selected,
 			#gv_summarySchedule .selected {
 			background-color: transparent !important;
 			background: transparent !important;
-			border: none !important;
+			border: none
+			!important;
 			outline: none !important;
 			}
 
@@ -586,17 +592,20 @@
 			#gv_pivotSchedule .w2gridview input:focus,
 			#gv_pivotSchedule input:focus,
 			#gv_pivotSchedule .w2gridview select:focus,
-			#gv_pivotSchedule select:focus {
+			#gv_pivotSchedule
+			select:focus {
 			background-color: transparent !important;
 			background: transparent !important;
 			border: none !important;
-			outline: none !important;
+			outline: none
+			!important;
 			box-shadow: none !important;
 			}
 
 			#gv_summarySchedule .w2gridview td:focus,
 			#gv_summarySchedule td:focus,
-			#gv_summarySchedule .w2gridview input:focus,
+			#gv_summarySchedule
+			.w2gridview input:focus,
 			#gv_summarySchedule input:focus {
 			background-color: transparent !important;
 			background: transparent !important;
@@ -606,7 +615,8 @@
 			}
 
 			/* 그리드뷰 행 선택 효과 제거 */
-			#gv_pivotSchedule .w2gridview tr.w2grid_selected,
+			#gv_pivotSchedule .w2gridview
+			tr.w2grid_selected,
 			#gv_pivotSchedule .w2gridview tr.selected,
 			#gv_pivotSchedule tr.w2grid_selected,
 			#gv_pivotSchedule tr.selected {
@@ -618,7 +628,8 @@
 			#gv_summarySchedule .w2gridview tr.selected,
 			#gv_summarySchedule tr.w2grid_selected,
 			#gv_summarySchedule tr.selected {
-			background-color: transparent !important;
+			background-color:
+			transparent !important;
 			background: transparent !important;
 			}
 
@@ -627,20 +638,23 @@
 			#gv_pivotSchedule .w2grid_editing,
 			#gv_pivotSchedule .editing {
 			background-color: transparent !important;
-			background: transparent !important;
+			background: transparent
+			!important;
 			border: none !important;
 			outline: none !important;
 			}
 
 			/* 웹스퀘어 기본 스타일 무력화 */
 			.w2gridview .w2grid_selected_cell {
-			background-color: transparent !important;
+			background-color:
+			transparent !important;
 			background: transparent !important;
 			border: none !important;
 			}
 
 			.w2gridview .w2grid_hover_row {
-			background-color: transparent !important;
+			background-color:
+			transparent !important;
 			background: transparent !important;
 			}
 
@@ -657,7 +671,8 @@
 			background-color: transparent !important;
 			border: none !important;
 			outline: none !important;
-			box-shadow: none !important;
+			box-shadow: none
+			!important;
 			}
 
 			/* 특정 웹스퀘어 클래스들 무력화 */
@@ -670,7 +685,8 @@
 			background-color: transparent !important;
 			background: transparent !important;
 			border: none !important;
-			outline: none !important;
+			outline: none
+			!important;
 			}
 		</style>
 		<xf:model>
@@ -1075,7 +1091,7 @@
 				</w2:dataList>
 
 			</w2:dataCollection>
-			<xf:submission id="sbm_generateSchedule" action="http://192.168.210.3:8080/api/schedule/generate" method="post"
+			<xf:submission id="sbm_generateSchedule" action="http://localhost:8090/api/schedule/generate" method="post"
 				mediatype="application/json" ref="data:json,dma_sample" target="data:json,dlt_sample" encoding="UTF-8" instance="" replace=""
 				errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_generateSchedule_submitdone"
 				ev:submiterror="scwin.sbm_generateSchedule_submiterror" abortTrigger="">

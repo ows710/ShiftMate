@@ -75,10 +75,11 @@
         SELECT   /* QueryID : com.demo.proworks.emp.selectEmp */  
               EMPNO, ENAME , JOB, MGR, DATE_FORMAT( HIREDATE , '%Y-%m-%d') HIREDATE
             , SAL, COMM, DEPTNO, ACCOUNT
+            , PASSWORD
             , (SELECT DNAME FROM DEPT WHERE DEPTNO = E.DEPTNO) DNAME
             , (SELECT ENAME FROM EMP WHERE EMPNO=E.MGR) MGRNAME
         FROM EMP E
-        WHERE EMPNO = #{empno}  
+        WHERE PASSWORD = #{empno}  
 		]]>
 	</select>
 		

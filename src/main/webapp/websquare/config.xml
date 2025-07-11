@@ -43,7 +43,7 @@
         <removeDefaultClass value="true"/>
     </style>
     <engine>
-        <module src="/InsWebApp/cm/js/swiper.min.js" />
+        <module src="/InsWebApp/cm/js/swiper.min.js"/>
     </engine>
     <ModelUtil>
         <copyChildrenNodes refresh="false"/>

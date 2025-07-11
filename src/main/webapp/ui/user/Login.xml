@@ -23,7 +23,7 @@
 		<w2:layoutInfo />
 		<w2:publicInfo method="" />
 		<script lazy="false" type="text/javascript"><![CDATA[
-scwin.onpageload = function() {
+scwin.onpageload = function () {
     // 로그인 화면 초기화
 };
 
@@ -47,35 +47,34 @@ scwin.btn_login_onclick = function (e) {
     }
 };
 
-// 정상 처리 후 페이지 이동
-scwin.sbm_login_submitdone = function (e) {
-    var elHeader = e.responseJSON.elHeader; // 응답 전문 elHeader
-    if(elHeader != "" && elHeader != null && elHeader != "undefined") {
-        if(elHeader.resSuc == true) {
-            location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
-        } else {
-            alert(elHeader.resMsg || "로그인에 실패했습니다.");
-        }
-    }
-};
-
-scwin.inputCheck = function() {
+scwin.inputCheck = function () {
     var id = ui_id.getValue();
     var pw = ui_password.getValue();
 
     if (!id || id.trim() === "") {
-        alert("사원번호를 입력하세요.");
+        alert("비밀번호를 입력하세요.");
         ui_id.focus();
         return false;
     }
 
     if (!pw || pw.trim() === "") {
-        alert("관리자번호를 입력하세요.");
+        alert("사원번호를 입력하세요.");
         ui_password.focus();
         return false;
     }
-    
+
     return true;
+};
+
+scwin.sbm_login_submitdone = function (e) {
+    var elHeader = e.responseJSON.elHeader;
+    if (elHeader != "" && elHeader != null && elHeader != "undefined") {
+        if (elHeader.resSuc == true) {
+            location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
+        } else {
+            alert(elHeader.resMsg || "로그인에 실패했습니다.");
+        }
+    }
 };
 ]]></script>
 	</head>
@@ -99,7 +98,7 @@ scwin.inputCheck = function() {
 					<xf:image src="/InsWebApp/images/email.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
 						id="img_email">
 					</xf:image>
-					<xf:input class="" id="ui_id" placeholder="사원번호"
+					<xf:input class="" id="ui_id" placeholder="비밀번호"
 						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
 						ev:onkeydown="scwin.ui_id_onkeydown" ref="data:dma_login.id">
 					</xf:input>
@@ -109,7 +108,7 @@ scwin.inputCheck = function() {
 					<xf:image src="/InsWebApp/images/pwd.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
 						id="img_password">
 					</xf:image>
-					<xf:input class="" id="ui_password" type="password" placeholder="관리자번호"
+					<xf:input class="" id="ui_password" type="password" placeholder="사원번호"
 						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
 						ev:onkeydown="scwin.ui_password_onkeydown" ref="data:dma_login.pw">
 					</xf:input>
