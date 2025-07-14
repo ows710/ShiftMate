@@ -76,4 +76,11 @@ public interface NurseService {
 	 * @throws Exception
 	 */
 	public List<WardVo> selectListWard(HashMap searchKeyHm) throws Exception;
+
+    /**
+     * 신규 간호사 ID를 생성한다.
+     * @return 다음 nurse_id
+     * @throws Exception
+     */
+    public int getNextNurseId() throws Exception;
 } 

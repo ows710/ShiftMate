@@ -126,4 +126,13 @@ public class NurseServiceImpl implements NurseService {
 	public List<WardVo> selectListWard(HashMap searchKeyHm) throws ElException {
 		return nurseDAO.selectListWard(searchKeyHm);
 	}
+
+    @Override
+    public int getNextNurseId() throws Exception {
+        Integer maxId = nurseDAO.selectMaxNurseId();
+        if (maxId == null) {
+            return 1;
+        }
+        return maxId + 1;
+    }
 } 

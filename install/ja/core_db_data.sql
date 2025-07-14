@@ -600,5 +600,97 @@ VALUES
 		'updateEmpViewJsp(com.demo.proworks.emp.vo.EmpVo)' ,
 '社員情報更新フォームのための照会JSP' ,'社員情報更新フォームのための照会JSPを行う。' ,'N' ,
 		'DmoEmpUpdView' ,'com.demo.proworks.emp.vo.EmpVo' ,'com.demo.proworks.emp.vo.EmpListVo' ) ;
+
+INSERT INTO EL_SVC 
+	( APP_ID ,SVC_ID ,CLASS_NM ,METHOD_NM ,SVC_SUB ,SVC_DESC ,DEL_YN ,REQ_URL ,IN_INF_ID ,OUT_INF_ID )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseList' ,'com.demo.proworks.nurse.web.NurseController' ,
+		'selectNurseList(com.demo.proworks.nurse.vo.NurseVo)' ,
+		'看護師リスト検索' ,'ページング処理で看護師リストを検索する。' ,'N' ,
+		'DmoNurseList' ,'com.demo.proworks.nurse.vo.NurseVo' ,null ) ;
+
+INSERT INTO EL_SVC 
+	( APP_ID ,SVC_ID ,CLASS_NM ,METHOD_NM ,SVC_SUB ,SVC_DESC ,DEL_YN ,REQ_URL ,IN_INF_ID ,OUT_INF_ID )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseView' ,'com.demo.proworks.nurse.web.NurseController' ,
+		'selectNurseView(com.demo.proworks.nurse.vo.NurseVo)' ,
+		'看護師詳細検索' ,'看護師情報を詳細検索する。' ,'N' ,
+		'DmoNurseView' ,'com.demo.proworks.nurse.vo.NurseVo' ,null ) ;
+
+INSERT INTO EL_SVC 
+	( APP_ID ,SVC_ID ,CLASS_NM ,METHOD_NM ,SVC_SUB ,SVC_DESC ,DEL_YN ,REQ_URL ,IN_INF_ID ,OUT_INF_ID )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseIns' ,'com.demo.proworks.nurse.web.NurseController' ,
+		'insertNurse(com.demo.proworks.nurse.vo.NurseVo)' ,
+		'看護師登録処理' ,'看護師情報を登録処理する。' ,'N' ,
+		'DmoNurseIns' ,'com.demo.proworks.nurse.vo.NurseVo' ,null ) ;
+
+INSERT INTO EL_SVC 
+	( APP_ID ,SVC_ID ,CLASS_NM ,METHOD_NM ,SVC_SUB ,SVC_DESC ,DEL_YN ,REQ_URL ,IN_INF_ID ,OUT_INF_ID )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseUpd' ,'com.demo.proworks.nurse.web.NurseController' ,
+		'updateNurse(com.demo.proworks.nurse.vo.NurseVo)' ,
+		'看護師更新処理' ,'看護師情報を更新処理する。' ,'N' ,
+		'DmoNurseUpd' ,'com.demo.proworks.nurse.vo.NurseVo' ,null ) ;
+
+INSERT INTO EL_SVC 
+	( APP_ID ,SVC_ID ,CLASS_NM ,METHOD_NM ,SVC_SUB ,SVC_DESC ,DEL_YN ,REQ_URL ,IN_INF_ID ,OUT_INF_ID )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseDel' ,'com.demo.proworks.nurse.web.NurseController' ,
+		'deleteNurse(com.demo.proworks.nurse.vo.NurseVo)' ,
+		'看護師削除処理' ,'看護師情報を削除処理する。' ,'N' ,
+		'DmoNurseDel' ,'com.demo.proworks.nurse.vo.NurseVo' ,null ) ;
 		
+COMMIT;
+
+INSERT INTO EL_SVC_CTR 
+	( APP_ID ,SVC_ID ,AUTH_CHECK_YN ,SESSION_CHECK_YN ,XML_SVC_YN ,JSON_SVC_YN ,
+		LOCK_YN ,ENABLE_START_TIME ,ENABLE_END_TIME ,SVC_PRE_POST_CLASS ,LOG_LEVEL ,
+		FLD_SVC_YN ,SVC_TIME_OUT ,SVC_THREAD_MAX ,OPEN_API_USE_YN )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseList' ,null ,'N' ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ) ;
+
+INSERT INTO EL_SVC_CTR 
+	( APP_ID ,SVC_ID ,AUTH_CHECK_YN ,SESSION_CHECK_YN ,XML_SVC_YN ,JSON_SVC_YN ,
+		LOCK_YN ,ENABLE_START_TIME ,ENABLE_END_TIME ,SVC_PRE_POST_CLASS ,LOG_LEVEL ,
+		FLD_SVC_YN ,SVC_TIME_OUT ,SVC_THREAD_MAX ,OPEN_API_USE_YN )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseView' ,null ,'N' ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ) ;
+
+INSERT INTO EL_SVC_CTR 
+	( APP_ID ,SVC_ID ,AUTH_CHECK_YN ,SESSION_CHECK_YN ,XML_SVC_YN ,JSON_SVC_YN ,
+		LOCK_YN ,ENABLE_START_TIME ,ENABLE_END_TIME ,SVC_PRE_POST_CLASS ,LOG_LEVEL ,
+		FLD_SVC_YN ,SVC_TIME_OUT ,SVC_THREAD_MAX ,OPEN_API_USE_YN )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseIns' ,null ,'N' ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ) ;
+
+INSERT INTO EL_SVC_CTR 
+	( APP_ID ,SVC_ID ,AUTH_CHECK_YN ,SESSION_CHECK_YN ,XML_SVC_YN ,JSON_SVC_YN ,
+		LOCK_YN ,ENABLE_START_TIME ,ENABLE_END_TIME ,SVC_PRE_POST_CLASS ,LOG_LEVEL ,
+		FLD_SVC_YN ,SVC_TIME_OUT ,SVC_THREAD_MAX ,OPEN_API_USE_YN )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseUpd' ,null ,'N' ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ) ;
+
+INSERT INTO EL_SVC_CTR 
+	( APP_ID ,SVC_ID ,AUTH_CHECK_YN ,SESSION_CHECK_YN ,XML_SVC_YN ,JSON_SVC_YN ,
+		LOCK_YN ,ENABLE_START_TIME ,ENABLE_END_TIME ,SVC_PRE_POST_CLASS ,LOG_LEVEL ,
+		FLD_SVC_YN ,SVC_TIME_OUT ,SVC_THREAD_MAX ,OPEN_API_USE_YN )  
+VALUES  
+	( 'InsWebApp' ,'DmoNurseDel' ,null ,'N' ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ,null ) ;
+
+COMMIT;
+
+/* セッションチェック無効化設定（看護師管理機能のために追加） */
+UPDATE EL_SYS_PROP 
+SET SYS_VAL = 'N' 
+WHERE APP_ID = 'InsWebApp' 
+  AND SYS_GROUP_ID = 'EL_CORE_PROP' 
+  AND SYS_KEY = 'SESSION_CHECK_YN';
+
+UPDATE EL_SYS_PROP 
+SET SYS_VAL = 'N' 
+WHERE APP_ID = 'InsWebApp' 
+  AND SYS_GROUP_ID = 'EL_CORE_PROP' 
+  AND SYS_KEY = 'FRAMEWORK_FORCE_SESSION_CHECK_YN';
+
 COMMIT;

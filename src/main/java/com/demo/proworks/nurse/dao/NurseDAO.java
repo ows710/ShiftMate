@@ -86,6 +86,14 @@ public class NurseDAO extends ProworksDefaultAbstractDAO {
     }
     
     /**
+     * nurse 테이블에서 최대 nurse_id를 조회한다.
+     * @return 최대 nurse_id(Integer)
+     */
+    public Integer selectMaxNurseId() {
+        return (Integer) selectByPk("com.demo.proworks.nurse.selectMaxNurseId", null);
+    }
+    
+    /**
      * 병동 정보 목록을 조회한다.
      * @param searchKeyHm 조건 검색 정보 HashMap
      * @return 병동 정보 목록 List<WardVo>

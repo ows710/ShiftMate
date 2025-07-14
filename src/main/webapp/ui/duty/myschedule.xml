@@ -163,6 +163,21 @@
                 color: #495057;
                 margin-right: 10px;
             }
+            
+            /* 달력 컨테이너 가운데 정렬 */
+            .calendar-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin: 0 auto;
+            }
+            
+            /* 달력 컴포넌트 스타일 */
+            .schedule-calendar {
+                margin: 0 auto;
+                display: block;
+            }
         </style>
         <script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function() {
@@ -670,34 +685,36 @@ scwin.applyEventClasses = function() {
     			</xf:select1>
     		</xf:group>
     		
-    		<w2:scheduleCalendar 
-    			id="shc_myschedule" 
-    			style="width:800px;height:600px;" 
-    			dataList="data:dlt_schedule" 
-    			defaultDate="20250701"
-    			editable="false" 
-    			endColumn="end" 
-    			allDayColumn="allDay"
-    			eventLimit="true" 
-    			headerLeftBtn="false" 
-    			headerRightBtn="false" 
-    			headerTitle="true" 
-    			idColumn="id" 
-    			ioFormat="yyyyMMdd" 
-    			lang="ko" 
-    			locale="ko" 
-    			selectable="true" 
-    			startColumn="start"
-    			titleColumn="title" 
-    			colorColumn="color"
-    			backgroundColorColumn="backgroundColor"
-    			borderColorColumn="borderColor"
-    			textColorColumn="textColor"
-    			classNameColumn="className"
-    			tooltipDisplay="false"
-    			version="3.6"
-    			ev:onclick="scwin.shc_myschedule_onclick" noUsePrompt="true">
-    		</w2:scheduleCalendar>
+    		<div class="calendar-container">
+    			<w2:scheduleCalendar 
+    				id="shc_myschedule" 
+    				style="width:800px;height:600px;" 
+    				dataList="data:dlt_schedule" 
+    				defaultDate="20250701"
+    				editable="false" 
+    				endColumn="end" 
+    				allDayColumn="allDay"
+    				eventLimit="true" 
+    				headerLeftBtn="false" 
+    				headerRightBtn="false" 
+    				headerTitle="true" 
+    				idColumn="id" 
+    				ioFormat="yyyyMMdd" 
+    				lang="ko" 
+    				locale="ko" 
+    				selectable="true" 
+    				startColumn="start"
+    				titleColumn="title" 
+    				colorColumn="color"
+    				backgroundColorColumn="backgroundColor"
+    				borderColorColumn="borderColor"
+    				textColorColumn="textColor"
+    				classNameColumn="className"
+    				tooltipDisplay="false"
+    				version="3.6"
+    				ev:onclick="scwin.shc_myschedule_onclick" noUsePrompt="true">
+    			</w2:scheduleCalendar>
+    		</div>
     		
     		<!-- 근무자 팝업 오버레이 -->
     		<div id="popup-overlay" class="popup-overlay hidden" onclick="scwin.hideWorkerPopup()"></div>

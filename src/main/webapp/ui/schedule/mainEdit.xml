@@ -688,6 +688,58 @@
 			outline: none
 			!important;
 			}
+
+			/* 드롭다운 z-index 수정 */
+			.w2gridview .w2selectbox,
+			.w2gridview .w2select,
+			.w2gridview select,
+			.w2gridview .w2selectbox_list,
+			.w2gridview .w2select_list {
+			z-index: 10001 !important;
+			position: relative !important;
+			}
+
+			/* 드롭다운 리스트 스타일 강화 */
+			.w2gridview .w2selectbox_list,
+			.w2gridview .w2select_list,
+			.w2gridview .w2selectbox .w2selectbox_list,
+			.w2gridview .w2select .w2select_list {
+			z-index: 10002 !important;
+			position: absolute !important;
+			background: white !important;
+			border: 1px solid #ccc !important;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+			max-height: 200px !important;
+			overflow-y: auto !important;
+			}
+
+			/* 드롭다운 옵션 스타일 */
+			.w2gridview .w2selectbox_list option,
+			.w2gridview .w2select_list option,
+			.w2gridview .w2selectbox .w2selectbox_list option,
+			.w2gridview .w2select .w2select_list option {
+			padding: 8px 12px !important;
+			cursor: pointer !important;
+			background: white !important;
+			color: #333 !important;
+			}
+
+			.w2gridview .w2selectbox_list option:hover,
+			.w2gridview .w2select_list option:hover,
+			.w2gridview .w2selectbox .w2selectbox_list option:hover,
+			.w2gridview .w2select .w2select_list option:hover {
+			background: #f0f0f0 !important;
+			}
+
+			/* 모달 z-index 조정 */
+			.modal-overlay {
+			z-index: 9999 !important;
+			}
+
+			/* 툴팁 z-index 조정 */
+			.constraint-tooltip {
+			z-index: 10000 !important;
+			}
 		</style>
 		<xf:model>
 			<w2:dataCollection baseNode="map">
@@ -707,140 +759,140 @@
 							<nurseName>
 								김간호<![CDATA[가]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>5</experience>
+							<experience>20</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								2<![CDATA[2]]></nurseId>
 							<nurseName>
-								이간호<![CDATA[나]]></nurseName>
+								이수정<![CDATA[나]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>3</experience>
+							<experience>18</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								3<![CDATA[3]]></nurseId>
 							<nurseName>
-								박간호<![CDATA[다]]></nurseName>
+								박지은<![CDATA[다]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>7</experience>
+							<experience>18</experience>
 							<isNightKeep>true</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								4<![CDATA[4]]></nurseId>
 							<nurseName>
-								최간호<![CDATA[라]]></nurseName>
+								윤서연<![CDATA[라]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>2</experience>
+							<experience>17</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								5<![CDATA[5]]></nurseId>
 							<nurseName>
-								정간호<![CDATA[마]]></nurseName>
+								최유진<![CDATA[마]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>4</experience>
+							<experience>15</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								6<![CDATA[6]]></nurseId>
 							<nurseName>
-								강간호<![CDATA[바]]></nurseName>
+								김지수<![CDATA[바]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>6</experience>
+							<experience>15</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								7<![CDATA[7]]></nurseId>
 							<nurseName>
-								윤간호<![CDATA[사]]></nurseName>
+								정하윤<![CDATA[사]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>8</experience>
+							<experience>14</experience>
 							<isNightKeep>true</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								8<![CDATA[8]]></nurseId>
 							<nurseName>
-								장간호<![CDATA[아]]></nurseName>
+								한소민<![CDATA[아]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>1</experience>
+							<experience>13</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								9<![CDATA[9]]></nurseId>
 							<nurseName>
-								홍간호<![CDATA[자]]></nurseName>
+								오지민<![CDATA[자]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>9</experience>
+							<experience>11</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								10<![CDATA[10]]></nurseId>
 							<nurseName>
-								하간호<![CDATA[차]]></nurseName>
+								이다은<![CDATA[차]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>6</experience>
-							<isNightKeep>true</isNightKeep>
+							<experience>10</experience>
+							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								11<![CDATA[11]]></nurseId>
 							<nurseName>
-								나간호<![CDATA[카]]></nurseName>
+								박서진<![CDATA[카]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>3</experience>
+							<experience>10</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								12<![CDATA[12]]></nurseId>
 							<nurseName>
-								다간호<![CDATA[타]]></nurseName>
+								조하늘<![CDATA[타]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>7</experience>
+							<experience>9</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								13<![CDATA[13]]></nurseId>
 							<nurseName>
-								라간호<![CDATA[파]]></nurseName>
+								정윤아<![CDATA[파]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>4</experience>
+							<experience>8</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								14<![CDATA[14]]></nurseId>
 							<nurseName>
-								마간호<![CDATA[하]]></nurseName>
+								김지연<![CDATA[하]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>2</experience>
+							<experience>7</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								15<![CDATA[15]]></nurseId>
 							<nurseName>
-								바간호<![CDATA[아]]></nurseName>
+								송예진<![CDATA[아]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>8</experience>
+							<experience>5</experience>
 							<isNightKeep>true</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								16<![CDATA[16]]></nurseId>
 							<nurseName>
-								사간호<![CDATA[야]]></nurseName>
+								강지우<![CDATA[야]]></nurseName>
 							<team>간호사 1팀</team>
 							<experience>5</experience>
 							<isNightKeep>false</isNightKeep>
@@ -849,63 +901,99 @@
 							<nurseId>
 								17<![CDATA[17]]></nurseId>
 							<nurseName>
-								아간호<![CDATA[어]]></nurseName>
-							<team>간호사 2팀</team>
-							<experience>1</experience>
-							<isNightKeep>false</isNightKeep>
-						</w2:row>
-						<w2:row>
-							<nurseId>
-								18<![CDATA[18]]></nurseId>
-							<nurseName>
-								자간호<![CDATA[여]]></nurseName>
-							<team>간호사 1팀</team>
-							<experience>9</experience>
-							<isNightKeep>false</isNightKeep>
-						</w2:row>
-						<w2:row>
-							<nurseId>
-								19<![CDATA[19]]></nurseId>
-							<nurseName>
-								차간호<![CDATA[오]]></nurseName>
+								이소율<![CDATA[어]]></nurseName>
 							<team>간호사 2팀</team>
 							<experience>3</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
+								18<![CDATA[18]]></nurseId>
+							<nurseName>
+								문다현<![CDATA[여]]></nurseName>
+							<team>간호사 1팀</team>
+							<experience>2</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								19<![CDATA[19]]></nurseId>
+							<nurseName>
+								서채원<![CDATA[오]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
 								20<![CDATA[20]]></nurseId>
 							<nurseName>
-								카간호<![CDATA[요]]></nurseName>
+								유하진<![CDATA[요]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>6</experience>
+							<experience>1</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								21<![CDATA[21]]></nurseId>
 							<nurseName>
-								타간호<![CDATA[우]]></nurseName>
+								정예린<![CDATA[우]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>4</experience>
-							<isNightKeep>true</isNightKeep>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								22<![CDATA[22]]></nurseId>
 							<nurseName>
-								파간호<![CDATA[유]]></nurseName>
+								이가은<![CDATA[유]]></nurseName>
 							<team>간호사 1팀</team>
-							<experience>7</experience>
+							<experience>1</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 						<w2:row>
 							<nurseId>
 								23<![CDATA[23]]></nurseId>
 							<nurseName>
-								하간호2<![CDATA[으]]></nurseName>
+								김나영<![CDATA[으]]></nurseName>
 							<team>간호사 2팀</team>
-							<experience>2</experience>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+                        <w2:row>
+							<nurseId>
+								24<![CDATA[24]]></nurseId>
+							<nurseName>
+								안서윤<![CDATA[이]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>1</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+                        <w2:row>
+							<nurseId>
+								25<![CDATA[25]]></nurseId>
+							<nurseName>
+								오세린<![CDATA[기]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>0</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+                        <w2:row>
+							<nurseId>
+								26<![CDATA[26]]></nurseId>
+							<nurseName>
+								배수연<![CDATA[니]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>0</experience>
+							<isNightKeep>false</isNightKeep>
+						</w2:row>
+                        <w2:row>
+							<nurseId>
+								27<![CDATA[27]]></nurseId>
+							<nurseName>
+								오원석<![CDATA[디]]></nurseName>
+							<team>간호사 2팀</team>
+							<experience>0</experience>
 							<isNightKeep>false</isNightKeep>
 						</w2:row>
 					</w2:data>
@@ -2311,7 +2399,7 @@ scwin.convertShiftType = function (serverShiftType) {
 							<xf:trigger class="month-arrow" ev:onclick="scwin.changeMonth(-1)">
 								<xf:label>◀</xf:label>
 							</xf:trigger>
-							<w2:output id="out_monthDisplay" class="month-display" value="2025년 7월" />
+							<w2:output id="out_monthDisplay" class="month-display" value="2025년 8월" />
 							<xf:trigger class="month-arrow" ev:onclick="scwin.changeMonth(1)">
 								<xf:label>▶</xf:label>
 							</xf:trigger>
@@ -2341,10 +2429,10 @@ scwin.convertShiftType = function (serverShiftType) {
 				<!-- 피벗 테이블 영역 -->
 				<xf:group class="pivot-section">
 					<xf:group class="section-content">
-						<xf:group class="grid-container">
+						<xf:group class="grid-container" style="height: 1100px;">
 							<!-- 피벗 그리드뷰 (31일 정적 컬럼) -->
-							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:600px;" scrollByColumn="false"
-								scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
+							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:1100px;"
+								scrollByColumn="false" scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
 								cellStyleFunction="scwin.pivotCellStyleFunction" rowMouseOverColor="transparent" selectedCellColor="transparent"
 								selectedRowColor="transparent" selectedRowOverColor="transparent" evenRowBackgroundColor="#ffffff" oddRowBackgroundColor="#f8f9fa"
 								oddEvenColorDisplay="true" rowMouseOver="false">
@@ -2354,95 +2442,117 @@ scwin.convertShiftType = function (serverShiftType) {
 									rowNumBackgroundColor="#f5f5f5">
 									<w2:row id="row1" style="height:35px;background-color:#1C3D6B;color:white;">
 										<w2:column width="80" inputType="text" value=""
-											style="background-color:#103E6B;color:white;font-weight:bold;border:none;"></w2:column>
+											style="background-color:#103E6B;color:white;font-weight:bold;border:none;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="1"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="2"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="3"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="4"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="5"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="6"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="7"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="8"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="9"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="10"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="11"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="12"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="13"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="14"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="15"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="16"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="17"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="18"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="19"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="20"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="21"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="22"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="23"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="24"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="25"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="26"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="27"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="28"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="29"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="30"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 										<w2:column width="50" inputType="text" value="31"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+										</w2:column>
 									</w2:row>
 								</w2:header>
 								<w2:gBody>
 									<w2:row id="row2" style="height:35px">
 										<!-- 간호사명 컬럼 - 스타일 직접 지정 -->
 										<w2:column width="80" inputType="text" id="nurseName"
-											style="background-color:#C3F4E6;font-weight:bold;text-align:center;"></w2:column>
+											style="background-color:#C3F4E6;font-weight:bold;text-align:center;">
+										</w2:column>
 
-										<w2:column width="50" inputType="select" id="day1" chooseOption="false" displayMode="label">
+										<w2:column width="50" inputType="select" id="day1" chooseOption="" displayMode="label" allOption=""
+											ref="">
 											<w2:choices>
-												<w2:item>
-													<w2:label>D</w2:label>
-													<w2:value>D</w2:value>
-												</w2:item>
-												<w2:item>
-													<w2:label>E</w2:label>
-													<w2:value>E</w2:value>
-												</w2:item>
-												<w2:item>
-													<w2:label>N</w2:label>
-													<w2:value>N</w2:value>
-												</w2:item>
-												<w2:item>
-													<w2:label>X</w2:label>
-													<w2:value>X</w2:value>
-												</w2:item>
+												<w2:itemset nodeset="data:dl_shiftTypes">
+													<w2:label ref="label"></w2:label>
+													<w2:value ref="value"></w2:value>
+												</w2:itemset>
 											</w2:choices>
 										</w2:column>
 
@@ -3079,6 +3189,7 @@ scwin.convertShiftType = function (serverShiftType) {
 									</w2:row>
 								</w2:gBody>
 							</w2:gridView>
+							
 						</xf:group>
 					</xf:group>
 				</xf:group>
