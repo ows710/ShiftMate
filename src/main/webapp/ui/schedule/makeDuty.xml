@@ -139,16 +139,13 @@
 			}
 
 			.btn-settings {
-			background: #1C3D6B
-			!important;
+			background: #1C3D6B !important;
 			color: #fff !important;
-			box-shadow: 0
-			2px 8px rgba(28, 61, 107, 0.2) !important;
 			}
 
 			.btn-generate {
-			background: #5CD6C0 !important;
-			color: #1C3D6B !important;
+			background: #1C3D6B !important;
+			color: #fff !important;
 			font-weight: 700
 			!important;
 			box-shadow: 0 2px 8px rgba(92, 214,
@@ -424,6 +421,18 @@
 			border-top-color: rgba(0, 0, 0, 0.9);
 			}
 
+			/* 중요 안내 메시지 추가 */
+			.important-notice {
+			background: #fff3cd;
+			border: 1px solid #ffeaa7;
+			border-radius: 4px;
+			padding: 10px;
+			margin: 15px 25px;
+			color: #856404;
+			font-size: 13px;
+			text-align: center;
+			}
+
 			/* 상단 컨트롤 영역 */
 			.control-header {
 			background: #f8f9fa;
@@ -568,8 +577,7 @@
 			padding: 15px;
 			background: #f8f9fa;
 			border-radius: 8px;
-			border-left: 4px solid
-			#5CD6C0;
+			border-left: 4px solid #5CD6C0;
 			}
 
 			.guideline-item-icon {
@@ -1498,6 +1506,7 @@ scwin.addTooltipEvents = function () {
         attemptCount++;
         // 다양한 방법으로 그리드 요소 찾기
         var gridElement = document.getElementById('gv_pivotSchedule') ||
+            document.getElementById('mf_wfr_mainContent_gv_pivotSchedule') ||
             document.querySelector('[id*="gv_pivotSchedule"]') ||
             document.querySelector('.w2gridview') ||
             document.querySelector('table');
@@ -2428,6 +2437,10 @@ scwin.convertShiftType = function (serverShiftType) {
 						</xf:trigger>
 					</xf:group>
 				</xf:group>
+
+				<div class="important-notice">
+					⚠️ 자동 생성 후 스케줄 표에 생긴 오류를 직접 클릭하여 텍스트(대소문자 구분 없이 D: day, E: evening, N:night, X:off)로 수정할 수 있습니다!
+				</div>
 
 				<!-- 피벗 테이블 영역 -->
 				<xf:group class="pivot-section">

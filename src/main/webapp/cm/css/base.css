@@ -908,7 +908,7 @@ span.w2autoComplete_label {padding:0 0 0 8px;text-align:left;color:var(--ws-form
 .w2tabcontrol > .w2tabcontrol_tabhost {display:flex;flex:none;position:relative;height:40px;background:var(--ws-gray-100);box-sizing:border-box}
 .w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_li {flex-shrink:0;margin:0;padding:0 32px;border:0;border-right:1px solid var(--ws-gray-300);background-color:var(--ws-gray-100);box-sizing:border-box;cursor:pointer}
 .w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_over {background-color:var(--ws-gray-200)}
-.w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_active {z-index:21;border-color:var(--ws-primary-400);background-color:var(--ws-primary-400)}
+.w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_active {z-index:21;border-color:#1C3D6B;background-color:#1C3D6B}
 .w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_li > .w2tabcontrol_tab_left {display:none}
 .w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_li > .w2tabcontrol_tab_center {height:100%;background-image:none}
 .w2tabcontrol > .w2tabcontrol_tabhost > .w2tabcontrol_li > .w2tabcontrol_tab_right {height:100%;width:20px;background-image:none}

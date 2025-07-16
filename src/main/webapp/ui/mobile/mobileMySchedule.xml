@@ -186,40 +186,40 @@ scwin.onpageload = function() {
 };
 
 scwin.initMonthOptions = function() {
-    // 2025년 7월과 8월로 고정
+    // 2025년 8월과 9월로 고정
     var currentYear = 2025;
     
-    // 월 옵션 데이터 생성 (7월과 8월만)
+    // 월 옵션 데이터 생성 (8월과 9월만)
     var monthOptions = [
-        {
-            value: "202507", 
-            label: "2025년 7월"
-        },
         {
             value: "202508", 
             label: "2025년 8월"
+        },
+        {
+            value: "202509", 
+            label: "2025년 9월"
         }
     ];
     
-    console.log("월 선택 옵션: 2025년 7월, 8월");
+    console.log("월 선택 옵션: 2025년 8월, 9월");
     
     	dlt_monthOptions.setJSON(monthOptions);
 	
-	// chooseOption이 있으므로 실제 값으로 설정
+	// 실제 값으로 설정
 	setTimeout(function() {
 		try {
-			sbx_month.setValue("202507"); // 7월을 기본 선택
-			console.log("초기 월 선택 완료: 202507");
+			sbx_month.setValue("202508"); // 8월을 기본 선택
+			console.log("초기 월 선택 완료: 202508");
 		} catch (e) {
 			console.log("초기 월 선택 설정 오류:", e);
 			// 대체 방법으로 인덱스 사용
-			sbx_month.setSelectedIndex(1);
+			sbx_month.setSelectedIndex(0);
 		}
 	}, 100);
     
     // 전역 변수에 저장 (다른 함수에서 사용하기 위해)
-    scwin.currentYearMonth = "202507";
-    scwin.nextYearMonth = "202508";
+    scwin.currentYearMonth = "202508";
+    scwin.nextYearMonth = "202509";
 };
 
 scwin.sbx_month_onchange = function(info) {
@@ -232,9 +232,9 @@ scwin.sbx_month_onchange = function(info) {
     }
     
     try {
-        // 7월 선택 시 현재 페이지 유지 (mobileMySchedule.xml)
-        if (selectedMonth === "202507") {
-            console.log("7월 선택됨 - 현재 페이지 유지 및 데이터 로드");
+        // 8월 선택 시 현재 페이지 유지 (mobileMySchedule.xml)
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - 현재 페이지 유지 및 데이터 로드");
             scwin.loadScheduleData(selectedMonth);
             
             // 캘린더 날짜 이동
@@ -249,10 +249,10 @@ scwin.sbx_month_onchange = function(info) {
                     if (shc_myschedule && shc_myschedule.gotoDate) {
                         // 다양한 날짜 형식 시도
                         var dateFormats = [
-                            gotoDate,                           // 20250701
-                            year + "-" + month + "-01",         // 2025-07-01
+                            gotoDate,                           // 20250801
+                            year + "-" + month + "-01",         // 2025-08-01
                             new Date(parseInt(year), parseInt(month) - 1, 1), // Date 객체
-                            year + "/" + month + "/01"          // 2025/07/01
+                            year + "/" + month + "/01"          // 2025/08/01
                         ];
                         
                         var success = false;
@@ -283,12 +283,12 @@ scwin.sbx_month_onchange = function(info) {
             return;
         }
         
-        // 8월 선택 시 mobileHopeWorkEntryfinal.xml로 이동
-        if (selectedMonth === "202508") {
-            console.log("8월 선택됨 - mobileHopeWorkEntryfinal.xml로 이동 준비");
+        // 9월 선택 시 mobileHopeWorkEntryfinal.xml로 이동
+        if (selectedMonth === "202509") {
+            console.log("9월 선택됨 - mobileHopeWorkEntryfinal.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("8월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
+            if (confirm("9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
                 // mobileHopeWorkEntryfinal.xml로 이동
                 try {
                     console.log("페이지 이동 시도 중...");
@@ -387,9 +387,9 @@ scwin.sbx_month_onchange = function(info) {
                     alert("페이지 이동 중 오류가 발생했습니다: " + e.message);
                 }
             } else {
-                // 사용자가 취소한 경우 다시 7월로 되돌리기
-                console.log("페이지 이동 취소됨 - 7월로 되돌림");
-                sbx_month.setSelectedIndex(0); // 7월 선택
+                // 사용자가 취소한 경우 다시 8월로 되돌리기
+                console.log("페이지 이동 취소됨 - 8월로 되돌림");
+                sbx_month.setSelectedIndex(0); // 8월 선택
             }
             
             return;
@@ -401,10 +401,10 @@ scwin.sbx_month_onchange = function(info) {
 };
 
 scwin.initScheduleData = function() {
-	// 7월 데이터로 시작
-	scwin.loadScheduleData("202507");
+	// 8월 데이터로 시작
+	scwin.loadScheduleData("202508");
 	// 초기 제목 설정
-	scwin.updateCalendarTitle("202507");
+	scwin.updateCalendarTitle("202508");
 };
 
 // 캘린더 헤더 제목 업데이트
@@ -1159,7 +1159,7 @@ scwin.btn_alarm_onclick = function(e) {
 							<xf:group class="schbox" id="" style="margin-bottom: 10px;">
 			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
 			<xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions" 
-				chooseOptionLabel="월을 선택하세요" ev:onchange="scwin.sbx_month_onchange" allOption="" chooseOption="true">
+				ev:onchange="scwin.sbx_month_onchange" allOption="" chooseOption="false">
 				<xf:itemset nodeset="data:dlt_monthOptions">
 					<xf:label ref="label"></xf:label>
 					<xf:value ref="value"></xf:value>
@@ -1169,7 +1169,7 @@ scwin.btn_alarm_onclick = function(e) {
 
 		<!-- 커스텀 캘린더 헤더 (제목 + 버튼) -->
 		<div id="calendar-header" style="background: #f8f9fa; 			border: 1px solid #dee2e6; 			border-bottom: none;			padding: 10px 15px; 			display: flex; 			justify-content: space-between; 			align-items: center;			font-weight: bold;			font-size: 16px;			color: #495057;			width: 100%;			box-sizing: border-box;">
-			<span id="calendar-title">2025년 7월</span>
+			<span id="calendar-title">2025년 8월</span>
 			<xf:trigger class="btn_cm" ev:onclick="scwin.btn_booking_onclick" id="btn_trigger4"
 				style="background-color:#1C3D6B;color:#FFFFFF;padding:6px 12px;border-radius:3px;border:none;font-size:12px;" type="button">
 				<xf:label><![CDATA[듀티신청]]></xf:label>
@@ -1177,7 +1177,7 @@ scwin.btn_alarm_onclick = function(e) {
 		</div>
 
 		<w2:scheduleCalendar id="shc_myschedule" style="height:900px;" dataList="data:dlt_schedule"
-			defaultDate="20250701" editable="false" endColumn="end" allDayColumn="allDay" eventLimit="true" headerLeftBtn="false"
+			defaultDate="20250801" editable="false" endColumn="end" allDayColumn="allDay" eventLimit="true" headerLeftBtn="false"
 			headerRightBtn="false" headerTitle="false" idColumn="id" ioFormat="yyyyMMdd" lang="ko" locale="ko" selectable="true" startColumn="start"
 			titleColumn="title" colorColumn="color" backgroundColorColumn="backgroundColor" borderColorColumn="borderColor"
 			textColorColumn="textColor" classNameColumn="className" tooltipDisplay="false" version="3.6" ev:onclick="scwin.shc_myschedule_onclick"

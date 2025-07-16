@@ -2769,7 +2769,7 @@ scwin.applyEventClasses = function() {
             </xf:group>
             
             <div class="guide-message" id="guide-message">
-                달력에서 날짜를 클릭하여 희망근무를 신청하세요. 페이지 로딩 중입니다...
+                달력에서 날짜를 클릭하여 희망근무를 신청하세요.
             </div>
             
             <div class="important-notice">

@@ -376,15 +376,15 @@ scwin.onpageload = function() {
         console.log("컴포넌트 초기화 시작");
         scwin.initMonthOptions();
         
-        // 8월 기본값 설정
+        // 9월 기본값 설정
         setTimeout(function() {
             if (typeof sbx_month !== 'undefined') {
                 try {
-                    sbx_month.setValue("202508");
-                    console.log("페이지 로드 시 8월 기본값 설정됨");
+                    sbx_month.setValue("202509");
+                    console.log("페이지 로드 시 9월 기본값 설정됨");
                 } catch (e) {
                     console.log("setValue 실패, setSelectedIndex 시도:", e);
-                    sbx_month.setSelectedIndex(2); // chooseOption + 8월
+                    sbx_month.setSelectedIndex(0); // 9월 (chooseOption 없음)
                 }
             }
         }, 1000);
@@ -660,15 +660,15 @@ scwin.initMonthOptions = function() {
     try {
         console.log("월 선택 옵션 초기화 시작");
         
-        // 2025년 7월과 8월로 고정
+        // 2025년 8월과 9월로 고정
         var monthOptions = [
-            {
-                value: "202507", 
-                label: "2025년 7월"
-            },
             {
                 value: "202508", 
                 label: "2025년 8월"
+            },
+            {
+                value: "202509", 
+                label: "2025년 9월"
             }
         ];
         
@@ -742,7 +742,7 @@ scwin.initMonthOptions = function() {
         }, 500);
         
         // 전역 변수에 저장
-        scwin.currentYearMonth = "202507";
+        scwin.currentYearMonth = "202509";
         scwin.nextYearMonth = "202508";
         
         console.log("월 선택 옵션 초기화 완료");
@@ -770,13 +770,13 @@ scwin.sbx_month_onchange = function(info) {
             console.log("info.value:", selectedMonth);
         }
         
-        // 추가 방법: 선택된 인덱스로 값 가져오기 (chooseOption 고려)
+        // 추가 방법: 선택된 인덱스로 값 가져오기
         if (!selectedMonth && typeof sbx_month !== 'undefined') {
             try {
                 var selectedIndex = sbx_month.getSelectedIndex();
-                if (selectedIndex === 1) {
-                    selectedMonth = "202507";
-                } else if (selectedIndex === 2) {
+                if (selectedIndex === 0) {
+                    selectedMonth = "202509";
+                } else if (selectedIndex === 1) {
                     selectedMonth = "202508";
                 }
                 console.log("인덱스로 가져온 값:", selectedMonth, "인덱스:", selectedIndex);
@@ -792,12 +792,65 @@ scwin.sbx_month_onchange = function(info) {
         
         console.log("최종 선택된 월:", selectedMonth);
         
-        // 7월 선택 시 mobileMySchedule.xml로 이동
-        if (selectedMonth === "202507") {
-            console.log("7월 선택됨 - mobileMySchedule.xml로 이동 준비");
+        // 9월 선택 시 현재 페이지 유지 및 희망근무 신청
+        if (selectedMonth === "202509") {
+            console.log("9월 선택됨 - 희망근무 신청 빈 데이터 로드");
+            scwin.loadEmptyHopeWorkData(selectedMonth);
+            // 캘린더 헤더 제목 업데이트
+            scwin.updateCalendarTitle(selectedMonth);
+            
+            // 캘린더 날짜 이동
+            var year = selectedMonth.substring(0, 4);
+            var month = selectedMonth.substring(4, 6);
+            var gotoDate = year + month + "01";
+            
+            console.log("캘린더 이동 준비:", gotoDate);
+            
+            setTimeout(function() {
+                try {
+                    if (shc_hopeWork && shc_hopeWork.gotoDate) {
+                        // 다양한 날짜 형식 시도
+                        var dateFormats = [
+                            gotoDate,                           // 20250901
+                            year + "-" + month + "-01",         // 2025-09-01
+                            new Date(parseInt(year), parseInt(month) - 1, 1), // Date 객체
+                            year + "/" + month + "/01"          // 2025/09/01
+                        ];
+                        
+                        var success = false;
+                        for (var i = 0; i < dateFormats.length; i++) {
+                            try {
+                                shc_hopeWork.gotoDate(dateFormats[i]);
+                                console.log("gotoDate 성공 (형식 " + i + "):", dateFormats[i]);
+                                success = true;
+                                break;
+                            } catch (e) {
+                                console.log("gotoDate 실패 (형식 " + i + "):", dateFormats[i], e.message);
+                            }
+                        }
+                        
+                        if (!success) {
+                            console.log("모든 날짜 형식 시도 실패");
+                        }
+                    }
+                    
+                    if (shc_hopeWork && shc_hopeWork.refresh) {
+                        shc_hopeWork.refresh();
+                    }
+                } catch (e) {
+                    console.error("캘린더 이동 오류:", e);
+                }
+            }, 100);
+            
+            return;
+        }
+        
+        // 8월 선택 시 mobileMySchedule.xml로 이동
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - mobileMySchedule.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("7월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
+            if (confirm("8월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
                 // mobileMySchedule.xml로 이동
                 try {
                     console.log("페이지 이동 시도 중...");
@@ -911,71 +964,20 @@ scwin.sbx_month_onchange = function(info) {
                     alert("페이지 이동 중 오류가 발생했습니다: " + e.message);
                 }
             } else {
-                // 사용자가 취소한 경우 다시 8월로 되돌리기
-                console.log("페이지 이동 취소됨 - 8월로 되돌림");
+                // 사용자가 취소한 경우 다시 9월로 되돌리기
+                console.log("페이지 이동 취소됨 - 9월로 되돌림");
                 setTimeout(function() {
                     try {
-                        sbx_month.setValue("202508"); // 8월 선택
+                        sbx_month.setValue("202509"); // 9월 선택
                     } catch (e) {
-                        sbx_month.setSelectedIndex(2); // chooseOption + 8월
+                        sbx_month.setSelectedIndex(0); // 9월
                     }
                 }, 100);
             }
             return;
         }
         
-        // 8월 선택 시 현재 페이지 유지 및 빈 데이터 로드
-        if (selectedMonth === "202508") {
-            console.log("8월 선택됨 - 희망근무 신청 빈 데이터 로드");
-            scwin.loadEmptyHopeWorkData(selectedMonth);
-            // 캘린더 헤더 제목 업데이트
-            scwin.updateCalendarTitle(selectedMonth);
-            
-            // 캘린더 날짜 이동
-            var year = selectedMonth.substring(0, 4);
-            var month = selectedMonth.substring(4, 6);
-            var gotoDate = year + month + "01";
-            
-            console.log("캘린더 이동 준비:", gotoDate);
-            
-            setTimeout(function() {
-                try {
-                    if (shc_hopeWork && shc_hopeWork.gotoDate) {
-                        // 다양한 날짜 형식 시도
-                        var dateFormats = [
-                            gotoDate,                           // 20250801
-                            year + "-" + month + "-01",         // 2025-08-01
-                            new Date(parseInt(year), parseInt(month) - 1, 1), // Date 객체
-                            year + "/" + month + "/01"          // 2025/08/01
-                        ];
-                        
-                        var success = false;
-                        for (var i = 0; i < dateFormats.length; i++) {
-                            try {
-                                shc_hopeWork.gotoDate(dateFormats[i]);
-                                console.log("gotoDate 성공 (형식 " + i + "):", dateFormats[i]);
-                                success = true;
-                                break;
-                            } catch (e) {
-                                console.log("gotoDate 실패 (형식 " + i + "):", dateFormats[i], e.message);
-                            }
-                        }
-                        
-                        if (!success) {
-                            console.log("모든 날짜 형식 시도 실패");
-                        }
-                    }
-                    
-                    if (shc_hopeWork && shc_hopeWork.refresh) {
-                        shc_hopeWork.refresh();
-                    }
-                } catch (e) {
-                    console.error("캘린더 이동 오류:", e);
-                }
-            }, 100);
-            
-            return;
-        }
+
         
         console.log("=== 월 선택 변경 이벤트 완료 ===");
         
@@ -2934,7 +2936,7 @@ scwin.notifications = [
     {
         id: "noti_2",
         title: "희망근무 신청 안내",
-        message: "2025년 8월 희망근무 신청이 가능합니다. 7월 스케줄은 '내 스케줄' 메뉴에서 확인하세요.", 
+        message: "2025년 9월 희망근무 신청이 가능합니다. 8월 스케줄은 '내 스케줄' 메뉴에서 확인하세요.", 
         type: "work",
         createDate: "2025-01-15 10:30:00",
         isRead: false
@@ -2966,7 +2968,7 @@ scwin.notifications = [
     {
         id: "noti_6",
         title: "월별 전환 안내", 
-        message: "월 선택 드롭다운에서 7월을 선택하면 스케줄 조회 페이지로 이동합니다.",
+        message: "월 선택 드롭다운에서 8월을 선택하면 스케줄 조회 페이지로 이동합니다.",
         type: "info",
         createDate: "2025-01-15 16:30:00",
         isRead: true
@@ -3317,8 +3319,8 @@ scwin.btn_alarm_onclick = function(e) {
         	</xf:group>
         			<xf:group class="schbox" id="" style="margin-bottom: 10px;">
 		<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
-		<xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions" chooseOptionLabel="월을 선택하세요"
-			ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="true">
+		<xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions"
+			ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="false">
 			<xf:itemset nodeset="data:dlt_monthOptions">
 				<xf:label ref="label"></xf:label>
 				<xf:value ref="value"></xf:value>
@@ -3336,7 +3338,7 @@ scwin.btn_alarm_onclick = function(e) {
 
 	<!-- 커스텀 캘린더 헤더 (제목 + 버튼) -->
 	<div id="calendar-header" style="background: #f8f9fa; 		border: 1px solid #dee2e6; 		border-bottom: none;		padding: 10px 15px; 		display: flex; 		justify-content: space-between; 		align-items: center;		font-weight: bold;		font-size: 16px;		color: #495057;		width: 100%;		box-sizing: border-box;">
-		<span id="calendar-title">2025년 8월</span>
+		<span id="calendar-title">2025년 9월</span>
 		<xf:trigger class="btn_cm" ev:onclick="scwin.btn_booking_onclick" id="btn_trigger4"
 			style="background-color:#1C3D6B;color:#FFFFFF;padding:6px 12px;border-radius:3px;border:none;font-size:12px;" type="button">
 			<xf:label><![CDATA[듀티보기]]></xf:label>

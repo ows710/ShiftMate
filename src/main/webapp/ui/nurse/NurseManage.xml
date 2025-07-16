@@ -1164,8 +1164,8 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .nurse-btn-warning {
-    background: #5CD6C0;
-    color: #1C3D6B;
+    background: #1C3D6B;
+    color: #5CD6C0;
 }
 
 .nurse-btn-warning:hover {
@@ -1185,8 +1185,8 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 
 /* 다중 버튼 특별 스타일 */
 .btn_select_all {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
@@ -1199,13 +1199,13 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_select_all:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_insert_multi {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
@@ -1218,13 +1218,13 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_insert_multi:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_update_multi {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
@@ -1237,7 +1237,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_update_multi:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1701,12 +1701,12 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_search {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
 }
 
 .btn_search:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 }
@@ -1750,12 +1750,12 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 
 
 .btn_reset {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
 }
 
 .btn_reset:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1773,13 +1773,13 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     gap: 8px !important;
     min-width: 100px !important;
     justify-content: center !important;
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     line-height: 1.2 !important;
 }
 
 .btn_list_all:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 }
@@ -1826,13 +1826,13 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     line-height: 1.2 !important;
 }
 
 .btn_excel:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1844,13 +1844,13 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
     line-height: 1.2 !important;
 }
 
 .btn_delete_multi:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1904,32 +1904,32 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_insert {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
 }
 
 .btn_insert:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_update {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
 }
 
 .btn_update:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_delete {
-    background: #5CD6C0 !important;
-    color: #1C3D6B !important;
+    background: #1C3D6B !important;
+    color: #fff !important;
 }
 
 .btn_delete:hover {
-    background: #4BC5B0 !important;
+    background: #5C5DB0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -2035,7 +2035,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                     </xf:group>
                     <xf:group class="search_buttons">
                     	<w2:button class="btn_search" id="btn_search" ev:onclick="scwin.btn_search_onclick" label="검색">
-                    		<xf:image src="/InsWebApp/images/iconsearch.png" style="width:20px;height:20px;" id="iconsearch2" alt="검색 아이콘" />
+                    		<xf:image src="/InsWebApp/images/iconsearch1.png" style="width:20px;height:20px;" id="iconsearch2" alt="검색 아이콘" />
                     	</w2:button>
                     	<w2:button class="btn_list_all" id="btn_list_all" ev:onclick="scwin.btn_list_all_onclick" label="전체조회">
                             <xf:image src="/InsWebApp/images/medicalreport.png" style="width:20px;height:20px;" id="medicalreport" alt="조회 아이콘" />

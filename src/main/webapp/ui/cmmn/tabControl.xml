@@ -14,28 +14,34 @@
         <w2:publicInfo method=""/>
         <style type="text/css">
             .tab-container {
-                width: 100%;
+                margin-left: -66px;
                 height: 50px;
                 background: #f8f9fa;
-                border-bottom: 1px solid #dee2e6;
-                padding: 0;
                 overflow: hidden;
                 position: relative;
                 z-index: 100;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
             
             .tab-control {
-                width: 100% !important;
+                width: 15px !important;
                 height: 50px !important;
                 position: relative !important;
+                display: block !important;
+                visibility: visible !important;
             }
             
             /* 웹스퀘어 탭 컨트롤 기본 스타일 재정의 */
             .w2_tabControl {
                 border: none !important;
                 background: transparent !important;
-                width: 100% !important;
+                width: 15px !important;
                 height: 50px !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
             
             .w2_tabControl_tabs {
@@ -44,9 +50,12 @@
                 border: none !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                width: 100% !important;
+                width: 15px !important;
                 display: flex !important;
                 align-items: center !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                justify-content: flex-start !important;
             }
             
             .w2_tabControl_tab {
@@ -68,6 +77,53 @@
                 align-items: center !important;
                 justify-content: space-between !important;
                 white-space: nowrap !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            /* 빈 탭 요소 완전히 숨기기 */
+            .w2_tabControl_tab:empty,
+            .w2_tabControl_tab:not(:has(*)),
+            .w2_tabControl_tab[style*="display: none"],
+            .w2_tabControl_tab[style*="visibility: hidden"],
+            .w2_tabControl_tab:not(.active):not(:has(.w2_tabControl_tab_text)),
+            .w2_tabControl_tab:not(.active):not(:has(*)) {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                position: absolute !important;
+                left: -9999px !important;
+            }
+            
+            /* 빈 탭 컨테이너 숨기기 */
+            .w2_tabControl_tabs:empty,
+            .w2_tabControl_tabs:not(:has(.w2_tabControl_tab)) {
+                display: none !important;
+            }
+            
+            /* 탭 컨테이너에서 빈 공간 제거 */
+            .w2_tabControl_tabs {
+                gap: 0 !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            /* 첫 번째 탭이 아닌 빈 탭들 완전히 제거 */
+            .w2_tabControl_tab:not(:first-child):empty,
+            .w2_tabControl_tab:not(:first-child):not(:has(*)) {
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                position: absolute !important;
+                left: -9999px !important;
+                top: -9999px !important;
             }
             
             .w2_tabControl_tab:hover {
@@ -127,6 +183,28 @@
                 color: #666;
                 font-size: 14px;
             }
+            
+            /* 탭 컨트롤 강제 표시를 위한 추가 스타일 */
+            .tab-container.force-visible {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                height: 50px !important;
+            }
+            
+            .w2_tabControl.force-visible {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                height: 50px !important;
+            }
+            
+            .w2_tabControl_tabs.force-visible {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                height: 50px !important;
+            }
         </style>
         <script lazy="false" type="text/javascript"><![CDATA[
 // WebSquare scwin 객체 초기화 확인
@@ -143,6 +221,31 @@ scwin.onpageload = function() {
     
     // 탭 컨트롤이 완전히 로드될 때까지 대기
     scwin.waitForTabControl();
+    
+    // 0.5초 후 빈 탭들 정리
+    setTimeout(function() {
+        scwin.cleanupEmptyTabs();
+    }, 500);
+    
+    // 1초 후 빈 탭들 정리
+    setTimeout(function() {
+        scwin.cleanupEmptyTabs();
+    }, 1000);
+    
+    // 2초 후 빈 탭들 정리
+    setTimeout(function() {
+        scwin.cleanupEmptyTabs();
+    }, 2000);
+    
+    // 3초 후 다시 한번 정리
+    setTimeout(function() {
+        scwin.cleanupEmptyTabs();
+    }, 3000);
+    
+    // 5초 후 최종 정리
+    setTimeout(function() {
+        scwin.cleanupEmptyTabs();
+    }, 5000);
 };
 
 // 탭 컨트롤 로드 대기 함수
@@ -186,6 +289,9 @@ scwin.initializeTabControl = function() {
         // 부모 프레임과의 통신 설정 (항상 실행)
         scwin.setupParentCommunication();
         
+        // 기존 빈 탭들 정리
+        scwin.cleanupEmptyTabs();
+        
         // 탭 컨트롤이 정상적으로 로드된 경우에만 기본 탭 추가
         if (typeof tab1 !== 'undefined' && tab1.addTab) {
             // 기본 탭 추가 (근무자 관리)
@@ -195,11 +301,255 @@ scwin.initializeTabControl = function() {
             console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 기본 탭 추가를 건너뜁니다.");
         }
         
+        // 탭 클릭 이벤트를 위한 DOM 이벤트 리스너 추가 (백업용)
+        scwin.setupTabClickListeners();
+        
         console.log("✅ 탭 컨트롤 초기화 완료");
+        
+        // 2초 후 기본 탭이 제대로 추가되었는지 확인
+        setTimeout(function() {
+            if (scwin.tabUrlMap && scwin.tabUrlMap['menu_duty_manage']) {
+                console.log("✅ 기본 탭 URL 정보 확인 완료");
+            } else {
+                console.warn("⚠️ 기본 탭 URL 정보가 없습니다. 재추가 시도...");
+                scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
+            }
+            // 빈 탭들 다시 정리
+            scwin.cleanupEmptyTabs();
+        }, 2000);
+        
     } catch (e) {
         console.error("탭 컨트롤 초기화 오류:", e);
     }
 };
+
+// 빈 탭들을 정리하는 함수
+scwin.cleanupEmptyTabs = function() {
+    try {
+        console.log("빈 탭 정리 시작...");
+        
+        // 모든 탭 요소들 찾기
+        var allTabs = document.querySelectorAll('.w2_tabControl_tab');
+        console.log("발견된 탭 요소 수:", allTabs.length);
+        
+        allTabs.forEach(function(tab, index) {
+            // 탭 내용 확인
+            var hasContent = tab.textContent && tab.textContent.trim().length > 0;
+            var hasChildren = tab.children && tab.children.length > 0;
+            var hasTextElement = tab.querySelector('.w2_tabControl_tab_text');
+            var isActive = tab.classList.contains('active');
+            var isVisible = tab.style.display !== 'none' && tab.style.visibility !== 'hidden';
+            
+            console.log(`탭 ${index}: 내용="${tab.textContent.trim()}", 자식요소=${hasChildren}, 텍스트요소=${!!hasTextElement}, 활성=${isActive}, 보임=${isVisible}`);
+            
+            // 빈 탭이거나 내용이 없는 탭 완전히 숨기기
+            if (!hasContent && !hasChildren && !hasTextElement && !isActive) {
+                console.log(`빈 탭 발견 및 완전 숨김: ${index}`);
+                tab.style.display = 'none';
+                tab.style.visibility = 'hidden';
+                tab.style.opacity = '0';
+                tab.style.width = '0';
+                tab.style.height = '0';
+                tab.style.margin = '0';
+                tab.style.padding = '0';
+                tab.style.border = 'none';
+                tab.style.position = 'absolute';
+                tab.style.left = '-9999px';
+                tab.style.top = '-9999px';
+                
+                // DOM에서 완전히 제거
+                if (tab.parentNode) {
+                    tab.parentNode.removeChild(tab);
+                    console.log(`탭 ${index} DOM에서 완전 제거`);
+                }
+            }
+        });
+        
+        // 탭 컨테이너에서 빈 공간 제거
+        var tabContainer = document.querySelector('.w2_tabControl_tabs');
+        if (tabContainer) {
+            // 보이는 탭들만 확인
+            var visibleTabs = tabContainer.querySelectorAll('.w2_tabControl_tab:not([style*="display: none"]):not([style*="visibility: hidden"])');
+            console.log(`보이는 탭 수: ${visibleTabs.length}`);
+            
+            if (visibleTabs.length === 0) {
+                console.log("보이는 탭이 없어서 탭 컨테이너 숨김");
+                tabContainer.style.display = 'none';
+            } else {
+                // 탭 컨테이너를 보이는 탭들만 포함하도록 조정
+                tabContainer.style.justifyContent = 'flex-start';
+                tabContainer.style.gap = '0';
+                tabContainer.style.flexWrap = 'nowrap';
+            }
+        }
+        
+        // 추가로 빈 요소들 완전히 제거
+        var emptyElements = document.querySelectorAll('.w2_tabControl_tab:empty, .w2_tabControl_tab:not(:has(*))');
+        emptyElements.forEach(function(element) {
+            if (element.parentNode) {
+                element.parentNode.removeChild(element);
+                console.log("빈 요소 DOM에서 제거");
+            }
+        });
+        
+        console.log("✅ 빈 탭 정리 완료");
+        
+    } catch (e) {
+        console.error("빈 탭 정리 오류:", e);
+    }
+};
+
+// 탭 클릭 이벤트를 위한 DOM 이벤트 리스너 설정 (백업용)
+scwin.setupTabClickListeners = function() {
+    try {
+        console.log("탭 클릭 이벤트 리스너 설정 시작...");
+        
+        // 탭 요소들을 찾아서 클릭 이벤트 추가
+        var setupListeners = function() {
+            var tabElements = document.querySelectorAll('.w2_tabControl_tab');
+            console.log("발견된 탭 요소 수:", tabElements.length);
+            
+            tabElements.forEach(function(tabElement, index) {
+                // 이미 이벤트가 추가되었는지 확인
+                if (tabElement._clickListenerAdded) {
+                    return;
+                }
+                
+                // 탭 ID 추출 (여러 방법으로 시도)
+                var tabId = tabElement.getAttribute('data-tab-id') || 
+                           tabElement.getAttribute('data-tab-url') ||
+                           tabElement.getAttribute('id') ||
+                           tabElement.querySelector('.w2_tabControl_tab_text')?.textContent?.trim() ||
+                           tabElement.textContent.trim();
+                
+                console.log("탭 요소에 클릭 이벤트 추가:", tabId);
+                
+                // 탭 URL도 추출
+                var tabUrl = tabElement.getAttribute('data-tab-url');
+                if (tabUrl) {
+                    console.log("탭 URL 발견:", tabUrl);
+                }
+                
+                // 클릭 이벤트 추가
+                tabElement.addEventListener('click', function(e) {
+                    console.log("DOM 클릭 이벤트 감지:", tabId);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 탭 클릭 함수 호출
+                    if (scwin.tab1_onclick) {
+                        scwin.tab1_onclick(tabId);
+                    } else {
+                        console.error("tab1_onclick 함수가 없습니다!");
+                    }
+                }, true); // 캡처링 단계에서 실행
+                
+                // 더블클릭 이벤트도 추가
+                tabElement.addEventListener('dblclick', function(e) {
+                    console.log("DOM 더블클릭 이벤트 감지:", tabId);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 탭 클릭 함수 호출
+                    if (scwin.tab1_onclick) {
+                        scwin.tab1_onclick(tabId);
+                    }
+                }, true);
+                
+                // 마우스다운 이벤트도 추가 (WebSquare 환경 대응)
+                tabElement.addEventListener('mousedown', function(e) {
+                    console.log("DOM 마우스다운 이벤트 감지:", tabId);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 탭 클릭 함수 호출
+                    if (scwin.tab1_onclick) {
+                        scwin.tab1_onclick(tabId);
+                    }
+                }, true);
+                
+                // 이벤트 추가 완료 표시
+                tabElement._clickListenerAdded = true;
+                
+                // 탭 요소에 탭 ID 저장
+                tabElement.setAttribute('data-tab-id', tabId);
+            });
+        };
+        
+        // 즉시 실행
+        setupListeners();
+        
+        // 0.5초 후 다시 실행
+        setTimeout(setupListeners, 500);
+        
+        // 1초 후 다시 실행 (동적으로 추가되는 탭들을 위해)
+        setTimeout(setupListeners, 1000);
+        
+        // 2초 후 다시 실행
+        setTimeout(setupListeners, 2000);
+        
+        // 3초 후 다시 실행
+        setTimeout(setupListeners, 3000);
+        
+        console.log("✅ 탭 클릭 이벤트 리스너 설정 완료");
+        
+    } catch (e) {
+        console.error("탭 클릭 이벤트 리스너 설정 오류:", e);
+    }
+};
+
+// 탭 컨트롤이 보이도록 강제 표시하는 함수
+/*scwin.ensureVisible = function() {
+    try {
+        // 탭 컨트롤 컨테이너 찾기
+        var tabContainer = document.querySelector('.tab-container');
+        if (tabContainer) {
+            tabContainer.style.display = 'block';
+            tabContainer.style.visibility = 'visible';
+            tabContainer.style.height = '50px';
+            tabContainer.style.opacity = '1';
+            tabContainer.style.zIndex = '100';
+            tabContainer.classList.add('force-visible');
+        }
+        
+        // 웹스퀘어 탭 컨트롤 요소 찾기
+        var w2TabControl = document.querySelector('.w2_tabControl');
+        if (w2TabControl) {
+            w2TabControl.style.display = 'block';
+            w2TabControl.style.visibility = 'visible';
+            w2TabControl.style.height = '50px';
+            w2TabControl.style.opacity = '1';
+            w2TabControl.classList.add('force-visible');
+        }
+        
+        // 탭 컨트롤 탭 영역 찾기
+        var tabTabs = document.querySelector('.w2_tabControl_tabs');
+        if (tabTabs) {
+            tabTabs.style.display = 'flex';
+            tabTabs.style.visibility = 'visible';
+            tabTabs.style.height = '50px';
+            tabTabs.style.opacity = '1';
+            tabTabs.classList.add('force-visible');
+        }
+        
+        // 모든 탭 요소들도 강제 표시
+        var allTabs = document.querySelectorAll('.w2_tabControl_tab');
+        allTabs.forEach(function(tab) {
+            tab.style.display = 'inline-flex';
+            tab.style.visibility = 'visible';
+            tab.style.opacity = '1';
+        });
+        
+        // body와 html에도 탭 컨트롤 영역이 보이도록 설정
+        document.body.style.overflow = 'visible';
+        document.documentElement.style.overflow = 'visible';
+        
+        console.log("✅ 탭 컨트롤 강제 표시 완료");
+        
+    } catch (e) {
+        console.error("탭 컨트롤 강제 표시 오류:", e);
+    }
+};*/
 
 // 부모 프레임과의 통신 설정
 scwin.setupParentCommunication = function() {
@@ -240,6 +590,13 @@ scwin.addTab = async function(tabId, tabTitle, tabUrl, isActive) {
             console.log("탭이 존재하지 않습니다:", tabId);
         }
         
+        // 탭 URL 정보를 내부 저장소에 저장
+        if (!scwin.tabUrlMap) {
+            scwin.tabUrlMap = {};
+        }
+        scwin.tabUrlMap[tabId] = tabUrl;
+        console.log("탭 URL 정보 저장:", tabId, "->", tabUrl);
+        
         // 웹스퀘어 공식 API를 사용하여 탭 추가
         var newTabId = await tab1.addTab(tabId, {
             "label": tabTitle,
@@ -259,6 +616,29 @@ scwin.addTab = async function(tabId, tabTitle, tabUrl, isActive) {
         }
         
         console.log("✅ 탭 추가 완료:", tabId);
+        
+        // 탭 추가 후 탭 요소에 데이터 속성 설정
+        setTimeout(function() {
+            var tabElements = document.querySelectorAll('.w2_tabControl_tab');
+            tabElements.forEach(function(tabElement) {
+                var tabText = tabElement.querySelector('.w2_tabControl_tab_text');
+                if (tabText && tabText.textContent.trim() === tabTitle) {
+                    tabElement.setAttribute('data-tab-id', tabId);
+                    tabElement.setAttribute('data-tab-url', tabUrl);
+                    console.log("탭 요소에 데이터 속성 설정:", tabId, tabUrl);
+                }
+            });
+        }, 200);
+        
+        // 탭 추가 후 빈 탭들 정리
+        setTimeout(function() {
+            scwin.cleanupEmptyTabs();
+        }, 100);
+        
+        // 탭 추가 후 DOM 이벤트 리스너 다시 설정
+        setTimeout(function() {
+            scwin.setupTabClickListeners();
+        }, 500);
         
     } catch (e) {
         console.error("탭 추가 오류:", e);
@@ -301,6 +681,12 @@ scwin.closeTab = async function(tabId) {
             return;
         }
         
+        // 저장된 URL 정보 정리
+        if (scwin.tabUrlMap && scwin.tabUrlMap[tabId]) {
+            delete scwin.tabUrlMap[tabId];
+            console.log("탭 URL 정보 삭제:", tabId);
+        }
+        
         // 탭 제거
         await tab1.removeTab(tabId);
         console.log("✅ 탭 닫기 완료:", tabId);
@@ -330,18 +716,108 @@ scwin.findTabById = async function(tabId) {
 // 탭 클릭 이벤트 (웹스퀘어 탭 컨트롤에서 자동 호출)
 scwin.tab1_onclick = async function(tabId) {
     try {
-        console.log("탭 클릭:", tabId);
+        console.log("=== 탭 클릭 이벤트 시작 ===");
+        console.log("클릭된 탭 ID:", tabId);
+        console.log("현재 저장된 탭 URL 맵:", scwin.tabUrlMap);
+        console.log("부모 프레임 존재:", !!window.parent);
+        console.log("부모 프레임 scwin 존재:", !!(window.parent && window.parent.scwin));
         
-        // 부모 프레임에 메인 콘텐츠 변경 요청
-        if (window.parent && window.parent.scwin) {
-            var tabInfo = await scwin.findTabById(tabId);
-            if (tabInfo && tabInfo.src) {
-                window.parent.scwin.changeMainContentFromTab(tabInfo.src);
+        // 탭 ID가 없으면 기본값 설정
+        if (!tabId) {
+            console.warn("탭 ID가 없어서 기본값 사용");
+            tabId = "menu_duty_manage";
+        }
+        
+        // 1. 저장된 URL 정보 확인 (우선순위 1)
+        var savedUrl = null;
+        if (scwin.tabUrlMap && scwin.tabUrlMap[tabId]) {
+            savedUrl = scwin.tabUrlMap[tabId];
+            console.log("✅ 저장된 URL 정보 사용:", savedUrl);
+        } else {
+            console.log("❌ 저장된 URL 정보 없음");
+        }
+        
+        // 2. 탭 정보에서 URL 가져오기 (우선순위 2)
+        var tabInfo = null;
+        var tabUrl = null;
+        if (!savedUrl) {
+            console.log("탭 정보에서 URL 찾기 시도...");
+            try {
+                tabInfo = await scwin.findTabById(tabId);
+                console.log("탭 정보:", tabInfo);
+                if (tabInfo && tabInfo.src) {
+                    tabUrl = tabInfo.src;
+                    console.log("✅ 탭 정보에서 URL 찾음:", tabUrl);
+                } else {
+                    console.log("❌ 탭 정보에서 URL 찾을 수 없음");
+                }
+            } catch (e) {
+                console.log("탭 정보 조회 실패:", e);
             }
         }
         
+        // 3. URL 추정 (우선순위 3)
+        var estimatedUrl = null;
+        if (!savedUrl && !tabUrl) {
+            console.log("URL 추정 시도...");
+            estimatedUrl = scwin.getUrlFromTabId(tabId);
+            console.log("추정된 URL:", estimatedUrl);
+        }
+        
+        // 4. 최종 URL 결정
+        var finalUrl = savedUrl || tabUrl || estimatedUrl;
+        console.log("최종 결정된 URL:", finalUrl);
+        
+        // 5. 부모 프레임에 메인 콘텐츠 변경 요청
+        if (window.parent && window.parent.scwin && finalUrl) {
+            console.log("부모 프레임에 메인 콘텐츠 변경 요청:", finalUrl);
+            
+            // 부모 프레임의 함수 호출
+            if (window.parent.scwin.changeMainContentFromTab) {
+                try {
+                    window.parent.scwin.changeMainContentFromTab(finalUrl);
+                    console.log("✅ 메인 콘텐츠 변경 요청 완료");
+                } catch (e) {
+                    console.error("메인 콘텐츠 변경 함수 호출 실패:", e);
+                }
+            } else {
+                console.error("❌ 부모 프레임에 changeMainContentFromTab 함수가 없음");
+                
+                // 대체 방법: 직접 메인 콘텐츠 변경
+                try {
+                    if (window.parent.wfr_mainContent && window.parent.wfr_mainContent.setSrc) {
+                        window.parent.wfr_mainContent.setSrc(finalUrl);
+                        console.log("✅ 대체 방법으로 메인 콘텐츠 변경 완료");
+                    }
+                } catch (e) {
+                    console.error("대체 방법도 실패:", e);
+                }
+            }
+            
+            // 사이드메뉴 활성 메뉴도 업데이트
+            var menuId = scwin.getMenuIdFromTabId(tabId);
+            if (menuId && window.parent.scwin.updateSideMenuActiveMenuWithRetry) {
+                console.log("사이드메뉴 활성 메뉴 업데이트:", menuId);
+                try {
+                    window.parent.scwin.updateSideMenuActiveMenuWithRetry(menuId, 0);
+                } catch (e) {
+                    console.error("사이드메뉴 업데이트 실패:", e);
+                }
+            }
+        } else {
+            console.error("❌ URL을 찾을 수 없거나 부모 프레임이 없음:", {
+                tabId: tabId,
+                finalUrl: finalUrl,
+                hasParent: !!window.parent,
+                hasParentScwin: !!(window.parent && window.parent.scwin)
+            });
+        }
+        
+        console.log("=== 탭 클릭 이벤트 종료 ===");
+        
     } catch (e) {
-        console.error("탭 클릭 처리 오류:", e);
+        console.error("❌ 탭 클릭 처리 오류:", e);
+        console.error("오류 스택:", e.stack);
     }
 };
 
@@ -359,6 +835,24 @@ scwin.tab1_onclose = async function(tabId) {
         console.error("탭 닫기 처리 오류:", e);
     }
 };
+
+// 탭 ID로 메뉴 ID를 찾는 함수
+scwin.getMenuIdFromTabId = function(tabId) {
+    // 탭 ID와 메뉴 ID가 동일한 경우가 많음
+    return tabId;
+};
+
+// 탭 ID로 URL을 추정하는 함수
+scwin.getUrlFromTabId = function(tabId) {
+    var tabUrlMap = {
+        'menu_duty_manage': '/InsWebApp/ui/nurse/NurseManage.xml',
+        'menu_schedule_manage': '/InsWebApp/ui/schedule/makeDuty.xml',
+        'menu_my_schedule': '/InsWebApp/ui/duty/myschedule.xml',
+        'menu_work_input': '/InsWebApp/ui/duty/HopeWorkEntry.xml',
+    };
+    
+    return tabUrlMap[tabId] || null;
+};
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">
@@ -367,8 +861,10 @@ scwin.tab1_onclose = async function(tabId) {
                 confirmFalseAction="new" confirmTrueAction="exist" useConfirmMessage="false" 
                 useMoveNextTabFocus="false" useTabKeyOnly="true" ev:onclick="scwin.tab1_onclick" ev:onclose="scwin.tab1_onclose">
                 <w2:tabs disabled="false" style="width:100%;height:50px;" id="tabs1"></w2:tabs>
-                <w2:content alwaysDraw="false" style="display:none;" id="content1"></w2:content>
+                <w2:content alwaysDraw="true" style="display:none;" id="content1"></w2:content>
             </w2:tabControl>
         </xf:group>
     </body>
 </html>
+
+
