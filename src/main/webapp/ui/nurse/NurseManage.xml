@@ -20,8 +20,6 @@
                         <w2:key id="hireDate" name="입사일" dataType="text"></w2:key>
                         <w2:key id="scNurseName" name="검색_근무자명" dataType="text"></w2:key>
                         <w2:key id="scPosition" name="검색_직급" dataType="text"></w2:key>
-                        <w2:key id="pageIndex" name="페이지번호" dataType="text"></w2:key>
-                        <w2:key id="pageSize" name="페이지크기" dataType="text"></w2:key>
                     </w2:keyInfo>
                 </w2:dataMap>
                 <w2:dataList baseNode="list" repeatNode="map" id="dlt_nurseList" saveRemovedData="true">
@@ -36,6 +34,7 @@
                         <w2:column id="delYn" name="삭제여부" dataType="text"></w2:column>
                     </w2:columnInfo>
                 </w2:dataList>
+
             </w2:dataCollection>
             <w2:workflowCollection></w2:workflowCollection>
             <xf:submission id="sbm_selectNurseList" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/list.pwkjson" method="post"
@@ -76,10 +75,6 @@ scwin.nurseData = scwin.nurseData || []; // 간호사 데이터 저장용
 scwin.isExcelUploaded = scwin.isExcelUploaded || false; // 엑셀 업로드 여부
 
 scwin.onpageload = function(e) {
-    // 페이지 로드 시 초기 설정
-    dmp_nurseVo.set("pageIndex", 1);
-    dmp_nurseVo.set("pageSize", 10);
-    
     // 폼 초기화
     scwin.fn_clearForm();
     
@@ -88,6 +83,11 @@ scwin.onpageload = function(e) {
     
     // 현재 날짜 설정
     scwin.fn_setCurrentDate();
+    
+    // 현재 날짜 자동 업데이트 (1분마다)
+    setInterval(function() {
+        scwin.fn_setCurrentDate();
+    }, 60000); // 60초 = 1분
     
     // 엑셀 업로드 상태에 따른 버튼 상태 설정
     if (scwin.isExcelUploaded) {
@@ -103,7 +103,6 @@ scwin.onpageload = function(e) {
         // 빈 목록이라도 표시
         scwin.fn_selectNurseList();
     }
-    
     console.log("간호사 관리 페이지가 로드되었습니다.");
 };
 
@@ -117,6 +116,7 @@ scwin.fn_setCurrentDate = function() {
     
     if (txt_currentDate) {
         txt_currentDate.setValue(currentDate);
+        txt_currentDate.setLabel(currentDate);
     }
 };
 
@@ -563,125 +563,110 @@ scwin.btn_select_all_onclick = function() {
 
 // 다중 등록 버튼 클릭
 scwin.btn_insert_multi_onclick = function() {
-    var nursesToAdd = [];
-    var startCounter = scwin.nurseCounter;
+    var multiData = prompt("다중 등록할 간호사 정보를 입력하세요.\n\n형식: 간호사명1|직급1|연차1|특이사항1;간호사명2|직급2|연차2|특이사항2\n\n예시:\n홍길동|간호사|3년|응급실;김철수|주임간호사|5년|중환자실", "");
     
-    // 간단한 다중 등록 데이터 (실제로는 팝업 등을 통해 입력받아야 함)
-    var multiData = prompt("다중 등록할 간호사 정보를 입력하세요.\n형식: 간호사명1|직급1|경력1|특이사항1;간호사명2|직급2|경력2|특이사항2\n예: 홍길동|간호사|3년|응급실;김철수|주임간호사|5년|중환자실");
-    
-    if (!multiData) return;
-    
-    var nurseRecords = multiData.split(';');
-    
-    nurseRecords.forEach(function(record) {
-        var parts = record.split('|');
-        if (parts.length >= 2) {
-            var newNurse = {
-                chk_select: "0",
-                nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
-                nurseName: parts[0].trim(),
-                position: parts[1].trim(),
-                career: parts[2] ? parts[2].trim() : "",
-                specialNote: parts[3] ? parts[3].trim() : "",
-                regDate: scwin.fn_getCurrentDate(),
-                modDate: scwin.fn_getCurrentDate(),
-                useYn: "Y",
-                delYn: "N"
-            };
-            
-            nursesToAdd.push(newNurse);
-            scwin.nurseCounter++;
-        }
-    });
-    
-    if (nursesToAdd.length > 0) {
-        scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
-        alert(nursesToAdd.length + "건의 간호사 정보가 등록되었습니다.");
-        scwin.fn_selectNurseList();
+    if (multiData && multiData.trim() !== "") {
+        var nursesToAdd = [];
+        var nurseRecords = multiData.split(';');
+        nurseRecords.forEach(function(record) {
+            var parts = record.split('|');
+            if (parts.length >= 2) {
+                var newNurse = {
+                    chk_select: "0",
+                    nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
+                    nurseName: parts[0].trim(),
+                    position: parts[1].trim(),
+                    workYear: parts[2] ? parts[2].trim() : "",
+                    specialNote: parts[3] ? parts[3].trim() : "",
+                    hireDate: scwin.fn_getCurrentDate(),
+                    useYn: "Y",
+                    delYn: "N"
+                };
+                nursesToAdd.push(newNurse);
+                scwin.nurseCounter++;
+            }
+        });
         
-        console.log("다중 등록 완료:", nursesToAdd.length + "건");
+        if (nursesToAdd.length > 0) {
+            scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
+            scwin.fn_saveData();
+            alert("다중 등록 완료: " + nursesToAdd.length + "건의 간호사 정보가 등록되었습니다.");
+            scwin.fn_selectNurseList();
+        } else {
+            alert("등록할 수 있는 유효한 데이터가 없습니다.\n입력 형식을 확인해주세요.");
+        }
     }
 };
 
 // 다중 수정 버튼 클릭
 scwin.btn_update_multi_onclick = function() {
     var selectedRows = scwin.fn_getSelectedRows();
-    
     if (selectedRows.length === 0) {
         alert("수정할 간호사를 선택해주세요.");
         return;
     }
     
-    var updateField = prompt("수정할 필드를 선택하세요:\n1. 직급\n2. 연차\n3. 특이사항\n번호를 입력하세요 (1-3):");
+    var fieldOptions = "수정할 필드를 선택하세요:\n1. 직급\n2. 연차\n3. 특이사항";
+    var fieldChoice = prompt(fieldOptions, "1");
     
-    if (!updateField || !["1", "2", "3"].includes(updateField)) {
-        alert("올바른 번호를 입력하세요.");
+    if (!fieldChoice) return;
+    
+    var fieldMap = {
+        "1": "position",
+        "2": "workYear", 
+        "3": "specialNote"
+    };
+    
+    var field = fieldMap[fieldChoice];
+    if (!field) {
+        alert("올바른 필드를 선택해주세요.");
         return;
     }
     
-    var fieldNames = {"1": "position", "2": "workYear", "3": "specialNote"};
-    var fieldLabels = {"1": "직급", "2": "연차", "3": "특이사항"};
-    var fieldName = fieldNames[updateField];
-    var fieldLabel = fieldLabels[updateField];
+    var newValue = prompt("새로운 값을 입력하세요:", "");
+    if (!newValue) return;
     
-    var newValue = prompt(fieldLabel + "을(를) 입력하세요:");
-    
-    if (newValue === null) return;
-    
-    if (confirm("선택한 " + selectedRows.length + "건의 " + fieldLabel + "을(를) '" + newValue + "'으로 수정하시겠습니까?")) {
-        var updatedCount = 0;
-        
-        selectedRows.forEach(function(row) {
-            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-            var index = scwin.nurseData.findIndex(function(item) {
-                return item.nurseName === nurseName;
-            });
-            
-            if (index > -1) {
-                scwin.nurseData[index][fieldName] = newValue;
-                updatedCount++;
-                console.log("수정된 간호사: " + nurseName + " - " + fieldLabel + ": " + newValue);
-            }
+    var updatedCount = 0;
+    selectedRows.forEach(function(row) {
+        var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+        var index = scwin.nurseData.findIndex(function(item) {
+            return item.nurseName === nurseName;
         });
-        
-        // 데이터 영구 저장
-        scwin.fn_saveData();
-        
-        alert(updatedCount + "건의 간호사 정보가 수정되었습니다.");
-        scwin.fn_selectNurseList();
-        
-        console.log("다중 수정 완료:", updatedCount + "건");
-    }
+        if (index > -1) {
+            scwin.nurseData[index][field] = newValue;
+            updatedCount++;
+        }
+    });
+    
+    scwin.fn_saveData();
+    alert("다중 수정 완료: " + updatedCount + "건의 간호사 정보가 수정되었습니다.");
+    scwin.fn_selectNurseList();
 };
 
 // 다중 삭제 버튼 클릭
 scwin.btn_delete_multi_onclick = function() {
     var selectedRows = scwin.fn_getSelectedRows();
-    
     if (selectedRows.length === 0) {
-        alert("삭제할 간호사를 선택해주세요.\n체크박스를 클릭하여 삭제할 간호사를 선택하세요.");
+        alert("삭제할 간호사를 선택해주세요.");
         return;
     }
     
     if (confirm("선택한 " + selectedRows.length + "건의 간호사 정보를 삭제하시겠습니까?")) {
         var deletedCount = 0;
         var nursesToDelete = [];
-        
-        // 먼저 삭제할 간호사들의 이름을 수집
         selectedRows.forEach(function(row) {
             var nurseName = dlt_nurseList.getCellData(row, "nurseName");
             nursesToDelete.push(nurseName);
         });
         
-        // 실제 삭제 실행
         nursesToDelete.forEach(function(nurseName) {
             if (scwin.fn_deleteNurse(nurseName)) {
                 deletedCount++;
-                console.log("삭제된 간호사: " + nurseName);
             }
         });
         
-        alert(deletedCount + "건의 간호사 정보가 삭제되었습니다.");
+        scwin.fn_saveData();
+        alert("다중 삭제 완료: " + deletedCount + "건의 간호사 정보가 삭제되었습니다.");
         scwin.fn_clearForm();
         scwin.fn_selectNurseList();
     }
@@ -902,6 +887,8 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     }
 };
 
+
+
 ]]></script>
         <style type="text/css">
 /* 간호사 관리 페이지 전용 CSS */
@@ -1025,6 +1012,10 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 .search_header {
     margin-bottom: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .search_title {
@@ -1033,6 +1024,14 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     color: #1C3D6B !important;
     margin-bottom: 10px !important;
     display: block !important;
+}
+
+/* 이미지 스타일 */
+.search_header xf\:image {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-top: -2px !important;
+    margin-right: 8px !important;
 }
 
 .search_guide {
@@ -1112,7 +1111,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     border: none;
     border-radius: 8px;
     font-size: 1em;
-    font-weight: 600;
+    font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -1124,115 +1123,121 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .nurse-btn-primary {
-    background: linear-gradient(135deg, #1C3D6B 0%, #2E5984 100%);
-    color: white;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-primary:hover {
-    background: linear-gradient(135deg, #153252 0%, #1C3D6B 100%);
+    background: #4BC5B0;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(28, 61, 107, 0.3);
+    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3);
 }
 
 .nurse-btn-secondary {
-    background: #6c757d;
-    color: white;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-secondary:hover {
-    background: #5a6268;
+    background: #4BC5B0;
     transform: translateY(-2px);
 }
 
 .nurse-btn-success {
-    background: #28a745;
-    color: white;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-success:hover {
-    background: #218838;
+    background: #4BC5B0;
     transform: translateY(-2px);
 }
 
 .nurse-btn-danger {
-    background: #dc3545;
-    color: white;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-danger:hover {
-    background: #c82333;
+    background: #4BC5B0;
     transform: translateY(-2px);
 }
 
 .nurse-btn-warning {
-    background: #ffc107;
-    color: #212529;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-warning:hover {
-    background: #e0a800;
+    background: #4BC5B0;
     transform: translateY(-2px);
 }
 
 .nurse-btn-info {
-    background: #17a2b8;
-    color: white;
+    background: #5CD6C0;
+    color: #1C3D6B;
 }
 
 .nurse-btn-info:hover {
-    background: #138496;
+    background: #4BC5B0;
     transform: translateY(-2px);
 }
 
 /* 다중 버튼 특별 스타일 */
 .btn_select_all {
-    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
+    min-width: 100px !important;
+    line-height: 1.2 !important;
 }
 
 .btn_select_all:hover {
-    background: linear-gradient(135deg, #5a6268 0%, #495057 100%) !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_insert_multi {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
+    min-width: 100px !important;
+    line-height: 1.2 !important;
 }
 
 .btn_insert_multi:hover {
-    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%) !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_update_multi {
-    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important;
-    color: #212529 !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
     padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
+    min-width: 100px !important;
+    line-height: 1.2 !important;
 }
 
 .btn_update_multi:hover {
-    background: linear-gradient(135deg, #e0a800 0%, #dc3545 100%) !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1498,6 +1503,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     /* 검색 헤더 반응형 */
     .search_header {
         margin-bottom: 15px;
+        flex-direction: column;
     }
     
     .search_title {
@@ -1678,64 +1684,104 @@ scwin.fn_excelUploadCallback = function(uploadData) {
 }
 
 .btn_search, .btn_reset {
-    padding: 12px 24px !important;
+    padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     text-decoration: none !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    min-width: 120px !important;
+    min-width: 100px !important;
     justify-content: center !important;
+    line-height: 1.2 !important;
 }
 
 .btn_search {
-    background: linear-gradient(135deg, #1C3D6B 0%, #2E5984 100%) !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
 }
 
 .btn_search:hover {
-    background: linear-gradient(135deg, #153252 0%, #1C3D6B 100%) !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(28, 61, 107, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 }
 
+/* 버튼 내부 이미지 스타일 */
+.btn_search xf\:image,
+.btn_list_all xf\:image,
+.btn_reset xf\:image,
+.btn_select_all xf\:image,
+.btn_excel xf\:image,
+.btn_insert_multi xf\:image,
+.btn_update_multi xf\:image,
+.btn_delete_multi xf\:image,
+.btn_insert xf\:image,
+.btn_update xf\:image,
+.btn_delete xf\:image {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-right: 8px !important;
+    margin-top: -2px !important;
+}
+
+/* w2:button 내부 이미지 스타일 */
+.btn_search w2\:button xf\:image,
+.btn_list_all w2\:button xf\:image,
+.btn_reset w2\:button xf\:image,
+.btn_select_all w2\:button xf\:image,
+.btn_excel w2\:button xf\:image,
+.btn_insert_multi w2\:button xf\:image,
+.btn_update_multi w2\:button xf\:image,
+.btn_delete_multi w2\:button xf\:image,
+.btn_insert w2\:button xf\:image,
+.btn_update w2\:button xf\:image,
+.btn_delete w2\:button xf\:image {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-right: 8px !important;
+    margin-top: -2px !important;
+}
+
+
+
 .btn_reset {
-    background: #6c757d !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
 }
 
 .btn_reset:hover {
-    background: #5a6268 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_list_all {
-    padding: 12px 24px !important;
+    padding: 12px 20px !important;
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     text-decoration: none !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    min-width: 120px !important;
+    min-width: 100px !important;
     justify-content: center !important;
-    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
+    line-height: 1.2 !important;
 }
 
 .btn_list_all:hover {
-    background: linear-gradient(135deg, #138496 0%, #117a8b 100%) !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 }
 
 .content_area {
@@ -1777,15 +1823,16 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
-    background: #28a745 !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
+    line-height: 1.2 !important;
 }
 
 .btn_excel:hover {
-    background: #218838 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1794,15 +1841,16 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
-    background: #dc3545 !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
+    line-height: 1.2 !important;
 }
 
 .btn_delete_multi:hover {
-    background: #c82333 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1843,7 +1891,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     border: none !important;
     border-radius: 8px !important;
     font-size: 1em !important;
-    font-weight: 600 !important;
+    font-weight: bold !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     text-decoration: none !important;
@@ -1852,35 +1900,36 @@ scwin.fn_excelUploadCallback = function(uploadData) {
     gap: 8px !important;
     min-width: 120px !important;
     justify-content: center !important;
+    line-height: 1.2 !important;
 }
 
 .btn_insert {
-    background: #28a745 !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
 }
 
 .btn_insert:hover {
-    background: #218838 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_update {
-    background: #ffc107 !important;
-    color: #212529 !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
 }
 
 .btn_update:hover {
-    background: #e0a800 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
 .btn_delete {
-    background: #dc3545 !important;
-    color: white !important;
+    background: #5CD6C0 !important;
+    color: #1C3D6B !important;
 }
 
 .btn_delete:hover {
-    background: #c82333 !important;
+    background: #4BC5B0 !important;
     transform: translateY(-2px) !important;
 }
 
@@ -1955,7 +2004,7 @@ scwin.fn_excelUploadCallback = function(uploadData) {
             <!-- 병원 정보 헤더 -->
             <xf:group class="hospital_header">
                 <xf:group class="hospital_info">
-                    <w2:textbox class="hospital_logo" id="txt_hospitalLogo" label="🏥"></w2:textbox>
+                    <xf:image src="/InsWebApp/images/medicalteam.png" style="width:100px;height:100px;" id="img_logo" alt="병원 로고" />
                     <xf:group class="hospital_details">
                         <w2:textbox class="hospital_name" id="txt_hospitalName" label="삼육대학교병원"></w2:textbox>
                         <w2:textbox class="hospital_dept" id="txt_hospitalDept" label="내과병동"></w2:textbox>
@@ -1963,14 +2012,17 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                 </xf:group>
                 <xf:group class="user_info">
                     <w2:textbox class="current_user" id="txt_currentUser" label="관리자"></w2:textbox>
-                    <w2:textbox class="current_date" id="txt_currentDate" label="2025-07-09"></w2:textbox>
+                    <w2:textbox class="current_date" id="txt_currentDate" label="2025-07-16"></w2:textbox>
                 </xf:group>
             </xf:group>
             
             <xf:group class="search_area">
                 <xf:group class="search_header">
-                    <w2:textbox class="search_title" id="txt_searchTitle" label="🔍 간호사 검색"></w2:textbox>
-                    <w2:textbox class="search_guide" id="txt_searchGuide" label="• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다 • 글자 일부만 입력해도 검색 가능합니다"></w2:textbox>
+                	<xf:group style="display:flex;align-items:center;gap:10px;">
+                		<xf:image src="/InsWebApp/images/iconsearch.png" style="width:22px;height:22px;margin-top: -5px;" id="iconsearch1" alt="검색 아이콘" />
+                		<w2:textbox class="search_title" id="txt_searchTitle" label="간호사 검색"></w2:textbox>
+                	</xf:group>
+                	<w2:textbox class="search_guide" id="txt_searchGuide" label="• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다 • 글자 일부만 입력해도 검색 가능합니다"></w2:textbox>
                 </xf:group>
                 <xf:group class="search_row">
                     <xf:group class="search_item">
@@ -1979,18 +2031,18 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                     </xf:group>
                     <xf:group class="search_item">
                         <w2:textbox class="search_label" id="lbl_position_search" label="직급"></w2:textbox>
-                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition" placeholder="예: 간호사, 주임, 수간호사"></xf:input>
+                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition" placeholder="예: 간호사, 선임, 수간호사"></xf:input>
                     </xf:group>
                     <xf:group class="search_buttons">
-                        <xf:trigger class="btn_search" id="btn_search" type="button" ev:onclick="scwin.btn_search_onclick">
-                            <xf:label>🔍 검색</xf:label>
-                        </xf:trigger>
-                        <xf:trigger class="btn_list_all" id="btn_list_all" type="button" ev:onclick="scwin.btn_list_all_onclick">
-                            <xf:label>📋 전체조회</xf:label>
-                        </xf:trigger>
-                        <xf:trigger class="btn_reset" id="btn_reset" type="button" ev:onclick="scwin.btn_reset_onclick">
-                            <xf:label>🔄 초기화</xf:label>
-                        </xf:trigger>
+                    	<w2:button class="btn_search" id="btn_search" ev:onclick="scwin.btn_search_onclick" label="검색">
+                    		<xf:image src="/InsWebApp/images/iconsearch.png" style="width:20px;height:20px;" id="iconsearch2" alt="검색 아이콘" />
+                    	</w2:button>
+                    	<w2:button class="btn_list_all" id="btn_list_all" ev:onclick="scwin.btn_list_all_onclick" label="전체조회">
+                            <xf:image src="/InsWebApp/images/medicalreport.png" style="width:20px;height:20px;" id="medicalreport" alt="조회 아이콘" />
+                        </w2:button>
+                    	<w2:button class="btn_reset" id="btn_reset" ev:onclick="scwin.btn_reset_onclick" label="초기화">
+                            <xf:image src="/InsWebApp/images/reload.png" style="width:20px;height:20px;" id="reload" alt="초기화 아이콘" />
+                        </w2:button>
                     </xf:group>
                 </xf:group>
             </xf:group>
@@ -2000,21 +2052,21 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                     <xf:group class="grid_header">
                         <w2:textbox class="grid_title" id="txt_gridTitle" label="간호사 목록"></w2:textbox>
                         <xf:group class="grid_buttons">
-                            <xf:trigger class="btn_select_all" id="btn_select_all" type="button" ev:onclick="scwin.btn_select_all_onclick">
-                                <xf:label>☑️ 전체선택</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_excel" id="btn_excel" type="button" ev:onclick="scwin.btn_excel_onclick">
-                                <xf:label>📤 엑셀 업로드</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_insert_multi" id="btn_insert_multi" type="button" ev:onclick="scwin.btn_insert_multi_onclick">
-                                <xf:label>➕ 다중 등록</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_update_multi" id="btn_update_multi" type="button" ev:onclick="scwin.btn_update_multi_onclick">
-                                <xf:label>✏️ 다중 수정</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_delete_multi" id="btn_delete_multi" type="button" ev:onclick="scwin.btn_delete_multi_onclick">
-                                <xf:label>🗑️ 선택 삭제</xf:label>
-                            </xf:trigger>
+                            <w2:button class="btn_select_all" id="btn_select_all" ev:onclick="scwin.btn_select_all_onclick" label="전체선택">
+                                <xf:image src="/InsWebApp/images/selectall.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="selectall" alt="아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_excel" id="btn_excel" ev:onclick="scwin.btn_excel_onclick" label="엑셀 업로드">
+                                <xf:image src="/InsWebApp/images/uploadfile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="uploadfile" alt="업로드 아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_insert_multi" id="btn_insert_multi" ev:onclick="scwin.btn_insert_multi_onclick" label="다중 등록">
+                                <xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="adduser1" alt="등록 아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_update_multi" id="btn_update_multi" ev:onclick="scwin.btn_update_multi_onclick" label="다중 수정">
+                                <xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="editprofile1" alt="수정 아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_delete_multi" id="btn_delete_multi" ev:onclick="scwin.btn_delete_multi_onclick" label="선택 삭제">
+                                <xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="deletebutton1" alt="삭제 아이콘" />                             
+                            </w2:button>
                         </xf:group>
                     </xf:group>
                     
@@ -2025,21 +2077,21 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                         <w2:header id="header1">
                             <w2:row id="row1">
                                 <w2:column width="50" inputType="checkbox" style="height:35px" id="columnCheck" value="선택" displayMode="label"></w2:column>
-                                <w2:column width="140" inputType="text" style="height:35px" id="column2" value="근무자명" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="column3" value="직급" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="column4" value="연차" displayMode="label"></w2:column>
-                                <w2:column width="370" inputType="text" style="height:35px" id="column5" value="특이사항" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="column6" value="입사일" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="column2" value="근무자명" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="column3" value="직급" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="column4" value="연차" displayMode="label"></w2:column>
+                                <w2:column width="633" inputType="text" style="height:35px" id="column5" value="특이사항" displayMode="label"></w2:column>
+                                <w2:column width="180" inputType="text" style="height:35px" id="column6" value="입사일" displayMode="label"></w2:column>
                             </w2:row>
                         </w2:header>
                         <w2:gBody id="gBody1">
                             <w2:row id="row2">
                                 <w2:column width="50" inputType="checkbox" style="height:35px" id="chk_select" value="" displayMode="editType"></w2:column>
-                                <w2:column width="140" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
-                                <w2:column width="100" inputType="text" style="height:35px" id="workYear" value="" displayMode="label"></w2:column>
-                                <w2:column width="370" inputType="text" style="height:35px" id="specialNote" value="" displayMode="label"></w2:column>
-                                <w2:column width="120" inputType="text" style="height:35px" id="hireDate" value="" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
+                                <w2:column width="150" inputType="text" style="height:35px" id="workYear" value="" displayMode="label"></w2:column>
+                                <w2:column width="633" inputType="text" style="height:35px;" id="specialNote" value="" displayMode="label"></w2:column>
+                                <w2:column width="180" inputType="text" style="height:35px" id="hireDate" value="" displayMode="label"></w2:column>
                             </w2:row>
                         </w2:gBody>
                     </w2:gridView>
@@ -2049,15 +2101,15 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                     <xf:group class="form_header">
                         <w2:textbox class="form_title" id="txt_formTitle" label="간호사 정보"></w2:textbox>
                         <xf:group class="form_buttons">
-                            <xf:trigger class="btn_insert" id="btn_insert" type="button" ev:onclick="scwin.btn_insert_onclick">
-                                <xf:label>➕ 등록</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_update" id="btn_update" type="button" ev:onclick="scwin.btn_update_onclick">
-                                <xf:label>✏️ 수정</xf:label>
-                            </xf:trigger>
-                            <xf:trigger class="btn_delete" id="btn_delete" type="button" ev:onclick="scwin.btn_delete_onclick">
-                                <xf:label>🗑️ 삭제</xf:label>
-                            </xf:trigger>
+                            <w2:button class="btn_insert" id="btn_insert" ev:onclick="scwin.btn_insert_onclick" label="등록">
+                                <xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;" id="adduser2" alt="등록 아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_update" id="btn_update" ev:onclick="scwin.btn_update_onclick" label="수정">
+                                <xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;" id="editprofile2" alt="수정 아이콘" />
+                            </w2:button>
+                            <w2:button class="btn_delete" id="btn_delete" ev:onclick="scwin.btn_delete_onclick" label="삭제">
+                                <xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;" id="deletebutton2" alt="삭제 아이콘" />                                     
+                            </w2:button>
                         </xf:group>
                     </xf:group>
                     
@@ -2083,14 +2135,14 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                         <xf:group class="form_row">
                             <xf:group class="form_item">
                                 <w2:textbox class="form_label" id="lbl_hireDate" label="입사일"></w2:textbox>
-                                <xf:input class="form_input" id="ipt_hireDate" ref="data:dmp_nurseVo.hireDate"></xf:input>
+                                <xf:input class="form_input" id="ipt_hireDate" ref="data:dmp_nurseVo.hireDate" type="date"></xf:input>
                             </xf:group>
                         </xf:group>
                         
                         <xf:group class="form_row">
                             <xf:group class="form_item full_width">
-                                <w2:textbox class="form_label" id="lbl_specialNote" label="특이사항"></w2:textbox>
-                                <xf:textarea class="form_textarea" id="txt_specialNote" ref="data:dmp_nurseVo.specialNote" rows="3"></xf:textarea>
+                            	<w2:textbox class="form_label" id="lbl_specialNote" label="특이사항"></w2:textbox>
+                            	<xf:textarea class="form_textarea" id="txt_specialNote" ref="data:dmp_nurseVo.specialNote" rows="3"></xf:textarea>
                             </xf:group>
                         </xf:group>
                     </xf:group>

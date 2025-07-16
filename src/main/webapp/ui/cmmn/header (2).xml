@@ -474,7 +474,8 @@ scwin.showCustomModal = function() {
             
             // 버튼 영역
             "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
-            "<button onclick='console.log(\"닫기 버튼 클릭됨\"); closeCustomModal();' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>닫기</button>" +
+            "<button onclick='scwin.addTestNotification()' style='background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin-right: 10px; cursor: pointer; font-size: 14px;'>✨ 테스트 알림 추가</button>" +
+            "<button onclick='scwin.closeCustomModal()' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>❌ 닫기</button>" +
             "</div>" +
             
             "</div>" +
@@ -560,9 +561,6 @@ scwin.markNotificationAsRead = function(notificationId) {
     return false;
 };
 
-// 전역 함수로도 등록
-window.markNotificationAsRead = scwin.markNotificationAsRead;
-
 // 알림 배지 업데이트 (헤더용)
 scwin.updateNotificationBadge = function() {
     try {
@@ -636,26 +634,54 @@ scwin.updateNotificationBadge = function() {
     }
 };
 
-// 테스트 알림 추가 함수는 제거됨
-
-// 간단한 모달 닫기 함수 (테스트용)
-scwin.simpleCloseModal = function() {
-    console.log("간단한 모달 닫기 시도");
-    try {
-        var modal = document.getElementById("header_notification_modal");
-        if (modal) {
-            modal.style.display = 'none';
-            console.log("모달을 display none으로 숨김 완료");
-        } else {
-            console.log("모달을 찾을 수 없음");
+// 테스트 알림 추가 (헤더 관련)
+scwin.addTestNotification = function() {
+    var testMessages = [
+        {
+            title: "시스템 업데이트",
+            message: "새로운 기능이 추가되었습니다. 확인해 주세요.",
+            type: "info"
+        },
+        {
+            title: "근무표 변경",
+            message: "다음 주 근무표가 변경되었습니다.",
+            type: "work"
+        },
+        {
+            title: "시스템 점검",
+            message: "오늘 밤 시스템 점검이 예정되어 있습니다.",
+            type: "warning"
+        },
+        {
+            title: "새로운 알림",
+            message: "알림 센터 기능이 정상적으로 작동합니다.",
+            type: "info"
         }
-    } catch (e) {
-        console.log("간단한 모달 닫기 오류:", e.message);
-    }
+    ];
+    
+    var randomIndex = Math.floor(Math.random() * testMessages.length);
+    var testMessage = testMessages[randomIndex];
+    
+    // 새 알림 추가
+    var newNotification = {
+        id: "test_" + new Date().getTime(),
+        title: testMessage.title,
+        message: testMessage.message,
+        type: testMessage.type,
+        createDate: new Date().toLocaleString(),
+        isRead: false
+    };
+    
+    scwin.notifications.unshift(newNotification); // 맨 앞에 추가
+    
+    console.log("헤더 테스트 알림 추가:", testMessage.title);
+    
+    // 배지 업데이트
+    scwin.updateNotificationBadge();
+    
+    // 모달 새로고침 (성능 최적화)
+    scwin.refreshModal();
 };
-
-// 전역 함수로도 등록
-window.simpleCloseModal = scwin.simpleCloseModal;
 
 // 모달 새로고침 (성능 최적화)
 scwin.refreshModal = function() {
@@ -674,46 +700,11 @@ scwin.closeCustomModal = function() {
     try {
         var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
         if (modal) {
-            // IE 호환성을 위해 remove() 대신 removeChild() 사용
-            if (modal.parentNode) {
-                modal.parentNode.removeChild(modal);
-            } else {
-                modal.remove();
-            }
+            modal.remove();
             console.log("헤더 커스텀 모달 제거 완료");
-        } else {
-            console.log("모달을 찾을 수 없습니다");
         }
     } catch (e) {
         console.log("모달 닫기 중 오류:", e.message);
-        // 최후의 수단: display none으로 숨기기
-        try {
-            var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
-            if (modal) {
-                modal.style.display = 'none';
-                console.log("모달을 display none으로 숨김");
-            }
-        } catch (e2) {
-            console.log("모달 숨기기 실패:", e2.message);
-        }
-    }
-};
-
-// 전역 함수로도 등록 (HTML onclick에서 접근 가능하도록)
-window.closeCustomModal = function() {
-    if (scwin && scwin.closeCustomModal) {
-        scwin.closeCustomModal();
-    } else {
-        console.log("전역 closeCustomModal 호출");
-        try {
-            var modal = document.getElementById("header_notification_modal");
-            if (modal) {
-                modal.style.display = 'none';
-                console.log("전역 함수로 모달 숨김 완료");
-            }
-        } catch (e) {
-            console.log("전역 함수 오류:", e.message);
-        }
     }
 };
 

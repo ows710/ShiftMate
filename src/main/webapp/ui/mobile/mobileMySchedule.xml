@@ -658,21 +658,27 @@ scwin.CONFIG = {
             WORK: "#E8F5E8", 
             WARNING: "#FFF3E0",
             DEFAULT: "#F5F5F5",
-            BORDER: "#2196F3"
+            BORDER: "#2196F3",
+            READ_BG: "#FFFFFF",
+            UNREAD_BG: "#F0F8FF",
+            READ_TEXT: "#666666",
+            UNREAD_TEXT: "#333333",
+            READ_BORDER: "#E0E0E0",
+            UNREAD_BORDER: "#2196F3"
         },
         GRADIENT: "linear-gradient(135deg, #2196F3, #1976D2)"
     },
     ICONS: {
-        INFO: "ℹ️ [정보]",
-        WORK: "������ [업무]", 
-        WARNING: "⚠️ [경고]",
-        DEFAULT: "������ [알림]",
-        UNREAD: "������",
-        BELL: "������",
-        CALENDAR: "������",
-        EMPTY: "������",
-        SUMMARY: "������",
-        TIP: "������"
+        INFO: "[정보]",
+        WORK: "[업무]", 
+        WARNING: "[경고]",
+        DEFAULT: "[알림]",
+        UNREAD: "",
+        BELL: "",
+        CALENDAR: "",
+        EMPTY: "",
+        SUMMARY: "",
+        TIP: ""
     },
     TIMINGS: {
         MARK_READ_DELAY: 3000,
@@ -685,8 +691,8 @@ scwin.CONFIG = {
 scwin.notifications = [
     {
         id: "noti_1",
-        title: "내 스케줄 시스템 안내", 
-        message: "내 스케줄 조회 시스템이 성공적으로 로드되었습니다. 달력에서 날짜를 클릭하여 해당 날짜의 근무자를 확인하세요.",
+        title: "스케줄 조회 안내", 
+        message: "스케줄의 변경 사항이 있습니다.",
         type: "info",
         createDate: "2025-01-15 09:00:00",
         isRead: false
@@ -694,15 +700,15 @@ scwin.notifications = [
     {
         id: "noti_2",
         title: "스케줄 조회 안내",
-        message: "2025년 7월, 8월 스케줄을 조회할 수 있습니다. 월 선택 드롭다운에서 원하는 월을 선택하세요.", 
-        type: "work",
+        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.", 
+        type: "info",
         createDate: "2025-01-15 10:30:00",
         isRead: false
     },
     {
         id: "noti_3", 
         title: "근무자 정보 안내",
-        message: "날짜를 클릭하면 해당 날짜의 근무자 명단과 팀장, 신입 정보를 확인할 수 있습니다.",
+        message: "날짜를 클릭하면 해당 날짜의 근무자 명단과 차지 간호사, 신입 정보를 확인할 수 있습니다.",
         type: "info",
         createDate: "2025-01-15 11:45:00", 
         isRead: true
@@ -713,15 +719,15 @@ scwin.notifications = [
         message: "스케줄 타입: E(Evening), N(Night), O(Off), D(Day) - 각각 다른 색상으로 표시됩니다.",
         type: "work", 
         createDate: "2025-01-15 14:20:00",
-        isRead: false
+        isRead: true
     },
     {
         id: "noti_5",
-        title: "팀장 및 신입 표시",
-        message: "팀장은 ������ 아이콘, 신입은 ������ 아이콘으로 구분됩니다.",
+        title: "스케줄 조회 안내",
+        message: "스케줄이 결정되었습니다. 2025년 7월 스케줄을 조회할 수 있습니다.",
         type: "info",
         createDate: "2025-01-15 15:10:00",
-        isRead: false
+        isRead: true
     },
     {
         id: "noti_6",
@@ -784,15 +790,20 @@ scwin.generateNotificationHTML = function() {
         var notification = scwin.notifications[i];
         var style = scwin.getNotificationStyle(notification.type);
         var readStatus = notification.isRead ? "" : " " + scwin.CONFIG.ICONS.UNREAD + " (미읽음)";
-        var textColor = notification.isRead ? "#666" : "#333";
+        
+        // 읽음/미읽음에 따른 스타일 설정
+        var bgColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BG : scwin.CONFIG.STYLES.COLORS.UNREAD_BG;
+        var textColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_TEXT : scwin.CONFIG.STYLES.COLORS.UNREAD_TEXT;
+        var borderColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BORDER : scwin.CONFIG.STYLES.COLORS.UNREAD_BORDER;
         var fontWeight = notification.isRead ? "normal" : "bold";
+        var boxShadow = notification.isRead ? "0 1px 3px rgba(0,0,0,0.1)" : "0 2px 8px rgba(33,150,243,0.2)";
         
         notificationHtml += 
-            "<div style='margin-bottom: 15px; padding: 15px; background-color: " + style.bgColor + "; border-radius: 8px; border-left: 5px solid " + scwin.CONFIG.STYLES.COLORS.BORDER + "; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>" +
+            "<div onclick='scwin.markNotificationAsRead(\"" + notification.id + "\")' style='margin-bottom: 15px; padding: 15px; background-color: " + bgColor + "; border-radius: 8px; border-left: 5px solid " + borderColor + "; box-shadow: " + boxShadow + "; transition: all 0.3s ease; cursor: " + (notification.isRead ? "default" : "pointer") + ";'>" +
             "<div style='font-size: 16px; font-weight: " + fontWeight + "; color: " + textColor + "; margin-bottom: 8px;'>" +
             style.icon + " " + notification.title + readStatus + "</div>" +
-            "<div style='font-size: 14px; color: #555; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
-            "<div style='font-size: 12px; color: #888; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
+            "<div style='font-size: 14px; color: " + (notification.isRead ? "#777" : "#555") + "; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
+            "<div style='font-size: 12px; color: " + (notification.isRead ? "#999" : "#888") + "; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
             "</div>";
     }
     
@@ -886,7 +897,7 @@ scwin.showCustomModal = function() {
             "<div style='background: white; border-radius: 12px; width: 90%; max-width: " + scwin.CONFIG.MODAL.MAX_WIDTH + "; max-height: " + scwin.CONFIG.MODAL.MAX_HEIGHT + "; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;'>" +
             
             // 헤더
-            "<div style='background: " + scwin.CONFIG.STYLES.GRADIENT + "; color: white; padding: 20px; text-align: center;'>" +
+            "<div style='background: #1C3D6B; color: white; padding: 20px; text-align: center;'>" +
             "<h2 style='margin: 0; font-size: 20px; font-weight: bold;'>" + scwin.CONFIG.ICONS.BELL + " 내 스케줄 알림 센터</h2>" +
             "<p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>총 " + scwin.notifications.length + "개 알림" + (unreadCount > 0 ? " (" + scwin.CONFIG.ICONS.UNREAD + "미읽음 " + unreadCount + "개)" : "") + "</p>" +
             "</div>" +
@@ -896,11 +907,7 @@ scwin.showCustomModal = function() {
             notificationHtml +
             "</div>" +
             
-            // 버튼 영역
-            "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
-            "<button onclick='scwin.addTestNotification()' style='background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin-right: 10px; cursor: pointer; font-size: 14px;'>✨ 테스트 알림 추가</button>" +
-            "<button onclick='scwin.closeCustomModal()' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>❌ 닫기</button>" +
-            "</div>" +
+
             
             "</div>" +
             "</div>";
@@ -913,10 +920,10 @@ scwin.showCustomModal = function() {
         // 이벤트 리스너 등록
         scwin.attachModalEventListeners();
         
-        // 자동 읽음 처리
+        // 자동 읽음 처리 (시간을 늘려서 사용자가 개별 클릭할 시간 확보)
         setTimeout(function() {
             scwin.markAllAsRead();
-        }, scwin.CONFIG.TIMINGS.MARK_READ_DELAY);
+        }, 10000); // 10초로 변경
         
         console.log("=== 내 스케줄 커스텀 모달 표시 완료 ===");
         
@@ -967,6 +974,22 @@ scwin.markAllAsRead = function() {
         scwin.updateNotificationBadge();
         console.log("모든 내 스케줄 알림을 읽음 처리 완료");
     }
+};
+
+// 개별 알림 읽음 처리
+scwin.markNotificationAsRead = function(notificationId) {
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (scwin.notifications[i].id === notificationId && !scwin.notifications[i].isRead) {
+            scwin.notifications[i].isRead = true;
+            scwin.updateNotificationBadge();
+            console.log("알림 읽음 처리:", notificationId);
+            
+            // 모달 새로고침하여 색상 변경
+            scwin.refreshModal();
+            return true;
+        }
+    }
+    return false;
 };
 
 // 알림 배지 업데이트 (성능 최적화)

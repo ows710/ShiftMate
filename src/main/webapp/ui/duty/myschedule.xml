@@ -186,12 +186,12 @@ scwin.onpageload = function() {
     // 월 선택 옵션 초기화
     scwin.initMonthOptions();
     
-    // 7월 기본값 설정
+    // 8월 기본값 설정
     setTimeout(function() {
         if (typeof sbx_month !== 'undefined') {
-            sbx_month.setValue("202507");
+            sbx_month.setValue("202508");
             sbx_month.setSelectedIndex(0);
-            console.log("페이지 로드 시 7월 기본값 설정됨");
+            console.log("페이지 로드 시 8월 기본값 설정됨");
         }
     }, 1000);
     
@@ -215,22 +215,22 @@ scwin.onpageload = function() {
 };
 
 scwin.initMonthOptions = function() {
-    // 2025년 7월과 8월로 고정
+    // 2025년 8월과 9월로 고정
     var currentYear = 2025;
     
-    // 월 옵션 데이터 생성 (7월과 8월만)
+    // 월 옵션 데이터 생성 (8월과 9월만)
     var monthOptions = [
-        {
-            value: "202507", 
-            label: "2025년 7월"
-        },
         {
             value: "202508", 
             label: "2025년 8월"
+        },
+        {
+            value: "202509", 
+            label: "2025년 9월"
         }
     ];
     
-    console.log("월 선택 옵션: 2025년 7월, 8월");
+    console.log("월 선택 옵션: 2025년 8월, 9월");
     
     // 데이터리스트 초기화 및 설정
     dlt_monthOptions.removeAll();
@@ -250,14 +250,14 @@ scwin.initMonthOptions = function() {
                 // 강제 새로고침 시퀀스
                 sbx_month.refresh();
                 
-                // 7월(첫 번째 옵션)을 기본값으로 설정
+                // 8월(첫 번째 옵션)을 기본값으로 설정
                 setTimeout(function() {
                     try {
                         console.log("2단계: 기본값 설정 시도");
-                        sbx_month.setValue("202507"); // 7월 설정
+                        sbx_month.setValue("202508"); // 8월 설정
                         sbx_month.setSelectedIndex(0); // 첫 번째 옵션 선택
                         
-                        console.log("7월이 기본값으로 설정됨");
+                        console.log("8월이 기본값으로 설정됨");
                         console.log("현재 선택된 값:", sbx_month.getValue());
                         console.log("현재 선택된 인덱스:", sbx_month.getSelectedIndex());
                     } catch (e) {
@@ -276,7 +276,7 @@ scwin.initMonthOptions = function() {
                             dlt_monthOptions.broadcast();
                             
                             // 값 재설정 (확실하게)
-                            sbx_month.setValue("202507");
+                            sbx_month.setValue("202508");
                             
                             console.log("sbx_month 컴포넌트 준비 완료");
                             console.log("최종 선택된 값:", sbx_month.getValue());
@@ -296,8 +296,8 @@ scwin.initMonthOptions = function() {
     }, 500);
     
     // 전역 변수에 저장 (다른 함수에서 사용하기 위해)
-    scwin.currentYearMonth = "202507";
-    scwin.nextYearMonth = "202508";
+    scwin.currentYearMonth = "202508";
+    scwin.nextYearMonth = "202509";
 };
 
 scwin.sbx_month_onchange = function(info) {
@@ -310,12 +310,12 @@ scwin.sbx_month_onchange = function(info) {
     }
     
     try {
-        // 8월 선택 시 HopeWorkEntry.xml로 이동
-        if (selectedMonth === "202508") {
-            console.log("8월 선택됨 - HopeWorkEntry.xml로 이동 준비");
+        // 9월 선택 시 HopeWorkEntry.xml로 이동
+        if (selectedMonth === "202509") {
+            console.log("9월 선택됨 - HopeWorkEntry.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("8월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
+            if (confirm("9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
                 // HopeWorkEntry.xml로 이동
                 try {
                     console.log("페이지 이동 시도 중...");
@@ -338,25 +338,25 @@ scwin.sbx_month_onchange = function(info) {
                     alert("페이지 이동에 실패했습니다. 수동으로 희망근무 신청 페이지로 이동해주세요.");
                 }
             } else {
-                // 취소한 경우 7월로 다시 선택
+                // 취소한 경우 8월로 다시 선택
                 setTimeout(function() {
-                    sbx_month.setValue("202507");
+                    sbx_month.setValue("202508");
                     sbx_month.setSelectedIndex(0);
-                    console.log("8월 이동 취소 - 7월로 복귀");
+                    console.log("9월 이동 취소 - 8월로 복귀");
                 }, 100);
             }
             return;
         }
         
-        // 7월 선택 시 현재 페이지 유지 및 데이터 로드
-        if (selectedMonth === "202507") {
-            console.log("7월 선택됨 - 내 스케줄 데이터 로드");
+        // 8월 선택 시 현재 페이지 유지 및 데이터 로드
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - 내 스케줄 데이터 로드");
             
             // 드롭다운 값 유지
             setTimeout(function() {
-                sbx_month.setValue("202507");
+                sbx_month.setValue("202508");
                 sbx_month.setSelectedIndex(0);
-                console.log("7월 선택 상태 유지됨");
+                console.log("8월 선택 상태 유지됨");
             }, 50);
             
             // 1. 먼저 데이터 로드
@@ -443,8 +443,8 @@ scwin.sbx_month_onchange = function(info) {
 };
 
 scwin.initScheduleData = function() {
-    // 7월 데이터로 시작
-    scwin.loadScheduleData("202507");
+    // 8월 데이터로 시작
+    scwin.loadScheduleData("202508");
 };
 
 scwin.loadScheduleData = function(yearMonth) {
@@ -670,7 +670,7 @@ scwin.applyEventClasses = function() {
     		<!-- 월 선택 드롭다운 -->
     		<xf:group class="schbox" id="" style="margin-bottom: 10px;">
     			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
-    			                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 7월"
+    			                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 8월"
                 	ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="false">
     				<xf:itemset nodeset="data:dlt_monthOptions">
     					<xf:label ref="label"></xf:label>
@@ -690,7 +690,7 @@ scwin.applyEventClasses = function() {
     				id="shc_myschedule" 
     				style="width:800px;height:600px;" 
     				dataList="data:dlt_schedule" 
-    				defaultDate="20250701"
+    				defaultDate="20250801"
     				editable="false" 
     				endColumn="end" 
     				allDayColumn="allDay"

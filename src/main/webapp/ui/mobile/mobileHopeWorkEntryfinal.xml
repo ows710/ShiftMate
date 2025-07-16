@@ -2892,30 +2892,36 @@ scwin.CONFIG = {
             WORK: "#E8F5E8", 
             WARNING: "#FFF3E0",
             DEFAULT: "#F5F5F5",
-            BORDER: "#2196F3"
+            BORDER: "#2196F3",
+            READ_BG: "#FFFFFF",
+            UNREAD_BG: "#F0F8FF",
+            READ_TEXT: "#666666",
+            UNREAD_TEXT: "#333333",
+            READ_BORDER: "#E0E0E0",
+            UNREAD_BORDER: "#2196F3"
         },
         GRADIENT: "linear-gradient(135deg, #2196F3, #1976D2)"
     },
     ICONS: {
-        INFO: "ℹ️ [정보]",
-        WORK: "������ [업무]", 
-        WARNING: "⚠️ [경고]",
-        DEFAULT: "������ [알림]",
-        UNREAD: "������",
-        BELL: "������",
-        CALENDAR: "������",
-        EMPTY: "������",
-        SUMMARY: "������",
-        TIP: "������"
+        INFO: "[정보]",
+        WORK: "[업무]", 
+        WARNING: "[경고]",
+        DEFAULT: "[알림]",
+        UNREAD: "",
+        BELL: "",
+        CALENDAR: "",
+        EMPTY: "",
+        SUMMARY: "",
+        TIP: ""
     },
     TIMINGS: {
-        MARK_READ_DELAY: 3000,
+        MARK_READ_DELAY: 10000,
         REFRESH_DELAY: 100,
         BADGE_UPDATE_DELAY: 500
     }
 };
 
-// ========== 알림 데이터 ==========
+// ========== 알림 데이터 (희망근무 관련) ==========
 scwin.notifications = [
     {
         id: "noti_1",
@@ -2947,7 +2953,7 @@ scwin.notifications = [
         message: "희망근무 타입: Off(휴무), Day(주간근무), Evening(저녁근무), Night(야간근무) 중 선택하세요.",
         type: "work", 
         createDate: "2025-01-15 14:20:00",
-        isRead: false
+        isRead: true
     },
     {
         id: "noti_5",
@@ -2955,7 +2961,7 @@ scwin.notifications = [
         message: "이미 신청한 희망근무는 '희망근무 삭제' 옵션으로 제거할 수 있습니다.",
         type: "info",
         createDate: "2025-01-15 15:10:00",
-        isRead: false
+        isRead: true
     },
     {
         id: "noti_6",
@@ -2968,7 +2974,6 @@ scwin.notifications = [
 ];
 
 // ========== 알림 유틸리티 함수 ==========
-// 알림 타입에 따른 아이콘과 색상 가져오기
 scwin.getNotificationStyle = function(type) {
     switch(type) {
         case "info":
@@ -2994,7 +2999,6 @@ scwin.getNotificationStyle = function(type) {
     }
 };
 
-// 미읽은 알림 개수 계산
 scwin.getUnreadCount = function() {
     var count = 0;
     for (var i = 0; i < scwin.notifications.length; i++) {
@@ -3005,70 +3009,58 @@ scwin.getUnreadCount = function() {
     return count;
 };
 
-// 알림 HTML 생성 (모달용)
 scwin.generateNotificationHTML = function() {
     var notificationHtml = "";
-    
     if (scwin.notifications.length === 0) {
         return "<div style='text-align: center; color: #999; font-size: 16px; padding: 40px;'>" + 
                scwin.CONFIG.ICONS.EMPTY + " 알림이 없습니다.</div>";
     }
-    
     for (var i = 0; i < scwin.notifications.length; i++) {
         var notification = scwin.notifications[i];
         var style = scwin.getNotificationStyle(notification.type);
         var readStatus = notification.isRead ? "" : " " + scwin.CONFIG.ICONS.UNREAD + " (미읽음)";
-        var textColor = notification.isRead ? "#666" : "#333";
+        var bgColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BG : scwin.CONFIG.STYLES.COLORS.UNREAD_BG;
+        var textColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_TEXT : scwin.CONFIG.STYLES.COLORS.UNREAD_TEXT;
+        var borderColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BORDER : scwin.CONFIG.STYLES.COLORS.UNREAD_BORDER;
         var fontWeight = notification.isRead ? "normal" : "bold";
-        
+        var boxShadow = notification.isRead ? "0 1px 3px rgba(0,0,0,0.1)" : "0 2px 8px rgba(33,150,243,0.2)";
         notificationHtml += 
-            "<div style='margin-bottom: 15px; padding: 15px; background-color: " + style.bgColor + "; border-radius: 8px; border-left: 5px solid " + scwin.CONFIG.STYLES.COLORS.BORDER + "; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>" +
+            "<div onclick='scwin.markNotificationAsRead(\"" + notification.id + "\")' style='margin-bottom: 15px; padding: 15px; background-color: " + bgColor + "; border-radius: 8px; border-left: 5px solid " + borderColor + "; box-shadow: " + boxShadow + "; transition: all 0.3s ease; cursor: " + (notification.isRead ? "default" : "pointer") + ";'>" +
             "<div style='font-size: 16px; font-weight: " + fontWeight + "; color: " + textColor + "; margin-bottom: 8px;'>" +
             style.icon + " " + notification.title + readStatus + "</div>" +
-            "<div style='font-size: 14px; color: #555; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
-            "<div style='font-size: 12px; color: #888; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
+            "<div style='font-size: 14px; color: " + (notification.isRead ? "#777" : "#555") + "; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
+            "<div style='font-size: 12px; color: " + (notification.isRead ? "#999" : "#888") + "; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
             "</div>";
     }
-    
     return notificationHtml;
 };
 
-// 알림 메시지 생성 (Alert용)
 scwin.generateAlertMessage = function() {
     var unreadCount = scwin.getUnreadCount();
     var message = scwin.CONFIG.ICONS.BELL + " [희망근무 알림 센터] " + scwin.CONFIG.ICONS.BELL + "\n\n";
-    
     for (var i = 0; i < scwin.notifications.length; i++) {
         var notification = scwin.notifications[i];
         var style = scwin.getNotificationStyle(notification.type);
         var statusText = notification.isRead ? "[읽음]" : "[미읽음]";
-        
         message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
         message += (i + 1) + ". " + style.icon + " " + notification.title + " " + statusText + "\n";
         message += "내용: " + notification.message + "\n";
         message += "시간: " + notification.createDate + "\n\n";
     }
-    
     message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
     message += scwin.CONFIG.ICONS.SUMMARY + " 요약: 총 " + scwin.notifications.length + "개 알림 (미읽음 " + unreadCount + "개)\n\n";
     message += scwin.CONFIG.ICONS.TIP + " 이 창을 닫으면 모든 알림이 읽음 처리됩니다.";
-    
     return message;
 };
 
-// 모달 이벤트 리스너 등록
 scwin.attachModalEventListeners = function() {
     var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
     if (!modal) return;
-    
-    // 모달 외부 클릭 시 닫기
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             scwin.closeCustomModal();
         }
     });
-    
-    // ESC 키로 닫기 (한 번만 등록)
     if (!scwin._escListenerAttached) {
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && document.getElementById(scwin.CONFIG.MODAL.ID)) {
@@ -3079,153 +3071,112 @@ scwin.attachModalEventListeners = function() {
     }
 };
 
-// ========== 알림 모달 관리 함수 ==========
-// 알림 모달 표시
 scwin.showNotificationModal = function() {
     console.log("=== 희망근무 알림 모달 표시 시도 ===");
-    
     try {
-        // 먼저 알림 데이터 확인
         console.log("현재 알림 개수:", scwin.notifications.length);
-        
-        // DOM 기반 커스텀 모달로 직접 표시
         scwin.showCustomModal();
-        
     } catch (e) {
         console.log("모달 표시 중 오류 발생:", e.message);
-        console.log("alert로 대체 표시");
         scwin.showAlertNotification();
     }
 };
 
-// 커스텀 DOM 모달로 표시
 scwin.showCustomModal = function() {
     console.log("=== 희망근무 커스텀 모달 생성 시작 ===");
-    
     try {
-        // 기존 모달이 있으면 제거
         var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
         if (existingModal) {
             existingModal.remove();
         }
-        
         var unreadCount = scwin.getUnreadCount();
         var notificationHtml = scwin.generateNotificationHTML();
-        
         console.log("알림 HTML 생성 완료, 총 " + scwin.notifications.length + "개");
-        
-        // 모달 HTML 생성
         var modalHtml = 
             "<div id='" + scwin.CONFIG.MODAL.ID + "' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: " + scwin.CONFIG.MODAL.Z_INDEX + "; display: flex; justify-content: center; align-items: center;'>" +
             "<div style='background: white; border-radius: 12px; width: 90%; max-width: " + scwin.CONFIG.MODAL.MAX_WIDTH + "; max-height: " + scwin.CONFIG.MODAL.MAX_HEIGHT + "; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;'>" +
-            
-            // 헤더
-            "<div style='background: " + scwin.CONFIG.STYLES.GRADIENT + "; color: white; padding: 20px; text-align: center;'>" +
+            "<div style='background: #1C3D6B; color: white; padding: 20px; text-align: center;'>" +
             "<h2 style='margin: 0; font-size: 20px; font-weight: bold;'>" + scwin.CONFIG.ICONS.BELL + " 희망근무 알림 센터</h2>" +
             "<p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>총 " + scwin.notifications.length + "개 알림" + (unreadCount > 0 ? " (" + scwin.CONFIG.ICONS.UNREAD + "미읽음 " + unreadCount + "개)" : "") + "</p>" +
             "</div>" +
-            
-            // 내용
             "<div style='padding: 20px; max-height: 400px; overflow-y: auto;'>" +
             notificationHtml +
             "</div>" +
-            
-            // 버튼 영역
-            "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
-            "<button onclick='scwin.addTestNotification()' style='background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin-right: 10px; cursor: pointer; font-size: 14px;'>✨ 테스트 알림 추가</button>" +
-            "<button onclick='scwin.closeCustomModal()' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>❌ 닫기</button>" +
-            "</div>" +
-            
+
             "</div>" +
             "</div>";
-        
-        // DOM에 추가
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
         console.log("희망근무 커스텀 모달 생성 완료");
-        
-        // 이벤트 리스너 등록
         scwin.attachModalEventListeners();
-        
-        // 자동 읽음 처리
         setTimeout(function() {
             scwin.markAllAsRead();
-        }, scwin.CONFIG.TIMINGS.MARK_READ_DELAY);
-        
+        }, 10000);
         console.log("=== 희망근무 커스텀 모달 표시 완료 ===");
-        
     } catch (e) {
         console.log("커스텀 모달 생성 중 오류:", e.message);
         scwin.showAlertNotification();
     }
 };
 
-// Alert로 알림 표시 (대체 방법)
 scwin.showAlertNotification = function() {
     console.log("=== Alert로 희망근무 알림 표시 시작 ===");
-    
     try {
         var message = scwin.generateAlertMessage();
         var unreadCount = scwin.getUnreadCount();
-        
         console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
         alert(message);
-        
-        // 1초 후 모든 알림을 읽음 처리
         setTimeout(function() {
             scwin.markAllAsRead();
         }, 1000);
-        
         console.log("=== Alert 희망근무 알림 표시 완료 ===");
-        
     } catch (e) {
         console.log("Alert 표시 중 오류:", e.message);
-        // 최후의 수단
         alert("알림 표시 중 오류가 발생했습니다.\n현재 " + scwin.notifications.length + "개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.");
     }
 };
 
-// ========== 알림 관리 함수 ==========
-// 모든 알림을 읽음 처리
 scwin.markAllAsRead = function() {
     var hasChanges = false;
-    
     for (var i = 0; i < scwin.notifications.length; i++) {
         if (!scwin.notifications[i].isRead) {
             scwin.notifications[i].isRead = true;
             hasChanges = true;
         }
     }
-    
     if (hasChanges) {
         scwin.updateNotificationBadge();
         console.log("모든 희망근무 알림을 읽음 처리 완료");
     }
 };
 
-// 알림 배지 업데이트 (성능 최적화)
+scwin.markNotificationAsRead = function(notificationId) {
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (scwin.notifications[i].id === notificationId && !scwin.notifications[i].isRead) {
+            scwin.notifications[i].isRead = true;
+            scwin.updateNotificationBadge();
+            console.log("알림 읽음 처리:", notificationId);
+            scwin.refreshModal();
+            return true;
+        }
+    }
+    return false;
+};
+
 scwin.updateNotificationBadge = function() {
     try {
         var unreadCount = scwin.getUnreadCount();
-        
-        // 버튼 찾기 (캐싱)
         if (!scwin._btnAlarmCache) {
             scwin._btnAlarmCache = $w.getComponentById("btn_alarm") || document.getElementById("btn_alarm");
         }
-        
         var btnAlarm = scwin._btnAlarmCache;
         if (!btnAlarm) {
             console.log("희망근무 알림 버튼을 찾을 수 없습니다");
             return;
         }
-        
-        // 현재 상태와 비교하여 필요한 경우만 업데이트
         var shouldShowBadge = unreadCount > 0;
         var currentlyShowingBadge = btnAlarm._badgeActive || false;
-        
         if (shouldShowBadge !== currentlyShowingBadge) {
             if (shouldShowBadge) {
-                // 미읽은 알림이 있으면 빨간 테두리
                 var badgeStyle = "border: 3px solid #FF0000; border-radius: 50%; box-shadow: 0 0 10px #FF0000;";
                 if (btnAlarm.setStyle) {
                     btnAlarm.setStyle(badgeStyle);
@@ -3237,7 +3188,6 @@ scwin.updateNotificationBadge = function() {
                 btnAlarm._badgeActive = true;
                 console.log("희망근무 알림 배지 활성화 (" + unreadCount + "개 미읽음)");
             } else {
-                // 미읽은 알림이 없으면 원래 상태
                 if (btnAlarm.setStyle) {
                     btnAlarm.setStyle("border: none; box-shadow: none;");
                 } else {
@@ -3248,13 +3198,11 @@ scwin.updateNotificationBadge = function() {
                 console.log("희망근무 알림 배지 비활성화");
             }
         }
-        
     } catch (e) {
         console.log("배지 업데이트 중 오류:", e.message);
     }
 };
 
-// 테스트 알림 추가 (희망근무 관련)
 scwin.addTestNotification = function() {
     var testMessages = [
         {
@@ -3283,11 +3231,8 @@ scwin.addTestNotification = function() {
             type: "work"
         }
     ];
-    
     var randomIndex = Math.floor(Math.random() * testMessages.length);
     var testMessage = testMessages[randomIndex];
-    
-    // 새 알림 추가
     var newNotification = {
         id: "test_" + new Date().getTime(),
         title: testMessage.title,
@@ -3296,19 +3241,12 @@ scwin.addTestNotification = function() {
         createDate: new Date().toLocaleString(),
         isRead: false
     };
-    
-    scwin.notifications.unshift(newNotification); // 맨 앞에 추가
-    
+    scwin.notifications.unshift(newNotification);
     console.log("희망근무 테스트 알림 추가:", testMessage.title);
-    
-    // 배지 업데이트
     scwin.updateNotificationBadge();
-    
-    // 모달 새로고침 (성능 최적화)
     scwin.refreshModal();
 };
 
-// 모달 새로고침 (성능 최적화)
 scwin.refreshModal = function() {
     var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
     if (existingModal) {
@@ -3319,7 +3257,6 @@ scwin.refreshModal = function() {
     }
 };
 
-// 커스텀 모달 닫기 (개선된 버전)
 scwin.closeCustomModal = function() {
     console.log("희망근무 커스텀 모달 닫기");
     try {
@@ -3333,9 +3270,19 @@ scwin.closeCustomModal = function() {
     }
 };
 
-// 알림 모달 닫기 (호환성)
 scwin.closeNotificationModal = function() {
     scwin.closeCustomModal();
+};
+
+scwin.btn_alarm_onclick = function(e) {
+    console.log("=== 희망근무 알림 버튼 클릭됨 ===");
+    try {
+        console.log("현재 희망근무 알림 개수:", scwin.notifications.length);
+        scwin.showNotificationModal();
+    } catch (error) {
+        console.log("버튼 클릭 처리 중 오류:", error.message);
+        scwin.showAlertNotification();
+    }
 };
 
 scwin.btn_booking_onclick = function (e) {

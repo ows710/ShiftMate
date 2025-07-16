@@ -358,12 +358,36 @@
 // 글로벌 변수 - 다른 사람들의 신청 현황 시뮬레이션 데이터
 scwin.otherApplications = {
     // 날짜별 다른 사람들의 신청 현황 (더미 데이터)
-    "20250801": {"O": 2, "D": 1, "E": 0, "N": 1},
-    "20250802": {"O": 1, "D": 2, "E": 1, "N": 0},
-    "20250803": {"O": 3, "D": 0, "E": 1, "N": 1},
-    "20250815": {"O": 0, "D": 3, "E": 2, "N": 0},
-    "20250820": {"O": 1, "D": 1, "E": 1, "N": 2},
-    "20250825": {"O": 2, "D": 0, "E": 0, "N": 3}
+    "20250901": {"O": 2, "D": 1, "E": 0, "N": 1},
+    "20250902": {"O": 1, "D": 2, "E": 1, "N": 0},
+    "20250903": {"O": 3, "D": 0, "E": 1, "N": 1},
+    "20250904": {"O": 0, "D": 2, "E": 2, "N": 1},
+    "20250905": {"O": 2, "D": 1, "E": 0, "N": 2},
+    "20250906": {"O": 1, "D": 3, "E": 1, "N": 0},
+    "20250907": {"O": 3, "D": 0, "E": 2, "N": 0},
+    "20250908": {"O": 0, "D": 1, "E": 1, "N": 3},
+    "20250909": {"O": 2, "D": 2, "E": 0, "N": 1},
+    "20250910": {"O": 1, "D": 0, "E": 3, "N": 1},
+    "20250911": {"O": 0, "D": 3, "E": 1, "N": 1},
+    "20250912": {"O": 3, "D": 1, "E": 0, "N": 1},
+    "20250913": {"O": 1, "D": 2, "E": 2, "N": 0},
+    "20250914": {"O": 2, "D": 0, "E": 1, "N": 2},
+    "20250915": {"O": 0, "D": 3, "E": 2, "N": 0},
+    "20250916": {"O": 1, "D": 1, "E": 0, "N": 3},
+    "20250917": {"O": 3, "D": 2, "E": 1, "N": 0},
+    "20250918": {"O": 0, "D": 0, "E": 3, "N": 2},
+    "20250919": {"O": 2, "D": 1, "E": 1, "N": 1},
+    "20250920": {"O": 1, "D": 1, "E": 1, "N": 2},
+    "20250921": {"O": 0, "D": 3, "E": 0, "N": 2},
+    "20250922": {"O": 3, "D": 0, "E": 2, "N": 0},
+    "20250923": {"O": 1, "D": 2, "E": 1, "N": 1},
+    "20250924": {"O": 2, "D": 1, "E": 0, "N": 2},
+    "20250925": {"O": 2, "D": 0, "E": 0, "N": 3},
+    "20250926": {"O": 0, "D": 2, "E": 3, "N": 0},
+    "20250927": {"O": 1, "D": 1, "E": 1, "N": 2},
+    "20250928": {"O": 3, "D": 0, "E": 0, "N": 2},
+    "20250929": {"O": 0, "D": 3, "E": 1, "N": 1},
+    "20250930": {"O": 2, "D": 1, "E": 2, "N": 0}
 };
 
 scwin.onpageload = function() {
@@ -380,12 +404,12 @@ scwin.onpageload = function() {
         console.log("컴포넌트 초기화 시작");
         scwin.initMonthOptions();
         
-        // 8월 기본값 설정
+        // 9월 기본값 설정
         setTimeout(function() {
             if (typeof sbx_month !== 'undefined') {
-                sbx_month.setValue("202508");
+                sbx_month.setValue("202509");
                 sbx_month.setSelectedIndex(1);
-                console.log("페이지 로드 시 8월 기본값 설정됨");
+                console.log("페이지 로드 시 9월 기본값 설정됨");
             }
         }, 1000);
         
@@ -450,12 +474,12 @@ scwin.loadEmptyHopeWorkData = function(yearMonth) {
         // 기존 데이터 초기화
         dlt_hopeWork.removeAll();
         
-        // 달력을 2025년 8월로 설정
+        // 달력을 2025년 9월로 설정
         if (shc_hopeWork.gotoDate) {
-            shc_hopeWork.gotoDate("20250801");
+            shc_hopeWork.gotoDate("20250901");
         }
         
-        console.log("2025년 8월 달력이 초기화되었습니다 (빈 상태)");
+        console.log("2025년 9월 달력이 초기화되었습니다 (빈 상태)");
         
     } catch (e) {
         console.error("빈 희망근무 데이터 로드 중 오류:", e);
@@ -654,15 +678,15 @@ scwin.initMonthOptions = function() {
     try {
         console.log("월 선택 옵션 초기화 시작");
         
-        // 2025년 7월과 8월로 고정
+        // 2025년 8월과 9월로 고정
         var monthOptions = [
-            {
-                value: "202507", 
-                label: "2025년 7월"
-            },
             {
                 value: "202508", 
                 label: "2025년 8월"
+            },
+            {
+                value: "202509", 
+                label: "2025년 9월"
             }
         ];
         
@@ -688,8 +712,8 @@ scwin.initMonthOptions = function() {
                     
                     // 잠시 대기 후 선택
                     setTimeout(function() {
-                        sbx_month.setSelectedIndex(1); // 8월을 기본 선택 (0: 7월, 1: 8월)
-                        console.log("sbx_month 기본 선택 설정 완료 (8월)");
+                        sbx_month.setSelectedIndex(1); // 9월을 기본 선택 (0: 8월, 1: 9월)
+                        console.log("sbx_month 기본 선택 설정 완료 (9월)");
                         
                         // 현재 선택된 값 확인
                         var currentValue = sbx_month.getValue();
@@ -727,8 +751,8 @@ scwin.initMonthOptions = function() {
         }, 500);
         
         // 전역 변수에 저장
-        scwin.currentYearMonth = "202507";
-        scwin.nextYearMonth = "202508";
+        scwin.currentYearMonth = "202508";
+        scwin.nextYearMonth = "202509";
         
         console.log("월 선택 옵션 초기화 완료");
         
@@ -777,12 +801,12 @@ scwin.sbx_month_onchange = function(info) {
         
         console.log("최종 선택된 월:", selectedMonth);
         
-        // 7월 선택 시 myschedule.xml로 이동
-        if (selectedMonth === "202507") {
-            console.log("7월 선택됨 - myschedule.xml로 이동 준비");
+        // 8월 선택 시 myschedule.xml로 이동
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - myschedule.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("7월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
+            if (confirm("8월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
                 // myschedule.xml로 이동
                 try {
                     console.log("페이지 이동 시도 중...");
@@ -805,7 +829,7 @@ scwin.sbx_month_onchange = function(info) {
                     alert("페이지 이동에 실패했습니다. 수동으로 스케줄 조회 페이지로 이동해주세요.");
                 }
             } else {
-                // 취소한 경우 8월로 다시 선택
+                // 취소한 경우 9월로 다시 선택
                 setTimeout(function() {
                     sbx_month.setSelectedIndex(1);
                 }, 100);
@@ -813,9 +837,9 @@ scwin.sbx_month_onchange = function(info) {
             return;
         }
         
-        // 8월 선택 시 현재 페이지 유지 및 빈 데이터 로드
-        if (selectedMonth === "202508") {
-            console.log("8월 선택됨 - 희망근무 신청 빈 데이터 로드");
+        // 9월 선택 시 현재 페이지 유지 및 빈 데이터 로드
+        if (selectedMonth === "202509") {
+            console.log("9월 선택됨 - 희망근무 신청 빈 데이터 로드");
             scwin.loadEmptyHopeWorkData(selectedMonth);
             
             // 캘린더 날짜 이동
@@ -849,8 +873,8 @@ scwin.sbx_month_onchange = function(info) {
 };
 
 scwin.initHopeWorkData = function() {
-    // 8월 빈 데이터로 초기화
-    scwin.loadEmptyHopeWorkData("202508");
+    // 9월 빈 데이터로 초기화
+    scwin.loadEmptyHopeWorkData("202509");
 };
 
 scwin.loadHopeWorkData = function(yearMonth) {
@@ -860,15 +884,15 @@ scwin.loadHopeWorkData = function(yearMonth) {
         // 기존 데이터 초기화
         dlt_hopeWork.removeAll();
         
-        // 해당 월의 데이터 로드 (8월만 희망근무 신청 가능)
+        // 해당 월의 데이터 로드 (9월만 희망근무 신청 가능)
         var scheduleData = [];
         
-        // 이미지에 표시된 스케줄 데이터 (2025년 8월)
+        // 이미지에 표시된 스케줄 데이터 (2025년 9월)
         var scheduleMap = {
-            2: "E",   // 8월 2일 E (파란색)
-            17: "O",  // 8월 17일 O (초록색)
-            20: "D",  // 8월 20일 D (주황색)
-            26: "N"   // 8월 26일 N (보라색)
+            2: "E",   // 9월 2일 E (파란색)
+            17: "O",  // 9월 17일 O (초록색)
+            20: "D",  // 9월 20일 D (주황색)
+            26: "N"   // 9월 26일 N (보라색)
         };
         
         var colorMap = {
@@ -881,7 +905,7 @@ scwin.loadHopeWorkData = function(yearMonth) {
         // 스케줄 데이터 생성
         for (var day in scheduleMap) {
             var dayStr = (parseInt(day) < 10 ? "0" : "") + day;
-            var dateStr = "202508" + dayStr; // 202508XX
+            var dateStr = "202509" + dayStr; // 202509XX
             var scheduleType = scheduleMap[day];
             var colors = colorMap[scheduleType];
             
@@ -905,12 +929,12 @@ scwin.loadHopeWorkData = function(yearMonth) {
         // 데이터리스트에 데이터 설정
         dlt_hopeWork.setJSON(scheduleData);
         
-        // 달력을 2025년 8월로 설정
+        // 달력을 2025년 9월로 설정
         if (shc_hopeWork.gotoDate) {
-            shc_hopeWork.gotoDate("20250801");
+            shc_hopeWork.gotoDate("20250901");
         }
         
-        console.log("2025년 8월 희망근무 데이터가 로드되었습니다.");
+        console.log("2025년 9월 희망근무 데이터가 로드되었습니다.");
         console.log("로드된 데이터:", scheduleData);
         
         // 캘린더 렌더링 후 클래스 적용 강제 실행
@@ -2729,7 +2753,7 @@ scwin.applyEventClasses = function() {
             <!-- 월 선택 드롭다운 -->
             <xf:group class="schbox" id="" style="margin-bottom: 10px;">
                 <w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
-                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 8월"
+                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 9월"
                 	ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="false">
                 	<xf:itemset nodeset="data:dlt_monthOptions">
                 		<xf:label ref="label"></xf:label>
@@ -2757,7 +2781,7 @@ scwin.applyEventClasses = function() {
                     id="shc_hopeWork" 
                     style="width:800px;height:600px;" 
                     dataList="data:dlt_hopeWork" 
-                    defaultDate="20250801"
+                    defaultDate="20250901"
                     editable="false" 
                     endColumn="end" 
                     allDayColumn="allDay"

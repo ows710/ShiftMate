@@ -26,17 +26,22 @@
                 border-bottom: 1px solid #e0e0e0;
                 display: flex;
                 flex-direction: column;
+                padding: 0 10px;
             }
 
             .menu-list {
                 padding: 20px 0 0 0;
                 margin: 0;
                 flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .menu-item {
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 padding: 16px 20px;
                 text-decoration: none;
                 cursor: pointer;
@@ -46,33 +51,39 @@
                 position: relative;
                 background: white;
                 border: none;
-                width: 100%;
+                width: 85%;
                 text-align: left;
                 outline: none;
                 color: #333;
+                border-radius: 10px;
+                margin-bottom: 8px;
             }
 
             .menu-item:hover {
-                border-radius: 10px;
-                margin: 0 10px;
-            }
-
-            .menu-item.active {
-                background: #1C3D6B;
+                background: #5C5DB0;
                 color: white;
                 font-weight: bold;
                 border-radius: 10px;
-                margin: 0 10px;
+            }
+
+            .menu-item.active {
+                background: #1C3D6B !important;
+                color: white !important;
+                font-weight: bold !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 8px rgba(92, 93, 176, 0.3) !important;
             }
 
             .customer-center {
                 background: #4A90E2;
                 color: white;
-                padding: 20px;
+                padding: 10px;
                 border-radius: 15px;
-                margin: 20px;
+                margin: 20px auto;
                 margin-top: auto;
                 flex-shrink: 0;
+                width: 85%;
+                text-align: left;
             }
 
             .customer-center-header {
@@ -125,28 +136,136 @@ scwin.activeMenuId = null;
 scwin.onpageload = function() {
     console.log("사이드바 로드 완료");
     
-    // 기본적으로 첫 번째 메뉴 활성화
-    scwin.setActiveMenu("menu_duty_manage");
+    // DOM이 완전히 로드된 후 디버깅 정보 출력
+    setTimeout(function() {
+        console.log("=== 사이드바 초기화 ===");
+        scwin.debugAvailableMenuIds();
+        
+        // 부모 프레임에서 현재 활성 메뉴 정보 확인
+        if (window.parent && window.parent.scwin && window.parent.scwin.currentActiveMenuId) {
+            var currentMenuId = window.parent.scwin.currentActiveMenuId;
+            console.log("부모 프레임에서 현재 활성 메뉴 확인:", currentMenuId);
+            scwin.setActiveMenu(currentMenuId);
+        } else {
+            // 기본적으로 첫 번째 메뉴 활성화
+            console.log("기본 메뉴 활성화 시도: menu_duty_manage");
+            scwin.setActiveMenu("menu_duty_manage");
+        }
+    }, 300);
 };
 
 // 메뉴 활성화 설정
 scwin.setActiveMenu = function(menuId) {
     try {
+        console.log("메뉴 활성화 시도:", menuId);
+        
         // 모든 메뉴 비활성화
         var menuItems = document.querySelectorAll('.menu-item');
         for (var i = 0; i < menuItems.length; i++) {
             menuItems[i].classList.remove('active');
+            console.log("메뉴 비활성화:", menuItems[i].id);
         }
         
-        // 선택한 메뉴 활성화
-        var selectedMenu = document.getElementById(menuId);
+        // 강력한 메뉴 찾기 함수 사용
+        var selectedMenu = scwin.findMenuElement(menuId);
+        
         if (selectedMenu) {
             selectedMenu.classList.add('active');
             scwin.activeMenuId = menuId;
-            console.log("✅ 메뉴 활성화:", menuId);
+            console.log("✅ 메뉴 활성화 완료:", menuId, "실제 요소 ID:", selectedMenu.id);
+            
+            // 부모 프레임에 현재 활성 메뉴 정보 전달
+            if (window.parent && window.parent.scwin) {
+                window.parent.scwin.currentActiveMenuId = menuId;
+            }
+        } else {
+            console.error("❌ 메뉴를 찾을 수 없습니다:", menuId);
+            // 사용 가능한 메뉴 ID들 출력
+            scwin.debugAvailableMenuIds();
         }
     } catch (e) {
         console.error("메뉴 활성화 오류:", e);
+    }
+};
+
+// 강력한 메뉴 요소 찾기 함수
+scwin.findMenuElement = function(menuId) {
+    var element = null;
+    
+    // 1. 정확한 ID 매칭
+    element = document.getElementById(menuId);
+    if (element) {
+        console.log("정확한 ID 매칭 성공:", menuId);
+        return element;
+    }
+    
+    // 2. WebSquare 접두사 고려
+    element = document.getElementById('mf_' + menuId);
+    if (element) {
+        console.log("mf_ 접두사 매칭 성공:", 'mf_' + menuId);
+        return element;
+    }
+    
+    // 3. querySelector로 검색
+    element = document.querySelector('#' + menuId);
+    if (element) {
+        console.log("querySelector 정확 매칭 성공:", menuId);
+        return element;
+    }
+    
+    // 4. mf_ 접두사와 함께 querySelector 검색
+    element = document.querySelector('#mf_' + menuId);
+    if (element) {
+        console.log("querySelector mf_ 매칭 성공:", 'mf_' + menuId);
+        return element;
+    }
+    
+    // 5. 부분 ID 매칭으로 검색
+    element = document.querySelector('[id*="' + menuId + '"]');
+    if (element) {
+        console.log("부분 ID 매칭 성공:", element.id);
+        return element;
+    }
+    
+    // 6. 라벨 텍스트로 검색 (마지막 수단)
+    var menuItems = document.querySelectorAll('.menu-item');
+    for (var i = 0; i < menuItems.length; i++) {
+        var label = menuItems[i].querySelector('xf\\:label, label');
+        if (label && label.textContent && label.textContent.trim() === getMenuLabel(menuId)) {
+            console.log("라벨 매칭 성공:", menuItems[i].id, "라벨:", label.textContent.trim());
+            return menuItems[i];
+        }
+    }
+    
+    return null;
+};
+
+// 메뉴 ID에 해당하는 라벨 텍스트 반환
+scwin.getMenuLabel = function(menuId) {
+    var menuLabels = {
+        'menu_duty_manage': '근무자 관리',
+        'menu_schedule_manage': '스케줄 관리',
+        'menu_my_schedule': '내 스케줄 보기',
+        'menu_work_input': '희망 근무 입력'
+    };
+    return menuLabels[menuId] || '';
+};
+
+// 사용 가능한 메뉴 ID 디버깅 함수
+scwin.debugAvailableMenuIds = function() {
+    console.log("=== 사용 가능한 메뉴 ID들 ===");
+    var menuItems = document.querySelectorAll('.menu-item');
+    console.log("총 메뉴 개수:", menuItems.length);
+    
+    for (var i = 0; i < menuItems.length; i++) {
+        console.log("메뉴 " + (i + 1) + ":", menuItems[i].id, "클래스:", menuItems[i].className);
+    }
+    
+    // 모든 ID가 있는 요소들도 출력
+    var allElementsWithId = document.querySelectorAll('[id]');
+    console.log("ID가 있는 모든 요소들:");
+    for (var i = 0; i < Math.min(allElementsWithId.length, 20); i++) {
+        console.log("  - " + allElementsWithId[i].tagName + "#" + allElementsWithId[i].id);
     }
 };
 
@@ -158,7 +277,7 @@ scwin.handleMenuClick = function(menuId, menuUrl, menuTitle) {
     try {
         console.log("메뉴 클릭:", menuId, menuUrl, menuTitle);
         
-        // 메뉴 활성화
+        // 먼저 메뉴 활성화
         scwin.setActiveMenu(menuId);
         
         // 부모 프레임에 메뉴 클릭 이벤트 전달
@@ -168,6 +287,11 @@ scwin.handleMenuClick = function(menuId, menuUrl, menuTitle) {
             console.warn("부모 프레임과의 통신이 설정되지 않았습니다.");
         }
         
+        // 활성 상태 유지를 위한 추가 처리
+        setTimeout(function() {
+            scwin.setActiveMenu(menuId);
+        }, 100);
+        
     } catch (e) {
         console.error("메뉴 클릭 처리 오류:", e);
     }
@@ -175,21 +299,25 @@ scwin.handleMenuClick = function(menuId, menuUrl, menuTitle) {
 
 // 근무자 관리 메뉴 클릭
 scwin.goDutyManage = function() {
+    scwin.setActiveMenu("menu_duty_manage");
     scwin.handleMenuClick("menu_duty_manage", "/InsWebApp/ui/nurse/NurseManage.xml", "근무자 관리");
 };
 
 // 스케줄 관리 메뉴 클릭
 scwin.goScheduleManage = function() {
-    scwin.handleMenuClick("menu_schedule_manage", "/InsWebApp/ui/schedule/mainEdit.xml", "스케줄 관리");
+    scwin.setActiveMenu("menu_schedule_manage");
+    scwin.handleMenuClick("menu_schedule_manage", "/InsWebApp/ui/schedule/makeDuty.xml", "스케줄 관리");
 };
 
 // 내 스케줄 보기 메뉴 클릭
 scwin.goMySchedule = function() {
+    scwin.setActiveMenu("menu_my_schedule");
     scwin.handleMenuClick("menu_my_schedule", "/InsWebApp/ui/duty/myschedule.xml", "내 스케줄 보기");
 };
 
 // 희망 근무 입력 메뉴 클릭
 scwin.goWorkInput = function() {
+    scwin.setActiveMenu("menu_work_input");
     scwin.handleMenuClick("menu_work_input", "/InsWebApp/ui/duty/HopeWorkEntry.xml", "희망 근무 입력");
 };
 ]]></script>
