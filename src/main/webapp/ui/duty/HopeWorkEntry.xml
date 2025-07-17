@@ -354,6 +354,7 @@
                 display: block;
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script lazy="false" type="text/javascript"><![CDATA[
 // 글로벌 변수 - 다른 사람들의 신청 현황 시뮬레이션 데이터
 scwin.otherApplications = {
@@ -806,34 +807,51 @@ scwin.sbx_month_onchange = function(info) {
             console.log("8월 선택됨 - myschedule.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("8월 스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?")) {
-                // myschedule.xml로 이동
-                try {
-                    console.log("페이지 이동 시도 중...");
-                    
-                    // 메인 프레임의 컨텐츠 변경
-                    if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
-                        window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/duty/myschedule.xml");
-                        console.log("메인 프레임 컨텐츠 변경 완료");
-                    } else {
-                        // 직접 이동 시도
-                        var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml";
-                        console.log("이동할 URL:", targetUrl);
-                        window.location.href = targetUrl;
+            Swal.fire({
+                title: '페이지 이동',
+                text: '스케줄을 확인하시려면 스케줄 조회 페이지로 이동합니다. 이동하시겠습니까?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '이동',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#1C3D6B',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // myschedule.xml로 이동
+                    try {
+                        console.log("페이지 이동 시도 중...");
+                        
+                        // 메인 프레임의 컨텐츠 변경
+                        if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
+                            window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/duty/myschedule.xml");
+                            console.log("메인 프레임 컨텐츠 변경 완료");
+                        } else {
+                            // 직접 이동 시도
+                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkmyschedule.xml";
+                            console.log("이동할 URL:", targetUrl);
+                            window.location.href = targetUrl;
+                        }
+                        
+                        console.log("페이지 이동 요청 완료");
+                        
+                    } catch (e) {
+                        console.error("페이지 이동 오류:", e);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '페이지 이동 실패',
+                            text: '페이지 이동에 실패했습니다. 수동으로 스케줄 조회 페이지로 이동해주세요.',
+                            confirmButtonText: '확인',
+                            confirmButtonColor: '#1C3D6B'
+                        });
                     }
-                    
-                    console.log("페이지 이동 요청 완료");
-                    
-                } catch (e) {
-                    console.error("페이지 이동 오류:", e);
-                    alert("페이지 이동에 실패했습니다. 수동으로 스케줄 조회 페이지로 이동해주세요.");
+                } else {
+                    // 취소한 경우 9월로 다시 선택
+                    setTimeout(function() {
+                        sbx_month.setSelectedIndex(1);
+                    }, 100);
                 }
-            } else {
-                // 취소한 경우 9월로 다시 선택
-                setTimeout(function() {
-                    sbx_month.setSelectedIndex(1);
-                }, 100);
-            }
+            });
             return;
         }
         
@@ -1615,7 +1633,14 @@ scwin.option_clear_onclick = function() {
             // 현재 스케줄이 없음을 알리는 메시지
             var currentWorkType = dm_selectedInfo.get("currentWorkType");
             if (!currentWorkType || currentWorkType === "") {
-                alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: '삭제할 스케줄 없음',
+                    text: '현재 지정된 스케줄이 없습니다.',
+                    html: '삭제할 희망근무가 없습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
             }
             return;
         }
@@ -1665,7 +1690,13 @@ scwin.btn_submit_onclick = function() {
     var currentWorkType = dm_selectedInfo.get("currentWorkType");
     
     if (!selectedWorkType) {
-        alert("근무 타입을 선택해주세요.");
+        Swal.fire({
+            icon: 'warning',
+            title: '선택 필요',
+            text: '근무 타입을 선택해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
         return;
     }
     
@@ -1676,7 +1707,14 @@ scwin.btn_submit_onclick = function() {
         console.log("삭제 요청 - 현재 근무타입:", currentWorkType);
         
         if (!currentWorkType || currentWorkType === "") {
-            alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제할 스케줄 없음',
+                text: '현재 지정된 스케줄이 없습니다.',
+                html: '삭제할 희망근무가 없습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
             scwin.hideWorkSelectModal();
             return;
         }
@@ -1686,60 +1724,98 @@ scwin.btn_submit_onclick = function() {
         console.log("실제 데이터 개수:", actualCount);
         
         if (actualCount === 0) {
-            alert("현재 지정된 스케줄이 없습니다.\n삭제할 희망근무가 없습니다.");
+            Swal.fire({
+                icon: 'warning',
+                title: '삭제할 스케줄 없음',
+                text: '현재 지정된 스케줄이 없습니다.',
+                html: '삭제할 희망근무가 없습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
             scwin.hideWorkSelectModal();
             return;
         }
         
         // 삭제 확인 메시지
         var formattedDate = dm_selectedInfo.get("dateFormatted");
-        if (!confirm(formattedDate + "의 희망근무(" + currentWorkType + ")를 삭제하시겠습니까?")) {
-            return;
-        }
-        
-        // 해당 날짜의 모든 데이터 삭제 (간단하고 확실한 방법)
-        var deletedCount = scwin.simpleDeleteByDate(selectedDate);
-        console.log("삭제 완료 - 삭제된 개수:", deletedCount);
-        
-        if (deletedCount > 0) {
-            console.log("삭제 완료 - 즉시 캘린더 새로고침 시작");
-            
-            // 즉시 캘린더 새로고침 (지연 없음)
-            scwin.refreshCalendar();
-            
-            // 삭제 결과 확인 및 메시지
-            setTimeout(function() {
-                var remainingCount = scwin.countWorkForDate(selectedDate);
-                console.log("삭제 후 해당 날짜 남은 데이터:", remainingCount);
-                console.log("삭제 후 전체 데이터 수:", dlt_hopeWork.getTotalRow());
+        Swal.fire({
+            title: '삭제 확인',
+            text: formattedDate + '의 희망근무(' + currentWorkType + ')를 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 해당 날짜의 모든 데이터 삭제 (간단하고 확실한 방법)
+                var deletedCount = scwin.simpleDeleteByDate(selectedDate);
+                console.log("삭제 완료 - 삭제된 개수:", deletedCount);
                 
-                if (remainingCount === 0) {
-                    alert("희망근무가 삭제되었습니다.");
+                if (deletedCount > 0) {
+                    console.log("삭제 완료 - 즉시 캘린더 새로고침 시작");
+                    
+                    // 즉시 캘린더 새로고침 (지연 없음)
+                    scwin.refreshCalendar();
+                    
+                    // 삭제 결과 확인 및 메시지
+                    setTimeout(function() {
+                        var remainingCount = scwin.countWorkForDate(selectedDate);
+                        console.log("삭제 후 해당 날짜 남은 데이터:", remainingCount);
+                        console.log("삭제 후 전체 데이터 수:", dlt_hopeWork.getTotalRow());
+                        
+                        if (remainingCount === 0) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '삭제 완료',
+                                text: '희망근무가 삭제되었습니다.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#1C3D6B'
+                            });
+                        } else {
+                            console.warn("삭제 후에도 " + remainingCount + "개 데이터가 남아있음");
+                            Swal.fire({
+                                icon: 'success',
+                                title: '삭제 완료',
+                                text: '희망근무 삭제가 완료되었습니다.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#1C3D6B'
+                            });
+                        }
+                    }, 200);
                 } else {
-                    console.warn("삭제 후에도 " + remainingCount + "개 데이터가 남아있음");
-                    alert("희망근무 삭제가 완료되었습니다.");
+                    // 삭제할 데이터가 없거나 삭제에 실패한 경우
+                    console.warn("삭제 프로세스 실패 - 최강 삭제 한 번 더 시도");
+                    
+                    // 최후의 수단으로 최강 삭제 시도
+                    var lastResortCount = scwin.strongDeleteByDate(selectedDate);
+                    console.log("최후 삭제 시도 결과:",lastResortCount);
+                    
+                    // 최강 삭제 후에도 강화된 캘린더 새로고침 적용
+                    scwin.refreshCalendar();
+                    
+                    setTimeout(function() {
+                        var finalCheck = scwin.countWorkForDate(selectedDate);
+                        if (finalCheck === 0) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '삭제 완료',
+                                text: '희망근무가 삭제되었습니다.',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#1C3D6B'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: '삭제 실패',
+                                text: '⚠️ 희망근무 삭제 중 문제가 발생했습니다.\n\n가능한 원인:\n• 이미 삭제된 일정\n• 시스템 데이터 동기화 지연\n\n해결 방법:\n1. 페이지 새로고침(F5) 후 확인\n2. 일정이 보이지 않으면 정상 삭제된 것임\n3. 새 일정 추가는 정상적으로 가능'
+                            });
+                        }
+                    }, 500);
                 }
-            }, 200);
-        } else {
-            // 삭제할 데이터가 없거나 삭제에 실패한 경우
-            console.warn("삭제 프로세스 실패 - 최강 삭제 한 번 더 시도");
-            
-            // 최후의 수단으로 최강 삭제 시도
-            var lastResortCount = scwin.strongDeleteByDate(selectedDate);
-            console.log("최후 삭제 시도 결과:", lastResortCount);
-            
-            // 최강 삭제 후에도 강화된 캘린더 새로고침 적용
-            scwin.refreshCalendar();
-            
-            setTimeout(function() {
-                var finalCheck = scwin.countWorkForDate(selectedDate);
-                if (finalCheck === 0) {
-                    alert("희망근무가 삭제되었습니다.");
-                } else {
-                    alert("⚠️ 희망근무 삭제 중 문제가 발생했습니다.\n\n가능한 원인:\n• 이미 삭제된 일정\n• 시스템 데이터 동기화 지연\n\n해결 방법:\n1. 페이지 새로고침(F5) 후 확인\n2. 일정이 보이지 않으면 정상 삭제된 것임\n3. 새 일정 추가는 정상적으로 가능");
-                }
-            }, 500);
-        }
+            }
+        });
     } else {
         // 새 근무 타입 신청
         console.log("새 근무 타입 신청 처리 시작");
@@ -1747,9 +1823,42 @@ scwin.btn_submit_onclick = function() {
         // 변경 확인 메시지 (기존 일정이 있는 경우)
         if (currentWorkType && currentWorkType !== "" && currentWorkType !== selectedWorkType) {
             var formattedDate = dm_selectedInfo.get("dateFormatted");
-            if (!confirm(formattedDate + "의 희망근무를 '" + currentWorkType + "'에서 '" + selectedWorkType + "'로 변경하시겠습니까?\n\n※ 하루에는 1개의 희망근무만 신청할 수 있습니다.")) {
-                return;
-            }
+            Swal.fire({
+                title: '변경 확인',
+                text: formattedDate + '의 희망근무를 변경하시겠습니까?',
+                html: '현재: ' + currentWorkType + '<br>변경: ' + selectedWorkType + '<br><br>※ 하루에는 1개의 희망근무만 신청할 수 있습니다.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '변경',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#1C3D6B',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
+                }
+                // 1. 해당 날짜의 기존 데이터 완전 삭제 (하루 1개 일정 보장)
+                console.log("기존 데이터 삭제 시작");
+                var deletedCount = scwin.removeAllWorkForDate(selectedDate);
+                console.log("삭제된 기존 데이터 수:", deletedCount);
+                // 2. 데이터 삭제 후 잠시 대기 (확실한 삭제 보장)
+                setTimeout(function() {
+                    // 3. 중복 검사 후 새 데이터 추가
+                    var existingCount = scwin.countWorkForDate(selectedDate);
+                    console.log("삭제 후 기존 데이터 수:", existingCount);
+                    if (existingCount > 0) {
+                        console.warn("삭제가 완전히 되지 않음, 재삭제 시도");
+                        scwin.removeAllWorkForDate(selectedDate);
+                        // 한 번 더 확인
+                        setTimeout(function() {
+                            scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
+                        }, 100);
+                    } else {
+                        scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
+                    }
+                }, 200);
+            });
+            return;
         }
         
         // 1. 해당 날짜의 기존 데이터 완전 삭제 (하루 1개 일정 보장)
@@ -1832,7 +1941,13 @@ scwin.addSingleWorkSchedule = function(selectedDate, selectedWorkType, currentWo
                         var finalCheck = scwin.countWorkForDate(selectedDate);
                         if (finalCheck > 0) {
                             console.error("모든 삭제 방법 실패");
-                            alert("⚠️ 데이터 삭제가 완전히 처리되지 않았습니다.\n\n해결 방법:\n1. 페이지를 새로고침(F5)하고 다시 시도\n2. 다른 날짜에 먼저 일정을 추가한 후 원하는 날짜 수정\n3. 브라우저 캐시를 지우고 다시 접속");
+                            Swal.fire({
+                                icon: 'error',
+                                title: '데이터 삭제 실패',
+                                text: '⚠️ 데이터 삭제가 완전히 처리되지 않았습니다.\n\n해결 방법:\n1페이지를 새로고침(F5)하고 다시 시도\n2. 다른 날짜에 먼저 일정을 추가한 후 원하는 날짜 수정\n3. 브라우저 캐시를 지우고 다시 접속',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#1C3D6B'
+                            });
                             return;
                         } else {
                             // 성공한 경우 계속 진행
@@ -1852,7 +1967,13 @@ scwin.addSingleWorkSchedule = function(selectedDate, selectedWorkType, currentWo
         
     } catch (e) {
         console.error("단일 스케줄 추가 오류:", e);
-        alert("희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.");
+        Swal.fire({
+            icon: 'error',
+            title: '신청 오류',
+            text: '희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
     }
 };
 
@@ -1869,7 +1990,13 @@ scwin.performSingleScheduleAdd = function(selectedDate, selectedWorkType, curren
         var colors = colorMap[selectedWorkType];
         if (!colors) {
             console.error("알 수 없는 근무타입:", selectedWorkType);
-            alert("잘못된 근무타입입니다.");
+            Swal.fire({
+                icon: 'error',
+                title: '잘못된 근무타입',
+                text: '잘못된 근무타입입니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
             return;
         }
         
@@ -1927,13 +2054,25 @@ scwin.performSingleScheduleAdd = function(selectedDate, selectedWorkType, curren
             (currentWorkType + "에서 " + selectedWorkType + "로 변경되었습니다.") :
             (workTypeNames[selectedWorkType] + " 신청이 완료되었습니다.");
             
-        alert(message);
+        Swal.fire({
+            icon: 'success',
+            title: '신청 완료',
+            text: message,
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
         
         console.log("희망근무 처리 완료 - 날짜:", selectedDate, "타입:", selectedWorkType);
         
     } catch (e) {
         console.error("스케줄 추가 실행 오류:", e);
-        alert("희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.");
+        Swal.fire({
+            icon: 'error',
+            title: '신청 오류',
+            text: '희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
     }
 };
 
@@ -2336,7 +2475,7 @@ scwin.strongDeleteByDate = function(dateStr) {
             console.log("삭제 성공:", remainingForDate === 0 ? "YES" : "NO");
             
             if (remainingForDate === 0) {
-                console.log("������ 최강 삭제 성공!");
+                console.log("최강 삭제 성공!");
                 
                 // 성공 시 강화된 캘린더 새로고침 적용
                 console.log("최강 삭제 성공 - 강화된 캘린더 새로고침 적용");
@@ -2657,15 +2796,35 @@ scwin.forceRefreshCalendar = function() {
             console.log("=== 캘린더 강제 새로고침 완료 ===");
             
             if (finalRows > 0) {
-                alert("캘린더가 강제로 새로고침되었습니다.\n현재 " + finalRows + "개의 일정이 표시되어야 합니다.");
+                Swal.fire({
+                    icon: 'success',
+                    title: '새로고침 완료',
+                    text: '캘린더가 강제로 새로고침되었습니다.',
+                    html: '현재 ' + finalRows + '개의 일정이 표시되어야 합니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
             } else {
-                alert("캘린더가 새로고침되었습니다.\n현재 표시할 일정이 없습니다.");
+                Swal.fire({
+                    icon: 'info',
+                    title: '새로고침 완료',
+                    text: '캘린더가 새로고침되었습니다.',
+                    html: '현재 표시할 일정이 없습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
             }
         }, 300);
         
     } catch (e) {
         console.error("강제 새로고침 오류:", e);
-        alert("강제 새로고침 중 오류가 발생했습니다: " + e.message);
+        Swal.fire({
+            icon: 'error',
+            title: '새로고침 오류',
+            text: '강제 새로고침 중 오류가 발생했습니다: ' + e.message,
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
     }
 };
 

@@ -146,6 +146,7 @@
 			display: none !important;
 			}
 		</style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function() {
     console.log("내 스케줄 보기 페이지가 로드되었습니다.");
@@ -208,8 +209,8 @@ scwin.initMonthOptions = function() {
 	// 실제 값으로 설정
 	setTimeout(function() {
 		try {
-			sbx_month.setValue("202508"); // 8월을 기본 선택
-			console.log("초기 월 선택 완료: 202508");
+			sbx_month.setValue("202509"); // 9월을 기본 선택
+			console.log("초기 월 선택 완료: 202509");
 		} catch (e) {
 			console.log("초기 월 선택 설정 오류:", e);
 			// 대체 방법으로 인덱스 사용
@@ -288,109 +289,125 @@ scwin.sbx_month_onchange = function(info) {
             console.log("9월 선택됨 - mobileHopeWorkEntryfinal.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
-                // mobileHopeWorkEntryfinal.xml로 이동
-                try {
-                    console.log("페이지 이동 시도 중...");
-                    
-                    var isNavigated = false;
-                    
-                    // 방법 1: 웹스퀘어 표준 네비게이션 함수 사용
+            Swal.fire({
+                title: '페이지 이동',
+                text: '9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1C3D6B',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '이동하기',
+                cancelButtonText: '취소'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // mobileHopeWorkEntryfinal.xml로 이동
                     try {
-                        if (typeof com !== 'undefined' && com.win && com.win.goUrl) {
-                            console.log("웹스퀘어 네비게이션 함수 사용");
-                            com.win.goUrl("/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml");
-                            isNavigated = true;
-                            console.log("웹스퀘어 네비게이션 성공");
-                        }
-                    } catch (e) {
-                        console.log("웹스퀘어 네비게이션 실패:", e.message);
-                    }
-                    
-                    // 방법 2: 메인 프레임으로 이동
-                    if (!isNavigated) {
+                        console.log("페이지 이동 시도 중...");
+                        
+                        var isNavigated = false;
+                        
+                        // 방법 1: 웹스퀘어 표준 네비게이션 함수 사용
                         try {
-                            if (parent && parent.wfr_mainContent && parent.wfr_mainContent.setSrc) {
-                                var targetUrl = "/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
-                                console.log("메인 프레임으로 이동:", targetUrl);
-                                parent.wfr_mainContent.setSrc(targetUrl);
+                            if (typeof com !== 'undefined' && com.win && com.win.goUrl) {
+                                console.log("웹스퀘어 네비게이션 함수 사용");
+                                com.win.goUrl("/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml");
                                 isNavigated = true;
-                                console.log("메인 프레임 이동 성공");
+                                console.log("웹스퀘어 네비게이션 성공");
                             }
                         } catch (e) {
-                            console.log("메인 프레임 이동 실패:", e.message);
+                            console.log("웹스퀘어 네비게이션 실패:", e.message);
                         }
-                    }
-                    
-                    // 방법 3: 부모 창의 메인 컨텐츠 영역으로 이동
-                    if (!isNavigated) {
-                        try {
-                            if (parent && parent.document && parent.document.getElementById("mainContent")) {
-                                console.log("부모 창의 메인 컨텐츠 영역으로 이동");
-                                var mainFrame = parent.document.getElementById("mainContent");
-                                if (mainFrame && mainFrame.src) {
-                                    mainFrame.src = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
+                        
+                        // 방법 2: 메인 프레임으로 이동
+                        if (!isNavigated) {
+                            try {
+                                if (parent && parent.wfr_mainContent && parent.wfr_mainContent.setSrc) {
+                                    var targetUrl = "/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
+                                    console.log("메인 프레임으로 이동:", targetUrl);
+                                    parent.wfr_mainContent.setSrc(targetUrl);
                                     isNavigated = true;
-                                    console.log("부모 창 메인 컨텐츠 이동 성공");
+                                    console.log("메인 프레임 이동 성공");
                                 }
+                            } catch (e) {
+                                console.log("메인 프레임 이동 실패:", e.message);
                             }
-                        } catch (e) {
-                            console.log("부모 창 메인 컨텐츠 이동 실패:", e.message);
                         }
-                    }
-                    
-                    // 방법 4: top 윈도우로 이동
-                    if (!isNavigated) {
-                        try {
-                            if (top && top.location) {
-                                console.log("top 윈도우로 이동");
+                        
+                        // 방법 3: 부모 창의 메인 컨텐츠 영역으로 이동
+                        if (!isNavigated) {
+                            try {
+                                if (parent && parent.document && parent.document.getElementById("mainContent")) {
+                                    console.log("부모 창의 메인 컨텐츠 영역으로 이동");
+                                    var mainFrame = parent.document.getElementById("mainContent");
+                                    if (mainFrame && mainFrame.src) {
+                                        mainFrame.src = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
+                                        isNavigated = true;
+                                        console.log("부모 창 메인 컨텐츠 이동 성공");
+                                    }
+                                }
+                            } catch (e) {
+                                console.log("부모 창 메인 컨텐츠 이동 실패:", e.message);
+                            }
+                        }
+                        
+                        // 방법 4: top 윈도우로 이동
+                        if (!isNavigated) {
+                            try {
+                                if (top && top.location) {
+                                    console.log("top 윈도우로 이동");
+                                    var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
+                                    top.location.href = targetUrl;
+                                    isNavigated = true;
+                                    console.log("top 윈도우 이동 성공");
+                                }
+                            } catch (e) {
+                                console.log("top 윈도우 이동 실패:", e.message);
+                            }
+                        }
+                        
+                        // 방법 5: 현재 윈도우로 직접 이동
+                        if (!isNavigated) {
+                            try {
+                                console.log("현재 윈도우로 직접 이동");
                                 var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
-                                top.location.href = targetUrl;
+                                window.location.href = targetUrl;
                                 isNavigated = true;
-                                console.log("top 윈도우 이동 성공");
+                                console.log("현재 윈도우 직접 이동 성공");
+                            } catch (e) {
+                                console.log("현재 윈도우 직접 이동 실패:", e.message);
                             }
-                        } catch (e) {
-                            console.log("top 윈도우 이동 실패:", e.message);
                         }
-                    }
-                    
-                    // 방법 5: 현재 윈도우로 직접 이동
-                    if (!isNavigated) {
-                        try {
-                            console.log("현재 윈도우로 직접 이동");
-                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
-                            window.location.href = targetUrl;
-                            isNavigated = true;
-                            console.log("현재 윈도우 직접 이동 성공");
-                        } catch (e) {
-                            console.log("현재 윈도우 직접 이동 실패:", e.message);
+                        
+                        // 방법 6: replace 방식으로 이동
+                        if (!isNavigated) {
+                            try {
+                                console.log("replace 방식으로 이동");
+                                var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
+                                window.location.replace(targetUrl);
+                                isNavigated = true;
+                                console.log("replace 방식 이동 성공");
+                            } catch (e) {
+                                console.log("replace 방식 이동 실패:", e.message);
+                            }
                         }
+                        
+                        console.log("페이지 이동 요청 완료, 성공 여부:", isNavigated);
+                        
+                    } catch (e) {
+                        console.error("페이지 이동 오류:", e);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '페이지 이동 중 오류',
+                            text: '페이지 이동 중 오류가 발생했습니다: ' + e.message,
+                            confirmButtonText: '확인'
+                        });
                     }
-                    
-                    // 방법 6: replace 방식으로 이동
-                    if (!isNavigated) {
-                        try {
-                            console.log("replace 방식으로 이동");
-                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";
-                            window.location.replace(targetUrl);
-                            isNavigated = true;
-                            console.log("replace 방식 이동 성공");
-                        } catch (e) {
-                            console.log("replace 방식 이동 실패:", e.message);
-                        }
-                    }
-                    
-                    console.log("페이지 이동 요청 완료, 성공 여부:", isNavigated);
-                    
-                } catch (e) {
-                    console.error("페이지 이동 오류:", e);
-                    alert("페이지 이동 중 오류가 발생했습니다: " + e.message);
+                } else {
+                    // 사용자가 취소한 경우 다시 8월로 되돌리기
+                    console.log("페이지 이동 취소됨 - 8월로 되돌림");
+                    sbx_month.setSelectedIndex(0); // 8월 선택
                 }
-            } else {
-                // 사용자가 취소한 경우 다시 8월로 되돌리기
-                console.log("페이지 이동 취소됨 - 8월로 되돌림");
-                sbx_month.setSelectedIndex(0); // 8월 선택
-            }
+            });
             
             return;
         }
@@ -724,7 +741,7 @@ scwin.notifications = [
     {
         id: "noti_5",
         title: "스케줄 조회 안내",
-        message: "스케줄이 결정되었습니다. 2025년 7월 스케줄을 조회할 수 있습니다.",
+        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.",
         type: "info",
         createDate: "2025-01-15 15:10:00",
         isRead: true
@@ -732,7 +749,7 @@ scwin.notifications = [
     {
         id: "noti_6",
         title: "월별 전환 기능", 
-        message: "상단의 월 선택 드롭다운을 통해 7월과 8월 스케줄을 자유롭게 전환할 수 있습니다.",
+        message: "상단의 월 선택 드롭다운을 통해 8월과 9월 스케줄을 자유롭게 전환할 수 있습니다.",
         type: "info",
         createDate: "2025-01-15 16:30:00",
         isRead: true
@@ -942,7 +959,12 @@ scwin.showAlertNotification = function() {
         var unreadCount = scwin.getUnreadCount();
         
         console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
-        alert(message);
+        Swal.fire({
+            icon: 'info',
+            title: '알림',
+            text: message,
+            confirmButtonText: '확인'
+        });
         
         // 1초 후 모든 알림을 읽음 처리
         setTimeout(function() {
@@ -954,7 +976,12 @@ scwin.showAlertNotification = function() {
     } catch (e) {
         console.log("Alert 표시 중 오류:", e.message);
         // 최후의 수단
-        alert("알림 표시 중 오류가 발생했습니다.\n현재 " + scwin.notifications.length + "개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.");
+        Swal.fire({
+            icon: 'error',
+            title: '알림 표시 중 오류',
+            text: '알림 표시 중 오류가 발생했습니다.\n현재 ' + scwin.notifications.length + '개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.',
+            confirmButtonText: '확인'
+        });
     }
 };
 
@@ -1048,7 +1075,7 @@ scwin.addTestNotification = function() {
     var testMessages = [
         {
             title: "스케줄 업데이트",
-            message: "7월 " + (Math.floor(Math.random() * 28) + 1) + "일 스케줄이 업데이트되었습니다.",
+            message: "8월 " + (Math.floor(Math.random() * 28) + 1) + "일 스케줄이 업데이트되었습니다.",
             type: "work"
         },
         {
@@ -1153,25 +1180,31 @@ scwin.btn_alarm_onclick = function(e) {
 			<xf:group class="pgtbox" id="" meta_snippetCategory="02_타이틀" meta_snippetKeyComponent="true" meta_snippetName="2_01 페이지타이틀"
 				style="">
 				<xf:group class="breadcrumb" id="" style=""></xf:group>
-				<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;" id="btn_alarm"
+				<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;cursor: pointer;" id="btn_alarm"
 					ev:onclick="scwin.btn_alarm_onclick"></xf:image>
 			</xf:group>
-							<xf:group class="schbox" id="" style="margin-bottom: 10px;">
-			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
-			<xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="data:dlt_monthOptions" 
-				ev:onchange="scwin.sbx_month_onchange" allOption="" chooseOption="false">
-				<xf:itemset nodeset="data:dlt_monthOptions">
-					<xf:label ref="label"></xf:label>
-					<xf:value ref="value"></xf:value>
-				</xf:itemset>
-			</xf:select1>
-		</xf:group>
+			<xf:group class="schbox" id="" style="margin-bottom: 10px;">
+    			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
+    			                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 8월"
+                	ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="false">
+    				<xf:itemset nodeset="data:dlt_monthOptions">
+    					<xf:label ref="label"></xf:label>
+    					<xf:value ref="value"></xf:value>
+    				</xf:itemset>
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dlt_monthOptions">
+    						<xf:label ref="label"></xf:label>
+    						<xf:value ref="value"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select1>
+    		</xf:group>
 
 		<!-- 커스텀 캘린더 헤더 (제목 + 버튼) -->
-		<div id="calendar-header" style="background: #f8f9fa; 			border: 1px solid #dee2e6; 			border-bottom: none;			padding: 10px 15px; 			display: flex; 			justify-content: space-between; 			align-items: center;			font-weight: bold;			font-size: 16px;			color: #495057;			width: 100%;			box-sizing: border-box;">
+		<div id="calendar-header" style="background: #f8f9fa;border: 1px solid #dee2e6;padding: 10px 15px; 			display: flex; 			justify-content: space-between; 			align-items: center;font-weight: bold;font-size: 16px;color: #495057;width: 100%;box-sizing: border-box;">
 			<span id="calendar-title">2025년 8월</span>
 			<xf:trigger class="btn_cm" ev:onclick="scwin.btn_booking_onclick" id="btn_trigger4"
-				style="background-color:#1C3D6B;color:#FFFFFF;padding:6px 12px;border-radius:3px;border:none;font-size:12px;" type="button">
+				style="background-color:#1C3D6B;color:#FFFFFF;padding:0 12px;border-radius:5px;font-size:15px;text-align:center;font-weight: bold;" type="button">
 				<xf:label><![CDATA[듀티신청]]></xf:label>
 			</xf:trigger>
 		</div>
@@ -1190,7 +1223,7 @@ scwin.btn_alarm_onclick = function(e) {
 			<!-- 근무자 팝업 -->
 			<div id="worker-popup" class="worker-popup hidden">
 				<div class="popup-header">
-					<h3 id="popup-date" class="popup-date">7월 21일 (토)</h3>
+					<h3 id="popup-date" class="popup-date">8월 21일 (토)</h3>
 				</div>
 				<div class="popup-content">
 					<div id="worker-list">

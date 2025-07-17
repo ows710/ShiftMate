@@ -781,11 +781,14 @@ scwin.activateMenuForCurrentUrl = function() {
 // postMessage 이벤트 리스너 설정
 scwin.setupPostMessageListener = function() {
     window.addEventListener('message', function(event) {
-        // console.log("postMessage 수신:", event.data);
+        console.log("postMessage 수신:", event.data);
         
         if (event.data && event.data.action === 'toggleSidebar') {
             console.log("postMessage를 통한 사이드바 토글 요청");
             scwin.toggleSidebar();
+        } else if (event.data && event.data.action === 'changeMainContent') {
+            console.log("postMessage를 통한 메인 콘텐츠 변경 요청:", event.data.url);
+            scwin.changeMainContentFromTab(event.data.url);
         }
     });
     

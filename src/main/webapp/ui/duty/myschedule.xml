@@ -179,6 +179,7 @@
                 display: block;
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function() {
     console.log("내 스케줄 보기 페이지가 로드되었습니다.");
@@ -315,36 +316,50 @@ scwin.sbx_month_onchange = function(info) {
             console.log("9월 선택됨 - HopeWorkEntry.xml로 이동 준비");
             
             // 확인 대화상자 표시
-            if (confirm("9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?")) {
-                // HopeWorkEntry.xml로 이동
-                try {
-                    console.log("페이지 이동 시도 중...");
-                    
-                    // 메인 프레임의 컨텐츠 변경
-                    if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
-                        window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/layout/mkduty.xml");
-                        console.log("메인 프레임 컨텐츠 변경 완료");
-                    } else {
-                        // 직접 이동 시도
-                        var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkhope.xml";
-                        console.log("이동할 URL:", targetUrl);
-                        window.location.href = targetUrl;
+            Swal.fire({
+                title: '페이지 이동',
+                text: '9월 희망근무 신청 페이지로 이동합니다. 이동하시겠습니까?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '이동',
+                cancelButtonText: '취소',
+                confirmButtonColor: '#1C3D6B',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // HopeWorkEntry.xml로 이동
+                    try {
+                        console.log("페이지 이동 시도 중...");
+                        // 메인 프레임의 컨텐츠 변경
+                        if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
+                            window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/layout/mkhope.xml");
+                            console.log("메인 프레임 컨텐츠 변경 완료");
+                        } else {
+                            // 직접 이동 시도
+                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkhope.xml";
+                            console.log("이동할 URL:", targetUrl);
+                            window.location.href = targetUrl;
+                        }
+                        console.log("페이지 이동 요청 완료");
+                    } catch (e) {
+                        console.error("페이지 이동 오류:", e);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '페이지 이동 실패',
+                            text: '페이지 이동에 실패했습니다. 수동으로 희망근무 신청 페이지로 이동해주세요.',
+                            confirmButtonText: '확인',
+                            confirmButtonColor: '#1C3D6B'
+                        });
                     }
-                    
-                    console.log("페이지 이동 요청 완료");
-                    
-                } catch (e) {
-                    console.error("페이지 이동 오류:", e);
-                    alert("페이지 이동에 실패했습니다. 수동으로 희망근무 신청 페이지로 이동해주세요.");
+                } else {
+                    // 취소한 경우 8월로 다시 선택
+                    setTimeout(function() {
+                        sbx_month.setValue("202508");
+                        sbx_month.setSelectedIndex(0);
+                        console.log("9월 이동 취소 - 8월로 복귀");
+                    }, 100);
                 }
-            } else {
-                // 취소한 경우 8월로 다시 선택
-                setTimeout(function() {
-                    sbx_month.setValue("202508");
-                    sbx_month.setSelectedIndex(0);
-                    console.log("9월 이동 취소 - 8월로 복귀");
-                }, 100);
-            }
+            });
             return;
         }
         

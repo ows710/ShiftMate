@@ -47,7 +47,7 @@ scwin.btn_login_onclick = function (e) {
     $c.sbm.execute(sbm_login);
 };
 
-// 정상 처리 후 dept.xml 이동처리
+// 정상 처리 후 내 스케줄 보기 페이지 이동처리
 scwin.sbm_login_submitdone = function (e) {
 
     var elHeader = e.responseJSON.elHeader; // 응답 전문 elHeader
