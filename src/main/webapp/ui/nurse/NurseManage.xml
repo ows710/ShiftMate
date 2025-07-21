@@ -1389,7 +1389,9 @@ scwin.btn_excel_onclick = function() {
     try {
         var jsnOptions = {
             headerExist: "1", // Excel 파일에 헤더가 있는지 여부
-            uploadDataCallBack: scwin.fn_excelUploadCallback // 업로드 완료 후 콜백
+            uploadDataCallBack: scwin.fn_excelUploadCallback, // 업로드 완료 후 콜백
+            features: "top=" + 250 + ",height=" + 450 + ",left=" + 650 + ",width=" + 450,
+            wframe:true
         };
 
         // WebSquare의 엑셀 업로드 기능 사용

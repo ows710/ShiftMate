@@ -1,4 +1,4 @@
-appID: inswave.matrix.mobile
+appID: matrix.mobile.shiftmate
 matrixMobile:
   startPage: /InsWebApp/ui/mobile/mobileLogin.xml
   frameworkType: WebSquare

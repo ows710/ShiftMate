@@ -538,7 +538,7 @@ span.w2autoComplete_label {padding:0 0 0 8px;text-align:left;color:var(--ws-form
 
 /* schedule Calendar */
 .fc-view-container,
-.fc-view-harness {position:relative;border:0 hidden transparent;clip-path:inset(0px round 8px);-webkit-clip-path:inset(0px round 8px)}
+.fc-view-harness {position:relative;border:0 hidden transparent;height:600px;clip-path:inset(0px round 8px);-webkit-clip-path:inset(0px round 8px)}
 .fc-view-container::before,
 .fc-view-harness::before {content:'';position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;border:1px solid var(--ws-grid-header-bd);border-radius:8px;pointer-events:none}
 .fc th {height:40px;background:var(--ws-table-th-bg);font-size:13px;vertical-align:middle !important}

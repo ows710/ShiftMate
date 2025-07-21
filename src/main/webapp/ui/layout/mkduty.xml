@@ -621,27 +621,83 @@ scwin.onTabClosed = function(tabId) {
     try {
         console.log("탭 닫기 이벤트 처리:", tabId);
         
-        // 탭이 닫힌 후 다른 탭이 활성화되었는지 확인
+        // 탭이 닫힌 후 남은 탭 개수 확인
         setTimeout(async function() {
-            if (wfr_tabControl && wfr_tabControl.getWindow) {
-                var tabControlWindow = wfr_tabControl.getWindow();
-                if (tabControlWindow && tabControlWindow.scwin) {
-                    try {
-                        var activeTab = await tabControlWindow.scwin.findTabById(tabId);
-                        if (!activeTab) {
-                            // 닫힌 탭이므로 다른 탭을 활성화
-                            if (tabControlWindow.scwin.activateTab) {
-                                // 첫 번째 탭을 활성화
-                                await tabControlWindow.scwin.activateTab("menu_duty_nurse");
+            try {
+                if (wfr_tabControl && wfr_tabControl.getWindow) {
+                    var tabControlWindow = wfr_tabControl.getWindow();
+                    if (tabControlWindow && tabControlWindow.scwin) {
+                        // 새로운 함수를 사용하여 기본 탭 존재 확인 및 추가
+                        if (tabControlWindow.scwin.ensureDefaultTabExists) {
+                            var tabAdded = await tabControlWindow.scwin.ensureDefaultTabExists();
+                            if (tabAdded) {
+                                // 메인 콘텐츠도 근무자 관리로 변경
                                 scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
+                                
+                                // 사이드메뉴 활성 메뉴도 업데이트
+                                scwin.updateSideMenuActiveMenuWithRetry("menu_duty_manage", 0);
+                                scwin.currentActiveMenuId = "menu_duty_manage";
+                                
+                                console.log("✅ 근무자 관리 탭 복원 완료");
+                            }
+                        } else {
+                            // 기존 방식으로 폴백
+                            var tabCount = 0;
+                            
+                            // 방법 1: getTabCount API 사용
+                            if (tabControlWindow.scwin.tab1 && tabControlWindow.scwin.tab1.getTabCount) {
+                                try {
+                                    tabCount = await tabControlWindow.scwin.tab1.getTabCount();
+                                } catch (e) {
+                                    console.log("getTabCount API 실패, DOM으로 확인");
+                                }
+                            }
+                            
+                            // 방법 2: DOM으로 확인
+                            if (tabCount === 0) {
+                                var visibleTabs = tabControlWindow.document.querySelectorAll('.w2_tabControl_tab:not([style*="display: none"]):not([style*="visibility: hidden"])');
+                                tabCount = visibleTabs.length;
+                            }
+                            
+                            console.log("현재 탭 개수:", tabCount);
+                            
+                            // 탭이 하나도 없으면 근무자 관리 탭 추가
+                            if (tabCount === 0) {
+                                console.log("모든 탭이 닫혔습니다. 근무자 관리 탭을 추가합니다.");
+                                
+                                // 탭 컨트롤에 근무자 관리 탭 추가
+                                if (tabControlWindow.scwin.addTab) {
+                                    await tabControlWindow.scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
+                                }
+                                
+                                // 메인 콘텐츠도 근무자 관리로 변경
+                                scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
+                                
+                                // 사이드메뉴 활성 메뉴도 업데이트
+                                scwin.updateSideMenuActiveMenuWithRetry("menu_duty_manage", 0);
+                                scwin.currentActiveMenuId = "menu_duty_manage";
+                                
+                                console.log("✅ 근무자 관리 탭 복원 완료");
                             }
                         }
-                    } catch (e) {
-                        console.error("탭 닫기 후 활성화 처리 오류:", e);
                     }
                 }
+            } catch (e) {
+                console.error("탭 닫기 후 처리 오류:", e);
+                // 오류 발생 시에도 안전하게 근무자 관리 탭 추가
+                try {
+                    scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
+                    if (wfr_tabControl && wfr_tabControl.getWindow) {
+                        var tabControlWindow = wfr_tabControl.getWindow();
+                        if (tabControlWindow && tabControlWindow.scwin && tabControlWindow.scwin.addTab) {
+                            await tabControlWindow.scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
+                        }
+                    }
+                } catch (addError) {
+                    console.error("근무자 관리 탭 복원 실패:", addError);
+                }
             }
-        }, 100);
+        }, 200); // 200ms 지연으로 탭 닫기 완료 후 확인
         
     } catch (e) {
         console.error("탭 닫기 이벤트 처리 오류:", e);

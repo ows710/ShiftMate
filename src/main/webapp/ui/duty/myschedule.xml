@@ -703,7 +703,7 @@ scwin.applyEventClasses = function() {
     		<div class="calendar-container">
     			<w2:scheduleCalendar 
     				id="shc_myschedule" 
-    				style="width:800px;height:600px;" 
+    				style="height:400px;margin-bottom:20px;" 
     				dataList="data:dlt_schedule" 
     				defaultDate="20250801"
     				editable="false" 

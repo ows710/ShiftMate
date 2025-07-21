@@ -2938,7 +2938,7 @@ scwin.applyEventClasses = function() {
             <div class="calendar-container">
                 <w2:scheduleCalendar 
                     id="shc_hopeWork" 
-                    style="width:800px;height:600px;" 
+                    style="height:200px;" 
                     dataList="data:dlt_hopeWork" 
                     defaultDate="20250901"
                     editable="false" 

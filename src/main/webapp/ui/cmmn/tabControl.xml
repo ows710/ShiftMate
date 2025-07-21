@@ -774,6 +774,25 @@ scwin.tab1_onclose = async function(tabId) {
             window.parent.scwin.onTabClosed(tabId);
         }
         
+        // 탭이 닫힌 후 남은 탭 개수 확인
+        setTimeout(async function() {
+            try {
+                // 새로운 함수를 사용하여 기본 탭 존재 확인 및 추가
+                await scwin.ensureDefaultTabExists();
+            } catch (e) {
+                console.error("탭 닫기 후 처리 오류:", e);
+                // 오류 발생 시에도 안전하게 근무자 관리 탭 추가
+                try {
+                    await scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
+                    if (window.parent && window.parent.scwin && window.parent.scwin.changeMainContentFromTab) {
+                        window.parent.scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
+                    }
+                } catch (addError) {
+                    console.error("근무자 관리 탭 추가 실패:", addError);
+                }
+            }
+        }, 100); // 100ms 지연으로 탭 닫기 완료 후 확인
+        
     } catch (e) {
         console.error("탭 닫기 처리 오류:", e);
     }
@@ -795,6 +814,69 @@ scwin.getUrlFromTabId = function(tabId) {
     };
     
     return tabUrlMap[tabId] || null;
+};
+
+// 현재 활성 탭 개수를 확인하는 함수
+scwin.getActiveTabCount = async function() {
+    try {
+        // 방법 1: WebSquare API 사용
+        if (typeof tab1 !== 'undefined' && tab1.getTabCount) {
+            try {
+                var count = await tab1.getTabCount();
+                console.log("WebSquare API로 확인한 탭 개수:", count);
+                return count;
+            } catch (e) {
+                console.log("WebSquare API 실패, DOM으로 확인");
+            }
+        }
+        
+        // 방법 2: DOM으로 확인
+        var visibleTabs = document.querySelectorAll('.w2_tabControl_tab:not([style*="display: none"]):not([style*="visibility: hidden"]):not([style*="opacity: 0"])');
+        var actualVisibleTabs = Array.from(visibleTabs).filter(function(tab) {
+            // 실제로 내용이 있는 탭만 카운트
+            var hasContent = tab.textContent && tab.textContent.trim().length > 0;
+            var hasTextElement = tab.querySelector('.w2_tabControl_tab_text');
+            var isVisible = tab.offsetWidth > 0 && tab.offsetHeight > 0;
+            return hasContent || hasTextElement || isVisible;
+        });
+        
+        console.log("DOM으로 확인한 실제 탭 개수:", actualVisibleTabs.length);
+        return actualVisibleTabs.length;
+        
+    } catch (e) {
+        console.error("탭 개수 확인 오류:", e);
+        return 0;
+    }
+};
+
+// 근무자 관리 탭을 안전하게 추가하는 함수
+scwin.ensureDefaultTabExists = async function() {
+    try {
+        console.log("기본 탭 존재 확인 중...");
+        
+        // 현재 탭 개수 확인
+        var tabCount = await scwin.getActiveTabCount();
+        
+        if (tabCount === 0) {
+            console.log("탭이 없습니다. 근무자 관리 탭을 추가합니다.");
+            await scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
+            
+            // 부모 프레임에도 알림
+            if (window.parent && window.parent.scwin && window.parent.scwin.changeMainContentFromTab) {
+                window.parent.scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
+            }
+            
+            console.log("✅ 근무자 관리 탭 추가 완료");
+            return true;
+        } else {
+            console.log("이미 탭이 존재합니다. 개수:", tabCount);
+            return false;
+        }
+        
+    } catch (e) {
+        console.error("기본 탭 확인/추가 오류:", e);
+        return false;
+    }
 };
 
 // 현재 날짜를 'yyyy-mm-dd' 형식으로 반환하는 함수
