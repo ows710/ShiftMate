@@ -1,69 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ev="http://www.w3.org/2001/xml-events"
-    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
-    <head>
-        <w2:type>DEFAULT</w2:type>
-        <w2:buildDate/>
-        <w2:MSA/>
-        <xf:model>
-            <xf:instance>
-                <data xmlns=""/>
-            </xf:instance>
-            <w2:dataCollection baseNode="map">
-                <w2:dataMap baseNode="map" id="dmp_nurseVo">
-                    <w2:keyInfo>
-                        <w2:key id="nurseName" name="근무자명" dataType="text"></w2:key>
-                        <w2:key id="position" name="직급" dataType="text"></w2:key>
-                        <w2:key id="workYear" name="연차" dataType="text"></w2:key>
-                        <w2:key id="specialNote" name="특이사항" dataType="text"></w2:key>
-                        <w2:key id="hireDate" name="입사일" dataType="text"></w2:key>
-                        <w2:key id="scNurseName" name="검색_근무자명" dataType="text"></w2:key>
-                        <w2:key id="scPosition" name="검색_직급" dataType="text"></w2:key>
-                    </w2:keyInfo>
-                </w2:dataMap>
-                <w2:dataList baseNode="list" repeatNode="map" id="dlt_nurseList" saveRemovedData="true">
-                    <w2:columnInfo>
-                        <w2:column id="chk_select" name="선택" dataType="text"></w2:column>
-                        <w2:column id="nurseName" name="근무자명" dataType="text"></w2:column>
-                        <w2:column id="position" name="직급" dataType="text"></w2:column>
-                        <w2:column id="workYear" name="연차" dataType="text"></w2:column>
-                        <w2:column id="specialNote" name="특이사항" dataType="text"></w2:column>
-                        <w2:column id="hireDate" name="입사일" dataType="text"></w2:column>
-                        <w2:column id="useYn" name="사용여부" dataType="text"></w2:column>
-                        <w2:column id="delYn" name="삭제여부" dataType="text"></w2:column>
-                    </w2:columnInfo>
-                </w2:dataList>
-
-            </w2:dataCollection>
-            <w2:workflowCollection></w2:workflowCollection>
-            <xf:submission id="sbm_selectNurseList" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/list.pwkjson" method="post"
-                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
-                processMsg="간호사 목록을 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurseList_submitdone" ev:submiterror="" abortTrigger="">
-            </xf:submission>
-            <xf:submission id="sbm_selectNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/view.pwkjson" method="post"
-                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
-                processMsg="간호사 정보를 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurse_submitdone" ev:submiterror="" abortTrigger="">
-            </xf:submission>
-            <xf:submission id="sbm_insertNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/insert.pwkjson" method="post"
-                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
-                processMsg="간호사 정보를 등록 중입니다." ev:submit="" ev:submitdone="scwin.sbm_insertNurse_submitdone" ev:submiterror="" abortTrigger="">
-            </xf:submission>
-            <xf:submission id="sbm_updateNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/update.pwkjson" method="post"
-                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
-                processMsg="간호사 정보를 수정 중입니다." ev:submit="" ev:submitdone="scwin.sbm_updateNurse_submitdone" ev:submiterror="" abortTrigger="">
-            </xf:submission>
-            <xf:submission id="sbm_deleteNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target="" action="/InsWebApp/nurse/delete.pwkjson" method="post"
-                mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
-                processMsg="간호사 정보를 삭제 중입니다." ev:submit="" ev:submitdone="scwin.sbm_deleteNurse_submitdone" ev:submiterror="" abortTrigger="">
-            </xf:submission>
-        </xf:model>
-        <w2:layoutInfo>
-        </w2:layoutInfo>
-        <w2:publicInfo>
-        </w2:publicInfo>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script type="text/javascript" lazy="false"><![CDATA[        
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dmp_nurseVo">
+					<w2:keyInfo>
+						<w2:key id="nurseName" name="근무자명" dataType="text"></w2:key>
+						<w2:key id="position" name="직급" dataType="text"></w2:key>
+						<w2:key id="career" name="연차" dataType="number"></w2:key>
+						<w2:key id="specialNote" name="특이사항" dataType="text"></w2:key>
+						<w2:key id="hireDate" name="입사일" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_nurseList" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="chk_select" name="선택" dataType="text"></w2:column>
+						<w2:column id="nurseName" name="근무자명" dataType="text"></w2:column>
+						<w2:column id="position" name="직급" dataType="text"></w2:column>
+						<w2:column id="career" name="연차" dataType="text"></w2:column>
+						<w2:column id="specialNote" name="특이사항" dataType="text"></w2:column>
+						<w2:column id="hireDate" name="입사일" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="sbm_selectNurseList" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+				action="/InsWebApp/list.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="간호사 목록을 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurseList_submitdone"
+				ev:submiterror="scwin.sbm_selectNurseList_submiterror" abortTrigger="">
+			</xf:submission>
+			<xf:submission id="sbm_selectNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+				action="/InsWebApp/view.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="간호사 정보를 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurse_submitdone"
+				ev:submiterror="" abortTrigger="">
+			</xf:submission>
+			<xf:submission id="sbm_insertNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+				action="/InsWebApp/insert.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="간호사 정보를 등록 중입니다." ev:submit="" ev:submitdone="scwin.sbm_insertNurse_submitdone"
+				ev:submiterror="scwin.sbm_insertNurse_submiterror" abortTrigger="">
+			</xf:submission>
+			<xf:submission id="sbm_updateNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+				action="/InsWebApp/update.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="간호사 정보를 수정 중입니다." ev:submit="" ev:submitdone="scwin.sbm_updateNurse_submitdone"
+				ev:submiterror="" abortTrigger="">
+			</xf:submission>
+			<xf:submission id="sbm_deleteNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+				action="/InsWebApp/delete.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="간호사 정보를 삭제 중입니다." ev:submit="" ev:submitdone="scwin.sbm_deleteNurse_submitdone"
+				ev:submiterror="" abortTrigger="">
+			</xf:submission>
+			<xf:submission id="sbm_insertNurseList" action="/InsWebApp/insertLIst.pwkjson" method="post" mediatype="application/json" ref='data:json,{"action":"inserted","id":"dlt_nurseList"}'
+				target="" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="다중 등록 진행중..."
+				ev:submit="" ev:submitdone="scwin.sbm_insertNurseList_submitdone" ev:submiterror="" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<w2:layoutInfo>
+		</w2:layoutInfo>
+		<w2:publicInfo>
+		</w2:publicInfo>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script type="text/javascript" lazy="false"><![CDATA[
 // scwin 객체 초기화 확인 및 생성
 if (typeof scwin === 'undefined') {
     var scwin = {};
@@ -75,85 +78,79 @@ scwin.nurseCounter = scwin.nurseCounter || 28; // 다음 순번용 카운터
 scwin.nurseData = scwin.nurseData || []; // 간호사 데이터 저장용
 scwin.isExcelUploaded = scwin.isExcelUploaded || false; // 엑셀 업로드 여부
 
-scwin.onpageload = function(e) {
+scwin.onpageload = function (e) {
     console.log("=== NurseManage 페이지 로드 시작 ===");
-    
+
     // 폼 초기화
     scwin.fn_clearForm();
-    
+
     // 저장된 데이터 로드
     scwin.fn_loadSavedData();
-    
+
     // WebSquare 컴포넌트 완전 로드 대기 후 날짜 설정
     console.log("WebSquare 컴포넌트 로드 대기 시작...");
     scwin.waitForWebSquareComponents();
-    
+
     // 현재 날짜 설정 (즉시 실행 - 백업용)
     console.log("현재 날짜 설정 시도 1...");
     scwin.fn_setCurrentDate();
-    
+
     // DOM이 완전히 로드된 후 다시 한번 날짜 설정 (안전장치)
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("현재 날짜 설정 시도 2...");
         scwin.fn_setCurrentDate();
     }, 100);
-    
+
     // 추가 안전장치 - 500ms 후
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("현재 날짜 설정 시도 3...");
         scwin.fn_setCurrentDate();
     }, 500);
-    
+
     // 추가 안전장치 - 1초 후
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("현재 날짜 설정 시도 4...");
         scwin.fn_setCurrentDate();
     }, 1000);
-    
+
     // 추가 안전장치 - 2초 후
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("현재 날짜 설정 시도 5...");
         scwin.fn_setCurrentDate();
     }, 2000);
-    
+
     // 추가 안전장치 - 3초 후
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("현재 날짜 설정 시도 6...");
         scwin.fn_setCurrentDate();
     }, 3000);
-    
+
     // 현재 날짜 자동 업데이트 (1분마다)
-    setInterval(function() {
+    setInterval(function () {
         console.log("현재 날짜 자동 업데이트...");
         scwin.fn_setCurrentDate();
     }, 60000); // 60초 = 1분
-    
+
     // 엑셀 업로드 상태에 따른 버튼 상태 설정
     if (scwin.isExcelUploaded) {
         scwin.fn_disableUploadButton();
     }
-    
-    // 저장된 데이터가 있으면 자동으로 목록 표시
-    if (scwin.nurseData && scwin.nurseData.length > 0) {
-        console.log("저장된 간호사 데이터 발견:", scwin.nurseData.length + "건 - 자동 표시");
-        scwin.fn_selectNurseList();
-    } else {
-        console.log("저장된 데이터 없음 - 빈 목록 표시");
-        // 빈 목록이라도 표시
-        scwin.fn_selectNurseList();
-    }
+
+    // 페이지 로드 시 자동으로 간호사 목록 조회
+    console.log("페이지 로드 시 간호사 목록 자동 조회 시작");
+    scwin.fn_selectNurseList();
     console.log("=== NurseManage 페이지 로드 완료 ===");
 };
 
 // DOM 완전 로드 이벤트 리스너 추가
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log("=== DOMContentLoaded 이벤트 발생 ===");
     console.log("DOM 완전 로드 후 날짜 설정 시도...");
     scwin.fn_setCurrentDate();
 });
 
 // window load 이벤트 리스너 추가
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     console.log("=== window load 이벤트 발생 ===");
     console.log("모든 리소스 로드 후 날짜 설정 시도...");
     scwin.fn_setCurrentDate();
@@ -161,7 +158,7 @@ window.addEventListener('load', function() {
 
 // WebSquare 특화 이벤트 리스너
 if (typeof w2 !== 'undefined' && w2.onload) {
-    w2.onload = function() {
+    w2.onload = function () {
         console.log("=== WebSquare onload 이벤트 발생 ===");
         console.log("WebSquare 완전 로드 후 날짜 설정 시도...");
         scwin.fn_setCurrentDate();
@@ -169,25 +166,25 @@ if (typeof w2 !== 'undefined' && w2.onload) {
 }
 
 // 즉시 실행 함수 (IIFE) - 페이지 로드와 관계없이 즉시 실행
-(function() {
+(function () {
     // 기본 초기화
     if (typeof scwin === 'undefined') {
         var scwin = {};
     }
-    
+
     // 글로벌 변수 안전하게 초기화
     scwin.nurseCounter = scwin.nurseCounter || 28;
     scwin.nurseData = scwin.nurseData || [];
     scwin.isExcelUploaded = scwin.isExcelUploaded || false;
-    
+
     // 현재 날짜 설정 함수 정의
-    scwin.fn_setCurrentDate = function() {
+    scwin.fn_setCurrentDate = function () {
         var now = new Date();
         var year = now.getFullYear();
         var month = String(now.getMonth() + 1).padStart(2, '0');
         var day = String(now.getDate()).padStart(2, '0');
         var currentDate = year + "-" + month + "-" + day;
-        
+
         try {
             // 방법 1: WebSquare 컴포넌트로 직접 접근
             if (txt_currentDate && txt_currentDate.setValue) {
@@ -196,7 +193,7 @@ if (typeof w2 !== 'undefined' && w2.onload) {
                 console.log("✅ 현재 날짜 설정 완료:", currentDate);
                 return;
             }
-            
+
             // 방법 2: DOM 요소로 직접 접근
             var dateElement = document.getElementById('txt_currentDate');
             if (dateElement) {
@@ -205,7 +202,7 @@ if (typeof w2 !== 'undefined' && w2.onload) {
                 console.log("✅ 현재 날짜 설정 완료 (DOM):", currentDate);
                 return;
             }
-            
+
             // 방법 3: WebSquare ID 패턴으로 검색
             var w2Element = document.getElementById('mf_txt_currentDate');
             if (w2Element) {
@@ -214,46 +211,46 @@ if (typeof w2 !== 'undefined' && w2.onload) {
                 console.log("✅ 현재 날짜 설정 완료 (WebSquare ID):", currentDate);
                 return;
             }
-            
+
             console.warn("⚠️ 날짜 표시 요소를 찾을 수 없습니다: txt_currentDate");
-            
+
         } catch (e) {
             console.error("❌ 현재 날짜 설정 오류:", e);
         }
     };
-    
+
     // 즉시 날짜 설정 시도
     scwin.fn_setCurrentDate();
-    
+
     // 1초 후 다시 시도
-    setTimeout(function() {
+    setTimeout(function () {
         scwin.fn_setCurrentDate();
     }, 1000);
-    
+
     // 3초 후 다시 시도
-    setTimeout(function() {
+    setTimeout(function () {
         scwin.fn_setCurrentDate();
     }, 3000);
 })();
 
 // WebSquare 컴포넌트 완전 로드 대기 함수
-scwin.waitForWebSquareComponents = function() {
+scwin.waitForWebSquareComponents = function () {
     console.log("=== WebSquare 컴포넌트 로드 대기 시작 ===");
-    
+
     var attempts = 0;
     var maxAttempts = 50; // 최대 5초 대기
-    
-    var checkComponents = function() {
+
+    var checkComponents = function () {
         attempts++;
         console.log("WebSquare 컴포넌트 확인 시도:", attempts + "/" + maxAttempts);
-        
+
         // txt_currentDate 컴포넌트가 완전히 로드되었는지 확인
         if (typeof txt_currentDate !== 'undefined' && txt_currentDate && txt_currentDate.setValue) {
             console.log("✅ WebSquare 컴포넌트 로드 완료!");
             scwin.fn_setCurrentDate();
             return;
         }
-        
+
         if (attempts < maxAttempts) {
             setTimeout(checkComponents, 100);
         } else {
@@ -262,29 +259,29 @@ scwin.waitForWebSquareComponents = function() {
             scwin.fn_setCurrentDate();
         }
     };
-    
+
     checkComponents();
 };
 
 // 현재 날짜 설정
-scwin.fn_setCurrentDate = function() {
+scwin.fn_setCurrentDate = function () {
     console.log("=== 현재 날짜 설정 함수 시작 ===");
-    
+
     var now = new Date();
     var year = now.getFullYear();
     var month = String(now.getMonth() + 1).padStart(2, '0');
     var day = String(now.getDate()).padStart(2, '0');
     var currentDate = year + "-" + month + "-" + day;
-    
+
     console.log("생성된 날짜:", currentDate);
     console.log("현재 시간:", now.toLocaleString());
-    
+
     try {
         // 방법 1: WebSquare 컴포넌트로 직접 접근
         console.log("방법 1 시도: WebSquare 컴포넌트 직접 접근");
         console.log("txt_currentDate 존재:", typeof txt_currentDate !== 'undefined');
         console.log("txt_currentDate 값:", txt_currentDate);
-        
+
         if (txt_currentDate && txt_currentDate.setValue) {
             console.log("txt_currentDate.setValue 함수 존재:", typeof txt_currentDate.setValue === 'function');
             txt_currentDate.setValue(currentDate);
@@ -294,12 +291,12 @@ scwin.fn_setCurrentDate = function() {
         } else {
             console.log("❌ txt_currentDate가 없거나 setValue 함수가 없음");
         }
-        
+
         // 방법 2: DOM 요소로 직접 접근
         console.log("방법 2 시도: DOM 요소 직접 접근");
         var dateElement = document.getElementById('txt_currentDate');
         console.log("DOM 요소 찾기 결과:", dateElement);
-        
+
         if (dateElement) {
             console.log("DOM 요소 속성들:", {
                 tagName: dateElement.tagName,
@@ -314,12 +311,12 @@ scwin.fn_setCurrentDate = function() {
         } else {
             console.log("❌ DOM에서 txt_currentDate 요소를 찾을 수 없음");
         }
-        
+
         // 방법 3: WebSquare ID 패턴으로 검색
         console.log("방법 3 시도: WebSquare ID 패턴 검색");
         var w2Element = document.getElementById('mf_txt_currentDate');
         console.log("WebSquare ID 패턴 검색 결과:", w2Element);
-        
+
         if (w2Element) {
             w2Element.textContent = currentDate;
             w2Element.setAttribute('label', currentDate);
@@ -328,7 +325,7 @@ scwin.fn_setCurrentDate = function() {
         } else {
             console.log("❌ WebSquare ID 패턴으로도 요소를 찾을 수 없음");
         }
-        
+
         // 방법 4: 모든 가능한 ID 패턴으로 검색
         console.log("방법 4 시도: 모든 가능한 ID 패턴 검색");
         var allPossibleIds = [
@@ -337,7 +334,7 @@ scwin.fn_setCurrentDate = function() {
             'wfr_txt_currentDate',
             'w2_txt_currentDate'
         ];
-        
+
         for (var i = 0; i < allPossibleIds.length; i++) {
             var element = document.getElementById(allPossibleIds[i]);
             console.log("ID '" + allPossibleIds[i] + "' 검색 결과:", element);
@@ -348,71 +345,71 @@ scwin.fn_setCurrentDate = function() {
                 return;
             }
         }
-        
+
         // 방법 5: querySelector로 부분 매칭 검색
         console.log("방법 5 시도: querySelector 부분 매칭 검색");
         var partialElement = document.querySelector('[id*="currentDate"]');
         console.log("부분 매칭 검색 결과:", partialElement);
-        
+
         if (partialElement) {
             partialElement.textContent = currentDate;
             partialElement.setAttribute('label', currentDate);
             console.log("✅ 현재 날짜 설정 완료 (부분 매칭):", currentDate);
             return;
         }
-        
+
         console.warn("⚠️ 모든 방법으로 시도했지만 날짜 표시 요소를 찾을 수 없습니다");
         console.log("페이지의 모든 ID 목록:");
         var allElements = document.querySelectorAll('[id]');
         for (var j = 0; j < Math.min(allElements.length, 20); j++) {
             console.log("  - " + allElements[j].tagName + "#" + allElements[j].id);
         }
-        
+
     } catch (e) {
         console.error("❌ 현재 날짜 설정 오류:", e);
         console.error("오류 스택:", e.stack);
     }
-    
+
     console.log("=== 현재 날짜 설정 함수 종료 ===");
 };
 
 // 업로드 버튼 비활성화
-scwin.fn_disableUploadButton = function() {
+scwin.fn_disableUploadButton = function () {
     if (btn_excel) {
         btn_excel.setDisabled(true);
         btn_excel.setStyle("background-color", "#ccc");
         btn_excel.setStyle("color", "#666");
         btn_excel.setStyle("cursor", "not-allowed");
     }
-    
+
     console.log("엑셀 업로드 버튼이 비활성화되었습니다.");
 };
 
 // 업로드 버튼 활성화
-scwin.fn_enableUploadButton = function() {
+scwin.fn_enableUploadButton = function () {
     if (btn_excel) {
         btn_excel.setDisabled(false);
         btn_excel.setStyle("background-color", "");
         btn_excel.setStyle("color", "");
         btn_excel.setStyle("cursor", "");
     }
-    
+
     console.log("엑셀 업로드 버튼이 활성화되었습니다.");
 };
 
 // 저장된 데이터 로드 (localStorage 사용)
-scwin.fn_loadSavedData = function() {
+scwin.fn_loadSavedData = function () {
     try {
         // localStorage에서 데이터 로드
         var savedData = localStorage.getItem("nurseManageData");
         var uploadStatus = localStorage.getItem("nurseExcelUploaded");
-        
+
         if (savedData) {
             var parsedData = JSON.parse(savedData);
             if (Array.isArray(parsedData) && parsedData.length > 0) {
                 scwin.nurseData = parsedData;
                 console.log("✅ 저장된 간호사 데이터 로드 성공:", scwin.nurseData.length + "건");
-                
+
                 // nurseCounter 재설정 (기존 데이터 수 + 1)
                 scwin.nurseCounter = scwin.nurseData.length + 1;
                 console.log("nurseCounter 설정:", scwin.nurseCounter);
@@ -427,7 +424,7 @@ scwin.fn_loadSavedData = function() {
             scwin.nurseCounter = 1;
             console.log("������ 저장된 데이터 없음 - 빈 목록으로 초기화");
         }
-        
+
         // 엑셀 업로드 상태 복원
         if (uploadStatus === "true") {
             scwin.isExcelUploaded = true;
@@ -435,7 +432,7 @@ scwin.fn_loadSavedData = function() {
         } else {
             scwin.isExcelUploaded = false;
         }
-        
+
     } catch (e) {
         console.error("❌ 데이터 로드 오류:", e);
         Swal.fire({
@@ -449,7 +446,7 @@ scwin.fn_loadSavedData = function() {
         scwin.nurseData = [];
         scwin.isExcelUploaded = false;
         scwin.nurseCounter = 1;
-        
+
         // 문제가 있는 데이터 제거
         localStorage.removeItem("nurseManageData");
         localStorage.removeItem("nurseExcelUploaded");
@@ -457,23 +454,23 @@ scwin.fn_loadSavedData = function() {
 };
 
 // 데이터 저장 (localStorage 사용)
-scwin.fn_saveData = function() {
+scwin.fn_saveData = function () {
     try {
         // 데이터 유효성 확인
         if (!scwin.nurseData) {
             console.warn("⚠️ 저장할 데이터가 없습니다.");
             scwin.nurseData = [];
         }
-        
+
         // localStorage 용량 확인 (간단한 체크)
         var dataString = JSON.stringify(scwin.nurseData);
         var dataSize = new Blob([dataString]).size;
         console.log("������ 저장할 데이터 크기:", Math.round(dataSize / 1024) + "KB");
-        
+
         // 실제 저장
         localStorage.setItem("nurseManageData", dataString);
         localStorage.setItem("nurseExcelUploaded", scwin.isExcelUploaded.toString());
-        
+
         // 저장 확인
         var savedCheck = localStorage.getItem("nurseManageData");
         if (savedCheck && savedCheck.length > 0) {
@@ -482,10 +479,10 @@ scwin.fn_saveData = function() {
         } else {
             throw new Error("데이터 저장 확인 실패");
         }
-        
+
     } catch (e) {
         console.error("❌ 데이터 저장 오류:", e);
-        
+
         if (e.name === 'QuotaExceededError') {
             Swal.fire({
                 icon: 'warning',
@@ -510,38 +507,33 @@ scwin.fn_saveData = function() {
 };
 
 // 간호사 목록 조회
-scwin.fn_selectNurseList = function() {
+scwin.fn_selectNurseList = function () {
     try {
-        console.log("간호사 목록 조회 시작");
-        
-        // 검색 조건 적용
-        var filteredData = scwin.fn_filterData();
-        
-        // 페이지네이션 적용 (전체조회 시에는 모든 데이터 표시)
-        var pageIndex = dmp_nurseVo.get("pageIndex") || 1;
-        var pageSize = scwin.isExcelUploaded ? filteredData.length : (dmp_nurseVo.get("pageSize") || 10);
-        var startIdx = (pageIndex - 1) * pageSize;
-        var endIdx = startIdx + pageSize;
-        
-        var pagedData = filteredData.slice(startIdx, endIdx);
-        
-        // 순번이 올바르게 표시되도록 데이터 확인 및 수정
-        pagedData.forEach(function(item, index) {
-            if (!item.rowNum || item.rowNum === "") {
-                item.rowNum = String(index + 1);
-            }
-            // 체크박스 초기화
-            item.chk_select = "0";
-        });
-        
-        // 데이터 로드
-        dlt_nurseList.setJSON(pagedData);
-        
-        console.log("간호사 목록 조회 완료 - 총 " + filteredData.length + "건 (현재 페이지: " + pagedData.length + "건)");
-        
-        // 체크박스 초기화
-        scwin.fn_clearAllChecks();
-        
+        console.log("=== 간호사 목록 조회 시작 ===");
+
+        // 검색 조건 설정
+        var searchData = {
+            scNurseId: dmp_nurseVo.get("scNurseId") || "",
+            scNurseName: dmp_nurseVo.get("scNurseName") || "",
+            scPosition: dmp_nurseVo.get("scPosition") || "",
+            scWardId: dmp_nurseVo.get("scWardId") || "",
+            pageIndex: dmp_nurseVo.get("pageIndex") || 1,
+            pageSize: dmp_nurseVo.get("pageSize") || 10
+        };
+
+        console.log("검색 조건:", searchData);
+
+        // 검색 조건을 dataMap에 설정
+        dmp_nurseVo.set("scNurseId", searchData.scNurseId);
+        dmp_nurseVo.set("scNurseName", searchData.scNurseName);
+        dmp_nurseVo.set("scPosition", searchData.scPosition);
+        dmp_nurseVo.set("scWardId", searchData.scWardId);
+        dmp_nurseVo.set("pageIndex", searchData.pageIndex);
+        dmp_nurseVo.set("pageSize", searchData.pageSize);
+
+        // ProWorks 서버 호출
+        $c.sbm.execute(sbm_selectNurseList);
+
     } catch (error) {
         console.error("간호사 목록 조회 오류:", error);
         Swal.fire({
@@ -554,213 +546,480 @@ scwin.fn_selectNurseList = function() {
     }
 };
 
-// 검색 조건에 따른 데이터 필터링 (개선된 버전)
-scwin.fn_filterData = function() {
-    var scNurseName = dmp_nurseVo.get("scNurseName") || "";
-    var scPosition = dmp_nurseVo.get("scPosition") || "";
-    
-    // 검색어 전처리 (앞뒤 공백 제거, 대소문자 통일)
-    scNurseName = scNurseName.trim().toLowerCase();
-    scPosition = scPosition.trim().toLowerCase();
-    
-    console.log("검색 조건 - 근무자명: '" + scNurseName + "', 직급: '" + scPosition + "'");
-    
-    var filteredData = scwin.nurseData.filter(function(item) {
-        if (item.delYn === "Y") return false; // 삭제된 데이터 제외
-        
-        // 데이터도 소문자로 변환하여 비교
-        var itemName = (item.nurseName || "").toLowerCase();
-        var itemPosition = (item.position || "").toLowerCase();
-        
-        // 검색 조건 체크
-        var nameMatch = true;
-        var positionMatch = true;
-        
-        // 근무자명 검색 (입력했을 경우에만 체크)
-        if (scNurseName !== "") {
-            nameMatch = itemName.indexOf(scNurseName) > -1;
+// 간호사 목록 조회 완료 (ProWorks 연동)
+scwin.sbm_selectNurseList_submitdone = function (e) {
+    console.log("=== 간호사 목록 조회 응답 수신 ===");
+    console.log("응답 객체:", e);
+
+    try {
+        var responseData = e.responseJSON;
+        console.log("응답 데이터:", responseData);
+
+        if (responseData && responseData.elHeader) {
+            var elHeader = responseData.elHeader;
+
+            if (elHeader.resSuc === true) {
+                var nurseList = responseData.nurseList || [];
+                console.log("조회된 간호사 수:", nurseList.length);
+                console.log("간호사 데이터:", nurseList);
+
+                // 데이터 로드
+                dlt_nurseList.setJSON(nurseList);
+
+                // 체크박스 초기화
+                scwin.fn_clearAllChecks();
+
+                // 성공 메시지 (데이터가 있을 때만)
+                if (nurseList.length > 0) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '조회 완료',
+                        text: '간호사 목록 조회가 완료되었습니다. (총 ' + nurseList.length + '건)',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: '조회 완료',
+                        text: '조회된 간호사가 없습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                }
+
+            } else {
+                console.error("서버 응답 실패:", elHeader.resMsg);
+                Swal.fire({
+                    icon: 'error',
+                    title: '조회 실패',
+                    text: elHeader.resMsg || '간호사 목록 조회에 실패했습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+            }
+        } else {
+            console.error("응답 데이터 형식 오류:", responseData);
+            Swal.fire({
+                icon: 'error',
+                title: '응답 오류',
+                text: '서버 응답 형식이 올바르지 않습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
         }
-        
-        // 직급 검색 (입력했을 경우에만 체크)
-        if (scPosition !== "") {
-            positionMatch = itemPosition.indexOf(scPosition) > -1;
-        }
-        
-        // 둘 다 입력하면 AND 조건, 하나만 입력하면 해당 조건만 체크
-        return nameMatch && positionMatch;
-    });
-    
-    console.log("검색 결과: " + filteredData.length + "건 (전체: " + scwin.nurseData.length + "건)");
-    
-    return filteredData;
+
+    } catch (error) {
+        console.error("응답 처리 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '처리 오류',
+            text: '응답 데이터 처리 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
-// 간호사 목록 조회 완료 (서버 연동용 - 현재는 더미 데이터 사용)
-scwin.sbm_selectNurseList_submitdone = function(e) {
-    // 서버 연동 시 사용될 함수
-    console.log("서버 연동 모드 - 현재는 더미 데이터 사용");
+// 간호사 목록 조회 에러 처리
+scwin.sbm_selectNurseList_submiterror = function (e) {
+    console.error("=== 간호사 목록 조회 에러 ===");
+    console.error("에러 객체:", e);
+    console.error("에러 상태:", e.status);
+    console.error("에러 메시지:", e.statusText);
+
+    Swal.fire({
+        icon: 'error',
+        title: '조회 실패',
+        text: '간호사 목록 조회 중 오류가 발생했습니다. (상태: ' + e.status + ')',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
 };
 
 // 간호사 상세 조회
-scwin.fn_selectNurse = function(nurseName) {
-    var nurseInfo = scwin.nurseData.find(function(item) {
-        return item.nurseName === nurseName && item.delYn !== "Y";
-    });
-    
-    if (nurseInfo) {
-        dmp_nurseVo.setJSON(nurseInfo);
-        console.log("간호사 정보 조회 완료:", nurseInfo.nurseName);
-    } else {
+scwin.fn_selectNurse = function (nurseId) {
+    try {
+        console.log("=== 간호사 상세 조회 시작 ===");
+        console.log("조회할 간호사ID:", nurseId);
+
+        // 조회할 간호사 정보 설정
+        dmp_nurseVo.set("nurseId", nurseId);
+
+        // ProWorks 서버 호출
+        $c.sbm.execute(sbm_selectNurse);
+
+    } catch (error) {
+        console.error("간호사 상세 조회 오류:", error);
         Swal.fire({
-            icon: 'warning',
-            title: '정보 없음',
-            text: '간호사 정보를 찾을 수 없습니다.',
+            icon: 'error',
+            title: '조회 오류',
+            text: '간호사 정보 조회 중 오류가 발생했습니다.',
             confirmButtonText: '확인',
             confirmButtonColor: '#1C3B6B'
         });
     }
 };
 
-// 간호사 상세 조회 완료 (서버 연동용)
-scwin.sbm_selectNurse_submitdone = function(e) {
-    console.log("서버 연동 모드 - 현재는 더미 데이터 사용");
+// 간호사 상세 조회 완료 (ProWorks 연동)
+scwin.sbm_selectNurse_submitdone = function (e) {
+    console.log("=== 간호사 상세 조회 응답 수신 ===");
+    console.log("응답 객체:", e);
+
+    try {
+        var responseData = e.responseJSON;
+        console.log("응답 데이터:", responseData);
+
+        if (responseData && responseData.elHeader) {
+            var elHeader = responseData.elHeader;
+
+            if (elHeader.resSuc === true) {
+                var nurseInfo = responseData.nurseVo;
+                console.log("조회된 간호사 정보:", nurseInfo);
+
+                // 폼에 데이터 설정
+                dmp_nurseVo.setJSON(nurseInfo);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '조회 완료',
+                    text: '간호사 정보가 조회되었습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+
+            } else {
+                console.error("서버 응답 실패:", elHeader.resMsg);
+                Swal.fire({
+                    icon: 'error',
+                    title: '조회 실패',
+                    text: elHeader.resMsg || '간호사 정보 조회에 실패했습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+            }
+        } else {
+            console.error("응답 데이터 형식 오류:", responseData);
+            Swal.fire({
+                icon: 'error',
+                title: '응답 오류',
+                text: '서버 응답 형식이 올바르지 않습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
+        }
+
+    } catch (error) {
+        console.error("응답 처리 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '처리 오류',
+            text: '응답 데이터 처리 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 간호사 등록
-scwin.fn_insertNurse = function() {
-    var newNurse = {
-        chk_select: "0",
-        nurseName: dmp_nurseVo.get("nurseName"),
-        position: dmp_nurseVo.get("position"),
-        workYear: dmp_nurseVo.get("workYear") || "",
-        specialNote: dmp_nurseVo.get("specialNote") || "",
-        hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate(),
-        useYn: "Y",
-        delYn: "N"
-    };
-    
-    scwin.nurseData.push(newNurse);
-    scwin.nurseCounter++;
-    
-    // 데이터 영구 저장
-    scwin.fn_saveData();
-    
-    Swal.fire({
-        icon: 'success',
-        title: '등록 완료',
-        text: '간호사 정보가 등록되었습니다.',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#1B73E8'
-    });
-    scwin.fn_clearForm();
-    scwin.fn_selectNurseList();
-    
-    console.log("간호사 등록 완료:", newNurse.nurseName);
-};
+scwin.fn_insertNurse = function () {
+    try {
+        console.log("=== 간호사 등록 시작 ===");
 
-// 간호사 등록 완료 (서버 연동용)
-scwin.sbm_insertNurse_submitdone = function(e) {
-    scwin.fn_insertNurse();
-};
+        // 폼 검증
+        if (!scwin.fn_validateForm()) {
+            return;
+        }
 
-// 간호사 수정
-scwin.fn_updateNurse = function() {
-    var nurseName = dmp_nurseVo.get("nurseName");
-    if (!nurseName) {
+        // 등록할 데이터 준비
+        var nurseData = {
+            nurseName: dmp_nurseVo.get("nurseName"),
+            position: dmp_nurseVo.get("position"),
+            career: dmp_nurseVo.get("career") || "",
+            specialNote: dmp_nurseVo.get("specialNote") || "",
+            hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
+        };
+
+        console.log("등록할 데이터:", nurseData);
+
+        // 데이터를 dataMap에 설정
+        dmp_nurseVo.setJSON(nurseData);
+
+        // ProWorks 서버 호출
+        $c.sbm.execute(sbm_insertNurse);
+
+    } catch (error) {
+        console.error("간호사 등록 오류:", error);
         Swal.fire({
-            icon: 'warning',
-            title: '선택 필요',
-            text: '수정할 간호사를 선택해주세요.',
+            icon: 'error',
+            title: '등록 오류',
+            text: '간호사 등록 중 오류가 발생했습니다.',
             confirmButtonText: '확인',
             confirmButtonColor: '#1C3B6B'
         });
-        return;
     }
-    
-    var index = scwin.nurseData.findIndex(function(item) {
-        return item.nurseName === nurseName;
-    });
-    
-    if (index > -1) {
-        scwin.nurseData[index].nurseName = dmp_nurseVo.get("nurseName");
-        scwin.nurseData[index].position = dmp_nurseVo.get("position");
-        scwin.nurseData[index].workYear = dmp_nurseVo.get("workYear") || "";
-        scwin.nurseData[index].specialNote = dmp_nurseVo.get("specialNote") || "";
-        scwin.nurseData[index].hireDate = dmp_nurseVo.get("hireDate") || scwin.nurseData[index].hireDate;
-        
-        // 데이터 영구 저장
-        scwin.fn_saveData();
-        
+};
+
+// 간호사 등록 완료 (ProWorks 연동)
+scwin.sbm_insertNurse_submitdone = function (e) {
+    console.log("=== 간호사 등록 응답 수신 ===");
+    console.log("응답 객체:", e);
+
+    try {
+        var responseData = e.responseJSON;
+        console.log("응답 데이터:", responseData);
+
+        if (responseData && responseData.elHeader) {
+            var elHeader = responseData.elHeader;
+
+            if (elHeader.resSuc === true) {
+                console.log("간호사 등록 성공");
+
+                // 폼 초기화
+                scwin.fn_clearForm();
+
+                // 목록 새로고침
+                // scwin.fn_selectNurseList();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '등록 완료',
+                    text: '간호사 정보가 등록되었습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+
+            } else {
+                console.error("서버 응답 실패:", elHeader.resMsg);
+                Swal.fire({
+                    icon: 'error',
+                    title: '등록 실패',
+                    text: elHeader.resMsg || '간호사 등록에 실패했습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+            }
+        } else {
+            console.error("응답 데이터 형식 오류:", responseData);
+            Swal.fire({
+                icon: 'error',
+                title: '응답 오류',
+                text: '서버 응답 형식이 올바르지 않습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
+        }
+
+    } catch (error) {
+        console.error("응답 처리 오류:", error);
         Swal.fire({
-            icon: 'success',
-            title: '수정 완료',
-            text: '간호사 정보가 수정되었습니다.',
+            icon: 'error',
+            title: '처리 오류',
+            text: '응답 데이터 처리 중 오류가 발생했습니다.',
             confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        scwin.fn_selectNurseList();
-        
-        console.log("간호사 수정 완료:", scwin.nurseData[index].nurseName);
-    } else {
-        Swal.fire({
-            icon: 'warning',
-            title: '정보 없음',
-            text: '수정할 간호사 정보를 찾을 수 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
+            confirmButtonColor: '#1C3D6B'
         });
     }
 };
 
-// 간호사 수정 완료 (서버 연동용)
-scwin.sbm_updateNurse_submitdone = function(e) {
-    scwin.fn_updateNurse();
+// 간호사 수정
+scwin.fn_updateNurse = function () {
+    try {
+        console.log("=== 간호사 수정 시작 ===");
+
+        // 폼 검증
+        if (!scwin.fn_validateForm()) {
+            return;
+        }
+
+        var nurseName = dmp_nurseVo.get("nurseName");
+        if (!nurseName) {
+            Swal.fire({
+                icon: 'warning',
+                title: '선택 필요',
+                text: '수정할 간호사를 선택해주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3B6B'
+            });
+            return;
+        }
+
+        // 수정할 데이터 준비
+        var nurseData = {
+            nurseName: nurseName,
+            position: dmp_nurseVo.get("position"),
+            career: dmp_nurseVo.get("career") || "",
+            specialNote: dmp_nurseVo.get("specialNote") || "",
+            hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
+        };
+
+        console.log("수정할 데이터:", nurseData);
+
+        // ProWorks 서버 호출
+        $c.sbm.execute(sbm_updateNurse);
+
+    } catch (error) {
+        console.error("간호사 수정 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '수정 오류',
+            text: '간호사 수정 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3B6B'
+        });
+    }
+};
+
+// 간호사 수정 완료 (ProWorks 연동)
+scwin.sbm_updateNurse_submitdone = function (e) {
+    console.log("=== 간호사 수정 응답 수신 ===");
+    console.log("응답 객체:", e);
+
+    try {
+        var responseData = e.responseJSON;
+        console.log("응답 데이터:", responseData);
+
+        if (responseData && responseData.elHeader) {
+            var elHeader = responseData.elHeader;
+
+            if (elHeader.resSuc === true) {
+                console.log("간호사 수정 성공");
+
+                // 폼 초기화
+                scwin.fn_clearForm();
+
+                // 목록 새로고침
+                scwin.fn_selectNurseList();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '수정 완료',
+                    text: '간호사 정보가 수정되었습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+
+            } else {
+                console.error("서버 응답 실패:", elHeader.resMsg);
+                Swal.fire({
+                    icon: 'error',
+                    title: '수정 실패',
+                    text: elHeader.resMsg || '간호사 수정에 실패했습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+            }
+        } else {
+            console.error("응답 데이터 형식 오류:", responseData);
+            Swal.fire({
+                icon: 'error',
+                title: '응답 오류',
+                text: '서버 응답 형식이 올바르지 않습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
+        }
+
+    } catch (error) {
+        console.error("응답 처리 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '처리 오류',
+            text: '응답 데이터 처리 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 간호사 삭제
-scwin.fn_deleteNurse = function(nurseName) {
-    var index = scwin.nurseData.findIndex(function(item) {
-        return item.nurseName === nurseName;
-    });
-    
-    if (index > -1) {
-        scwin.nurseData.splice(index, 1);
-        
-        // 데이터 영구 저장
-        scwin.fn_saveData();
-        
-        console.log("간호사 삭제 완료:", nurseName);
-        return true;
+scwin.fn_deleteNurse = function (nurseName) {
+    try {
+        console.log("=== 간호사 삭제 시작 ===");
+        console.log("삭제할 간호사명:", nurseName);
+
+        // 삭제할 간호사 정보 설정
+        dmp_nurseVo.set("nurseName", nurseName);
+
+        // ProWorks 서버 호출
+        $c.sbm.execute(sbm_deleteNurse);
+
+    } catch (error) {
+        console.error("간호사 삭제 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '삭제 오류',
+            text: '간호사 삭제 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3B6B'
+        });
     }
-    return false;
 };
 
-// 간호사 삭제 완료 (서버 연동용)
-scwin.sbm_deleteNurse_submitdone = function(e) {
-    var nurseId = dmp_nurseVo.get("nurseId");
-    if (scwin.fn_deleteNurse(nurseId)) {
+// 간호사 삭제 완료 (ProWorks 연동)
+scwin.sbm_deleteNurse_submitdone = function (e) {
+    console.log("=== 간호사 삭제 응답 수신 ===");
+    console.log("응답 객체:", e);
+
+    try {
+        var responseData = e.responseJSON;
+        console.log("응답 데이터:", responseData);
+
+        if (responseData && responseData.elHeader) {
+            var elHeader = responseData.elHeader;
+
+            if (elHeader.resSuc === true) {
+                console.log("간호사 삭제 성공");
+
+                // 폼 초기화
+                scwin.fn_clearForm();
+
+                // 목록 새로고침
+                scwin.fn_selectNurseList();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '삭제 완료',
+                    text: '간호사 정보가 삭제되었습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+
+            } else {
+                console.error("서버 응답 실패:", elHeader.resMsg);
+                Swal.fire({
+                    icon: 'error',
+                    title: '삭제 실패',
+                    text: elHeader.resMsg || '간호사 삭제에 실패했습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B'
+                });
+            }
+        } else {
+            console.error("응답 데이터 형식 오류:", responseData);
+            Swal.fire({
+                icon: 'error',
+                title: '응답 오류',
+                text: '서버 응답 형식이 올바르지 않습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
+        }
+
+    } catch (error) {
+        console.error("응답 처리 오류:", error);
         Swal.fire({
-            icon: 'success',
-            title: '삭제 완료',
-            text: '간호사 정보가 삭제되었습니다.',
+            icon: 'error',
+            title: '처리 오류',
+            text: '응답 데이터 처리 중 오류가 발생했습니다.',
             confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        scwin.fn_clearForm();
-        scwin.fn_selectNurseList();
-    } else {
-        Swal.fire({
-            icon: 'warning',
-            title: '정보 없음',
-            text: '삭제할 간호사 정보를 찾을 수 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
+            confirmButtonColor: '#1C3D6B'
         });
     }
 };
 
 // 검색 버튼 클릭
-scwin.btn_search_onclick = function() {
+scwin.btn_search_onclick = function () {
     // 먼저 데이터가 있는지 확인
     if (!scwin.nurseData || scwin.nurseData.length === 0) {
         Swal.fire({
@@ -773,10 +1032,10 @@ scwin.btn_search_onclick = function() {
         });
         return;
     }
-    
+
     var scNurseName = dmp_nurseVo.get("scNurseName") || "";
     var scPosition = dmp_nurseVo.get("scPosition") || "";
-    
+
     // 검색 조건이 하나도 없으면 안내
     if (scNurseName.trim() === "" && scPosition.trim() === "") {
         Swal.fire({
@@ -788,15 +1047,15 @@ scwin.btn_search_onclick = function() {
         });
         return;
     }
-    
+
     dmp_nurseVo.set("pageIndex", 1);
     scwin.fn_selectNurseList();
-    
+
     // 검색 결과 안내
-    setTimeout(function() {
+    setTimeout(function () {
         var resultCount = dlt_nurseList.getRowCount();
         console.log(" 검색 완료 - 조건: 근무자명='" + scNurseName + "', 직급='" + scPosition + "', 결과: " + resultCount + "건");
-        
+
         if (resultCount === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -812,7 +1071,7 @@ scwin.btn_search_onclick = function() {
 };
 
 // 전체조회 버튼 클릭
-scwin.btn_list_all_onclick = function() {
+scwin.btn_list_all_onclick = function () {
     // 저장된 데이터가 있는지 확인
     if (!scwin.nurseData || scwin.nurseData.length === 0) {
         Swal.fire({
@@ -824,15 +1083,15 @@ scwin.btn_list_all_onclick = function() {
         });
         return;
     }
-    
+
     // 검색 조건 초기화
     dmp_nurseVo.set("scNurseName", "");
     dmp_nurseVo.set("scPosition", "");
     dmp_nurseVo.set("pageIndex", 1);
-    
+
     // 전체 데이터 조회
     scwin.fn_selectNurseList();
-    
+
     console.log("전체조회 완료 - 총 " + scwin.nurseData.length + "건");
     Swal.fire({
         icon: 'success',
@@ -844,30 +1103,30 @@ scwin.btn_list_all_onclick = function() {
 };
 
 // 초기화 버튼 클릭
-scwin.btn_reset_onclick = function() {
+scwin.btn_reset_onclick = function () {
     scwin.fn_clearForm();
     scwin.fn_selectNurseList();
     console.log("검색 조건 초기화");
 };
 
 // 등록 버튼 클릭
-scwin.btn_insert_onclick = function() {
+scwin.btn_insert_onclick = function () {
     if (scwin.fn_validateForm()) {
         scwin.fn_insertNurse();
     }
 };
 
 // 수정 버튼 클릭
-scwin.btn_update_onclick = function() {
+scwin.btn_update_onclick = function () {
     if (scwin.fn_validateForm()) {
         scwin.fn_updateNurse();
     }
 };
 
 // 삭제 버튼 클릭
-scwin.btn_delete_onclick = function() {
+scwin.btn_delete_onclick = function () {
     var nurseName = dmp_nurseVo.get("nurseName");
-    
+
     if (!nurseName) {
         Swal.fire({
             icon: 'warning',
@@ -879,8 +1138,8 @@ scwin.btn_delete_onclick = function() {
         });
         return;
     }
-    
-        if (scwin.fn_deleteNurse(nurseName)) {
+
+    if (scwin.fn_deleteNurse(nurseName)) {
         Swal.fire({
             icon: 'success',
             title: '삭제 완료',
@@ -888,16 +1147,16 @@ scwin.btn_delete_onclick = function() {
             confirmButtonText: '확인',
             confirmButtonColor: '#1B73E8'
         });
-            scwin.fn_clearForm();
-            scwin.fn_selectNurseList();
-        }
+        scwin.fn_clearForm();
+        scwin.fn_selectNurseList();
+    }
 
 };
 
 // 전체선택 버튼 클릭
-scwin.btn_select_all_onclick = function() {
+scwin.btn_select_all_onclick = function () {
     var rowCount = dlt_nurseList.getRowCount();
-    
+
     if (rowCount === 0) {
         Swal.fire({
             icon: 'warning',
@@ -908,9 +1167,9 @@ scwin.btn_select_all_onclick = function() {
         });
         return;
     }
-    
+
     var allSelected = true;
-    
+
     // 모든 행이 선택되었는지 확인
     for (var i = 0; i < rowCount; i++) {
         var isChecked = dlt_nurseList.getCellData(i, "chk_select");
@@ -919,16 +1178,16 @@ scwin.btn_select_all_onclick = function() {
             break;
         }
     }
-    
+
     // 모든 행이 선택되었으면 해제, 아니면 모두 선택
     var newValue = allSelected ? false : true;
     for (var i = 0; i < rowCount; i++) {
         dlt_nurseList.setCellData(i, "chk_select", newValue);
     }
-    
+
     var message = allSelected ? "전체 선택 해제" : "전체 선택";
     console.log(message + " - " + rowCount + "행");
-    
+
     // 버튼 라벨 업데이트
     if (btn_select_all) {
         btn_select_all.setValue(allSelected ? "☑️ 전체선택" : "☐ 전체해제");
@@ -936,7 +1195,7 @@ scwin.btn_select_all_onclick = function() {
 };
 
 // 다중 등록 버튼 클릭
-scwin.btn_insert_multi_onclick = function() {
+scwin.btn_insert_multi_onclick = function () {
     Swal.fire({
         title: '간호사 다중 등록',
         html: `
@@ -993,9 +1252,9 @@ scwin.btn_insert_multi_onclick = function() {
 };
 
 // 간호사 입력 폼 표시
-scwin.showNurseInputForms = function(nurseCount) {
+scwin.showNurseInputForms = function (nurseCount) {
     var formHtml = '<div style="text-align:left;max-height:400px;overflow-y:auto;">';
-    
+
     for (var i = 1; i <= nurseCount; i++) {
         formHtml += `
             <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #5CD6C0;">
@@ -1016,7 +1275,7 @@ scwin.showNurseInputForms = function(nurseCount) {
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                     <div>
                         <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">연차</label>
-                        <input id="workYear_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="예: 3년차">
+                        <input id="career_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="예: 3년차">
                     </div>
                     <div>
                         <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">입사일</label>
@@ -1030,9 +1289,9 @@ scwin.showNurseInputForms = function(nurseCount) {
             </div>
         `;
     }
-    
+
     formHtml += '</div>';
-    
+
     Swal.fire({
         title: '간호사 정보 입력',
         html: formHtml,
@@ -1043,17 +1302,17 @@ scwin.showNurseInputForms = function(nurseCount) {
         cancelButtonColor: '#6c757d',
         width: '700px',
         preConfirm: () => {
-        var nursesToAdd = [];
+            var nursesToAdd = [];
             var hasError = false;
             var errorMessage = '';
-            
+
             for (var i = 1; i <= nurseCount; i++) {
                 var nurseName = document.getElementById(`nurseName_${i}`).value.trim();
                 var position = document.getElementById(`position_${i}`).value.trim();
-                var workYear = document.getElementById(`workYear_${i}`).value.trim();
+                var career = document.getElementById(`career_${i}`).value.trim();
                 var hireDate = document.getElementById(`hireDate_${i}`).value;
                 var specialNote = document.getElementById(`specialNote_${i}`).value.trim();
-                
+
                 // 필수 필드 검증
                 if (!nurseName) {
                     errorMessage = `간호사 ${i}의 근무자명을 입력해주세요.`;
@@ -1065,9 +1324,9 @@ scwin.showNurseInputForms = function(nurseCount) {
                     hasError = true;
                     break;
                 }
-                
+
                 // 중복 검사
-                var duplicateNurse = scwin.nurseData.find(function(item) {
+                var duplicateNurse = scwin.nurseData.find(function (item) {
                     return item.nurseName === nurseName && item.delYn !== "Y";
                 });
                 if (duplicateNurse) {
@@ -1075,13 +1334,13 @@ scwin.showNurseInputForms = function(nurseCount) {
                     hasError = true;
                     break;
                 }
-                
+
                 var newNurse = {
                     chk_select: "0",
                     nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
                     nurseName: nurseName,
                     position: position,
-                    workYear: workYear,
+                    career: career,
                     specialNote: specialNote,
                     hireDate: hireDate || scwin.fn_getCurrentDate(),
                     useYn: "Y",
@@ -1090,22 +1349,22 @@ scwin.showNurseInputForms = function(nurseCount) {
                 nursesToAdd.push(newNurse);
                 scwin.nurseCounter++;
             }
-            
+
             if (hasError) {
                 Swal.showValidationMessage(errorMessage);
                 return false;
             }
-            
+
             return nursesToAdd;
         }
     }).then((result) => {
         if (result.isConfirmed) {
             var nursesToAdd = result.value;
-        
-        if (nursesToAdd.length > 0) {
-            scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
-            scwin.fn_saveData();
-                
+
+            if (nursesToAdd.length > 0) {
+                scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
+                scwin.fn_saveData();
+
                 Swal.fire({
                     icon: 'success',
                     title: '다중 등록 완료',
@@ -1124,8 +1383,8 @@ scwin.showNurseInputForms = function(nurseCount) {
                     confirmButtonText: '확인',
                     confirmButtonColor: '#1C3D6B'
                 });
-            scwin.fn_selectNurseList();
-        } else {
+                scwin.fn_selectNurseList();
+            } else {
                 Swal.fire({
                     icon: 'warning',
                     title: '등록 실패',
@@ -1133,13 +1392,13 @@ scwin.showNurseInputForms = function(nurseCount) {
                     confirmButtonText: '확인',
                     confirmButtonColor: '#1C3D6B'
                 });
+            }
         }
-    }
     });
 };
 
 // 다중 수정 버튼 클릭
-scwin.btn_update_multi_onclick = function() {
+scwin.btn_update_multi_onclick = function () {
     var selectedRows = scwin.fn_getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({
@@ -1162,7 +1421,7 @@ scwin.btn_update_multi_onclick = function() {
                     </div>
                     <select id="multiUpdateField" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;">
                         <option value="position">직급</option>
-                        <option value="workYear">연차</option>
+                        <option value="career">연차</option>
                         <option value="specialNote">특이사항</option>
                     </select>
                 </div>
@@ -1194,18 +1453,18 @@ scwin.btn_update_multi_onclick = function() {
         if (result.isConfirmed) {
             var field = result.value.field;
             var newValue = result.value.value;
-    var updatedCount = 0;
-    selectedRows.forEach(function(row) {
-        var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-        var index = scwin.nurseData.findIndex(function(item) {
-            return item.nurseName === nurseName;
-        });
-        if (index > -1) {
-            scwin.nurseData[index][field] = newValue;
-            updatedCount++;
-        }
-    });
-    scwin.fn_saveData();
+            var updatedCount = 0;
+            selectedRows.forEach(function (row) {
+                var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+                var index = scwin.nurseData.findIndex(function (item) {
+                    return item.nurseName === nurseName;
+                });
+                if (index > -1) {
+                    scwin.nurseData[index][field] = newValue;
+                    updatedCount++;
+                }
+            });
+            scwin.fn_saveData();
             Swal.fire({
                 icon: 'success',
                 title: '다중 수정 완료',
@@ -1213,13 +1472,13 @@ scwin.btn_update_multi_onclick = function() {
                 confirmButtonText: '확인',
                 confirmButtonColor: '#1C3D6B'
             });
-    scwin.fn_selectNurseList();
+            scwin.fn_selectNurseList();
         }
     });
 };
 
 // 다중 삭제 버튼 클릭
-scwin.btn_delete_multi_onclick = function() {
+scwin.btn_delete_multi_onclick = function () {
     var selectedRows = scwin.fn_getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({
@@ -1231,21 +1490,21 @@ scwin.btn_delete_multi_onclick = function() {
         });
         return;
     }
-    
-        var deletedCount = 0;
-        var nursesToDelete = [];
-        selectedRows.forEach(function(row) {
-            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-            nursesToDelete.push(nurseName);
-        });
-        
-        nursesToDelete.forEach(function(nurseName) {
-            if (scwin.fn_deleteNurse(nurseName)) {
-                deletedCount++;
-            }
-        });
-        
-        scwin.fn_saveData();
+
+    var deletedCount = 0;
+    var nursesToDelete = [];
+    selectedRows.forEach(function (row) {
+        var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+        nursesToDelete.push(nurseName);
+    });
+
+    nursesToDelete.forEach(function (nurseName) {
+        if (scwin.fn_deleteNurse(nurseName)) {
+            deletedCount++;
+        }
+    });
+
+    scwin.fn_saveData();
     Swal.fire({
         icon: 'success',
         title: '다중 삭제 완료',
@@ -1253,28 +1512,28 @@ scwin.btn_delete_multi_onclick = function() {
         confirmButtonText: '확인',
         confirmButtonColor: '#1B73E8'
     });
-        scwin.fn_clearForm();
-        scwin.fn_selectNurseList();
+    scwin.fn_clearForm();
+    scwin.fn_selectNurseList();
 };
 
 // 선택된 행 가져오기
-scwin.fn_getSelectedRows = function() {
+scwin.fn_getSelectedRows = function () {
     var selectedRows = [];
     var rowCount = dlt_nurseList.getRowCount();
-    
+
     for (var i = 0; i < rowCount; i++) {
         var isChecked = dlt_nurseList.getCellData(i, "chk_select");
         if (isChecked === "1" || isChecked === true || isChecked === "true") {
             selectedRows.push(i);
         }
     }
-    
+
     console.log("선택된 행 개수: " + selectedRows.length);
     return selectedRows;
 };
 
 // 모든 체크박스 해제
-scwin.fn_clearAllChecks = function() {
+scwin.fn_clearAllChecks = function () {
     var rowCount = dlt_nurseList.getRowCount();
     for (var i = 0; i < rowCount; i++) {
         dlt_nurseList.setCellData(i, "chk_select", false);
@@ -1283,9 +1542,9 @@ scwin.fn_clearAllChecks = function() {
 };
 
 // 그리드 행 클릭
-scwin.grd_nurseList_oncellclick = function(row, col) {
+scwin.grd_nurseList_oncellclick = function (row, col) {
     // 체크박스 컬럼은 자동으로 처리되므로 별도 처리 불필요
-    
+
     // 체크박스 컬럼이 아닌 경우에만 상세 정보 로드
     if (col !== 0) {
         var nurseName = dlt_nurseList.getCellData(row, "nurseName");
@@ -1297,10 +1556,10 @@ scwin.grd_nurseList_oncellclick = function(row, col) {
 };
 
 // 폼 검증
-scwin.fn_validateForm = function() {
+scwin.fn_validateForm = function () {
     var nurseName = dmp_nurseVo.get("nurseName");
     var position = dmp_nurseVo.get("position");
-    
+
     if (!nurseName || nurseName.trim() === "") {
         Swal.fire({
             icon: 'warning',
@@ -1312,7 +1571,7 @@ scwin.fn_validateForm = function() {
         ipt_nurseName.focus();
         return false;
     }
-    
+
     if (nurseName.trim().length < 2) {
         Swal.fire({
             icon: 'warning',
@@ -1324,7 +1583,7 @@ scwin.fn_validateForm = function() {
         ipt_nurseName.focus();
         return false;
     }
-    
+
     if (!position || position.trim() === "") {
         Swal.fire({
             icon: 'warning',
@@ -1336,15 +1595,15 @@ scwin.fn_validateForm = function() {
         ipt_position.focus();
         return false;
     }
-    
+
     // 중복 검사 (수정 시에는 본인 제외)
     var originalName = dmp_nurseVo.get("nurseName");
-    var duplicateNurse = scwin.nurseData.find(function(item) {
-        return item.nurseName === nurseName.trim() && 
-               item.delYn !== "Y" && 
-               item.nurseName !== originalName;
+    var duplicateNurse = scwin.nurseData.find(function (item) {
+        return item.nurseName === nurseName.trim() &&
+            item.delYn !== "Y" &&
+            item.nurseName !== originalName;
     });
-    
+
     if (duplicateNurse) {
         Swal.fire({
             icon: 'warning',
@@ -1356,23 +1615,27 @@ scwin.fn_validateForm = function() {
         ipt_nurseName.focus();
         return false;
     }
-    
+
     return true;
 };
 
 // 폼 초기화
-scwin.fn_clearForm = function() {
+scwin.fn_clearForm = function () {
+    dmp_nurseVo.set("nurseId", "");
     dmp_nurseVo.set("nurseName", "");
     dmp_nurseVo.set("position", "");
-    dmp_nurseVo.set("workYear", "");
+    dmp_nurseVo.set("career", "");
     dmp_nurseVo.set("specialNote", "");
     dmp_nurseVo.set("hireDate", "");
+    dmp_nurseVo.set("wardName", "");
+    dmp_nurseVo.set("scNurseId", "");
     dmp_nurseVo.set("scNurseName", "");
     dmp_nurseVo.set("scPosition", "");
+    dmp_nurseVo.set("scWardId", "");
 };
 
 // 현재 날짜 반환
-scwin.fn_getCurrentDate = function() {
+scwin.fn_getCurrentDate = function () {
     var now = new Date();
     var year = now.getFullYear();
     var month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1380,1374 +1643,1593 @@ scwin.fn_getCurrentDate = function() {
     return year + "-" + month + "-" + day;
 };
 
-
-
-
-
 // 엑셀 업로드
-scwin.btn_excel_onclick = function() {
+scwin.btn_excel_onclick = function () {
     try {
         var jsnOptions = {
             headerExist: "1", // Excel 파일에 헤더가 있는지 여부
             uploadDataCallBack: scwin.fn_excelUploadCallback, // 업로드 완료 후 콜백
             features: "top=" + 250 + ",height=" + 450 + ",left=" + 650 + ",width=" + 450,
-            wframe:true
+            wframe: true
         };
 
         // WebSquare의 엑셀 업로드 기능 사용
-        if (grd_nurseList.advancedExcelUpload) {
-            grd_nurseList.advancedExcelUpload(jsnOptions);
+        if (typeof grd_nurseList !== 'undefined' && grd_nurseList && grd_nurseList.advancedExcelUpload) {
+            console.log("WebSquare 엑셀 업로드 기능 사용");
+            
+            // 그리드 데이터 변경 감지를 위한 타이머 설정
+            scwin.startGridDataMonitoring();
+            
+            try {
+                grd_nurseList.advancedExcelUpload(jsnOptions);
+                // 등록할 데이터 준비
+                var nurseData = {
+                    nurseName: dlt_nurseList.getCellData(0, "nurseName"),
+                    position: dlt_nurseList.get("position"),
+                    career: dlt_nurseList.get("career") || "",
+                    specialNote: dlt_nurseList.get("specialNote") || "",
+                    hireDate: dlt_nurseList.get.get("hireDate") || scwin.fn_getCurrentDate()
+                    "nurseName": "김간호",
+                    "position": "수간호사",
+                    "career": "25년차",
+                    "specialNote": "육아 중 (6세 이하 자녀 돌봄)",
+                    "hireDate": "1999-07-26",
+                    "rowStatus": "R"
+                };
+
+                console.log("등록할 데이터:", nurseData);
+
+                // 데이터를 dataMap에 설정
+                dlt_nurseList.setJSON(nurseData);
+
+                // ProWorks 서버 호출
+                $c.sbm.execute(sbm_insertNurseList);
+            } catch (e) {
+                console.error("WebSquare 엑셀 업로드 실패:", e);
+                console.log("대체 방법으로 시뮬레이션 실행");
+                scwin.fn_simulateExcelUpload();
+            }
         } else {
-            // 대체 방법: 파일 업로드 시뮬레이션
+            console.log("WebSquare 엑셀 업로드 기능이 없어 대체 방법 사용");
+            // 대체 방법: 테스트 데이터로 시뮬레이션
             scwin.fn_simulateExcelUpload();
         }
     } catch (error) {
         console.error("엑셀 업로드 오류:", error);
-        scwin.fn_simulateExcelUpload();
-    }
-};
-
-// 엑셀 업로드 시뮬레이션 (실제 이미지 데이터 기반)
-scwin.fn_simulateExcelUpload = function() {
-    // 기존 데이터가 있는지 확인
-    var hasExistingData = scwin.nurseData && scwin.nurseData.length > 0;
-    
-    var confirmMessage = hasExistingData ? 
-        "기존 데이터 " + scwin.nurseData.length + "건이 있습니다.\n엑셀 업로드를 진행하면 기존 데이터가 덮어쓰입니다.\n계속하시겠습니까?" :
-        "엑셀 업로드 기능을 시뮬레이션하시겠습니까?\n실제 간호사 데이터 27건이 로드되고 영구 저장됩니다.";
-    
-    if (confirm(confirmMessage)) {
-        // 실제 이미지 데이터를 기반으로 한 전체 데이터 (순번 제거)
-        scwin.nurseData = [
-            {chk_select: "0", nurseName: "김하늘", position: "수간호사", workYear: "20년차", specialNote: "육아 중 (6세 이하 자녀 돌봄)", hireDate: "2005-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "이수정", position: "간호사", workYear: "19년차", specialNote: "자녀 학교 등하원 책임 있음", hireDate: "2006-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "박지은", position: "간호사", workYear: "18년차", specialNote: "갓난아이 육아 중 (6세 미만 자녀)", hireDate: "2007-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "윤서연", position: "간호사", workYear: "17년차", specialNote: "최근 결혼 - 배우자와 스케줄 조정 중", hireDate: "2008-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "최유진", position: "간호사", workYear: "16년차", specialNote: "자가운전 출퇴근 (기숙사 미사용)", hireDate: "2009-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "김지수", position: "간호사", workYear: "15년차", specialNote: "최근 수술 후 회복 중 (예: 무릎 수술)", hireDate: "2010-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "정하윤", position: "간호사", workYear: "14년차", specialNote: "주말마다 지방 가족 왕래 있음 (가정사정)", hireDate: "2011-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "한소민", position: "간호사", workYear: "13년차", specialNote: "외부 대학원 수업 이수 중", hireDate: "2012-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "오지민", position: "간호사", workYear: "12년차", specialNote: "장거리 통근 (1시간 이상 소요)", hireDate: "2013-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "이다은", position: "간호사", workYear: "11년차", specialNote: "신혼으로 최근 이사한 상태 (적응 중)", hireDate: "2014-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "박서진", position: "간호사", workYear: "10년차", specialNote: "특별한 특이사항 없음", hireDate: "2015-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "조하늘", position: "간호사", workYear: "9년차", specialNote: "출퇴근 시간 양호, 업무 안정됨", hireDate: "2016-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "정윤아", position: "간호사", workYear: "8년차", specialNote: "신규 간호사 멘토 중", hireDate: "2017-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "김지연", position: "간호사", workYear: "7년차", specialNote: "최근 BLS 교육 이수", hireDate: "2018-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "송예진", position: "간호사", workYear: "6년차", specialNote: "고정 야간 근무 중", hireDate: "2019-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "강지우", position: "간호사", workYear: "5년차", specialNote: "타 병동에서 최근 전입", hireDate: "2020-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "이소을", position: "간호사", workYear: "4년차", specialNote: "병동 적응 완료, 근무 성실", hireDate: "2021-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "문다현", position: "간호사", workYear: "3년차", specialNote: "현재 응급상황 대처 경험 풍부", hireDate: "2022-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "서채원", position: "간호사", workYear: "2년차", specialNote: "신규 직원 OJT 담당 중", hireDate: "2023-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "유하진", position: "간호사", workYear: "1년차", specialNote: "추간 고정 근무 중", hireDate: "2024-03-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "정예린", position: "간호사", workYear: "1년차", specialNote: "병동 QA 담당", hireDate: "2024-05-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "이가은", position: "간호사", workYear: "1년차", specialNote: "복귀 후 일정 기간 단축 근무 중", hireDate: "2024-07-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "김나영", position: "간호사", workYear: "1년차", specialNote: "미만 현재 만족도 피드백 우수", hireDate: "2024-09-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "안서윤", position: "간호사", workYear: "1년차", specialNote: "미만 자녀 돌봄 사유로 근무 일정 조정 중", hireDate: "2024-11-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "오새린", position: "간호사", workYear: "1년차", specialNote: "미만 간갑 회복을 위한 일정 조정 기간", hireDate: "2025-01-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "배수연", position: "간호사", workYear: "1년차", specialNote: "미만 다부서 협력 가능, 스케줄 유동적", hireDate: "2025-02-01", useYn: "Y", delYn: "N"},
-            {chk_select: "0", nurseName: "유소영", position: "간호사", workYear: "1년차", specialNote: "미만 가족 돌봄으로 한시적 업무 배제 중", hireDate: "2025-03-01", useYn: "Y", delYn: "N"}
-        ];
-        
-        // 엑셀 업로드 상태 설정
-        scwin.isExcelUploaded = true;
-        
-        // 데이터 영구 저장
-        scwin.fn_saveData();
-        
-        // 업로드 버튼 비활성화
-        scwin.fn_disableUploadButton();
-        
-        var resultMessage = hasExistingData ? 
-            "엑셀 업로드 완료: 기존 데이터를 덮어쓰고 " + scwin.nurseData.length + "건의 새로운 간호사 데이터가 로드되고 영구 저장되었습니다." :
-            "엑셀 업로드 완료: " + scwin.nurseData.length + "건의 간호사 데이터가 로드되고 영구 저장되었습니다.";
-            
         Swal.fire({
-            icon: 'success',
-            title: '엑셀 업로드 완료',
-            text: resultMessage,
-            html: '• 이제 조회 시 자동으로 이 데이터가 표시됩니다.<br>• 다시 접속해도 데이터가 유지됩니다.<br>• 업로드 버튼이 비활성화됩니다.<br>• 검색 기능으로 원하는 간호사를 찾을 수 있습니다.',
+            icon: 'error',
+            title: '업로드 오류',
+            text: '엑셀 업로드 중 오류가 발생했습니다.',
             confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
+            confirmButtonColor: '#1C3D6B'
         });
-        
-        // 즉시 목록 표시
-        scwin.fn_selectNurseList();
     }
 };
 
 // 엑셀 업로드 완료 콜백
-scwin.fn_excelUploadCallback = function(uploadData) {
-    if (uploadData && uploadData.length > 0) {
-        var addedCount = 0;
-        
-        uploadData.forEach(function(data) {
-            // 필수 필드 검증
-            if (data.nurseName && data.position) {
-                var newNurse = {
-                    chk_select: "0",
-                    nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
-                    nurseName: data.nurseName,
-                    position: data.position,
-                    career: data.career || "",
-                    specialNote: data.specialNote || "",
-                    regDate: scwin.fn_getCurrentDate(),
-                    modDate: scwin.fn_getCurrentDate(),
-                    useYn: "Y",
-                    delYn: "N"
-                };
-                
-                scwin.nurseData.push(newNurse);
-                scwin.nurseCounter++;
-                addedCount++;
+scwin.fn_excelUploadCallback = function (uploadData) {
+    try {
+        console.log("=== 엑셀 업로드 콜백 시작 ===");
+        console.log("업로드된 데이터:", uploadData);
+        console.log("데이터 타입:", typeof uploadData);
+        console.log("데이터 길이:", uploadData ? uploadData.length : 0);
+
+        // 로딩 메시지 닫기 (안전하게)
+        try {
+            if (typeof Swal !== 'undefined' && Swal.close) {
+                Swal.close();
             }
-        });
-        
-        Swal.fire({
-            icon: 'success',
-            title: '엑셀 업로드 완료',
-            text: '엑셀 업로드 완료: ' + addedCount + '건의 간호사 정보가 등록되었습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        scwin.fn_selectNurseList();
-    } else {
-        Swal.fire({
-            icon: 'warning',
-            title: '업로드 실패',
-            text: '업로드할 데이터가 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
+        } catch (e) {
+            console.warn("SweetAlert 닫기 실패:", e);
+        }
+
+        if (uploadData && uploadData.length > 0) {
+            var addedCount = 0;
+            var nursesToSave = [];
+
+            uploadData.forEach(function (data) {
+                console.log("업로드된 데이터:", data);
+
+                // 필수 필드 검증
+                if (data.nurseName && data.position) {
+                    var newNurse = {
+                        chk_select: "0",
+                        nurseName: data.nurseName.trim(),
+                        position: data.position.trim(),
+                        career: data.career ? data.career.toString().trim() : "",
+                        specialNote: data.specialNote ? data.specialNote.toString().trim() : "",
+                        hireDate: data.hireDate ? data.hireDate.toString().trim() : scwin.fn_getCurrentDate(),
+                        useYn: "Y",
+                        delYn: "N"
+                    };
+
+                    console.log("생성된 간호사 데이터:", newNurse);
+
+                    scwin.nurseData.push(newNurse);
+                    nursesToSave.push(newNurse);
+                    scwin.nurseCounter++;
+                    addedCount++;
+                } else {
+                    console.warn("필수 필드 누락:", data);
+                }
+            });
+
+            console.log("처리된 간호사 데이터:", scwin.nurseData);
+            console.log("저장할 간호사 수:", nursesToSave.length);
+
+            // 그리드에 데이터 표시 (안전하게)
+            try {
+                if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
+                    dlt_nurseList.setJSON(scwin.nurseData);
+                    console.log("그리드에 데이터 설정 완료");
+                } else {
+                    console.error("dlt_nurseList가 정의되지 않았습니다.");
+                }
+            } catch (e) {
+                console.error("그리드 데이터 설정 실패:", e);
+            }
+
+            // SweetAlert2로 엑셀 업로드 완료 메시지 표시 (안전하게)
+            try {
+                if (typeof Swal !== 'undefined' && Swal.fire) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '엑셀 업로드 완료',
+                        html: `
+                        <div style="text-align:center;margin-bottom:20px;">
+                            <div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;border-left:4px solid #28a745;">
+                                <strong>업로드 성공!</strong><br>
+                                ${addedCount}건의 간호사 정보가 그리드에 표시되었습니다.
+                            </div>
+                        </div>
+                        <div style="text-align:left;font-size:14px;color:#495057;">
+                            <strong>업로드된 데이터:</strong><br>
+                            • 근무자명: ${addedCount}건<br>
+                            • 직급: ${addedCount}건<br>
+                            • 연차: ${nursesToSave.filter(n => n.career).length}건<br>
+                            • 특이사항: ${nursesToSave.filter(n => n.specialNote).length}건<br>
+                            • 입사일: ${nursesToSave.filter(n => n.hireDate).length}건
+                        </div>
+                        <div style="text-align:left;font-size:12px;color:#6c757d;margin-top:15px;padding-top:15px;border-top:1px solid #dee2e6;">
+                            <strong>다음 단계:</strong><br>
+                            • 그리드에서 데이터를 확인하세요<br>
+                            • 필요시 데이터를 수정하세요<br>
+                            • DB 저장은 자동으로 진행됩니다
+                        </div>
+                    `,
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B',
+                        width: '500px'
+                    });
+
+                } else {
+                    console.error("SweetAlert가 정의되지 않았습니다.");
+                    alert("엑셀 업로드 완료: " + addedCount + "건의 간호사 정보가 등록되었습니다.");
+                }
+            } catch (e) {
+                console.error("SweetAlert 표시 실패:", e);
+                alert("엑셀 업로드 완료: " + addedCount + "건의 간호사 정보가 등록되었습니다.");
+            }
+
+            // DB에 일괄 저장 (백그라운드에서 진행)
+            if (nursesToSave.length > 0) {
+                setTimeout(function () {
+                    try {
+                        scwin.fn_saveNursesToDB(nursesToSave);
+                    } catch (e) {
+                        console.error("DB 저장 함수 호출 실패:", e);
+                    }
+                }, 1000); // 1초 후 DB 저장 시작
+            }
+        } else {
+            try {
+                if (typeof Swal !== 'undefined' && Swal.fire) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '업로드 실패',
+                        text: '업로드할 데이터가 없습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1B73E8'
+                    });
+                } else {
+                    console.error("SweetAlert가 정의되지 않았습니다.");
+                    alert("업로드할 데이터가 없습니다.");
+                }
+            } catch (e) {
+                console.error("업로드 실패 메시지 표시 실패:", e);
+                alert("업로드할 데이터가 없습니다.");
+            }
+        }
+    } catch (e) {
+        console.error("엑셀 업로드 콜백 전체 오류:", e);
+        alert("엑셀 업로드 처리 중 오류가 발생했습니다: " + e.message);
     }
 };
 
-
-
-]]></script>
-        <style type="text/css">
-/* 간호사 관리 페이지 전용 CSS */
-
-/* 병원 헤더 */
-.hospital_header {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border: 2px solid #1C3D6B;
-    border-radius: 15px;
-    padding: 20px 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(28, 61, 107, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hospital_info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.hospital_logo {
-    font-size: 3em !important;
-    color: #1C3D6B !important;
-    margin: 0 !important;
-}
-
-.hospital_details {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.hospital_name {
-    font-size: 2.2em !important;
-    font-weight: bold !important;
-    color: #1C3D6B !important;
-    margin: 0 !important;
-}
-
-.hospital_dept {
-    font-size: 1.2em !important;
-    color: #666 !important;
-    margin: 0 !important;
-}
-
-.user_info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 5px;
-}
-
-.current_user {
-    font-size: 1.1em !important;
-    font-weight: 600 !important;
-    color: #1C3D6B !important;
-    margin: 0 !important;
-}
-
-.current_date {
-    font-size: 0.95em !important;
-    color: #666 !important;
-    margin: 0 !important;
-}
-
-/* 전체 컨테이너 */
-.nurse-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-}
-
-/* 페이지 헤더 */
-.nurse-header {
-    background: linear-gradient(135deg, #1C3D6B 0%, #2E5984 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 20px rgba(28, 61, 107, 0.3);
-}
-
-.nurse-header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    font-weight: 300;
-    text-align: center;
-}
-
-.nurse-header .subtitle {
-    text-align: center;
-    font-size: 1.1em;
-    opacity: 0.9;
-    margin-top: 10px;
-}
-
-/* 검색 영역 */
-.nurse-search-section {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.nurse-search-title {
-    font-size: 1.3em;
-    font-weight: 600;
-    color: #1C3D6B;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e9ecef;
-}
-
-/* 검색 헤더 스타일 */
-.search_header {
-    margin-bottom: 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.search_title {
-    font-size: 1.4em !important;
-    font-weight: 700 !important;
-    color: #1C3D6B !important;
-    margin-bottom: 10px !important;
-    display: block !important;
-}
-
-/* 이미지 스타일 */
-.search_header xf\:image {
-    display: inline-block !important;
-    vertical-align: middle !important;
-    margin-top: -2px !important;
-    margin-right: 8px !important;
-}
-
-.search_guide {
-    font-size: 0.95em !important;
-    color: #6c757d !important;
-    background: #f8f9fa !important;
-    padding: 10px 20px !important;
-    border-radius: 20px !important;
-    border: 1px solid #dee2e6 !important;
-    display: inline-block !important;
-    margin: 0 !important;
-}
-
-.nurse-search-form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    align-items: end;
-}
-
-.nurse-form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.nurse-form-group label {
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 8px;
-    font-size: 0.95em;
-}
-
-.nurse-form-group input,
-.nurse-form-group select {
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1em;
-    transition: all 0.3s ease;
-    background-color: white;
-}
-
-.nurse-form-group input:focus,
-.nurse-form-group select:focus {
-    outline: none;
-    border-color: #1C3D6B;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
-}
-
-.nurse-radio-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 8px;
-}
-
-.nurse-radio-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.nurse-radio-item input[type="radio"] {
-    width: 18px;
-    height: 18px;
-    margin: 0;
-}
-
-.nurse-radio-item label {
-    margin: 0;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-/* 버튼 스타일 */
-<!-- .nurse-btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 120px;
-    justify-content: center;
-}
-
-.nurse-btn-primary {
-    background: #5CD6C0;
-    color: #1C3D6B;
-}
-
-.nurse-btn-primary:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3);
-}
-
-.nurse-btn-secondary {
-    background: #5CD6C0;
-    color: #1C3D6B;
-}
-
-.nurse-btn-secondary:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-}
-
-.nurse-btn-success {
-    background: #5CD6C0;
-    color: #1C3D6B;
-}
-
-.nurse-btn-success:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-}
-
-.nurse-btn-danger {
-    background: #5CD6C0;
-    color: #1C3D6B;
-}
-
-.nurse-btn-danger:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-}
-
-.nurse-btn-warning {
-    background: #1C3D6B;
-    color: #5CD6C0;
-}
-
-.nurse-btn-warning:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-}
-
-.nurse-btn-info {
-    background: #5CD6C0;
-    color: #1C3D6B;
-}
-
-.nurse-btn-info:hover {
-    background: #4BC5B0;
-    transform: translateY(-2px);
-} -->
-
-/* 다중 버튼 특별 스타일 */
-.btn_select_all {
-    background: #1C3D6B !important;
-    color: #fff !important;
-    padding: 12px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    min-width: 100px !important;
-    line-height: 1.2 !important;
-}
-
-.btn_select_all:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_insert_multi {
-    background: #1C3D6B !important;
-    color: #fff !important;
-    padding: 12px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    min-width: 100px !important;
-    line-height: 1.2 !important;
-}
-
-.btn_insert_multi:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_update_multi {
-    background: #1C3D6B !important;
-    color: #fff !important;
-    padding: 12px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    min-width: 100px !important;
-    line-height: 1.2 !important;
-}
-
-.btn_update_multi:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-/* 그리드 영역 */
-.nurse-grid-section {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px;
-}
-
-.nurse-grid-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px 25px;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nurse-grid-title {
-    font-size: 1.3em;
-    font-weight: 600;
-    color: #1C3D6B;
-    margin: 0;
-}
-
-.nurse-grid-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.nurse-grid-content {
-    padding: 25px;
-}
-
-/* 테이블 스타일 */
-.nurse-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.nurse-table th,
-.nurse-table td {
-    padding: 15px 12px;
-    text-align: left;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.nurse-table th {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    font-weight: 600;
-    color: #495057;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.nurse-table tbody tr {
-    transition: all 0.2s ease;
-}
-
-.nurse-table tbody tr:hover {
-    background-color: #f8f9fa;
-    transform: scale(1.01);
-}
-
-.nurse-table td {
-    vertical-align: middle;
-}
-
-.nurse-table .checkbox-cell {
-    width: 50px;
-    text-align: center;
-}
-
-.nurse-table .checkbox-cell input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-}
-
-/* 입력 폼 영역 */
-.nurse-form-section {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.nurse-form-title {
-    font-size: 1.3em;
-    font-weight: 600;
-    color: #1C3D6B;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e9ecef;
-}
-
-.nurse-form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.nurse-form-row {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.nurse-form-label {
-    font-weight: 600;
-    color: #495057;
-    text-align: right;
-    padding-right: 10px;
-}
-
-.nurse-form-input {
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1em;
-    transition: all 0.3s ease;
-}
-
-.nurse-form-input:focus {
-    outline: none;
-    border-color: #1C3D6B;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
-}
-
-.nurse-form-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.nurse-form-select {
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1em;
-    background-color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.nurse-form-select:focus {
-    outline: none;
-    border-color: #1C3D6B;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
-}
-
-/* 버튼 그룹 */
-.nurse-btn-group {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e9ecef;
-}
-
-/* 상태 표시 */
-.nurse-status {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.nurse-status.active {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.nurse-status.inactive {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* 페이지네이션 */
-.nurse-pagination {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 30px;
-}
-
-.nurse-pagination .page-btn {
-    padding: 8px 12px;
-    border: 1px solid #dee2e6;
-    background: white;
-    color: #495057;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.nurse-pagination .page-btn:hover {
-    background: #e9ecef;
-    border-color: #adb5bd;
-}
-
-.nurse-pagination .page-btn.active {
-    background: #1C3D6B;
-    color: white;
-    border-color: #1C3D6B;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .nurse-container {
-        padding: 15px;
+// 엑셀 업로드 시뮬레이션 (테스트용)
+scwin.fn_simulateExcelUpload = function () {
+    try {
+        console.log("=== 엑셀 업로드 시뮬레이션 시작 ===");
+
+        // 테스트 데이터 생성
+        var testData = [
+            {
+                nurseName: "김하늘",
+                position: "수간호사",
+                career: "20년차",
+                specialNote: "육아 중 (6세 이하 자녀 돌봄)",
+                hireDate: "2005-07-01"
+            },
+            {
+                nurseName: "이수정",
+                position: "간호사",
+                career: "19년차",
+                specialNote: "자녀 학교 등하원 책임 있음",
+                hireDate: "2006-07-01"
+            },
+            {
+                nurseName: "박지은",
+                position: "간호사",
+                career: "18년차",
+                specialNote: "갓난아이 육아 중 (6세 미만 자녀)",
+                hireDate: "2007-07-01"
+            }
+        ];
+
+        console.log("시뮬레이션 데이터:", testData);
+
+        // 콜백 함수 호출
+        setTimeout(function () {
+            try {
+                scwin.fn_excelUploadCallback(testData);
+            } catch (e) {
+                console.error("시뮬레이션 콜백 호출 실패:", e);
+                alert("엑셀 업로드 시뮬레이션 중 오류가 발생했습니다: " + e.message);
+            }
+        }, 1000);
+    } catch (e) {
+        console.error("시뮬레이션 함수 오류:", e);
+        alert("엑셀 업로드 시뮬레이션 준비 중 오류가 발생했습니다: " + e.message);
     }
+};
+
+// 그리드 데이터 변경 감지 시작
+scwin.startGridDataMonitoring = function () {
+    console.log("=== 그리드 데이터 모니터링 시작 ===");
     
-    /* 병원 헤더 반응형 */
-    .hospital_header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
+    var checkCount = 0;
+    var maxChecks = 60; // 최대 30초 대기 (500ms * 60)
+    var previousRowCount = 0;
     
-    .hospital_info {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .hospital_logo {
-        font-size: 2.5em !important;
-    }
-    
-    .hospital_name {
-        font-size: 1.8em !important;
-    }
-    
-    .hospital_dept {
-        font-size: 1em !important;
-    }
-    
-    .user_info {
-        align-items: center;
-    }
-    
-    .nurse-header {
-        padding: 20px;
-    }
-    
-    .nurse-header h1 {
-        font-size: 2em;
-    }
-    
-    .nurse-search-form {
-        grid-template-columns: 1fr;
-    }
-    
-    /* 검색 헤더 반응형 */
-    .search_header {
-        margin-bottom: 15px;
-        flex-direction: column;
-    }
-    
-    .search_title {
-        font-size: 1.2em !important;
-    }
-    
-    .search_guide {
-        font-size: 0.85em !important;
-        padding: 8px 15px !important;
-        text-align: center !important;
-        line-height: 1.4 !important;
-    }
-    
-    .nurse-grid-header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: stretch;
-    }
-    
-    .nurse-grid-actions, .grid_buttons {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .nurse-form-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    
-    .nurse-form-label {
-        text-align: left;
-        padding-right: 0;
-    }
-    
-    .nurse-btn-group {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .nurse-table {
-        font-size: 0.9em;
-    }
-    
-    .nurse-table th,
-    .nurse-table td {
-        padding: 10px 8px;
-    }
-    
-    /* 다중 버튼 반응형 */
-    .btn_select_all, .btn_insert_multi, .btn_update_multi, .btn_delete_multi, .btn_excel, .btn_list_all {
-        margin-bottom: 5px !important;
-        min-width: 100px !important;
-    }
-}
-
-/* 애니메이션 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.nurse-fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* 로딩 스피너 */
-.nurse-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-}
-
-.nurse-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #1C3D6B;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 알림 메시지 */
-.nurse-alert {
-    padding: 15px 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border-left: 4px solid;
-}
-
-.nurse-alert.success {
-    background-color: #d4edda;
-    color: #155724;
-    border-left-color: #28a745;
-}
-
-.nurse-alert.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-left-color: #dc3545;
-}
-
-.nurse-alert.warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border-left-color: #ffc107;
-}
-
-.nurse-alert.info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border-left-color: #17a2b8;
-}
-
-/* 기본 WebSquare 스타일 조정 */
-.sub_contents {
-    padding: 20px;
-    background-color: #f8f9fa;
-}
-
-.search_area {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.search_row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    align-items: end;
-}
-
-.search_item {
-    display: flex;
-    flex-direction: column;
-}
-
-.search_label {
-    font-weight: 600 !important;
-    color: #495057 !important;
-    margin-bottom: 8px !important;
-    font-size: 0.95em !important;
-}
-
-.search_input {
-    padding: 12px 16px !important;
-    border: 2px solid #e9ecef !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    transition: all 0.3s ease !important;
-    background-color: white !important;
-}
-
-.search_input:focus {
-    outline: none !important;
-    border-color: #1C3D6B !important;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
-}
-
-.search_buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.btn_search, .btn_reset {
-    padding: 12px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 100px !important;
-    justify-content: center !important;
-    line-height: 1.2 !important;
-}
-
-.btn_search {
-    background: #1C3D6B !important;
-    color: #fff !important;
-}
-
-.btn_search:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
-}
-
-/* 버튼 내부 이미지 스타일 */
-.btn_search xf\:image,
-.btn_list_all xf\:image,
-.btn_reset xf\:image,
-.btn_select_all xf\:image,
-.btn_excel xf\:image,
-.btn_insert_multi xf\:image,
-.btn_update_multi xf\:image,
-.btn_delete_multi xf\:image,
-.btn_insert xf\:image,
-.btn_update xf\:image,
-.btn_delete xf\:image {
-    display: inline-block !important;
-    vertical-align: middle !important;
-    margin-right: 8px !important;
-    margin-top: -2px !important;
-}
-
-/* w2:button 내부 이미지 스타일 */
-.btn_search w2\:button xf\:image,
-.btn_list_all w2\:button xf\:image,
-.btn_reset w2\:button xf\:image,
-.btn_select_all w2\:button xf\:image,
-.btn_excel w2\:button xf\:image,
-.btn_insert_multi w2\:button xf\:image,
-.btn_update_multi w2\:button xf\:image,
-.btn_delete_multi w2\:button xf\:image,
-.btn_insert w2\:button xf\:image,
-.btn_update w2\:button xf\:image,
-.btn_delete w2\:button xf\:image {
-    display: inline-block !important;
-    vertical-align: middle !important;
-    margin-right: 8px !important;
-    margin-top: -2px !important;
-}
-
-
-
-.btn_reset {
-    background: #1C3D6B !important;
-    color: #fff !important;
-}
-
-.btn_reset:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_list_all {
-    padding: 12px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 100px !important;
-    justify-content: center !important;
-    background: #1C3D6B !important;
-    color: #fff !important;
-    line-height: 1.2 !important;
-}
-
-.btn_list_all:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
-}
-
-.content_area {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.grid_section {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.grid_header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px 25px;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.grid_title {
-    font-size: 1.3em !important;
-    font-weight: 600 !important;
-    color: #1C3D6B !important;
-    margin: 0 !important;
-}
-
-.grid_buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn_excel {
-    padding: 12px 24px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    background: #1C3D6B !important;
-    color: #fff !important;
-    line-height: 1.2 !important;
-}
-
-.btn_excel:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_delete_multi {
-    padding: 12px 24px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    background: #1C3D6B !important;
-    color: #fff !important;
-    line-height: 1.2 !important;
-}
-
-.btn_delete_multi:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.grid_view {
-    margin: 25px !important;
-}
-
-.form_section {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e9ecef;
-}
-
-.form_title {
-    font-size: 1.3em !important;
-    font-weight: 600 !important;
-    color: #1C3D6B !important;
-    margin: 0 !important;
-}
-
-.form_buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn_insert, .btn_update, .btn_delete {
-    padding: 12px 24px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    text-decoration: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 120px !important;
-    justify-content: center !important;
-    line-height: 1.2 !important;
-}
-
-.btn_insert {
-    background: #1C3D6B !important;
-    color: #fff !important;
-}
-
-.btn_insert:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_update {
-    background: #1C3D6B !important;
-    color: #fff !important;
-}
-
-.btn_update:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.btn_delete {
-    background: #1C3D6B !important;
-    color: #fff !important;
-}
-
-.btn_delete:hover {
-    background: #5C5DB0 !important;
-    transform: translateY(-2px) !important;
-}
-
-.form_content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form_row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.form_item {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 15px;
-    align-items: center;
-}
-
-.form_item.full_width {
-    grid-column: 1 / -1;
-}
-
-.form_label {
-    font-weight: 600 !important;
-    color: #495057 !important;
-    text-align: right !important;
-    padding-right: 10px !important;
-}
-
-.form_label.required::after {
-    content: ' *';
-    color: #dc3545;
-}
-
-.form_input {
-    padding: 12px 16px !important;
-    border: 2px solid #e9ecef !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    transition: all 0.3s ease !important;
-}
-
-.form_input:focus {
-    outline: none !important;
-    border-color: #1C3D6B !important;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
-}
-
-.form_textarea {
-    padding: 12px 16px !important;
-    border: 2px solid #e9ecef !important;
-    border-radius: 8px !important;
-    font-size: 1em !important;
-    transition: all 0.3s ease !important;
-    min-height: 100px !important;
-    resize: vertical !important;
-}
-
-.form_textarea:focus {
-    outline: none !important;
-    border-color: #1C3D6B !important;
-    box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
-}
-        </style>
-    </head>
-    <body>
-        <xf:group class="sub_contents">
-            <!-- 병원 정보 헤더 -->
-            <xf:group class="hospital_header">
-                <xf:group class="hospital_info">
-                    <xf:image src="/InsWebApp/images/medicalteam.png" style="width:100px;height:100px;" id="img_logo" alt="병원 로고" />
-                    <xf:group class="hospital_details">
-                        <w2:textbox class="hospital_name" id="txt_hospitalName" label="삼육대학교병원"></w2:textbox>
-                        <w2:textbox class="hospital_dept" id="txt_hospitalDept" label="내과병동"></w2:textbox>
-                    </xf:group>
-                </xf:group>
-                <xf:group class="user_info">
-                    <w2:textbox class="current_user" id="txt_currentUser" label="관리자"></w2:textbox>
-                    <w2:textbox class="current_date" id="txt_currentDate" label=""></w2:textbox>
-                </xf:group>
-            </xf:group>
+    var checkGridData = function () {
+        checkCount++;
+        
+        try {
+            // 그리드의 행 수 확인
+            var currentRowCount = 0;
+            if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList && dlt_nurseList.getRowCount) {
+                currentRowCount = dlt_nurseList.getRowCount();
+            }
             
-            <xf:group class="search_area">
-                <xf:group class="search_header">
-                	<xf:group style="display:flex;align-items:center;gap:10px;">
-                		<xf:image src="/InsWebApp/images/iconsearch.png" style="width:22px;height:22px;margin-top: -5px;" id="iconsearch1" alt="검색 아이콘" />
-                		<w2:textbox class="search_title" id="txt_searchTitle" label="간호사 검색"></w2:textbox>
-                	</xf:group>
-                	<w2:textbox class="search_guide" id="txt_searchGuide" label="• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다 • 글자 일부만 입력해도 검색 가능합니다"></w2:textbox>
-                </xf:group>
-                <xf:group class="search_row">
-                    <xf:group class="search_item">
-                        <w2:textbox class="search_label" id="lbl_nurseName_search" label="근무자명"></w2:textbox>
-                        <xf:input class="search_input" id="ipt_scNurseName" ref="data:dmp_nurseVo.scNurseName" placeholder="예: 김, 이, 박"></xf:input>
-                    </xf:group>
-                    <xf:group class="search_item">
-                        <w2:textbox class="search_label" id="lbl_position_search" label="직급"></w2:textbox>
-                        <xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition" placeholder="예: 간호사, 선임, 수간호사"></xf:input>
-                    </xf:group>
-                    <xf:group class="search_buttons">
-                    	<w2:button class="btn_search" id="btn_search" ev:onclick="scwin.btn_search_onclick" label="검색">
-                    		<xf:image src="/InsWebApp/images/iconsearch1.png" style="width:20px;height:20px;" id="iconsearch2" alt="검색 아이콘" />
-                    	</w2:button>
-                    	<w2:button class="btn_list_all" id="btn_list_all" ev:onclick="scwin.btn_list_all_onclick" label="전체조회">
-                            <xf:image src="/InsWebApp/images/medicalreport.png" style="width:20px;height:20px;" id="medicalreport" alt="조회 아이콘" />
-                        </w2:button>
-                    	<w2:button class="btn_reset" id="btn_reset" ev:onclick="scwin.btn_reset_onclick" label="초기화">
-                            <xf:image src="/InsWebApp/images/reload.png" style="width:20px;height:20px;" id="reload" alt="초기화 아이콘" />
-                        </w2:button>
-                    </xf:group>
-                </xf:group>
-            </xf:group>
+            console.log("그리드 데이터 체크 (" + checkCount + "/" + maxChecks + "): 현재 행 수 = " + currentRowCount);
             
-            <xf:group class="content_area">
-                <xf:group class="grid_section">
-                    <xf:group class="grid_header">
-                        <w2:textbox class="grid_title" id="txt_gridTitle" label="간호사 목록"></w2:textbox>
-                        <xf:group class="grid_buttons">
-                            <w2:button class="btn_select_all" id="btn_select_all" ev:onclick="scwin.btn_select_all_onclick" label="전체선택">
-                                <xf:image src="/InsWebApp/images/selectall.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="selectall" alt="아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_excel" id="btn_excel" ev:onclick="scwin.btn_excel_onclick" label="엑셀 업로드">
-                                <xf:image src="/InsWebApp/images/uploadfile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="uploadfile" alt="업로드 아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_insert_multi" id="btn_insert_multi" ev:onclick="scwin.btn_insert_multi_onclick" label="다중 등록">
-                                <xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="adduser1" alt="등록 아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_update_multi" id="btn_update_multi" ev:onclick="scwin.btn_update_multi_onclick" label="다중 수정">
-                                <xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="editprofile1" alt="수정 아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_delete_multi" id="btn_delete_multi" ev:onclick="scwin.btn_delete_multi_onclick" label="선택 삭제">
-                                <xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;" id="deletebutton1" alt="삭제 아이콘" />                             
-                            </w2:button>
-                        </xf:group>
-                    </xf:group>
-                    
-                    <w2:gridView class="grid_view" id="grd_nurseList" dataList="data:dlt_nurseList" 
-                        style="width:100%;height:300px;" scrollByColumn="false" defaultCellHeight="35" 
-                        rowNumVisible="true" ev:oncellclick="scwin.grd_nurseList_oncellclick">
-                        <w2:caption id="caption1" value="간호사 목록"></w2:caption>
-                        <w2:header id="header1">
-                            <w2:row id="row1">
-                                <w2:column width="50" inputType="checkbox" style="height:35px" id="columnCheck" value="선택" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="column2" value="근무자명" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="column3" value="직급" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="column4" value="연차" displayMode="label"></w2:column>
-                                <w2:column width="633" inputType="text" style="height:35px" id="column5" value="특이사항" displayMode="label"></w2:column>
-                                <w2:column width="180" inputType="text" style="height:35px" id="column6" value="입사일" displayMode="label"></w2:column>
-                            </w2:row>
-                        </w2:header>
-                        <w2:gBody id="gBody1">
-                            <w2:row id="row2">
-                                <w2:column width="50" inputType="checkbox" style="height:35px" id="chk_select" value="" displayMode="editType"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
-                                <w2:column width="150" inputType="text" style="height:35px" id="workYear" value="" displayMode="label"></w2:column>
-                                <w2:column width="633" inputType="text" style="height:35px;" id="specialNote" value="" displayMode="label"></w2:column>
-                                <w2:column width="180" inputType="text" style="height:35px" id="hireDate" value="" displayMode="label"></w2:column>
-                            </w2:row>
-                        </w2:gBody>
-                    </w2:gridView>
-                </xf:group>
+            // 데이터가 추가되었는지 확인
+            if (currentRowCount > previousRowCount && currentRowCount > 0) {
+                console.log("그리드에 새 데이터가 추가됨! 행 수: " + previousRowCount + " → " + currentRowCount);
                 
-                <xf:group class="form_section">
-                    <xf:group class="form_header">
-                        <w2:textbox class="form_title" id="txt_formTitle" label="간호사 정보"></w2:textbox>
-                        <xf:group class="form_buttons">
-                            <w2:button class="btn_insert" id="btn_insert" ev:onclick="scwin.btn_insert_onclick" label="등록">
-                                <xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;" id="adduser2" alt="등록 아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_update" id="btn_update" ev:onclick="scwin.btn_update_onclick" label="수정">
-                                <xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;" id="editprofile2" alt="수정 아이콘" />
-                            </w2:button>
-                            <w2:button class="btn_delete" id="btn_delete" ev:onclick="scwin.btn_delete_onclick" label="삭제">
-                                <xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;" id="deletebutton2" alt="삭제 아이콘" />                                     
-                            </w2:button>
-                        </xf:group>
-                    </xf:group>
-                    
-                    <xf:group class="form_content">
+                // 그리드에서 데이터 추출
+                var gridData = [];
+                for (var i = 0; i < currentRowCount; i++) {
+                    try {
+                        var rowData = {
+                            nurseName: dlt_nurseList.getCellData(i, "nurseName") || "",
+                            position: dlt_nurseList.getCellData(i, "position") || "",
+                            career: dlt_nurseList.getCellData(i, "career") || "",
+                            specialNote: dlt_nurseList.getCellData(i, "specialNote") || "",
+                            hireDate: dlt_nurseList.getCellData(i, "hireDate") || ""
+                        };
+                        
+                        // 빈 행이 아닌 경우만 추가
+                        if (rowData.nurseName && rowData.position) {
+                            gridData.push(rowData);
+                        }
+                    } catch (e) {
+                        console.warn("행 " + i + " 데이터 추출 실패:", e);
+                    }
+                }
+                
+                console.log("추출된 그리드 데이터:", gridData);
+                
+                // 새로 추가된 데이터만 필터링
+                var newData = gridData.slice(previousRowCount);
+                console.log("새로 추가된 데이터:", newData);
+                
+                if (newData.length > 0) {
+                    // 콜백 함수 호출
+                    scwin.fn_excelUploadCallback(newData);
+                    return; // 모니터링 중단
+                }
+            }
+            
+            previousRowCount = currentRowCount;
+            
+            // 최대 체크 횟수 초과 시 중단
+            if (checkCount >= maxChecks) {
+                console.warn("그리드 데이터 모니터링 타임아웃");
+                return;
+            }
+            
+            // 500ms 후 다시 체크
+            setTimeout(checkGridData, 500);
+            
+        } catch (e) {
+            console.error("그리드 데이터 체크 중 오류:", e);
+            
+            if (checkCount < maxChecks) {
+                setTimeout(checkGridData, 500);
+            }
+        }
+    };
+    
+    // 즉시 첫 번째 체크 시작
+    setTimeout(checkGridData, 500);
+};
+
+// 간호사 등록 에러 처리
+scwin.sbm_insertNurse_submiterror = function (e) {
+    console.error("=== 간호사 등록 에러 ===");
+    console.error("에러 객체:", e);
+    console.error("에러 상태:", e.status);
+    console.error("에러 메시지:", e.statusText);
+
+    Swal.fire({
+        icon: 'error',
+        title: '등록 실패',
+        text: '간호사 등록 중 오류가 발생했습니다. (상태: ' + e.status + ')',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
+};
+
+scwin.sbm_insertNurseList_submitdone = function (e) {
+
+};
+]]></script>
+		<style type="text/css">
+			/* 간호사 관리 페이지 전용 CSS */
+
+			/* 병원 헤더 */
+			.hospital_header {
+			background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+			border: 2px solid #1C3D6B;
+			border-radius: 15px;
+			padding: 20px 30px;
+			margin-bottom: 30px;
+			box-shadow: 0 4px 20px rgba(28, 61, 107, 0.2);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			}
+
+			.hospital_info {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			}
+
+			.hospital_logo {
+			font-size: 3em !important;
+			color: #1C3D6B !important;
+			margin: 0 !important;
+			}
+
+			.hospital_details {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			}
+
+			.hospital_name {
+			font-size: 2.2em !important;
+			font-weight: bold !important;
+			color: #1C3D6B !important;
+			margin: 0 !important;
+			}
+
+			.hospital_dept {
+			font-size: 1.2em !important;
+			color: #666 !important;
+			margin: 0 !important;
+			}
+
+			.user_info {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 5px;
+			}
+
+			.current_user {
+			font-size: 1.1em !important;
+			font-weight: 600 !important;
+			color: #1C3D6B !important;
+			margin: 0 !important;
+			}
+
+			.current_date {
+			font-size: 0.95em !important;
+			color: #666 !important;
+			margin: 0 !important;
+			}
+
+			/* 전체 컨테이너 */
+			.nurse-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 20px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f8f9fa;
+			}
+
+			/* 페이지 헤더 */
+			.nurse-header {
+			background: linear-gradient(135deg, #1C3D6B 0%, #2E5984 100%);
+			color: white;
+			padding: 30px;
+			border-radius: 12px;
+			margin-bottom: 30px;
+			box-shadow: 0 4px 20px rgba(28, 61, 107, 0.3);
+			}
+
+			.nurse-header h1 {
+			margin: 0;
+			font-size: 2.5em;
+			font-weight: 300;
+			text-align: center;
+			}
+
+			.nurse-header .subtitle {
+			text-align: center;
+			font-size: 1.1em;
+			opacity: 0.9;
+			margin-top: 10px;
+			}
+
+			/* 검색 영역 */
+			.nurse-search-section {
+			background: white;
+			padding: 25px;
+			border-radius: 12px;
+			margin-bottom: 25px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.nurse-search-title {
+			font-size: 1.3em;
+			font-weight: 600;
+			color: #1C3D6B;
+			margin-bottom: 20px;
+			padding-bottom: 10px;
+			border-bottom: 2px solid #e9ecef;
+			}
+
+			/* 검색 헤더 스타일 */
+			.search_header {
+			margin-bottom: 20px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+			}
+
+			.search_title {
+			font-size: 1.4em !important;
+			font-weight: 700 !important;
+			color: #1C3D6B !important;
+			margin-bottom: 10px !important;
+			display: block !important;
+			}
+
+			/* 이미지 스타일 */
+			.search_header xf\:image {
+			display: inline-block !important;
+			vertical-align: middle !important;
+			margin-top: -2px !important;
+			margin-right: 8px !important;
+			}
+
+			.search_guide {
+			font-size: 0.95em !important;
+			color: #6c757d !important;
+			background: #f8f9fa !important;
+			padding: 10px 20px !important;
+			border-radius: 20px !important;
+			border: 1px solid #dee2e6 !important;
+			display: inline-block !important;
+			margin: 0 !important;
+			}
+
+			.nurse-search-form {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 20px;
+			align-items: end;
+			}
+
+			.nurse-form-group {
+			display: flex;
+			flex-direction: column;
+			}
+
+			.nurse-form-group label {
+			font-weight: 600;
+			color: #495057;
+			margin-bottom: 8px;
+			font-size: 0.95em;
+			}
+
+			.nurse-form-group input,
+			.nurse-form-group select {
+			padding: 12px 16px;
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			font-size: 1em;
+			transition: all 0.3s ease;
+			background-color: white;
+			}
+
+			.nurse-form-group input:focus,
+			.nurse-form-group select:focus {
+			outline: none;
+			border-color: #1C3D6B;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
+			}
+
+			.nurse-radio-group {
+			display: flex;
+			gap: 15px;
+			margin-top: 8px;
+			}
+
+			.nurse-radio-item {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			}
+
+			.nurse-radio-item input[type="radio"] {
+			width: 18px;
+			height: 18px;
+			margin: 0;
+			}
+
+			.nurse-radio-item label {
+			margin: 0;
+			font-weight: 500;
+			cursor: pointer;
+			}
+
+			/* 버튼 스타일 */
+			<!-- .nurse-btn {
+				padding: 12px 24px;
+				border: none;
+				border-radius: 8px;
+				font-size: 1em;
+				font-weight: bold;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				text-decoration: none;
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				min-width: 120px;
+				justify-content: center;
+				}
+
+				.nurse-btn-primary {
+				background: #5CD6C0;
+				color: #1C3D6B;
+				}
+
+				.nurse-btn-primary:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3);
+				}
+
+				.nurse-btn-secondary {
+				background: #5CD6C0;
+				color: #1C3D6B;
+				}
+
+				.nurse-btn-secondary:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				}
+
+				.nurse-btn-success {
+				background: #5CD6C0;
+				color: #1C3D6B;
+				}
+
+				.nurse-btn-success:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				}
+
+				.nurse-btn-danger {
+				background: #5CD6C0;
+				color: #1C3D6B;
+				}
+
+				.nurse-btn-danger:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				}
+
+				.nurse-btn-warning {
+				background: #1C3D6B;
+				color: #5CD6C0;
+				}
+
+				.nurse-btn-warning:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				}
+
+				.nurse-btn-info {
+				background: #5CD6C0;
+				color: #1C3D6B;
+				}
+
+				.nurse-btn-info:hover {
+				background: #4BC5B0;
+				transform: translateY(-2px);
+				} -->
+
+			/* 다중 버튼 특별 스타일 */
+			.btn_select_all {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			padding: 12px 20px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			min-width: 100px !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_select_all:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_insert_multi {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			padding: 12px 20px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			min-width: 100px !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_insert_multi:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_update_multi {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			padding: 12px 20px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			min-width: 100px !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_update_multi:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			/* 그리드 영역 */
+			.nurse-grid-section {
+			background: white;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			margin-bottom: 25px;
+			}
+
+			.nurse-grid-header {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			padding: 20px 25px;
+			border-bottom: 1px solid #dee2e6;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			}
+
+			.nurse-grid-title {
+			font-size: 1.3em;
+			font-weight: 600;
+			color: #1C3D6B;
+			margin: 0;
+			}
+
+			.nurse-grid-actions {
+			display: flex;
+			gap: 10px;
+			}
+
+			.nurse-grid-content {
+			padding: 25px;
+			}
+
+			/* 테이블 스타일 */
+			.nurse-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+			}
+
+			.nurse-table th,
+			.nurse-table td {
+			padding: 15px 12px;
+			text-align: left;
+			border-bottom: 1px solid #e9ecef;
+			}
+
+			.nurse-table th {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			font-weight: 600;
+			color: #495057;
+			position: sticky;
+			top: 0;
+			z-index: 10;
+			}
+
+			.nurse-table tbody tr {
+			transition: all 0.2s ease;
+			}
+
+			.nurse-table tbody tr:hover {
+			background-color: #f8f9fa;
+			transform: scale(1.01);
+			}
+
+			.nurse-table td {
+			vertical-align: middle;
+			}
+
+			.nurse-table .checkbox-cell {
+			width: 50px;
+			text-align: center;
+			}
+
+			.nurse-table .checkbox-cell input[type="checkbox"] {
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+			}
+
+			/* 입력 폼 영역 */
+			.nurse-form-section {
+			background: white;
+			padding: 25px;
+			border-radius: 12px;
+			margin-bottom: 25px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.nurse-form-title {
+			font-size: 1.3em;
+			font-weight: 600;
+			color: #1C3D6B;
+			margin-bottom: 20px;
+			padding-bottom: 10px;
+			border-bottom: 2px solid #e9ecef;
+			}
+
+			.nurse-form-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 20px;
+			}
+
+			.nurse-form-row {
+			display: grid;
+			grid-template-columns: 150px 1fr;
+			gap: 15px;
+			align-items: center;
+			margin-bottom: 20px;
+			}
+
+			.nurse-form-label {
+			font-weight: 600;
+			color: #495057;
+			text-align: right;
+			padding-right: 10px;
+			}
+
+			.nurse-form-input {
+			padding: 12px 16px;
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			font-size: 1em;
+			transition: all 0.3s ease;
+			}
+
+			.nurse-form-input:focus {
+			outline: none;
+			border-color: #1C3D6B;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
+			}
+
+			.nurse-form-textarea {
+			min-height: 100px;
+			resize: vertical;
+			}
+
+			.nurse-form-select {
+			padding: 12px 16px;
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			font-size: 1em;
+			background-color: white;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			}
+
+			.nurse-form-select:focus {
+			outline: none;
+			border-color: #1C3D6B;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1);
+			}
+
+			/* 버튼 그룹 */
+			.nurse-btn-group {
+			display: flex;
+			gap: 10px;
+			justify-content: center;
+			margin-top: 30px;
+			padding-top: 20px;
+			border-top: 1px solid #e9ecef;
+			}
+
+			/* 상태 표시 */
+			.nurse-status {
+			padding: 4px 12px;
+			border-radius: 20px;
+			font-size: 0.85em;
+			font-weight: 600;
+			text-transform: uppercase;
+			}
+
+			.nurse-status.active {
+			background-color: #d4edda;
+			color: #155724;
+			}
+
+			.nurse-status.inactive {
+			background-color: #f8d7da;
+			color: #721c24;
+			}
+
+			/* 페이지네이션 */
+			.nurse-pagination {
+			display: flex;
+			justify-content: center;
+			gap: 5px;
+			margin-top: 30px;
+			}
+
+			.nurse-pagination .page-btn {
+			padding: 8px 12px;
+			border: 1px solid #dee2e6;
+			background: white;
+			color: #495057;
+			text-decoration: none;
+			border-radius: 6px;
+			transition: all 0.2s ease;
+			}
+
+			.nurse-pagination .page-btn:hover {
+			background: #e9ecef;
+			border-color: #adb5bd;
+			}
+
+			.nurse-pagination .page-btn.active {
+			background: #1C3D6B;
+			color: white;
+			border-color: #1C3D6B;
+			}
+
+			/* 반응형 디자인 */
+			@media (max-width: 768px) {
+			.nurse-container {
+			padding: 15px;
+			}
+
+			/* 병원 헤더 반응형 */
+			.hospital_header {
+			flex-direction: column;
+			gap: 15px;
+			text-align: center;
+			}
+
+			.hospital_info {
+			flex-direction: column;
+			gap: 10px;
+			}
+
+			.hospital_logo {
+			font-size: 2.5em !important;
+			}
+
+			.hospital_name {
+			font-size: 1.8em !important;
+			}
+
+			.hospital_dept {
+			font-size: 1em !important;
+			}
+
+			.user_info {
+			align-items: center;
+			}
+
+			.nurse-header {
+			padding: 20px;
+			}
+
+			.nurse-header h1 {
+			font-size: 2em;
+			}
+
+			.nurse-search-form {
+			grid-template-columns: 1fr;
+			}
+
+			/* 검색 헤더 반응형 */
+			.search_header {
+			margin-bottom: 15px;
+			flex-direction: column;
+			}
+
+			.search_title {
+			font-size: 1.2em !important;
+			}
+
+			.search_guide {
+			font-size: 0.85em !important;
+			padding: 8px 15px !important;
+			text-align: center !important;
+			line-height: 1.4 !important;
+			}
+
+			.nurse-grid-header {
+			flex-direction: column;
+			gap: 15px;
+			align-items: stretch;
+			}
+
+			.nurse-grid-actions, .grid_buttons {
+			justify-content: center;
+			flex-wrap: wrap;
+			}
+
+			.nurse-form-row {
+			grid-template-columns: 1fr;
+			gap: 8px;
+			}
+
+			.nurse-form-label {
+			text-align: left;
+			padding-right: 0;
+			}
+
+			.nurse-btn-group {
+			flex-direction: column;
+			align-items: stretch;
+			}
+
+			.nurse-table {
+			font-size: 0.9em;
+			}
+
+			.nurse-table th,
+			.nurse-table td {
+			padding: 10px 8px;
+			}
+
+			/* 다중 버튼 반응형 */
+			.btn_select_all, .btn_insert_multi, .btn_update_multi, .btn_delete_multi, .btn_excel, .btn_list_all {
+			margin-bottom: 5px !important;
+			min-width: 100px !important;
+			}
+			}
+
+			/* 애니메이션 */
+			@keyframes fadeIn {
+			from {
+			opacity: 0;
+			transform: translateY(20px);
+			}
+			to {
+			opacity: 1;
+			transform: translateY(0);
+			}
+			}
+
+			.nurse-fade-in {
+			animation: fadeIn 0.5s ease-out;
+			}
+
+			/* 로딩 스피너 */
+			.nurse-loading {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 200px;
+			}
+
+			.nurse-spinner {
+			width: 40px;
+			height: 40px;
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #1C3D6B;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+			}
+
+			/* 알림 메시지 */
+			.nurse-alert {
+			padding: 15px 20px;
+			margin-bottom: 20px;
+			border-radius: 8px;
+			border-left: 4px solid;
+			}
+
+			.nurse-alert.success {
+			background-color: #d4edda;
+			color: #155724;
+			border-left-color: #28a745;
+			}
+
+			.nurse-alert.error {
+			background-color: #f8d7da;
+			color: #721c24;
+			border-left-color: #dc3545;
+			}
+
+			.nurse-alert.warning {
+			background-color: #fff3cd;
+			color: #856404;
+			border-left-color: #ffc107;
+			}
+
+			.nurse-alert.info {
+			background-color: #d1ecf1;
+			color: #0c5460;
+			border-left-color: #17a2b8;
+			}
+
+			/* 기본 WebSquare 스타일 조정 */
+			.sub_contents {
+			padding: 20px;
+			background-color: #f8f9fa;
+			}
+
+			.search_area {
+			background: white;
+			padding: 25px;
+			border-radius: 12px;
+			margin-bottom: 25px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.search_row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 20px;
+			align-items: end;
+			}
+
+			.search_item {
+			display: flex;
+			flex-direction: column;
+			}
+
+			.search_label {
+			font-weight: 600 !important;
+			color: #495057 !important;
+			margin-bottom: 8px !important;
+			font-size: 0.95em !important;
+			}
+
+			.search_input {
+			padding: 12px 16px !important;
+			border: 2px solid #e9ecef !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			transition: all 0.3s ease !important;
+			background-color: white !important;
+			}
+
+			.search_input:focus {
+			outline: none !important;
+			border-color: #1C3D6B !important;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
+			}
+
+			.search_buttons {
+			display: flex;
+			gap: 10px;
+			justify-content: flex-end;
+			}
+
+			.btn_search, .btn_reset {
+			padding: 12px 20px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			text-decoration: none !important;
+			display: inline-flex !important;
+			align-items: center !important;
+			gap: 8px !important;
+			min-width: 100px !important;
+			justify-content: center !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_search {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			}
+
+			.btn_search:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
+			}
+
+			/* 버튼 내부 이미지 스타일 */
+			.btn_search xf\:image,
+			.btn_list_all xf\:image,
+			.btn_reset xf\:image,
+			.btn_select_all xf\:image,
+			.btn_excel xf\:image,
+			.btn_insert_multi xf\:image,
+			.btn_update_multi xf\:image,
+			.btn_delete_multi xf\:image,
+			.btn_insert xf\:image,
+			.btn_update xf\:image,
+			.btn_delete xf\:image {
+			display: inline-block !important;
+			vertical-align: middle !important;
+			margin-right: 8px !important;
+			margin-top: -2px !important;
+			}
+
+			/* w2:button 내부 이미지 스타일 */
+			.btn_search w2\:button xf\:image,
+			.btn_list_all w2\:button xf\:image,
+			.btn_reset w2\:button xf\:image,
+			.btn_select_all w2\:button xf\:image,
+			.btn_excel w2\:button xf\:image,
+			.btn_insert_multi w2\:button xf\:image,
+			.btn_update_multi w2\:button xf\:image,
+			.btn_delete_multi w2\:button xf\:image,
+			.btn_insert w2\:button xf\:image,
+			.btn_update w2\:button xf\:image,
+			.btn_delete w2\:button xf\:image {
+			display: inline-block !important;
+			vertical-align: middle !important;
+			margin-right: 8px !important;
+			margin-top: -2px !important;
+			}
+
+
+
+			.btn_reset {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			}
+
+			.btn_reset:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_list_all {
+			padding: 12px 20px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			text-decoration: none !important;
+			display: inline-flex !important;
+			align-items: center !important;
+			gap: 8px !important;
+			min-width: 100px !important;
+			justify-content: center !important;
+			background: #1C3D6B !important;
+			color: #fff !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_list_all:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
+			}
+
+			.content_area {
+			display: flex;
+			flex-direction: column;
+			gap: 25px;
+			}
+
+			.grid_section {
+			background: white;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.grid_header {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			padding: 20px 25px;
+			border-bottom: 1px solid #dee2e6;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			}
+
+			.grid_title {
+			font-size: 1.3em !important;
+			font-weight: 600 !important;
+			color: #1C3D6B !important;
+			margin: 0 !important;
+			}
+
+			.grid_buttons {
+			display: flex;
+			gap: 10px;
+			}
+
+			.btn_excel {
+			padding: 12px 24px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			background: #1C3D6B !important;
+			color: #fff !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_excel:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_delete_multi {
+			padding: 12px 24px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			background: #1C3D6B !important;
+			color: #fff !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_delete_multi:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.grid_view {
+			margin: 25px !important;
+			}
+
+			.form_section {
+			background: white;
+			padding: 25px;
+			border-radius: 12px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.form_header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			padding-bottom: 10px;
+			border-bottom: 2px solid #e9ecef;
+			}
+
+			.form_title {
+			font-size: 1.3em !important;
+			font-weight: 600 !important;
+			color: #1C3D6B !important;
+			margin: 0 !important;
+			}
+
+			.form_buttons {
+			display: flex;
+			gap: 10px;
+			}
+
+			.btn_insert, .btn_update, .btn_delete {
+			padding: 12px 24px !important;
+			border: none !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			font-weight: bold !important;
+			cursor: pointer !important;
+			transition: all 0.3s ease !important;
+			text-decoration: none !important;
+			display: inline-flex !important;
+			align-items: center !important;
+			gap: 8px !important;
+			min-width: 120px !important;
+			justify-content: center !important;
+			line-height: 1.2 !important;
+			}
+
+			.btn_insert {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			}
+
+			.btn_insert:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_update {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			}
+
+			.btn_update:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.btn_delete {
+			background: #1C3D6B !important;
+			color: #fff !important;
+			}
+
+			.btn_delete:hover {
+			background: #5C5DB0 !important;
+			transform: translateY(-2px) !important;
+			}
+
+			.form_content {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			}
+
+			.form_row {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 20px;
+			}
+
+			.form_item {
+			display: grid;
+			grid-template-columns: 150px 1fr;
+			gap: 15px;
+			align-items: center;
+			}
+
+			.form_item.full_width {
+			grid-column: 1 / -1;
+			}
+
+			.form_label {
+			font-weight: 600 !important;
+			color: #495057 !important;
+			text-align: right !important;
+			padding-right: 10px !important;
+			}
+
+			.form_label.required::after {
+			content: ' *';
+			color: #dc3545;
+			}
+
+			.form_input {
+			padding: 12px 16px !important;
+			border: 2px solid #e9ecef !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			transition: all 0.3s ease !important;
+			}
+
+			.form_input:focus {
+			outline: none !important;
+			border-color: #1C3D6B !important;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
+			}
+
+			.form_textarea {
+			padding: 12px 16px !important;
+			border: 2px solid #e9ecef !important;
+			border-radius: 8px !important;
+			font-size: 1em !important;
+			transition: all 0.3s ease !important;
+			min-height: 100px !important;
+			resize: vertical !important;
+			}
+
+			.form_textarea:focus {
+			outline: none !important;
+			border-color: #1C3D6B !important;
+			box-shadow: 0 0 0 3px rgba(28, 61, 107, 0.1) !important;
+			}
+		</style>
+	</head>
+	<body>
+		<xf:group class="sub_contents">
+			<!-- 병원 정보 헤더 -->
+			<xf:group class="hospital_header">
+				<xf:group class="hospital_info">
+					<xf:image src="/InsWebApp/images/medicalteam.png" style="width:100px;height:100px;" id="img_logo" alt="병원 로고" />
+					<xf:group class="hospital_details">
+						<w2:textbox class="hospital_name" id="txt_hospitalName" label="삼육대학교병원"></w2:textbox>
+						<w2:textbox class="hospital_dept" id="txt_hospitalDept" label="내과병동"></w2:textbox>
+					</xf:group>
+				</xf:group>
+				<xf:group class="user_info">
+					<w2:textbox class="current_user" id="txt_currentUser" label="관리자"></w2:textbox>
+					<w2:textbox class="current_date" id="txt_currentDate" label=""></w2:textbox>
+				</xf:group>
+			</xf:group>
+
+			<xf:group class="search_area">
+				<xf:group class="search_header">
+					<xf:group style="display:flex;align-items:center;gap:10px;">
+						<xf:image src="/InsWebApp/images/iconsearch.png" style="width:22px;height:22px;margin-top: -5px;" id="iconsearch1"
+							alt="검색 아이콘" />
+						<w2:textbox class="search_title" id="txt_searchTitle" label="간호사 검색"></w2:textbox>
+					</xf:group>
+					<w2:textbox class="search_guide" id="txt_searchGuide" label="• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다 • 글자 일부만 입력해도 검색 가능합니다"></w2:textbox>
+				</xf:group>
+				<xf:group class="search_row">
+					<xf:group class="search_item">
+						<w2:textbox class="search_label" id="lbl_nurseName_search" label="근무자명"></w2:textbox>
+						<xf:input class="search_input" id="ipt_scNurseName" ref="data:dmp_nurseVo.scNurseName" placeholder="예: 김, 이, 박"></xf:input>
+					</xf:group>
+					<xf:group class="search_item">
+						<w2:textbox class="search_label" id="lbl_position_search" label="직급"></w2:textbox>
+						<xf:input class="search_input" id="ipt_scPosition" ref="data:dmp_nurseVo.scPosition" placeholder="예: 간호사, 선임, 수간호사"></xf:input>
+					</xf:group>
+					<xf:group class="search_buttons">
+						<w2:button class="btn_search" id="btn_search" ev:onclick="scwin.btn_search_onclick" label="검색">
+							<xf:image src="/InsWebApp/images/iconsearch1.png" style="width:20px;height:20px;" id="iconsearch2" alt="검색 아이콘" />
+						</w2:button>
+						<w2:button class="btn_list_all" id="btn_list_all" ev:onclick="scwin.btn_list_all_onclick" label="전체조회">
+							<xf:image src="/InsWebApp/images/medicalreport.png" style="width:20px;height:20px;" id="medicalreport" alt="조회 아이콘" />
+						</w2:button>
+						<w2:button class="btn_reset" id="btn_reset" ev:onclick="scwin.btn_reset_onclick" label="초기화">
+							<xf:image src="/InsWebApp/images/reload.png" style="width:20px;height:20px;" id="reload" alt="초기화 아이콘" />
+						</w2:button>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+
+			<xf:group class="content_area">
+				<xf:group class="grid_section">
+					<xf:group class="grid_header">
+						<w2:textbox class="grid_title" id="txt_gridTitle" label="간호사 목록"></w2:textbox>
+						<xf:group class="grid_buttons">
+							<w2:button class="btn_select_all" id="btn_select_all" ev:onclick="scwin.btn_select_all_onclick" label="전체선택">
+								<xf:image src="/InsWebApp/images/selectall.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;"
+									id="selectall" alt="아이콘" />
+							</w2:button>
+							<w2:button class="btn_excel" id="btn_excel" ev:onclick="scwin.btn_excel_onclick" label="엑셀 업로드">
+								<xf:image src="/InsWebApp/images/uploadfile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;"
+									id="uploadfile" alt="업로드 아이콘" />
+							</w2:button>
+							<w2:button class="btn_insert_multi" id="btn_insert_multi" ev:onclick="scwin.btn_insert_multi_onclick" label="다중 등록">
+								<xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;"
+									id="adduser1" alt="등록 아이콘" />
+							</w2:button>
+							<w2:button class="btn_update_multi" id="btn_update_multi" ev:onclick="scwin.btn_update_multi_onclick" label="다중 수정">
+								<xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;"
+									id="editprofile1" alt="수정 아이콘" />
+							</w2:button>
+							<w2:button class="btn_delete_multi" id="btn_delete_multi" ev:onclick="scwin.btn_delete_multi_onclick" label="선택 삭제">
+								<xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;margin-top:-5px;margin-right:10px;"
+									id="deletebutton1" alt="삭제 아이콘" />
+							</w2:button>
+						</xf:group>
+					</xf:group>
+
+					<w2:gridView class="grid_view" id="grd_nurseList" dataList="data:dlt_nurseList" style="width:100%;height:300px;"
+						scrollByColumn="false" defaultCellHeight="35" rowNumVisible="true" ev:oncellclick="scwin.grd_nurseList_oncellclick">
+						<w2:caption id="caption1" value="간호사 목록"></w2:caption>
+						<w2:header id="header1">
+							<w2:row id="row1">
+								<w2:column width="50" inputType="checkbox" style="height:35px" id="columnCheck" value="선택"
+									displayMode="label">
+								</w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="column2" value="근무자명" displayMode="label"></w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="column3" value="직급" displayMode="label"></w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="column4" value="연차" displayMode="label"></w2:column>
+								<w2:column width="633" inputType="text" style="height:35px" id="column5" value="특이사항" displayMode="label"></w2:column>
+								<w2:column width="180" inputType="text" style="height:35px" id="column6" value="입사일" displayMode="label"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody id="gBody1">
+							<w2:row id="row2">
+								<w2:column width="50" inputType="checkbox" style="height:35px" id="chk_select" value=""
+									displayMode="editType">
+								</w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="nurseName" value="" displayMode="label"></w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="position" value="" displayMode="label"></w2:column>
+								<w2:column width="150" inputType="text" style="height:35px" id="career" value="" displayMode="label"></w2:column>
+								<w2:column width="633" inputType="text" style="height:35px;" id="specialNote" value=""
+									displayMode="label">
+								</w2:column>
+								<w2:column width="180" inputType="text" style="height:35px" id="hireDate" value="" displayMode="label"></w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</xf:group>
+
+				<xf:group class="form_section">
+					<xf:group class="form_header">
+						<w2:textbox class="form_title" id="txt_formTitle" label="간호사 정보"></w2:textbox>
+						<xf:group class="form_buttons">
+							<w2:button class="btn_insert" id="btn_insert" ev:onclick="scwin.btn_insert_onclick" label="등록">
+								<xf:image src="/InsWebApp/images/adduser.png" style="width:20px;height:20px;" id="adduser2" alt="등록 아이콘" />
+							</w2:button>
+							<w2:button class="btn_update" id="btn_update" ev:onclick="scwin.btn_update_onclick" label="수정">
+								<xf:image src="/InsWebApp/images/editprofile.png" style="width:20px;height:20px;" id="editprofile2" alt="수정 아이콘" />
+							</w2:button>
+							<w2:button class="btn_delete" id="btn_delete" ev:onclick="scwin.btn_delete_onclick" label="삭제">
+								<xf:image src="/InsWebApp/images/deletebutton.png" style="width:20px;height:20px;" id="deletebutton2" alt="삭제 아이콘" />
+							</w2:button>
+						</xf:group>
+					</xf:group>
+
+					<xf:group class="form_content">
                         <xf:group class="form_row">
                             <xf:group class="form_item">
                                 <w2:textbox class="form_label required" id="lbl_nurseName_form" label="근무자명"></w2:textbox>
@@ -2761,8 +3243,8 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                                 <xf:input class="form_input" id="ipt_position" ref="data:dmp_nurseVo.position"></xf:input>
                             </xf:group>
                             <xf:group class="form_item">
-                                <w2:textbox class="form_label" id="lbl_workYear" label="연차"></w2:textbox>
-                                <xf:input class="form_input" id="ipt_workYear" ref="data:dmp_nurseVo.workYear"></xf:input>
+                                <w2:textbox class="form_label" id="lbl_career" label="연차"></w2:textbox>
+                                <xf:input class="form_input" id="ipt_career" ref="data:dmp_nurseVo.career"></xf:input>
                             </xf:group>
                         </xf:group>
                         
@@ -2780,8 +3262,8 @@ scwin.fn_excelUploadCallback = function(uploadData) {
                             </xf:group>
                         </xf:group>
                     </xf:group>
-                </xf:group>
-            </xf:group>
-        </xf:group>
-    </body>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
 </html>

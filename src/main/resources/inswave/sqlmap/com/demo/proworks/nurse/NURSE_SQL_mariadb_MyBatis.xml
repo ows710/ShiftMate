@@ -20,25 +20,25 @@
 		<!-- 간호사 정보를 등록 처리한다. -->
 		INSERT INTO nurse /* QueryID : com.demo.proworks.nurse.insertNurse */
 		(
-		nurse_id
-		<if test="position != null"> , position </if>
-		<if test="special_note != null"> , special_note </if>
-		<if test="created_at != null"> , created_at </if>
-		<if test="updated_at != null"> , updated_at </if>
-		<if test="hire_date != null"> , hire_date </if>
-		<if test="ward_id != null"> , ward_id </if>
-		<if test="career != null"> , career </if>
+		nurseId
+		<if test="nurseName != null">, nurseName </if>
+		<if test="position != null">, position </if>
+		<if test="specialNote != null">, specialNote </if>
+		<if test="createdAt != null">, createdAt </if>
+		<if test="updatedAt != null">, updatedAt </if>
+		<if test="hireDate != null">, hireDate </if>
+		<if test="career != null">, career </if>
 		)
 		VALUES
 		(
-		#{nurse_id}
-		<if test="position != null"> , #{position} </if>
-		<if test="special_note != null"> , #{special_note} </if>
-		<if test="created_at != null"> , STR_TO_DATE(#{created_at}, '%Y-%m-%d') </if>
-		<if test="updated_at != null"> , STR_TO_DATE(#{updated_at}, '%Y-%m-%d') </if>
-		<if test="hire_date != null"> , STR_TO_DATE(#{hire_date}, '%Y-%m-%d') </if>
-		<if test="ward_id != null"> , #{ward_id} </if>
-		<if test="career != null"> , #{career} </if>
+		(SELECT IFNULL(MAX(nurseId), 0) + 1 FROM nurse AS temp)
+		<if test="nurseName != null">, #{nurseName} </if>
+		<if test="position != null">, #{position} </if>
+		<if test="specialNote != null">, #{specialNote} </if>
+		<if test="createdAt != null">, STR_TO_DATE(#{createdAt}, '%Y-%m-%d %H:%i:%s') </if>
+		<if test="updatedAt != null">, STR_TO_DATE(#{updatedAt}, '%Y-%m-%d %H:%i:%s') </if>
+		<if test="hireDate != null">, STR_TO_DATE(#{hireDate}, '%Y-%m-%d %H:%i:%s') </if>
+		<if test="career != null">, #{career} </if>
 		)
 	</insert>
 
@@ -46,21 +46,22 @@
 		<!-- 간호사 정보를 갱신 처리한다. -->
 		UPDATE nurse /* QueryID : com.demo.proworks.nurse.updateNurse */
 		<trim prefix="SET" prefixOverrides=",">
+			<if test="nurseName != null">, nurseName = #{nurseName} </if>
 			<if test="position != null">, position = #{position} </if>
-			<if test="special_note != null">, special_note = #{special_note} </if>
-			<if test="updated_at != null">, updated_at = STR_TO_DATE(#{updated_at}, '%Y-%m-%d') </if>
-			<if test="hire_date != null">, hire_date = STR_TO_DATE(#{hire_date}, '%Y-%m-%d') </if>
-			<if test="ward_id != null">, ward_id = #{ward_id} </if>
+			<if test="specialNote != null">, specialNote = #{specialNote} </if>
+			<if test="updatedAt != null">, updatedAt = STR_TO_DATE(#{updatedAt}, '%Y-%m-%d') </if>
+			<if test="hireDate != null">, hireDate = STR_TO_DATE(#{hireDate}, '%Y-%m-%d') </if>
+			<if test="wardId != null">, wardId = #{wardId} </if>
 			<if test="career != null">, career = #{career} </if>
 		</trim>
-		WHERE nurse_id = #{nurse_id}
+		WHERE nurseId = #{nurseId}
 	</update>
 
 	<delete id="deleteNurse" parameterType="com.demo.proworks.nurse.vo.NurseVo">
 		<!-- 간호사 정보를 삭제 처리한다. -->
 		<![CDATA[
         DELETE FROM nurse   /* QueryID : com.demo.proworks.nurse.deleteNurse */  
-        WHERE   nurse_id = #{nurse_id}    
+        WHERE   nurseId = #{nurseId}    
 		]]>
 	</delete>
 
@@ -68,64 +69,58 @@
 		<!-- 간호사 정보를 상세 조회한다. -->
 		<![CDATA[
         SELECT   /* QueryID : com.demo.proworks.nurse.selectNurse */  
-              n.nurse_id AS nurse_id, 
-              e.empno AS empno,
-              e.ename AS nurse_name,
-              n.position, 
-              n.special_note AS special_note,
-              DATE_FORMAT(n.created_at, '%Y-%m-%d') AS created_at,
-              DATE_FORMAT(n.updated_at, '%Y-%m-%d') AS updated_at,
-              DATE_FORMAT(n.hire_date, '%Y-%m-%d') AS hire_date,
-              n.ward_id AS ward_id, 
-              n.career,
-              w.ward_name AS ward_name
+              nurseId,
+              nurseName, 
+              position, 
+              specialNote,
+              DATE_FORMAT(createdAt, '%Y-%m-%d') AS createdAt,
+              DATE_FORMAT(updatedAt, '%Y-%m-%d') AS updatedAt,
+              DATE_FORMAT(hireDate, '%Y-%m-%d') AS hireDate,
+              wardId, 
+              career,
+              (SELECT wardName FROM ward WHERE wardId = n.wardId) AS wardName
         FROM nurse n
-        LEFT JOIN emp e ON n.nurse_id = e.empno
-        LEFT JOIN ward w ON n.ward_id = w.ward_id
-        WHERE n.nurse_id = #{nurse_id}  
+        WHERE nurseId = #{nurseId}  
 		]]>
 	</select>
 
 	<select id="selectListNurse" parameterType="com.demo.proworks.nurse.vo.NurseVo" resultType="com.demo.proworks.nurse.vo.NurseVo">
 		<!-- 간호사 정보 목록을 조회한다. -->
 		SELECT /* QueryID : com.demo.proworks.nurse.selectListNurse */
-		A.nurse_id AS nurse_id,
-		A.empno AS empno,
-		A.ename AS nurse_name,
+		A.nurseId,
+		A.nurseName,
 		A.position,
-		A.special_note AS specialNote,
-		DATE_FORMAT(A.created_at, '%Y-%m-%d') AS created_at,
-		DATE_FORMAT(A.updated_at, '%Y-%m-%d') AS updated_at,
-		DATE_FORMAT(A.hire_date, '%Y-%m-%d') AS hire_date,
-		A.ward_id AS ward_id,
+		A.specialNote,
+		DATE_FORMAT(A.createdAt,
+		'%Y-%m-%d') AS createdAt,
+		DATE_FORMAT(A.updatedAt, '%Y-%m-%d') AS updatedAt,
+		DATE_FORMAT(A.hireDate, '%Y-%m-%d') AS hireDate,
+		A.wardId,
 		A.career,
-		A.ward_name AS ward_name
+		A.wardName
 		FROM (
 		SELECT S.*,
 		CEIL((@ROWNUM:=@ROWNUM+1) / #{pageSize}) AS PAGE
 		FROM (
 		SELECT
 		n.*,
-		e.empno,
-		e.ename,
-		w.ward_name
+		(SELECT wardName FROM ward WHERE
+		wardId = n.wardId) AS wardName
 		FROM nurse n
-		LEFT JOIN emp e ON n.nurse_id = e.empno
-		LEFT JOIN ward w ON n.ward_id = w.ward_id
 		WHERE 1=1
 		<if test="!( scNurseId == null  or scNurseId == ''  )">
-			AND n.nurse_id = #{scNurseId}
+			AND n.nurseId = #{scNurseId}
 		</if>
 		<if test="!( scNurseName == null  or scNurseName == '' )">
-			AND e.ename LIKE CONCAT('%',#{scNurseName},'%')
+			AND n.nurseName LIKE CONCAT('%',#{scNurseName},'%')
 		</if>
 		<if test="!( scPosition == null  or scPosition == '' )">
 			AND n.position LIKE CONCAT('%',#{scPosition},'%')
 		</if>
 		<if test="!( scWardId == null  or scWardId == ''  )">
-			AND n.ward_id = #{scWardId}
+			AND n.wardId = #{scWardId}
 		</if>
-		ORDER BY n.nurse_id ASC
+		ORDER BY n.nurseId ASC
 		) S, (SELECT @ROWNUM := 0) TMP
 		) A
 		WHERE A.PAGE = #{pageIndex}
@@ -136,34 +131,31 @@
 		SELECT /* QueryID : com.demo.proworks.nurse.selectListCountNurse */
 		COUNT(*) totcnt
 		FROM nurse n
-		LEFT JOIN emp e ON n.nurse_id = e.empno
-		LEFT
-		JOIN ward w ON n.ward_id = w.ward_id
 		WHERE 1=1
 		<if test="!( scNurseId == null  or scNurseId == ''  )">
-			AND n.nurse_id = #{scNurseId}
+			AND n.nurseId = #{scNurseId}
 		</if>
 		<if test="!( scNurseName == null  or scNurseName == '' )">
-			AND e.ename LIKE CONCAT('%',#{scNurseName},'%')
+			AND n.nurseName LIKE CONCAT('%',#{scNurseName},'%')
 		</if>
 		<if test="!( scPosition == null  or scPosition == '' )">
 			AND n.position LIKE CONCAT('%',#{scPosition},'%')
 		</if>
 		<if test="!( scWardId == null  or scWardId == ''  )">
-			AND n.ward_id = #{scWardId}
+			AND n.wardId = #{scWardId}
 		</if>
 	</select>
 
-	<select id="selectListWard" parameterType="java.util.HashMap" resultType="com.demo.proworks.ward.vo.WardVo">
+	<select id="selectListWard" parameterType="java.util.HashMap" resultType="com.demo.proworks.nurse.vo.WardVo">
 		<!-- 병동 정보 목록을 조회한다. -->
 		SELECT /* QueryID : com.demo.proworks.nurse.selectListWard */
-		ward_id, ward_name
+		wardId, wardName
 		FROM ward
-		ORDER BY ward_name ASC
+		ORDER BY wardName ASC
 	</select>
 
 	<select id="selectMaxNurseId" resultType="int">
-		SELECT IFNULL(MAX(nurse_id), 0) FROM nurse
+		SELECT IFNULL(MAX(nurseId), 0) FROM nurse
 	</select>
 
 </mapper> 

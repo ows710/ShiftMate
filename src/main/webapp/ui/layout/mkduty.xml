@@ -96,22 +96,22 @@ scwin.waitForDOMReady = function() {
         
         if (document.readyState === 'complete' && document.body && 
             mainContainer && sideMenuArea && mainContentArea) {
-            console.log("✅ DOM 준비 완료!");
+            console.log("DOM 준비 완료!");
             scwin.initializeLayout();
             scwin.waitForFramesAndSetup();
             scwin.setupPostMessageListener();
             
             // 전역 함수로 등록
             window.toggleSidebarFromHeader = scwin.toggleSidebar;
-            console.log("✅ 전역 함수 등록 완료");
+            console.log("전역 함수 등록 완료");
             
             // 초기 햄버거 아이콘 상태 설정
             scwin.updateHamburgerIcon(scwin.sidebarVisible);
-            console.log("✅ 초기 햄버거 아이콘 상태 설정 완료");
+            console.log("초기 햄버거 아이콘 상태 설정 완료");
         } else if (attempts < maxAttempts) {
             setTimeout(checkDOMReady, 100);
         } else {
-            console.error("❌ DOM 준비 타임아웃!");
+            console.error("DOM 준비 타임아웃!");
             scwin.initializeLayout();
             scwin.waitForFramesAndSetup();
             scwin.setupPostMessageListener();
@@ -127,7 +127,7 @@ scwin.initializeLayout = function() {
     // 브라우저 스크롤 완전 제거
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
-    console.log("✅ 레이아웃 초기화 완료");
+    console.log("레이아웃 초기화 완료");
 };
 
 scwin.waitForFramesAndSetup = function() {
@@ -141,11 +141,10 @@ scwin.waitForFramesAndSetup = function() {
             var headerReady = wfr_header && wfr_header.getWindow && wfr_header.getWindow();
             var sideMenuReady = wfr_sideMenu && wfr_sideMenu.getWindow && wfr_sideMenu.getWindow();
             var mainReady = wfr_mainContent && wfr_mainContent.getWindow && wfr_mainContent.getWindow();
-            var tabControlReady = wfr_tabControl && wfr_tabControl.getWindow && wfr_tabControl.getWindow();
             
-            if (headerReady && sideMenuReady && mainReady && tabControlReady) {
+            if (headerReady && sideMenuReady && mainReady) {
                 clearInterval(checkInterval);
-                console.log("✅ 모든 WFrame 로드 완료 (" + attempts + "/50)");
+                console.log("모든 WFrame 로드 완료 (" + attempts + "/50)");
                 scwin.setupFrameCommunication();
                 
                 // 현재 URL에 해당하는 메뉴 활성화 (약간의 지연 후)
@@ -154,12 +153,12 @@ scwin.waitForFramesAndSetup = function() {
                 }, 500);
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
-                console.warn("⚠️ WFrame 로드 타임아웃");
+                console.warn("WFrame 로드 타임아웃");
             }
         } catch (e) {
             if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
-                console.error("❌ WFrame 로드 실패:", e);
+                console.error("WFrame 로드 실패:", e);
             }
         }
     }, 100);
@@ -172,17 +171,7 @@ scwin.setupFrameCommunication = function() {
             var sideMenuWindow = wfr_sideMenu.getWindow();
             if (sideMenuWindow && sideMenuWindow.scwin) {
                 sideMenuWindow.scwin.onMenuClick = scwin.handleMenuClick;
-                console.log("✅ 사이드메뉴 통신 연결");
-            }
-        }
-        
-        // 탭 컨트롤 통신 설정
-        if (wfr_tabControl && wfr_tabControl.getWindow) {
-            var tabControlWindow = wfr_tabControl.getWindow();
-            if (tabControlWindow && tabControlWindow.scwin) {
-                // 탭 컨트롤에서 메인 콘텐츠 변경 함수 연결
-                tabControlWindow.scwin.changeMainContentFromTab = scwin.changeMainContentFromTab;
-                console.log("✅ 탭 컨트롤 통신 연결");
+                console.log("사이드메뉴 통신 연결");
             }
         }
         
@@ -192,7 +181,7 @@ scwin.setupFrameCommunication = function() {
         // 메인 콘텐츠 프레임 로드 이벤트 감지
         scwin.setupMainContentLoadListener();
         
-        console.log("✅ 프레임 간 통신 설정 완료");
+        console.log("프레임 간 통신 설정 완료");
     } catch (e) {
         console.error("프레임 통신 설정 오류:", e);
     }
@@ -223,7 +212,7 @@ scwin.setupMainContentLoadListener = function() {
                 }, 500);
             };
             
-            console.log("✅ 메인 콘텐츠 로드 리스너 설정 완료");
+            console.log("메인 콘텐츠 로드 리스너 설정 완료");
         }
     } catch (e) {
         console.error("메인 콘텐츠 로드 리스너 설정 오류:", e);
@@ -249,7 +238,7 @@ scwin.setupHeaderCommunication = function() {
                     // 추가적인 통신 방법 - 전역 함수로도 등록
                     headerWindow.toggleSidebarFromHeader = scwin.toggleSidebar;
                     
-                    console.log("✅ 헤더 통신 연결 완료");
+                    console.log("헤더 통신 연결 완료");
                     return true;
                 }
             }
@@ -260,7 +249,7 @@ scwin.setupHeaderCommunication = function() {
         if (attempts < maxAttempts) {
             setTimeout(setupHeader, 200);
         } else {
-            console.error("❌ 헤더 통신 설정 실패 - 최대 시도 횟수 초과");
+            console.error("헤더 통신 설정 실패 - 최대 시도 횟수 초과");
         }
         
         return false;
@@ -295,7 +284,7 @@ scwin.toggleSidebarWithRetry = function(attempt) {
                 }, 100);
                 return;
             } else {
-                console.error("❌ 모든 재시도 실패 - 필수 요소를 찾을 수 없습니다!");
+                console.error("모든 재시도 실패 - 필수 요소를 찾을 수 없습니다!");
                 scwin.debugDOMStructure();
                 alert("사이드바 요소를 찾을 수 없습니다. 페이지를 새로고침해주세요.");
                 return;
@@ -324,7 +313,7 @@ scwin.toggleSidebarWithRetry = function(attempt) {
         console.log("사이드바 토글 완료! 새로운 상태:", scwin.sidebarVisible);
         
     } catch (e) {
-        console.error("❌ 사이드바 토글 오류:", e);
+        console.error("사이드바 토글 오류:", e);
         if (attempt < maxAttempts - 1) {
             setTimeout(function() {
                 scwin.toggleSidebarWithRetry(attempt + 1);
@@ -386,24 +375,15 @@ scwin.updateHamburgerIcon = function(isVisible) {
     }
 };
 
-// 메뉴 클릭 처리 (개선된 방식)
+// 메뉴 클릭 처리 (간단한 방식)
 scwin.handleMenuClick = function(menuId, menuUrl) {
     try {
         console.log("메뉴 클릭:", menuId, "->", menuUrl);
         
-        // 메뉴 ID에 해당하는 탭 제목 매핑
-        var tabTitle = scwin.getTabTitleFromMenuId(menuId);
-        
-        // 탭 컨트롤이 보이도록 강제 표시 (먼저 실행)
-        scwin.ensureTabControlVisible();
-        
-        // 탭 컨트롤에 탭 추가 (재시도 로직 포함)
-        scwin.addTabToControlWithRetry(menuId, tabTitle, menuUrl, true, 0);
-        
         // 메인 콘텐츠 변경
         if (wfr_mainContent && menuUrl) {
             wfr_mainContent.setSrc(menuUrl);
-            console.log("✅ 메인 콘텐츠 변경:", menuUrl);
+            console.log("메인 콘텐츠 변경:", menuUrl);
         }
         
         // 활성 메뉴 업데이트 (재시도 로직 포함)
@@ -412,295 +392,8 @@ scwin.handleMenuClick = function(menuId, menuUrl) {
         // 현재 활성 메뉴 ID 저장
         scwin.currentActiveMenuId = menuId;
         
-        // 2초 후 탭 컨트롤 상태 재확인
-        setTimeout(function() {
-            scwin.ensureTabControlVisible();
-        }, 2000);
-        
     } catch (e) {
         console.error("메뉴 클릭 처리 오류:", e);
-    }
-};
-
-// 재시도 로직이 포함된 탭 추가 함수
-scwin.addTabToControlWithRetry = function(tabId, tabTitle, tabUrl, isActive, attempt) {
-    var maxAttempts = 20; // 최대 시도 횟수 증가
-    attempt = attempt || 0;
-    
-    console.log("탭 추가 시도:", (attempt + 1) + "/" + maxAttempts, "탭ID:", tabId);
-    
-    try {
-        // 1. 탭 컨트롤 프레임 확인
-        if (!wfr_tabControl) {
-            console.error("탭 컨트롤 프레임이 없습니다!");
-            if (attempt < maxAttempts - 1) {
-                setTimeout(function() {
-                    scwin.addTabToControlWithRetry(tabId, tabTitle, tabUrl, isActive, attempt + 1);
-                }, 500);
-            }
-            return;
-        }
-        
-        // 2. 탭 컨트롤 윈도우 확인
-        var tabControlWindow = wfr_tabControl.getWindow();
-        if (!tabControlWindow) {
-            console.log("탭 컨트롤 윈도우가 아직 로드되지 않음, 재시도...");
-            if (attempt < maxAttempts - 1) {
-                setTimeout(function() {
-                    scwin.addTabToControlWithRetry(tabId, tabTitle, tabUrl, isActive, attempt + 1);
-                }, 300);
-            }
-            return;
-        }
-        
-        // 3. 탭 컨트롤 scwin 객체 확인
-        if (!tabControlWindow.scwin) {
-            console.log("탭 컨트롤 scwin 객체가 아직 준비되지 않음, 재시도...");
-            if (attempt < maxAttempts - 1) {
-                setTimeout(function() {
-                    scwin.addTabToControlWithRetry(tabId, tabTitle, tabUrl, isActive, attempt + 1);
-                }, 300);
-            }
-            return;
-        }
-        
-        // 4. addTab 함수 확인
-        if (!tabControlWindow.scwin.addTab) {
-            console.log("탭 컨트롤 addTab 함수가 아직 준비되지 않음, 재시도...");
-            if (attempt < maxAttempts - 1) {
-                setTimeout(function() {
-                    scwin.addTabToControlWithRetry(tabId, tabTitle, tabUrl, isActive, attempt + 1);
-                }, 300);
-            }
-            return;
-        }
-        
-        // 5. 탭 추가 실행
-        console.log("탭 컨트롤에 탭 추가 실행:", tabId, tabTitle, tabUrl);
-        tabControlWindow.scwin.addTab(tabId, tabTitle, tabUrl, isActive);
-        console.log("✅ 웹스퀘어 탭 컨트롤에 탭 추가 완료:", tabId);
-        
-        // 6. 탭 컨트롤이 보이도록 강제 표시
-        scwin.ensureTabControlVisible();
-        
-    } catch (e) {
-        console.error("탭 추가 오류:", e);
-        if (attempt < maxAttempts - 1) {
-            setTimeout(function() {
-                scwin.addTabToControlWithRetry(tabId, tabTitle, tabUrl, isActive, attempt + 1);
-            }, 300);
-        } else {
-            console.error("❌ 모든 재시도 실패");
-            // 마지막 시도로 메인 콘텐츠만 변경
-            if (wfr_mainContent && tabUrl) {
-                wfr_mainContent.setSrc(tabUrl);
-                console.log("✅ 메인 콘텐츠만 변경:", tabUrl);
-            }
-        }
-    }
-};
-
-// 탭 컨트롤이 보이도록 강제 표시하는 함수
-scwin.ensureTabControlVisible = function() {
-    try {
-        // 탭 컨트롤 프레임 요소 찾기
-        var tabControlFrame = document.getElementById('wfr_tabControl') || 
-                             document.getElementById('mf_wfr_tabControl') ||
-                             document.querySelector('[id*="wfr_tabControl"]');
-        
-        if (tabControlFrame) {
-            // 탭 컨트롤이 보이도록 스타일 강제 적용
-            tabControlFrame.style.display = 'block';
-            tabControlFrame.style.visibility = 'visible';
-            tabControlFrame.style.height = '50px';
-            tabControlFrame.style.opacity = '1';
-            tabControlFrame.style.zIndex = '100';
-            
-            // 탭 컨트롤 내부의 실제 탭 컨트롤 요소도 확인
-            if (tabControlFrame.contentDocument) {
-                var tabContainer = tabControlFrame.contentDocument.querySelector('.tab-container');
-                if (tabContainer) {
-                    tabContainer.style.display = 'block';
-                    tabContainer.style.visibility = 'visible';
-                    tabContainer.style.height = '50px';
-                }
-            }
-            
-            console.log("✅ 탭 컨트롤 강제 표시 완료");
-        }
-        
-        // 탭 컨트롤 윈도우에서도 강제 표시
-        if (wfr_tabControl && wfr_tabControl.getWindow) {
-            var tabControlWindow = wfr_tabControl.getWindow();
-            if (tabControlWindow && tabControlWindow.scwin && tabControlWindow.scwin.ensureVisible) {
-                tabControlWindow.scwin.ensureVisible();
-            }
-        }
-        
-    } catch (e) {
-        console.error("탭 컨트롤 강제 표시 오류:", e);
-    }
-};
-
-// 메뉴 ID에 해당하는 탭 제목 반환
-scwin.getTabTitleFromMenuId = function(menuId) {
-    var menuTitleMap = {
-        'menu_duty_manage': '근무자 관리',
-        'menu_schedule_manage': '스케줄 관리',
-        'menu_my_schedule': '내 스케줄 보기',
-        'menu_work_input': '희망 근무 입력'
-    };
-    return menuTitleMap[menuId] || '새 탭';
-};
-
-// 탭 컨트롤에 탭 추가
-scwin.addTabToControl = function(tabId, tabTitle, tabUrl, isActive) {
-    try {
-        if (wfr_tabControl && wfr_tabControl.getWindow) {
-            var tabControlWindow = wfr_tabControl.getWindow();
-            if (tabControlWindow && tabControlWindow.scwin && tabControlWindow.scwin.addTab) {
-                tabControlWindow.scwin.addTab(tabId, tabTitle, tabUrl, isActive);
-                console.log("✅ 탭 컨트롤에 탭 추가 완료:", tabId);
-            } else {
-                console.warn("탭 컨트롤이 준비되지 않았습니다.");
-            }
-        }
-    } catch (e) {
-        console.error("탭 컨트롤 탭 추가 오류:", e);
-    }
-};
-
-// 탭에서 메인 콘텐츠 변경
-scwin.changeMainContentFromTab = function(tabUrl) {
-    try {
-        console.log("=== 탭에서 메인 콘텐츠 변경 시작 ===");
-        console.log("요청된 URL:", tabUrl);
-        console.log("메인 콘텐츠 프레임 존재:", !!wfr_mainContent);
-        
-        if (wfr_mainContent && tabUrl) {
-            // 메인 콘텐츠 변경
-            console.log("메인 콘텐츠 변경 실행:", tabUrl);
-            wfr_mainContent.setSrc(tabUrl);
-            console.log("✅ 탭에서 메인 콘텐츠 변경 완료:", tabUrl);
-            
-            // 현재 활성 탭 URL 저장
-            scwin.currentActiveTabUrl = tabUrl;
-            
-            // URL에 해당하는 메뉴 ID 찾기
-            var menuId = scwin.getMenuIdFromUrl(tabUrl);
-            if (menuId) {
-                console.log("탭 변경에 따른 메뉴 활성화:", menuId);
-                scwin.updateSideMenuActiveMenuWithRetry(menuId, 0);
-                scwin.currentActiveMenuId = menuId;
-            } else {
-                console.log("URL에 해당하는 메뉴 ID를 찾을 수 없음:", tabUrl);
-            }
-            
-            // 메인 콘텐츠 변경 후 약간의 지연을 두고 상태 확인
-            setTimeout(function() {
-                scwin.ensureTabControlVisible();
-            }, 500);
-            
-        } else {
-            console.error("❌ 메인 콘텐츠 프레임이 없거나 URL이 없습니다:", {
-                hasMainContent: !!wfr_mainContent,
-                tabUrl: tabUrl
-            });
-        }
-        
-        console.log("=== 탭에서 메인 콘텐츠 변경 종료 ===");
-        
-    } catch (e) {
-        console.error("❌ 탭에서 메인 콘텐츠 변경 오류:", e);
-        console.error("오류 스택:", e.stack);
-    }
-};
-
-// 탭 닫기 이벤트 처리
-scwin.onTabClosed = function(tabId) {
-    try {
-        console.log("탭 닫기 이벤트 처리:", tabId);
-        
-        // 탭이 닫힌 후 남은 탭 개수 확인
-        setTimeout(async function() {
-            try {
-                if (wfr_tabControl && wfr_tabControl.getWindow) {
-                    var tabControlWindow = wfr_tabControl.getWindow();
-                    if (tabControlWindow && tabControlWindow.scwin) {
-                        // 새로운 함수를 사용하여 기본 탭 존재 확인 및 추가
-                        if (tabControlWindow.scwin.ensureDefaultTabExists) {
-                            var tabAdded = await tabControlWindow.scwin.ensureDefaultTabExists();
-                            if (tabAdded) {
-                                // 메인 콘텐츠도 근무자 관리로 변경
-                                scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
-                                
-                                // 사이드메뉴 활성 메뉴도 업데이트
-                                scwin.updateSideMenuActiveMenuWithRetry("menu_duty_manage", 0);
-                                scwin.currentActiveMenuId = "menu_duty_manage";
-                                
-                                console.log("✅ 근무자 관리 탭 복원 완료");
-                            }
-                        } else {
-                            // 기존 방식으로 폴백
-                            var tabCount = 0;
-                            
-                            // 방법 1: getTabCount API 사용
-                            if (tabControlWindow.scwin.tab1 && tabControlWindow.scwin.tab1.getTabCount) {
-                                try {
-                                    tabCount = await tabControlWindow.scwin.tab1.getTabCount();
-                                } catch (e) {
-                                    console.log("getTabCount API 실패, DOM으로 확인");
-                                }
-                            }
-                            
-                            // 방법 2: DOM으로 확인
-                            if (tabCount === 0) {
-                                var visibleTabs = tabControlWindow.document.querySelectorAll('.w2_tabControl_tab:not([style*="display: none"]):not([style*="visibility: hidden"])');
-                                tabCount = visibleTabs.length;
-                            }
-                            
-                            console.log("현재 탭 개수:", tabCount);
-                            
-                            // 탭이 하나도 없으면 근무자 관리 탭 추가
-                            if (tabCount === 0) {
-                                console.log("모든 탭이 닫혔습니다. 근무자 관리 탭을 추가합니다.");
-                                
-                                // 탭 컨트롤에 근무자 관리 탭 추가
-                                if (tabControlWindow.scwin.addTab) {
-                                    await tabControlWindow.scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
-                                }
-                                
-                                // 메인 콘텐츠도 근무자 관리로 변경
-                                scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
-                                
-                                // 사이드메뉴 활성 메뉴도 업데이트
-                                scwin.updateSideMenuActiveMenuWithRetry("menu_duty_manage", 0);
-                                scwin.currentActiveMenuId = "menu_duty_manage";
-                                
-                                console.log("✅ 근무자 관리 탭 복원 완료");
-                            }
-                        }
-                    }
-                }
-            } catch (e) {
-                console.error("탭 닫기 후 처리 오류:", e);
-                // 오류 발생 시에도 안전하게 근무자 관리 탭 추가
-                try {
-                    scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
-                    if (wfr_tabControl && wfr_tabControl.getWindow) {
-                        var tabControlWindow = wfr_tabControl.getWindow();
-                        if (tabControlWindow && tabControlWindow.scwin && tabControlWindow.scwin.addTab) {
-                            await tabControlWindow.scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
-                        }
-                    }
-                } catch (addError) {
-                    console.error("근무자 관리 탭 복원 실패:", addError);
-                }
-            }
-        }, 200); // 200ms 지연으로 탭 닫기 완료 후 확인
-        
-    } catch (e) {
-        console.error("탭 닫기 이벤트 처리 오류:", e);
     }
 };
 
@@ -718,7 +411,7 @@ scwin.updateSideMenuActiveMenuWithRetry = function(menuId, attempt) {
                 // setActiveMenu 함수가 있는지 확인
                 if (sideMenuWindow.scwin.setActiveMenu) {
                     sideMenuWindow.scwin.setActiveMenu(menuId);
-                    console.log("✅ 사이드메뉴 활성 메뉴 업데이트 완료:", menuId);
+                    console.log("사이드메뉴 활성 메뉴 업데이트 완료:", menuId);
                     return;
                 } else {
                     console.log("setActiveMenu 함수가 없습니다. 직접 DOM 조작 시도...");
@@ -735,7 +428,7 @@ scwin.updateSideMenuActiveMenuWithRetry = function(menuId, attempt) {
                 scwin.updateSideMenuActiveMenuWithRetry(menuId, attempt + 1);
             }, 200);
         } else {
-            console.error("❌ 사이드메뉴 활성 메뉴 업데이트 실패 - 최대 시도 횟수 초과");
+            console.error("사이드메뉴 활성 메뉴 업데이트 실패 - 최대 시도 횟수 초과");
             // 마지막 시도로 직접 DOM 조작
             scwin.setActiveMenuDirectly(menuId);
         }
@@ -747,7 +440,7 @@ scwin.updateSideMenuActiveMenuWithRetry = function(menuId, attempt) {
                 scwin.updateSideMenuActiveMenuWithRetry(menuId, attempt + 1);
             }, 200);
         } else {
-            console.error("❌ 모든 재시도 실패");
+            console.error("모든 재시도 실패");
         }
     }
 };
@@ -771,9 +464,9 @@ scwin.setActiveMenuDirectly = function(menuId) {
                 
                 if (targetMenuItem) {
                     targetMenuItem.classList.add('active', 'selected', 'current');
-                    console.log("✅ 직접 DOM 조작으로 활성 메뉴 설정 완료:", menuId);
+                    console.log("직접 DOM 조작으로 활성 메뉴 설정 완료:", menuId);
                 } else {
-                    console.warn("⚠️ 대상 메뉴 아이템을 찾을 수 없습니다:", menuId);
+                    console.warn("대상 메뉴 아이템을 찾을 수 없습니다:", menuId);
                 }
             }
         }
@@ -791,7 +484,7 @@ scwin.changeMainContent = function(src, menuId) {
     try {
         if (wfr_mainContent) {
             wfr_mainContent.setSrc(src);
-            console.log("✅ 메인 콘텐츠 변경:", src);
+            console.log("메인 콘텐츠 변경:", src);
             
             // 메뉴 ID가 제공된 경우 활성 메뉴 업데이트
             if (menuId) {
@@ -844,11 +537,11 @@ scwin.setupPostMessageListener = function() {
             scwin.toggleSidebar();
         } else if (event.data && event.data.action === 'changeMainContent') {
             console.log("postMessage를 통한 메인 콘텐츠 변경 요청:", event.data.url);
-            scwin.changeMainContentFromTab(event.data.url);
+            scwin.changeMainContent(event.data.url);
         }
     });
     
-    console.log("✅ postMessage 리스너 설정 완료");
+    console.log("postMessage 리스너 설정 완료");
 };
 ]]></script>
     </head>
@@ -869,12 +562,11 @@ scwin.setupPostMessageListener = function() {
                     <w2:wframe id="wfr_sideMenu" style="width:100%;height:100%;" src="/InsWebApp/ui/cmmn/sidebar.xml"/>
                 </xf:group>
                 
-                <!-- 메인 콘텐츠 (나머지 공간 100% 활용, 세로 스크롤 추가) -->
+                <!-- 메인 콘텐츠 (전체 공간 활용) -->
                 <xf:group
                 	style="margin-left:250px;width:calc(100% - 250px);height:100%;background-color:#f5f7fa;overflow-y:auto;overflow-x:hidden;"
                 	id="grp_mainContent" class="main-content-expanded">
-                	<w2:wframe style="height: 50px;border:none;margin:0;padding:0;background:#f8f9fa;" id="wfr_tabControl" src="/InsWebApp/ui/cmmn/tabControl.xml"/>
-                	<w2:wframe id="wfr_mainContent" style="width:100%;height:calc(100% - 50px);min-height:calc(100% - 50px);border:none;margin:0;padding:0;"
+                	<w2:wframe id="wfr_mainContent" style="width:100%;height:100%;border:none;margin:0;padding:0;"
                 		src="/InsWebApp/ui/nurse/NurseManage.xml"/>
                 </xf:group>
 

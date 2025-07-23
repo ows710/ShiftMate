@@ -81,6 +81,12 @@ export default {
     "processMsgWidth": {
       "@value": "295"
     },
+    "processMsgType": {
+      "@value": ""
+    },
+    "processMsgFrameURL": {
+      "@value": ""
+    },
     "processMsgBackground": {
       "@backgroundColor": "#112233",
       "@value": "true"
@@ -689,6 +695,9 @@ export default {
     },
     "disableDuplicateIdAlert": {
       "@value": "false"
+    },
+    "processMsgURL": {
+      "@value": "/InsWebApp/ui/cmmn/processMsg.xml"
     }
   }
 }

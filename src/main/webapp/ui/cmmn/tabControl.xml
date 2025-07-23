@@ -261,7 +261,7 @@ scwin.waitForTabControl = function() {
         
         // tab1 객체가 존재하고 필요한 메서드들이 있는지 확인
         if (typeof tab1 !== 'undefined' && tab1.addTab && tab1.getTab && tab1.setSelectedTabIndex) {
-            console.log("✅ 탭 컨트롤 로드 완료!");
+            console.log("탭 컨트롤 로드 완료!");
             scwin.initializeTabControl();
         } else {
             if (attempts < maxAttempts) {
@@ -291,7 +291,7 @@ scwin.initializeTabControl = function() {
             // 기본 탭 추가 (근무자 관리)
             scwin.addTab("menu_duty_manage", "근무자 관리", "/InsWebApp/ui/nurse/NurseManage.xml", true);
         } else {
-            console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 기본 탭 추가를 건너뜁니다.");
+            console.warn("탭 컨트롤이 로드되지 않았습니다. 기본 탭 추가를 건너뜁니다.");
         }
         
         // 탭 클릭 이벤트를 위한 DOM 이벤트 리스너 추가 (백업용)
@@ -499,7 +499,7 @@ scwin.setupTabClickListeners = function() {
         document.body.style.overflow = 'visible';
         document.documentElement.style.overflow = 'visible';
         
-        console.log("✅ 탭 컨트롤 강제 표시 완료");
+        console.log("탭 컨트롤 강제 표시 완료");
         
     } catch (e) {
         console.error("탭 컨트롤 강제 표시 오류:", e);
@@ -514,7 +514,7 @@ scwin.setupParentCommunication = function() {
             window.parent.scwin.addTabToControl = scwin.addTab;
             window.parent.scwin.activateTabInControl = scwin.activateTab;
             window.parent.scwin.closeTabInControl = scwin.closeTab;
-            console.log("✅ 부모 프레임과 탭 컨트롤 통신 설정 완료");
+            console.log("부모 프레임과 탭 컨트롤 통신 설정 완료");
         }
     } catch (e) {
         console.error("부모 프레임 통신 설정 오류:", e);
@@ -528,7 +528,7 @@ scwin.addTab = async function(tabId, tabTitle, tabUrl, isActive) {
         
         // 탭 컨트롤이 로드되었는지 확인
         if (typeof tab1 === 'undefined' || !tab1.addTab) {
-            console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 탭 추가를 건너뜁니다.");
+            console.warn("탭 컨트롤이 로드되지 않았습니다. 탭 추가를 건너뜁니다.");
             return;
         }
         
@@ -570,7 +570,7 @@ scwin.addTab = async function(tabId, tabTitle, tabUrl, isActive) {
             await scwin.activateTab(tabId);
         }
         
-        console.log("✅ 탭 추가 완료:", tabId);
+        console.log("탭 추가 완료:", tabId);
         
         // 탭 추가 후 탭 요소에 데이터 속성 설정
         setTimeout(function() {
@@ -607,13 +607,13 @@ scwin.activateTab = async function(tabId) {
         
         // 탭 컨트롤이 로드되었는지 확인
         if (typeof tab1 === 'undefined' || !tab1.setSelectedTabIndex) {
-            console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 탭 활성화를 건너뜁니다.");
+            console.warn("탭 컨트롤이 로드되지 않았습니다. 탭 활성화를 건너뜁니다.");
             return;
         }
         
         // 해당 탭을 활성화
         await tab1.setSelectedTabIndex(tabId);
-        console.log("✅ 탭 활성화 완료:", tabId);
+        console.log("탭 활성화 완료:", tabId);
         
         // 부모 프레임에 활성 탭 정보 전달
         if (window.parent && window.parent.scwin) {
@@ -632,7 +632,7 @@ scwin.closeTab = async function(tabId) {
         
         // 탭 컨트롤이 로드되었는지 확인
         if (typeof tab1 === 'undefined' || !tab1.removeTab) {
-            console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 탭 닫기를 건너뜁니다.");
+            console.warn("탭 컨트롤이 로드되지 않았습니다. 탭 닫기를 건너뜁니다.");
             return;
         }
         
@@ -644,7 +644,7 @@ scwin.closeTab = async function(tabId) {
         
         // 탭 제거
         await tab1.removeTab(tabId);
-        console.log("✅ 탭 닫기 완료:", tabId);
+        console.log("탭 닫기 완료:", tabId);
         
     } catch (e) {
         console.error("탭 닫기 오류:", e);
@@ -656,7 +656,7 @@ scwin.findTabById = async function(tabId) {
     try {
         // 탭 컨트롤이 로드되었는지 확인
         if (typeof tab1 === 'undefined' || !tab1.getTab) {
-            console.warn("⚠️ 탭 컨트롤이 로드되지 않았습니다. 탭 찾기를 건너뜁니다.");
+            console.warn("탭 컨트롤이 로드되지 않았습니다. 탭 찾기를 건너뜁니다.");
             return null;
         }
         
@@ -686,7 +686,7 @@ scwin.tab1_onclick = function(tabId) {
         // 1. 저장된 URL 정보 확인 (우선순위 1)
         if (scwin.tabUrlMap && scwin.tabUrlMap[tabId]) {
             finalUrl = scwin.tabUrlMap[tabId];
-            console.log("✅ 저장된 URL 정보 사용:", finalUrl);
+            console.log("저장된 URL 정보 사용:", finalUrl);
         } else {
             // 2. URL 추정 (우선순위 2)
             finalUrl = scwin.getUrlFromTabId(tabId);
@@ -701,14 +701,14 @@ scwin.tab1_onclick = function(tabId) {
             if (window.parent.scwin.changeMainContentFromTab) {
                 try {
                     window.parent.scwin.changeMainContentFromTab(finalUrl);
-                    console.log("✅ 메인 콘텐츠 변경 요청 완료");
+                    console.log("메인 콘텐츠 변경 요청 완료");
                 } catch (e) {
                     console.error("메인 콘텐츠 변경 함수 호출 실패:", e);
                     // 대체 방법 시도
                     scwin.fallbackMainContentChange(finalUrl);
                 }
             } else {
-                console.error("❌ 부모 프레임에 changeMainContentFromTab 함수가 없음");
+                console.error("부모 프레임에 changeMainContentFromTab 함수가 없음");
                 // 대체 방법 시도
                 scwin.fallbackMainContentChange(finalUrl);
             }
@@ -724,7 +724,7 @@ scwin.tab1_onclick = function(tabId) {
                 }
             }
         } else {
-            console.error("❌ URL을 찾을 수 없거나 부모 프레임이 없음:", {
+            console.error("URL을 찾을 수 없거나 부모 프레임이 없음:", {
                 tabId: tabId,
                 finalUrl: finalUrl,
                 hasParent: !!window.parent,
@@ -735,7 +735,7 @@ scwin.tab1_onclick = function(tabId) {
         console.log("=== 탭 클릭 이벤트 종료 ===");
         
     } catch (e) {
-        console.error("❌ 탭 클릭 처리 오류:", e);
+        console.error("탭 클릭 처리 오류:", e);
         console.error("오류 스택:", e.stack);
     }
 };
@@ -748,7 +748,7 @@ scwin.fallbackMainContentChange = function(url) {
         // 방법 1: 직접 wfr_mainContent 접근
         if (window.parent.wfr_mainContent && window.parent.wfr_mainContent.setSrc) {
             window.parent.wfr_mainContent.setSrc(url);
-            console.log("✅ 대체 방법 1로 메인 콘텐츠 변경 완료");
+            console.log("대체 방법 1로 메인 콘텐츠 변경 완료");
             return;
         }
         
@@ -757,7 +757,7 @@ scwin.fallbackMainContentChange = function(url) {
             action: 'changeMainContent',
             url: url
         }, '*');
-        console.log("✅ 대체 방법 2로 postMessage 전송 완료");
+        console.log("대체 방법 2로 postMessage 전송 완료");
         
     } catch (e) {
         console.error("대체 메인 콘텐츠 변경 실패:", e);
@@ -866,7 +866,7 @@ scwin.ensureDefaultTabExists = async function() {
                 window.parent.scwin.changeMainContentFromTab("/InsWebApp/ui/nurse/NurseManage.xml");
             }
             
-            console.log("✅ 근무자 관리 탭 추가 완료");
+            console.log("근무자 관리 탭 추가 완료");
             return true;
         } else {
             console.log("이미 탭이 존재합니다. 개수:", tabCount);
@@ -896,7 +896,7 @@ scwin.setCurrentDateToLabel = function(labelId) {
         // 방법 1: WebSquare 컴포넌트로 직접 접근
         if (window[labelId] && window[labelId].setValue) {
             window[labelId].setValue(currentDate);
-            console.log("✅ WebSquare 컴포넌트로 날짜 설정 완료:", labelId, currentDate);
+            console.log("WebSquare 컴포넌트로 날짜 설정 완료:", labelId, currentDate);
             return;
         }
         
@@ -904,7 +904,7 @@ scwin.setCurrentDateToLabel = function(labelId) {
         var labelElement = document.getElementById(labelId);
         if (labelElement) {
             labelElement.textContent = currentDate;
-            console.log("✅ DOM 요소로 날짜 설정 완료:", labelId, currentDate);
+            console.log("DOM 요소로 날짜 설정 완료:", labelId, currentDate);
             return;
         }
         
@@ -912,11 +912,11 @@ scwin.setCurrentDateToLabel = function(labelId) {
         var w2Element = document.getElementById('mf_' + labelId);
         if (w2Element) {
             w2Element.textContent = currentDate;
-            console.log("✅ WebSquare ID 패턴으로 날짜 설정 완료:", labelId, currentDate);
+            console.log("WebSquare ID 패턴으로 날짜 설정 완료:", labelId, currentDate);
             return;
         }
         
-        console.warn("⚠️ 라벨 요소를 찾을 수 없습니다:", labelId);
+        console.warn("라벨 요소를 찾을 수 없습니다:", labelId);
         
     } catch (e) {
         console.error("날짜 설정 오류:", e);
@@ -932,7 +932,7 @@ scwin.setupDateLabels = function() {
         scwin.setCurrentDateToLabel('lbl_today');
         scwin.setCurrentDateToLabel('txt_date');
         
-        console.log("✅ 날짜 라벨 설정 완료");
+        console.log("날짜 라벨 설정 완료");
     }, 500);
 };
 ]]></script>

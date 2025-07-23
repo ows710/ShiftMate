@@ -29,6 +29,8 @@
     <forcedValueSetting value="true"/>
     <processMsgHeight value="81"/>
     <processMsgWidth value="295"/>
+    <processMsgType value="wframe"/>
+    <processMsgFrameURL value="/InsWebApp/ui/cmmn/processMsg.xml"/>
     <processMsgBackground backgroundColor="#112233" value="true"/>
     <byteCheckEncoding value="euc-kr"/>
     <initScript value="false"/>
@@ -263,4 +265,7 @@
     <license value="true"/>
     <requirejs timeout="20"/>
     <disableDuplicateIdAlert value="false"/>
+    <processMsgURL value="/InsWebApp/ui/cmmn/processMsg.xml" />
+    <processMsgType value="" />
+    <processMsgFrameURL value="" />
 </WebSquare>
