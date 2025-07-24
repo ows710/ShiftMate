@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper      
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	@subject     : 알람정보 관련 처리를 담당하는 Sql Mapper
+	@description : 알람정보 관련 처리를 담당하는 Sql Mapper
+	@author      : 오원석
+	@since       : 2025/07/23
+	@modification
+	===========================================================
+	DATE              AUTHOR             DESC
+	===========================================================
+	2025/07/23              오원석             최초 생성
+ -->
+<mapper namespace="com.demo.proworks.alarm">
+    <insert id="insertAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo">
+    	<!-- 알람정보를 등록한다. -->	
+    		
+        INSERT INTO ALARM   /* QueryID : com.demo.proworks.alarm.insertAlarm */
+        ( 
+            ALARMID
+            <if test="senderid != null"> , SENDERID  </if>
+            <if test="content  != null"> , CONTENT   </if>
+            <if test="createdat!= null"> , CREATEDAT </if>
+        )
+        VALUES  
+        ( 
+            #{alarmid}
+            <if test="senderid != null"> , #{senderid}  </if>
+            <if test="content  != null"> , #{content}   </if>
+            <if test="createdat!= null"> , #{createdat} </if> 
+        )          
+    </insert>	
+	
+    <update id="updateAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo">
+    	<!-- 알람정보를 갱신한다. -->
+    	
+        UPDATE ALARM    /* QueryID : com.demo.proworks.alarm.updateAlarm */      
+      	  SET  
+                ALARMID   = #{alarmid}          	                       
+            <if test="senderid != null"> , SENDERID  = #{senderid}  </if>
+            <if test="content  != null"> , CONTENT   = #{content}   </if>
+            <if test="createdat!= null"> , CREATEDAT = #{createdat} </if>                 
+        WHERE   
+                ALARMID   = #{alarmid}  
+    </update>
+	
+    <delete id="deleteAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo">
+    	<!-- 알람정보를 삭제한다. -->
+    	
+        DELETE FROM ALARM   /* QueryID : com.demo.proworks.alarm.deleteAlarm */ 
+        WHERE   
+                ALARMID   = #{alarmid}          
+    </delete>
+	
+    <select id="selectAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo" resultType="com.demo.proworks.alarm.vo.AlarmVo">
+    	<!-- 알람정보를 상세 조회한다. -->	
+        SELECT     /* QueryID : com.demo.proworks.alarm.selectAlarm */
+            ALARMID as alarmid, SENDERID as senderid, CONTENT as content, CREATEDAT as createdat
+        FROM ALARM 
+        WHERE 
+                ALARMID   = #{alarmid}  			
+    </select>
+	
+    <select id="selectListAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo" resultType="com.demo.proworks.alarm.vo.AlarmVo">
+    	<!-- 알람정보 목록을 조회한다. -->
+           SELECT    /* QueryID : com.demo.proworks.alarm.selectListAlarm */
+               ALARMID as alarmid, SENDERID as senderid, CONTENT as content, CREATEDAT as createdat		       
+           FROM (
+               SELECT  S.*, CEIL( (@ROWNUM:=@ROWNUM+1) / #{pageSize} ) AS PAGE
+               FROM (				
+                   SELECT 
+                       *  		                  
+                   FROM ALARM
+                   WHERE  1=1    		
+                        <if test="scAlarmid != null and scAlarmid != ''">
+                             AND ALARMID like '%${scAlarmid}%'
+                        </if>
+                        <if test="scSenderid != null and scSenderid != ''">
+                             AND SENDERID like '%${scSenderid}%'
+                        </if>
+                        <if test="scContent != null and scContent != ''">
+                             AND CONTENT like '%${scContent}%'
+                        </if>
+                        <if test="scCreatedat != null and scCreatedat != ''">
+                             AND CREATEDAT like '%${scCreatedat}%'
+                        </if>	     																														
+               ) S, (SELECT @ROWNUM := 0) TMP
+           ) A
+            WHERE PAGE = #{pageIndex}
+    </select>
+	
+    <select id="selectListCountAlarm" parameterType="com.demo.proworks.alarm.vo.AlarmVo" resultType="long">
+    <!-- 알람정보 목록의 카운트를 조회한다. -->
+    
+         SELECT    /* QueryID : com.demo.proworks.alarm.selectListCountAlarm */
+             COUNT(*) totcnt  		                  
+         FROM ALARM
+         WHERE  1=1    		
+            <if test="scAlarmid != null and scAlarmid != ''">
+                 AND ALARMID like '%${scAlarmid}%'
+            </if>
+            <if test="scSenderid != null and scSenderid != ''">
+                 AND SENDERID like '%${scSenderid}%'
+            </if>
+            <if test="scContent != null and scContent != ''">
+                 AND CONTENT like '%${scContent}%'
+            </if>
+            <if test="scCreatedat != null and scCreatedat != ''">
+                 AND CREATEDAT like '%${scCreatedat}%'
+            </if>
+    </select>
+
+</mapper>

@@ -151,6 +151,9 @@
 scwin.onpageload = function() {
     console.log("내 스케줄 보기 페이지가 로드되었습니다.");
     
+    // DB에서 알림 데이터 로드
+    scwin.loadNotificationsFromDB();
+    
     // 알림 시스템 초기화
     setTimeout(function() {
         try {
@@ -206,21 +209,11 @@ scwin.initMonthOptions = function() {
     
     	dlt_monthOptions.setJSON(monthOptions);
 	
-	// 실제 값으로 설정 (onchange 이벤트 발생 방지)
+	// 실제 값으로 설정
 	setTimeout(function() {
 		try {
-			// onchange 이벤트를 일시적으로 비활성화
-			var originalOnChange = sbx_month.onchange;
-			sbx_month.onchange = null;
-			
-			sbx_month.setValue("202508"); // 8월을 기본 선택
-			console.log("초기 월 선택 완료: 202508");
-			
-			// onchange 이벤트 복원
-			setTimeout(function() {
-				sbx_month.onchange = originalOnChange;
-			}, 50);
-			
+			sbx_month.setValue("202509"); // 9월을 기본 선택
+			console.log("초기 월 선택 완료: 202509");
 		} catch (e) {
 			console.log("초기 월 선택 설정 오류:", e);
 			// 대체 방법으로 인덱스 사용
@@ -714,57 +707,76 @@ scwin.CONFIG = {
     }
 };
 
-// ========== 알림 데이터 (내 스케줄 관련) ==========
-scwin.notifications = [
-    {
-        id: "noti_1",
-        title: "스케줄 조회 안내", 
-        message: "스케줄의 변경 사항이 있습니다.",
-        type: "info",
-        createDate: "2025-01-15 09:00:00",
-        isRead: false
-    },
-    {
-        id: "noti_2",
-        title: "스케줄 조회 안내",
-        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.", 
-        type: "info",
-        createDate: "2025-01-15 10:30:00",
-        isRead: false
-    },
-    {
-        id: "noti_3", 
-        title: "근무자 정보 안내",
-        message: "날짜를 클릭하면 해당 날짜의 근무자 명단과 차지 간호사, 신입 정보를 확인할 수 있습니다.",
-        type: "info",
-        createDate: "2025-01-15 11:45:00", 
-        isRead: true
-    },
-    {
-        id: "noti_4",
-        title: "스케줄 타입 안내",
-        message: "스케줄 타입: E(Evening), N(Night), O(Off), D(Day) - 각각 다른 색상으로 표시됩니다.",
-        type: "work", 
-        createDate: "2025-01-15 14:20:00",
-        isRead: true
-    },
-    {
-        id: "noti_5",
-        title: "스케줄 조회 안내",
-        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.",
-        type: "info",
-        createDate: "2025-01-15 15:10:00",
-        isRead: true
-    },
-    {
-        id: "noti_6",
-        title: "월별 전환 기능", 
-        message: "상단의 월 선택 드롭다운을 통해 8월과 9월 스케줄을 자유롭게 전환할 수 있습니다.",
-        type: "info",
-        createDate: "2025-01-15 16:30:00",
-        isRead: true
+// ========== 알림 데이터 (DB에서 가져올 예정) ==========
+scwin.notifications = [];
+scwin.currentNurseId = 1; // 현재 로그인한 간호사 ID (실제로는 세션에서 가져와야 함)
+
+// DB에서 알림 데이터를 가져오는 함수
+scwin.loadNotificationsFromDB = function() {
+    try {
+        console.log("DB에서 알림 데이터 로드 시작...");
+        
+        // 웹스퀘어 데이터 서비스 호출
+        var param = {
+            nurseId: scwin.currentNurseId
+        };
+        
+        // 서비스 호출
+        com.win.callService({
+            serviceId: "com.demo.proworks.nurse.AlarmController",
+            serviceKey: "listByNurse",
+            param: param,
+            callback: function(response) {
+                console.log("알림 데이터 로드 응답:", response);
+                
+                if (response && response.elHeader && response.elHeader.resSuc) {
+                    var alarmList = response.alarmList || [];
+                    scwin.notifications = [];
+                    
+                    // DB 데이터를 프론트엔드 형식으로 변환
+                    alarmList.forEach(function(alarm) {
+                        scwin.notifications.push({
+                            id: "alarm_" + alarm.alarmId,
+                            title: alarm.senderName + "님의 알림",
+                            message: alarm.content,
+                            type: "info",
+                            createDate: alarm.createdAt,
+                            isRead: alarm.isRead || false,
+                            alarmId: alarm.alarmId // DB ID 저장
+                        });
+                    });
+                    
+                    console.log("DB에서 로드된 알림 개수:", scwin.notifications.length);
+                    
+                    // 배지 업데이트
+                    scwin.updateNotificationBadge();
+                    
+                } else {
+                    console.log("알림 데이터 로드 실패:", response);
+                    // 실패 시 기본 데이터 사용
+                    scwin.loadDefaultNotifications();
+                }
+            },
+            errorCallback: function(error) {
+                console.log("알림 데이터 로드 오류:", error);
+                // 오류 시 기본 데이터 사용
+                scwin.loadDefaultNotifications();
+            }
+        });
+        
+    } catch (e) {
+        console.log("알림 데이터 로드 중 오류:", e.message);
+        scwin.loadDefaultNotifications();
     }
-];
+};
+
+// 기본 알림 데이터 로드 (DB 연결 실패 시)
+scwin.loadDefaultNotifications = function() {
+    scwin.notifications = [
+    ];
+    
+    scwin.updateNotificationBadge();
+};
 
 // ========== 알림 유틸리티 함수 ==========
 // 알림 타입에 따른 아이콘과 색상 가져오기
@@ -1010,6 +1022,40 @@ scwin.markAllAsRead = function() {
     if (hasChanges) {
         scwin.updateNotificationBadge();
         console.log("모든 내 스케줄 알림을 읽음 처리 완료");
+        
+        // DB에 읽음 처리 요청
+        scwin.markAllAsReadInDB();
+    }
+};
+
+// DB에 모든 알림 읽음 처리 요청
+scwin.markAllAsReadInDB = function() {
+    try {
+        console.log("DB에 모든 알림 읽음 처리 요청...");
+        
+        var param = {
+            nurseId: scwin.currentNurseId
+        };
+        
+        com.win.callService({
+            serviceId: "com.demo.proworks.nurse.AlarmController",
+            serviceKey: "markAllAsRead",
+            param: param,
+            callback: function(response) {
+                console.log("모든 알림 읽음 처리 응답:", response);
+                if (response && response.elHeader && response.elHeader.resSuc) {
+                    console.log("DB에 모든 알림 읽음 처리 완료");
+                } else {
+                    console.log("DB에 모든 알림 읽음 처리 실패:", response);
+                }
+            },
+            errorCallback: function(error) {
+                console.log("DB에 모든 알림 읽음 처리 오류:", error);
+            }
+        });
+        
+    } catch (e) {
+        console.log("DB에 모든 알림 읽음 처리 중 오류:", e.message);
     }
 };
 
@@ -1021,12 +1067,49 @@ scwin.markNotificationAsRead = function(notificationId) {
             scwin.updateNotificationBadge();
             console.log("알림 읽음 처리:", notificationId);
             
+            // DB에 읽음 처리 요청
+            if (scwin.notifications[i].alarmId) {
+                scwin.markNotificationAsReadInDB(scwin.notifications[i].alarmId);
+            }
+            
             // 모달 새로고침하여 색상 변경
             scwin.refreshModal();
             return true;
         }
     }
     return false;
+};
+
+// DB에 개별 알림 읽음 처리 요청
+scwin.markNotificationAsReadInDB = function(alarmId) {
+    try {
+        console.log("DB에 개별 알림 읽음 처리 요청...", alarmId);
+        
+        var param = {
+            alarmId: alarmId,
+            nurseId: scwin.currentNurseId
+        };
+        
+        com.win.callService({
+            serviceId: "com.demo.proworks.nurse.AlarmController",
+            serviceKey: "markAsRead",
+            param: param,
+            callback: function(response) {
+                console.log("개별 알림 읽음 처리 응답:", response);
+                if (response && response.elHeader && response.elHeader.resSuc) {
+                    console.log("DB에 개별 알림 읽음 처리 완료");
+                } else {
+                    console.log("DB에 개별 알림 읽음 처리 실패:", response);
+                }
+            },
+            errorCallback: function(error) {
+                console.log("DB에 개별 알림 읽음 처리 오류:", error);
+            }
+        });
+        
+    } catch (e) {
+        console.log("DB에 개별 알림 읽음 처리 중 오류:", e.message);
+    }
 };
 
 // 알림 배지 업데이트 (성능 최적화)

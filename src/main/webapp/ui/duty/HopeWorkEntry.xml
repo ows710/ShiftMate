@@ -414,9 +414,9 @@ scwin.onpageload = function() {
             }
         }, 1000);
         
-        // 캘린더를 빈 상태로 초기화
+        // DB에서 데이터를 가져와서 캘린더 초기화
         setTimeout(function() {
-            scwin.initEmptyCalendar();
+            scwin.refreshCalendarFromDB();
             
             // 최종 확인
             setTimeout(function() {
@@ -1702,6 +1702,12 @@ scwin.btn_submit_onclick = function() {
     
     console.log("희망근무 신청:", selectedDate, selectedWorkType, "기존:", currentWorkType);
     
+    // 로그인한 사용자의 nurseId 가져오기 (임시로 1로 설정)
+    var currentNurseId = 1; // TODO: 실제 로그인 사용자 ID로 변경
+    
+    // 날짜 형식 변환 (YYYYMMDD -> YYYY-MM-DD)
+    var formattedDate = selectedDate.substring(0, 4) + "-" + selectedDate.substring(4, 6) + "-" + selectedDate.substring(6, 8);
+    
     if (selectedWorkType === "clear") {
         // 비우기 = 일정 삭제
         console.log("삭제 요청 - 현재 근무타입:", currentWorkType);
@@ -1749,71 +1755,8 @@ scwin.btn_submit_onclick = function() {
             cancelButtonColor: '#6c757d'
         }).then((result) => {
             if (result.isConfirmed) {
-                // 해당 날짜의 모든 데이터 삭제 (간단하고 확실한 방법)
-                var deletedCount = scwin.simpleDeleteByDate(selectedDate);
-                console.log("삭제 완료 - 삭제된 개수:", deletedCount);
-                
-                if (deletedCount > 0) {
-                    console.log("삭제 완료 - 즉시 캘린더 새로고침 시작");
-                    
-                    // 즉시 캘린더 새로고침 (지연 없음)
-                    scwin.refreshCalendar();
-                    
-                    // 삭제 결과 확인 및 메시지
-                    setTimeout(function() {
-                        var remainingCount = scwin.countWorkForDate(selectedDate);
-                        console.log("삭제 후 해당 날짜 남은 데이터:", remainingCount);
-                        console.log("삭제 후 전체 데이터 수:", dlt_hopeWork.getTotalRow());
-                        
-                        if (remainingCount === 0) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '삭제 완료',
-                                text: '희망근무가 삭제되었습니다.',
-                                confirmButtonText: '확인',
-                                confirmButtonColor: '#1C3D6B'
-                            });
-                        } else {
-                            console.warn("삭제 후에도 " + remainingCount + "개 데이터가 남아있음");
-                            Swal.fire({
-                                icon: 'success',
-                                title: '삭제 완료',
-                                text: '희망근무 삭제가 완료되었습니다.',
-                                confirmButtonText: '확인',
-                                confirmButtonColor: '#1C3D6B'
-                            });
-                        }
-                    }, 200);
-                } else {
-                    // 삭제할 데이터가 없거나 삭제에 실패한 경우
-                    console.warn("삭제 프로세스 실패 - 최강 삭제 한 번 더 시도");
-                    
-                    // 최후의 수단으로 최강 삭제 시도
-                    var lastResortCount = scwin.strongDeleteByDate(selectedDate);
-                    console.log("최후 삭제 시도 결과:",lastResortCount);
-                    
-                    // 최강 삭제 후에도 강화된 캘린더 새로고침 적용
-                    scwin.refreshCalendar();
-                    
-                    setTimeout(function() {
-                        var finalCheck = scwin.countWorkForDate(selectedDate);
-                        if (finalCheck === 0) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '삭제 완료',
-                                text: '희망근무가 삭제되었습니다.',
-                                confirmButtonText: '확인',
-                                confirmButtonColor: '#1C3D6B'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: '삭제 실패',
-                                text: '⚠️ 희망근무 삭제 중 문제가 발생했습니다.\n\n가능한 원인:\n• 이미 삭제된 일정\n• 시스템 데이터 동기화 지연\n\n해결 방법:\n1. 페이지 새로고침(F5) 후 확인\n2. 일정이 보이지 않으면 정상 삭제된 것임\n3. 새 일정 추가는 정상적으로 가능'
-                            });
-                        }
-                    }, 500);
-                }
+                // DB에서 희망근무 삭제
+                scwin.deleteHopeWorkFromDB(selectedDate, currentNurseId, formattedDate);
             }
         });
     } else {
@@ -1861,32 +1804,411 @@ scwin.btn_submit_onclick = function() {
             return;
         }
         
-        // 1. 해당 날짜의 기존 데이터 완전 삭제 (하루 1개 일정 보장)
-        console.log("기존 데이터 삭제 시작");
-        var deletedCount = scwin.removeAllWorkForDate(selectedDate);
-        console.log("삭제된 기존 데이터 수:", deletedCount);
-        
-        // 2. 데이터 삭제 후 잠시 대기 (확실한 삭제 보장)
-        setTimeout(function() {
-            // 3. 중복 검사 후 새 데이터 추가
-            var existingCount = scwin.countWorkForDate(selectedDate);
-            console.log("삭제 후 기존 데이터 수:", existingCount);
-            
-            if (existingCount > 0) {
-                console.warn("삭제가 완전히 되지 않음, 재삭제 시도");
-                scwin.removeAllWorkForDate(selectedDate);
-                
-                // 한 번 더 확인
-                setTimeout(function() {
-                    scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
-                }, 100);
-            } else {
-                scwin.addSingleWorkSchedule(selectedDate, selectedWorkType, currentWorkType);
-            }
-        }, 200);
+        // DB에 희망근무 신청/수정
+        scwin.saveHopeWorkToDB(selectedDate, selectedWorkType, currentNurseId, formattedDate, currentWorkType);
     }
     
     scwin.hideWorkSelectModal();
+};
+
+// DB에 희망근무 저장하는 함수
+scwin.saveHopeWorkToDB = function(selectedDate, selectedWorkType, nurseId, formattedDate, currentWorkType) {
+    try {
+        console.log("DB에 희망근무 저장 시작:", {
+            date: selectedDate,
+            workType: selectedWorkType,
+            nurseId: nurseId,
+            formattedDate: formattedDate,
+            currentWorkType: currentWorkType
+        });
+        
+        // DutyRequestVo 데이터 준비
+        var dutyRequestData = {
+            reqDate: formattedDate,
+            nurseId: nurseId,
+            submittedAt: formattedDate // 신청일과 제출일을 동일하게 설정
+        };
+        
+        // ScheduleVo 데이터 준비
+        var scheduleData = {
+            shiftDate: formattedDate,
+            nurseId: nurseId,
+            shiftType: selectedWorkType,
+            isAuto: "N" // 수동 신청
+        };
+        
+        // WebSquare 서비스 호출
+        var serviceKey = currentWorkType && currentWorkType !== "" ? "HopeWorkUpdate" : "HopeWorkRequest";
+        console.log("서비스 호출:", serviceKey);
+        
+        // WebSquare 방식으로 서비스 호출
+        var param = {
+            dutyRequestVo: dutyRequestData,
+            scheduleVo: scheduleData
+        };
+        
+        // WebSquare 서비스 호출 (다양한 방법 시도)
+        try {
+            // 방법 1: w2xCallService 사용
+            if (typeof w2xCallService !== 'undefined') {
+                w2xCallService(serviceKey, param, function(result) {
+                    console.log("서비스 호출 성공:", result);
+                    scwin.handleServiceSuccess(result, selectedWorkType, currentWorkType);
+                }, function(error) {
+                    console.error("서비스 호출 실패:", error);
+                    scwin.handleServiceError(error);
+                });
+            }
+            // 방법 2: w2xCallService2 사용
+            else if (typeof w2xCallService2 !== 'undefined') {
+                w2xCallService2(serviceKey, param, function(result) {
+                    console.log("서비스 호출 성공:", result);
+                    scwin.handleServiceSuccess(result, selectedWorkType, currentWorkType);
+                }, function(error) {
+                    console.error("서비스 호출 실패:", error);
+                    scwin.handleServiceError(error);
+                });
+            }
+            // 방법 3: WebSquare 기본 방식
+            else if (typeof w2x !== 'undefined' && w2x.callService) {
+                w2x.callService(serviceKey, param, function(result) {
+                    console.log("서비스 호출 성공:", result);
+                    scwin.handleServiceSuccess(result, selectedWorkType, currentWorkType);
+                }, function(error) {
+                    console.error("서비스 호출 실패:", error);
+                    scwin.handleServiceError(error);
+                });
+            }
+            // 방법 4: jQuery ajax 사용
+            else {
+                console.log("WebSquare 서비스 함수를 찾을 수 없어 jQuery ajax 사용");
+                $.ajax({
+                    url: serviceKey,
+                    type: 'POST',
+                    data: JSON.stringify(param),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        console.log("서비스 호출 성공:", result);
+                        scwin.handleServiceSuccess(result, selectedWorkType, currentWorkType);
+                    },
+                    error: function(error) {
+                        console.error("서비스 호출 실패:", error);
+                        scwin.handleServiceError(error);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("서비스 호출 중 예외 발생:", e);
+            scwin.handleServiceError(e);
+        }
+        
+    } catch (e) {
+        console.error("DB 저장 함수 오류:", e);
+        Swal.fire({
+            icon: 'error',
+            title: '신청 오류',
+            text: '희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
+};
+
+// 서비스 호출 성공 처리 함수
+scwin.handleServiceSuccess = function(result, selectedWorkType, currentWorkType) {
+    try {
+        // 성공 메시지 표시
+        var message = currentWorkType && currentWorkType !== "" ? 
+            (currentWorkType + "에서 " + selectedWorkType + "로 변경되었습니다.") :
+            (selectedWorkType + " 신청이 완료되었습니다.");
+            
+        Swal.fire({
+            icon: 'success',
+            title: '신청 완료',
+            text: message,
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+        
+        // 캘린더 새로고침
+        scwin.refreshCalendarFromDB();
+        
+    } catch (e) {
+        console.error("서비스 성공 처리 오류:", e);
+    }
+};
+
+// 서비스 호출 실패 처리 함수
+scwin.handleServiceError = function(error) {
+    try {
+        console.error("서비스 호출 실패:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '신청 실패',
+            text: '희망근무 신청 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    } catch (e) {
+        console.error("서비스 실패 처리 오류:", e);
+    }
+};
+
+// DB에서 희망근무 삭제하는 함수
+scwin.deleteHopeWorkFromDB = function(selectedDate, nurseId, formattedDate) {
+    try {
+        console.log("DB에서 희망근무 삭제 시작:", {
+            date: selectedDate,
+            nurseId: nurseId,
+            formattedDate: formattedDate
+        });
+        
+        // DutyRequestVo 데이터 준비
+        var dutyRequestData = {
+            reqDate: formattedDate,
+            nurseId: nurseId
+        };
+        
+        // ScheduleVo 데이터 준비
+        var scheduleData = {
+            shiftDate: formattedDate,
+            nurseId: nurseId
+        };
+        
+        // WebSquare 서비스 호출 (다양한 방법 시도)
+        try {
+            var param = {
+                dutyRequestVo: dutyRequestData,
+                scheduleVo: scheduleData
+            };
+            
+            // 방법 1: w2xCallService 사용
+            if (typeof w2xCallService !== 'undefined') {
+                w2xCallService("HopeWorkDelete", param, function(result) {
+                    console.log("삭제 서비스 호출 성공:", result);
+                    scwin.handleDeleteSuccess(result);
+                }, function(error) {
+                    console.error("삭제 서비스 호출 실패:", error);
+                    scwin.handleDeleteError(error);
+                });
+            }
+            // 방법 2: w2xCallService2 사용
+            else if (typeof w2xCallService2 !== 'undefined') {
+                w2xCallService2("HopeWorkDelete", param, function(result) {
+                    console.log("삭제 서비스 호출 성공:", result);
+                    scwin.handleDeleteSuccess(result);
+                }, function(error) {
+                    console.error("삭제 서비스 호출 실패:", error);
+                    scwin.handleDeleteError(error);
+                });
+            }
+            // 방법 3: WebSquare 기본 방식
+            else if (typeof w2x !== 'undefined' && w2x.callService) {
+                w2x.callService("HopeWorkDelete", param, function(result) {
+                    console.log("삭제 서비스 호출 성공:", result);
+                    scwin.handleDeleteSuccess(result);
+                }, function(error) {
+                    console.error("삭제 서비스 호출 실패:", error);
+                    scwin.handleDeleteError(error);
+                });
+            }
+            // 방법 4: jQuery ajax 사용
+            else {
+                console.log("WebSquare 서비스 함수를 찾을 수 없어 jQuery ajax 사용");
+                $.ajax({
+                    url: "HopeWorkDelete",
+                    type: 'POST',
+                    data: JSON.stringify(param),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        console.log("삭제 서비스 호출 성공:", result);
+                        scwin.handleDeleteSuccess(result);
+                    },
+                    error: function(error) {
+                        console.error("삭제 서비스 호출 실패:", error);
+                        scwin.handleDeleteError(error);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("삭제 서비스 호출 중 예외 발생:", e);
+            scwin.handleDeleteError(e);
+        }
+        
+    } catch (e) {
+        console.error("DB 삭제 함수 오류:", e);
+        Swal.fire({
+            icon: 'error',
+            title: '삭제 오류',
+            text: '희망근무 삭제 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
+};
+
+// 삭제 성공 처리 함수
+scwin.handleDeleteSuccess = function(result) {
+    try {
+        Swal.fire({
+            icon: 'success',
+            title: '삭제 완료',
+            text: '희망근무가 삭제되었습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+        
+        // 캘린더 새로고침
+        scwin.refreshCalendarFromDB();
+        
+    } catch (e) {
+        console.error("삭제 성공 처리 오류:", e);
+    }
+};
+
+// 삭제 실패 처리 함수
+scwin.handleDeleteError = function(error) {
+    try {
+        console.error("삭제 서비스 호출 실패:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '삭제 실패',
+            text: '희망근무 삭제 중 오류가 발생했습니다. 다시 시도해주세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    } catch (e) {
+        console.error("삭제 실패 처리 오류:", e);
+    }
+};
+
+// DB에서 데이터를 가져와서 캘린더를 새로고침하는 함수
+scwin.refreshCalendarFromDB = function() {
+    try {
+        console.log("DB에서 캘린더 데이터 새로고침 시작");
+        
+        // 현재 로그인한 사용자의 nurseId (임시로 1로 설정)
+        var currentNurseId = 1;
+        
+        // WebSquare 서비스 호출하여 데이터 조회 (다양한 방법 시도)
+        try {
+            var param = {
+                nurseId: currentNurseId
+            };
+            
+            // 방법 1: w2xCallService 사용
+            if (typeof w2xCallService !== 'undefined') {
+                w2xCallService("HopeWorkList", param, function(result) {
+                    console.log("DB 데이터 조회 성공:", result);
+                    scwin.processCalendarData(result);
+                }, function(error) {
+                    console.error("DB 데이터 조회 실패:", error);
+                });
+            }
+            // 방법 2: w2xCallService2 사용
+            else if (typeof w2xCallService2 !== 'undefined') {
+                w2xCallService2("HopeWorkList", param, function(result) {
+                    console.log("DB 데이터 조회 성공:", result);
+                    scwin.processCalendarData(result);
+                }, function(error) {
+                    console.error("DB 데이터 조회 실패:", error);
+                });
+            }
+            // 방법 3: WebSquare 기본 방식
+            else if (typeof w2x !== 'undefined' && w2x.callService) {
+                w2x.callService("HopeWorkList", param, function(result) {
+                    console.log("DB 데이터 조회 성공:", result);
+                    scwin.processCalendarData(result);
+                }, function(error) {
+                    console.error("DB 데이터 조회 실패:", error);
+                });
+            }
+            // 방법 4: jQuery ajax 사용
+            else {
+                console.log("WebSquare 서비스 함수를 찾을 수 없어 jQuery ajax 사용");
+                $.ajax({
+                    url: "HopeWorkList",
+                    type: 'POST',
+                    data: JSON.stringify(param),
+                    contentType: 'application/json',
+                    success: function(result) {
+                        console.log("DB 데이터 조회 성공:", result);
+                        scwin.processCalendarData(result);
+                    },
+                    error: function(error) {
+                        console.error("DB 데이터 조회 실패:", error);
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("DB 데이터 조회 중 예외 발생:", e);
+        }
+        
+    } catch (e) {
+        console.error("DB 캘린더 새로고침 오류:", e);
+    }
+};
+
+// 캘린더 데이터 처리 함수
+scwin.processCalendarData = function(result) {
+    try {
+        // 기존 데이터 초기화
+        dlt_hopeWork.removeAll();
+        
+        // DB 데이터를 캘린더 형식으로 변환
+        if (result && result.length > 0) {
+            var calendarData = [];
+            
+            for (var i = 0; i < result.length; i++) {
+                var item = result[i];
+                var workType = item.shiftType || item.workType; // schedule 테이블의 shiftType 사용
+                var dateStr = item.shiftDate || item.reqDate; // schedule 테이블의 shiftDate 사용
+                
+                // 날짜 형식 변환 (YYYY-MM-DD -> YYYYMMDD)
+                var formattedDate = dateStr.replace(/-/g, '');
+                
+                var colorMap = {
+                    "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
+                    "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
+                    "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"},
+                    "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"}
+                };
+                
+                var colors = colorMap[workType];
+                if (colors) {
+                    var calendarItem = {
+                        id: "hope_" + formattedDate + "_" + item.reqId,
+                        title: workType,
+                        start: formattedDate,
+                        end: formattedDate,
+                        allDay: true,
+                        color: colors.color,
+                        backgroundColor: colors.backgroundColor,
+                        borderColor: colors.borderColor,
+                        textColor: colors.textColor,
+                        className: colors.className
+                    };
+                    
+                    calendarData.push(calendarItem);
+                }
+            }
+            
+            // 캘린더에 데이터 설정
+            dlt_hopeWork.setJSON(calendarData);
+            console.log("캘린더 데이터 설정 완료:", calendarData.length + "개");
+        }
+        
+        // 캘린더 새로고침
+        dlt_hopeWork.broadcast();
+        if (shc_hopeWork && shc_hopeWork.refresh) {
+            shc_hopeWork.refresh();
+        }
+        
+        console.log("DB 캘린더 새로고침 완료");
+        
+    } catch (e) {
+        console.error("캘린더 데이터 처리 오류:", e);
+    }
 };
 
 // 날짜별 스케줄 개수 확인 함수

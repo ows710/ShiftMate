@@ -185,7 +185,7 @@ public class NurseController {
 
 		try {
 			// 데이터 검증
-			if (nurseVo.getNurseId() == null) {
+			if (nurseVo.getNurseId() == 0) {
 				throw new Exception("간호사 ID는 필수 입력 항목입니다.");
 			}
 			if (nurseVo.getPosition() == null || nurseVo.getPosition().trim().isEmpty()) {
@@ -240,7 +240,7 @@ public class NurseController {
 
 		try {
 			// 데이터 검증
-			if (nurseVo.getNurseId() == null) {
+			if (nurseVo.getNurseId() == 0) {
 				throw new Exception("삭제할 간호사 ID를 입력해주세요.");
 			}
 
