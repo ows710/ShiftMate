@@ -83,7 +83,7 @@ scwin.onpageload = function() {
 // DOM이 완전히 준비될 때까지 기다리는 함수
 scwin.waitForDOMReady = function() {
     var attempts = 0;
-    var maxAttempts = 50;
+    var maxAttempts = 10;
     
     var checkDOMReady = function() {
         attempts++;
@@ -132,7 +132,7 @@ scwin.initializeLayout = function() {
 
 scwin.waitForFramesAndSetup = function() {
     var attempts = 0;
-    var maxAttempts = 50;
+    var maxAttempts = 10;
     
     var checkInterval = setInterval(function() {
         attempts++;
@@ -144,13 +144,13 @@ scwin.waitForFramesAndSetup = function() {
             
             if (headerReady && sideMenuReady && mainReady) {
                 clearInterval(checkInterval);
-                console.log("모든 WFrame 로드 완료 (" + attempts + "/50)");
+                console.log("모든 WFrame 로드 완료 (" + attempts + "/10)");
                 scwin.setupFrameCommunication();
                 
                 // 현재 URL에 해당하는 메뉴 활성화 (약간의 지연 후)
                 setTimeout(function() {
                     scwin.activateMenuForCurrentUrl();
-                }, 500);
+                }, 30);
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
                 console.warn("WFrame 로드 타임아웃");
@@ -209,7 +209,7 @@ scwin.setupMainContentLoadListener = function() {
                 // src 변경 후 약간의 지연을 두고 메뉴 활성화
                 setTimeout(function() {
                     scwin.activateMenuForCurrentUrl();
-                }, 500);
+                }, 30);
             };
             
             console.log("메인 콘텐츠 로드 리스너 설정 완료");
@@ -222,7 +222,7 @@ scwin.setupMainContentLoadListener = function() {
 // 헤더 통신을 별도 함수로 분리하여 재시도 로직 추가
 scwin.setupHeaderCommunication = function() {
     var attempts = 0;
-    var maxAttempts = 20;
+    var maxAttempts = 10;
     
     var setupHeader = function() {
         attempts++;
@@ -247,7 +247,7 @@ scwin.setupHeaderCommunication = function() {
         }
         
         if (attempts < maxAttempts) {
-            setTimeout(setupHeader, 200);
+            setTimeout(setupHeader, 100);
         } else {
             console.error("헤더 통신 설정 실패 - 최대 시도 횟수 초과");
         }

@@ -31,15 +31,15 @@
 				</w2:dataList>
 			</w2:dataCollection>
 			<w2:workflowCollection></w2:workflowCollection>
-			<xf:submission id="sbm_selectNurseList" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+			<xf:submission id="sbm_selectNurseList" ref='' target=''
 				action="/InsWebApp/list.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
 				customHandler="" mode="asynchronous" processMsg="간호사 목록을 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurseList_submitdone"
 				ev:submiterror="scwin.sbm_selectNurseList_submiterror" abortTrigger="">
 			</xf:submission>
-			<xf:submission id="sbm_selectNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
+			<xf:submission id="sbm_selectNurse" ref='' target=""
 				action="/InsWebApp/view.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
 				customHandler="" mode="asynchronous" processMsg="간호사 정보를 조회 중입니다." ev:submit="" ev:submitdone="scwin.sbm_selectNurse_submitdone"
-				ev:submiterror="" abortTrigger="">
+				ev:submiterror="" abortTrigger="" send-type="json">
 			</xf:submission>
 			<xf:submission id="sbm_insertNurse" ref='data:json,{"id":"dmp_nurseVo","key":"nurseVo"}' target=""
 				action="/InsWebApp/insert.pwkjson" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
@@ -136,10 +136,6 @@ scwin.onpageload = function (e) {
         scwin.fn_disableUploadButton();
     }
 
-    // 페이지 로드 시 자동으로 간호사 목록 조회
-    console.log("페이지 로드 시 간호사 목록 자동 조회 시작");
-    scwin.fn_selectNurseList();
-    console.log("=== NurseManage 페이지 로드 완료 ===");
 };
 
 // DOM 완전 로드 이벤트 리스너 추가
@@ -453,59 +449,6 @@ scwin.fn_loadSavedData = function () {
     }
 };
 
-// 데이터 저장 (localStorage 사용)
-scwin.fn_saveData = function () {
-    try {
-        // 데이터 유효성 확인
-        if (!scwin.nurseData) {
-            console.warn("⚠️ 저장할 데이터가 없습니다.");
-            scwin.nurseData = [];
-        }
-
-        // localStorage 용량 확인 (간단한 체크)
-        var dataString = JSON.stringify(scwin.nurseData);
-        var dataSize = new Blob([dataString]).size;
-        console.log("������ 저장할 데이터 크기:", Math.round(dataSize / 1024) + "KB");
-
-        // 실제 저장
-        localStorage.setItem("nurseManageData", dataString);
-        localStorage.setItem("nurseExcelUploaded", scwin.isExcelUploaded.toString());
-
-        // 저장 확인
-        var savedCheck = localStorage.getItem("nurseManageData");
-        if (savedCheck && savedCheck.length > 0) {
-            console.log("✅ 데이터 저장 성공:", scwin.nurseData.length + "건");
-            return true;
-        } else {
-            throw new Error("데이터 저장 확인 실패");
-        }
-
-    } catch (e) {
-        console.error("❌ 데이터 저장 오류:", e);
-
-        if (e.name === 'QuotaExceededError') {
-            Swal.fire({
-                icon: 'warning',
-                title: '저장 공간 부족',
-                text: '저장 공간이 부족합니다.',
-                html: '브라우저의 저장소를 정리하거나 일부 데이터를 삭제해주세요.',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: '저장 오류',
-                text: '데이터 저장 중 오류가 발생했습니다.',
-                html: '다시 시도해주세요.<br>오류: ' + e.message,
-                confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
-            });
-        }
-        return false;
-    }
-};
-
 // 간호사 목록 조회
 scwin.fn_selectNurseList = function () {
     try {
@@ -531,9 +474,6 @@ scwin.fn_selectNurseList = function () {
         dmp_nurseVo.set("pageIndex", searchData.pageIndex);
         dmp_nurseVo.set("pageSize", searchData.pageSize);
 
-        // ProWorks 서버 호출
-        $c.sbm.execute(sbm_selectNurseList);
-
     } catch (error) {
         console.error("간호사 목록 조회 오류:", error);
         Swal.fire({
@@ -550,75 +490,19 @@ scwin.fn_selectNurseList = function () {
 scwin.sbm_selectNurseList_submitdone = function (e) {
     console.log("=== 간호사 목록 조회 응답 수신 ===");
     console.log("응답 객체:", e);
+    console.log("서브미션 결과 ", e.responseJSON.nurseListVo.nurseVoList);
 
-    try {
-        var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
+    dlt_nurseList.setJSON(e.responseJSON.nurseListVo.nurseVoList);
 
-        if (responseData && responseData.elHeader) {
-            var elHeader = responseData.elHeader;
+    console.log("전체조회 완료 - 총 " + e.responseJSON.nurseListVo.nurseVoList.length + "건");
+    /* Swal.fire({
+        icon: 'success',
+        title: '전체조회 완료',
+        text: '전체조회 완료!\n총 ' + e.responseJSON.nurseListVo.nurseVoList.length + '건의 간호사 데이터가 조회되었습니다.',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1B73E8'
+    }); */
 
-            if (elHeader.resSuc === true) {
-                var nurseList = responseData.nurseList || [];
-                console.log("조회된 간호사 수:", nurseList.length);
-                console.log("간호사 데이터:", nurseList);
-
-                // 데이터 로드
-                dlt_nurseList.setJSON(nurseList);
-
-                // 체크박스 초기화
-                scwin.fn_clearAllChecks();
-
-                // 성공 메시지 (데이터가 있을 때만)
-                if (nurseList.length > 0) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '조회 완료',
-                        text: '간호사 목록 조회가 완료되었습니다. (총 ' + nurseList.length + '건)',
-                        confirmButtonText: '확인',
-                        confirmButtonColor: '#1C3D6B'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'info',
-                        title: '조회 완료',
-                        text: '조회된 간호사가 없습니다.',
-                        confirmButtonText: '확인',
-                        confirmButtonColor: '#1C3D6B'
-                    });
-                }
-
-            } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
-                Swal.fire({
-                    icon: 'error',
-                    title: '조회 실패',
-                    text: elHeader.resMsg || '간호사 목록 조회에 실패했습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-            }
-        } else {
-            console.error("응답 데이터 형식 오류:", responseData);
-            Swal.fire({
-                icon: 'error',
-                title: '응답 오류',
-                text: '서버 응답 형식이 올바르지 않습니다.',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
-            });
-        }
-
-    } catch (error) {
-        console.error("응답 처리 오류:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '처리 오류',
-            text: '응답 데이터 처리 중 오류가 발생했습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3D6B'
-        });
-    }
 };
 
 // 간호사 목록 조회 에러 처리
@@ -638,16 +522,17 @@ scwin.sbm_selectNurseList_submiterror = function (e) {
 };
 
 // 간호사 상세 조회
-scwin.fn_selectNurse = function (nurseId) {
+scwin.fn_selectNurse = function (nurseName, position, career, specialNote, hireDate) {
     try {
         console.log("=== 간호사 상세 조회 시작 ===");
-        console.log("조회할 간호사ID:", nurseId);
+        console.log("조회할 간호사명:", nurseName + "," + position + "," + career + "," + specialNote + "," + hireDate);
 
         // 조회할 간호사 정보 설정
-        dmp_nurseVo.set("nurseId", nurseId);
-
-        // ProWorks 서버 호출
-        $c.sbm.execute(sbm_selectNurse);
+        dmp_nurseVo.set("nurseName", nurseName);
+        dmp_nurseVo.set("position", position);
+        dmp_nurseVo.set("career", career);
+        dmp_nurseVo.set("specialNote", specialNote);
+        dmp_nurseVo.set("hireDate", hireDate);
 
     } catch (error) {
         console.error("간호사 상세 조회 오류:", error);
@@ -665,7 +550,6 @@ scwin.fn_selectNurse = function (nurseId) {
 scwin.sbm_selectNurse_submitdone = function (e) {
     console.log("=== 간호사 상세 조회 응답 수신 ===");
     console.log("응답 객체:", e);
-
     try {
         var responseData = e.responseJSON;
         console.log("응답 데이터:", responseData);
@@ -721,50 +605,11 @@ scwin.sbm_selectNurse_submitdone = function (e) {
     }
 };
 
-// 간호사 등록
-scwin.fn_insertNurse = function () {
-    try {
-        console.log("=== 간호사 등록 시작 ===");
-
-        // 폼 검증
-        if (!scwin.fn_validateForm()) {
-            return;
-        }
-
-        // 등록할 데이터 준비
-        var nurseData = {
-            nurseName: dmp_nurseVo.get("nurseName"),
-            position: dmp_nurseVo.get("position"),
-            career: dmp_nurseVo.get("career") || "",
-            specialNote: dmp_nurseVo.get("specialNote") || "",
-            hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
-        };
-
-        console.log("등록할 데이터:", nurseData);
-
-        // 데이터를 dataMap에 설정
-        dmp_nurseVo.setJSON(nurseData);
-
-        // ProWorks 서버 호출
-        $c.sbm.execute(sbm_insertNurse);
-
-    } catch (error) {
-        console.error("간호사 등록 오류:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '등록 오류',
-            text: '간호사 등록 중 오류가 발생했습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3B6B'
-        });
-    }
-};
-
 // 간호사 등록 완료 (ProWorks 연동)
 scwin.sbm_insertNurse_submitdone = function (e) {
     console.log("=== 간호사 등록 응답 수신 ===");
     console.log("응답 객체:", e);
-
+    $c.sbm.execute(sbm_selectNurseList);
     try {
         var responseData = e.responseJSON;
         console.log("응답 데이터:", responseData);
@@ -777,9 +622,6 @@ scwin.sbm_insertNurse_submitdone = function (e) {
 
                 // 폼 초기화
                 scwin.fn_clearForm();
-
-                // 목록 새로고침
-                // scwin.fn_selectNurseList();
 
                 Swal.fire({
                     icon: 'success',
@@ -874,62 +716,14 @@ scwin.fn_updateNurse = function () {
 scwin.sbm_updateNurse_submitdone = function (e) {
     console.log("=== 간호사 수정 응답 수신 ===");
     console.log("응답 객체:", e);
-
-    try {
-        var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
-
-        if (responseData && responseData.elHeader) {
-            var elHeader = responseData.elHeader;
-
-            if (elHeader.resSuc === true) {
-                console.log("간호사 수정 성공");
-
-                // 폼 초기화
-                scwin.fn_clearForm();
-
-                // 목록 새로고침
-                scwin.fn_selectNurseList();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '수정 완료',
-                    text: '간호사 정보가 수정되었습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-
-            } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
-                Swal.fire({
-                    icon: 'error',
-                    title: '수정 실패',
-                    text: elHeader.resMsg || '간호사 수정에 실패했습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-            }
-        } else {
-            console.error("응답 데이터 형식 오류:", responseData);
-            Swal.fire({
-                icon: 'error',
-                title: '응답 오류',
-                text: '서버 응답 형식이 올바르지 않습니다.',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
-            });
-        }
-
-    } catch (error) {
-        console.error("응답 처리 오류:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '처리 오류',
-            text: '응답 데이터 처리 중 오류가 발생했습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3D6B'
-        });
-    }
+    Swal.fire({
+        icon: 'success',
+        title: '수정 완료',
+        text: '간호사 정보가 수정되었습니다.',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
+    $c.sbm.execute(sbm_selectNurseList);
 };
 
 // 간호사 삭제
@@ -954,68 +748,21 @@ scwin.fn_deleteNurse = function (nurseName) {
             confirmButtonColor: '#1C3B6B'
         });
     }
+
 };
 
 // 간호사 삭제 완료 (ProWorks 연동)
 scwin.sbm_deleteNurse_submitdone = function (e) {
     console.log("=== 간호사 삭제 응답 수신 ===");
     console.log("응답 객체:", e);
-
-    try {
-        var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
-
-        if (responseData && responseData.elHeader) {
-            var elHeader = responseData.elHeader;
-
-            if (elHeader.resSuc === true) {
-                console.log("간호사 삭제 성공");
-
-                // 폼 초기화
-                scwin.fn_clearForm();
-
-                // 목록 새로고침
-                scwin.fn_selectNurseList();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '삭제 완료',
-                    text: '간호사 정보가 삭제되었습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-
-            } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
-                Swal.fire({
-                    icon: 'error',
-                    title: '삭제 실패',
-                    text: elHeader.resMsg || '간호사 삭제에 실패했습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-            }
-        } else {
-            console.error("응답 데이터 형식 오류:", responseData);
-            Swal.fire({
-                icon: 'error',
-                title: '응답 오류',
-                text: '서버 응답 형식이 올바르지 않습니다.',
-                confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
-            });
-        }
-
-    } catch (error) {
-        console.error("응답 처리 오류:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '처리 오류',
-            text: '응답 데이터 처리 중 오류가 발생했습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3D6B'
-        });
-    }
+    Swal.fire({
+        icon: 'success',
+        title: '삭제 완료',
+        text: '간호사 정보가 삭제되었습니다.',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
+    $c.sbm.execute(sbm_selectNurseList);
 };
 
 // 검색 버튼 클릭
@@ -1071,35 +818,10 @@ scwin.btn_search_onclick = function () {
 };
 
 // 전체조회 버튼 클릭
-scwin.btn_list_all_onclick = function () {
-    // 저장된 데이터가 있는지 확인
-    if (!scwin.nurseData || scwin.nurseData.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: '데이터 없음',
-            text: '표시할 데이터가 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        return;
-    }
+scwin.btn_list_all_onclick = function (e) {
 
-    // 검색 조건 초기화
-    dmp_nurseVo.set("scNurseName", "");
-    dmp_nurseVo.set("scPosition", "");
-    dmp_nurseVo.set("pageIndex", 1);
+    $c.sbm.execute(sbm_selectNurseList);
 
-    // 전체 데이터 조회
-    scwin.fn_selectNurseList();
-
-    console.log("전체조회 완료 - 총 " + scwin.nurseData.length + "건");
-    Swal.fire({
-        icon: 'success',
-        title: '전체조회 완료',
-        text: '전체조회 완료!\n총 ' + scwin.nurseData.length + '건의 간호사 데이터가 조회되었습니다.',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#1B73E8'
-    });
 };
 
 // 초기화 버튼 클릭
@@ -1112,7 +834,41 @@ scwin.btn_reset_onclick = function () {
 // 등록 버튼 클릭
 scwin.btn_insert_onclick = function () {
     if (scwin.fn_validateForm()) {
-        scwin.fn_insertNurse();
+        try {
+            console.log("=== 간호사 등록 시작 ===");
+
+            // 폼 검증
+            if (!scwin.fn_validateForm()) {
+                return;
+            }
+
+            // 등록할 데이터 준비
+            var nurseData = {
+                nurseName: dmp_nurseVo.get("nurseName"),
+                position: dmp_nurseVo.get("position"),
+                career: dmp_nurseVo.get("career") || "",
+                specialNote: dmp_nurseVo.get("specialNote") || "",
+                hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
+            };
+
+            console.log("등록할 데이터:", nurseData);
+
+            // 데이터를 dataMap에 설정
+            dmp_nurseVo.setJSON(nurseData);
+
+            // ProWorks 서버 호출
+            $c.sbm.execute(sbm_insertNurse);
+
+        } catch (error) {
+            console.error("간호사 등록 오류:", error);
+            Swal.fire({
+                icon: 'error',
+                title: '등록 오류',
+                text: '간호사 등록 중 오류가 발생했습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3B6B'
+            });
+        }
     }
 };
 
@@ -1148,7 +904,6 @@ scwin.btn_delete_onclick = function () {
             confirmButtonColor: '#1B73E8'
         });
         scwin.fn_clearForm();
-        scwin.fn_selectNurseList();
     }
 
 };
@@ -1363,7 +1118,6 @@ scwin.showNurseInputForms = function (nurseCount) {
 
             if (nursesToAdd.length > 0) {
                 scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
-                scwin.fn_saveData();
 
                 Swal.fire({
                     icon: 'success',
@@ -1464,7 +1218,6 @@ scwin.btn_update_multi_onclick = function () {
                     updatedCount++;
                 }
             });
-            scwin.fn_saveData();
             Swal.fire({
                 icon: 'success',
                 title: '다중 수정 완료',
@@ -1504,7 +1257,6 @@ scwin.btn_delete_multi_onclick = function () {
         }
     });
 
-    scwin.fn_saveData();
     Swal.fire({
         icon: 'success',
         title: '다중 삭제 완료',
@@ -1548,9 +1300,13 @@ scwin.grd_nurseList_oncellclick = function (row, col) {
     // 체크박스 컬럼이 아닌 경우에만 상세 정보 로드
     if (col !== 0) {
         var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-        if (nurseName) {
-            scwin.fn_selectNurse(nurseName);
-            console.log("선택된 간호사: " + nurseName);
+        var position = dlt_nurseList.getCellData(row, "position");
+        var career = dlt_nurseList.getCellData(row, "career");
+        var specialNote = dlt_nurseList.getCellData(row, "specialNote");
+        var hireDate = dlt_nurseList.getCellData(row, "hireDate");
+        if (nurseName && position && career && specialNote && hireDate) {
+            scwin.fn_selectNurse(nurseName, position, career, specialNote, hireDate);
+            console.log("선택된 간호사: " + nurseName + "," + position + "," + career + "," + specialNote + "," + hireDate);
         }
     }
 };
@@ -1660,19 +1416,9 @@ scwin.btn_excel_onclick = function () {
             // 그리드 데이터 변경 감지를 위한 타이머 설정
             scwin.startGridDataMonitoring();
 
-            try {
-                grd_nurseList.advancedExcelUpload(jsnOptions);
+            grd_nurseList.advancedExcelUpload(jsnOptions);
 
-                console.log("DB 등록함!!");
-            } catch (e) {
-                console.error("WebSquare 엑셀 업로드 실패:", e);
-                console.log("대체 방법으로 시뮬레이션 실행");
-                scwin.fn_simulateExcelUpload();
-            }
-        } else {
-            console.log("WebSquare 엑셀 업로드 기능이 없어 대체 방법 사용");
-            // 대체 방법: 테스트 데이터로 시뮬레이션
-            scwin.fn_simulateExcelUpload();
+            console.log("DB 등록함!!");
         }
     } catch (error) {
         console.error("엑셀 업로드 오류:", error);
@@ -1781,8 +1527,6 @@ scwin.fn_excelUploadCallback = function (uploadData) {
                         confirmButtonColor: '#1C3D6B',
                         width: '500px'
                     });
-                    // ProWorks 서버 호출
-                    $p.executeSubmission("sbm_insertNurseList");
 
                 } else {
                     console.error("SweetAlert가 정의되지 않았습니다.");
@@ -1793,16 +1537,6 @@ scwin.fn_excelUploadCallback = function (uploadData) {
                 alert("엑셀 업로드 완료: " + addedCount + "건의 간호사 정보가 등록되었습니다.");
             }
 
-            // DB에 일괄 저장 (백그라운드에서 진행)
-            if (nursesToSave.length > 0) {
-                setTimeout(function () {
-                    try {
-                        scwin.fn_saveNursesToDB(nursesToSave);
-                    } catch (e) {
-                        console.error("DB 저장 함수 호출 실패:", e);
-                    }
-                }, 1000); // 1초 후 DB 저장 시작
-            }
         } else {
             try {
                 if (typeof Swal !== 'undefined' && Swal.fire) {
@@ -1825,53 +1559,6 @@ scwin.fn_excelUploadCallback = function (uploadData) {
     } catch (e) {
         console.error("엑셀 업로드 콜백 전체 오류:", e);
         alert("엑셀 업로드 처리 중 오류가 발생했습니다: " + e.message);
-    }
-};
-
-// 엑셀 업로드 시뮬레이션 (테스트용)
-scwin.fn_simulateExcelUpload = function () {
-    try {
-        console.log("=== 엑셀 업로드 시뮬레이션 시작 ===");
-
-        // 테스트 데이터 생성
-        var testData = [
-            {
-                nurseName: "김하늘",
-                position: "수간호사",
-                career: "20년차",
-                specialNote: "육아 중 (6세 이하 자녀 돌봄)",
-                hireDate: "2005-07-01"
-            },
-            {
-                nurseName: "이수정",
-                position: "간호사",
-                career: "19년차",
-                specialNote: "자녀 학교 등하원 책임 있음",
-                hireDate: "2006-07-01"
-            },
-            {
-                nurseName: "박지은",
-                position: "간호사",
-                career: "18년차",
-                specialNote: "갓난아이 육아 중 (6세 미만 자녀)",
-                hireDate: "2007-07-01"
-            }
-        ];
-
-        console.log("시뮬레이션 데이터:", testData);
-
-        // 콜백 함수 호출
-        setTimeout(function () {
-            try {
-                scwin.fn_excelUploadCallback(testData);
-            } catch (e) {
-                console.error("시뮬레이션 콜백 호출 실패:", e);
-                alert("엑셀 업로드 시뮬레이션 중 오류가 발생했습니다: " + e.message);
-            }
-        }, 1000);
-    } catch (e) {
-        console.error("시뮬레이션 함수 오류:", e);
-        alert("엑셀 업로드 시뮬레이션 준비 중 오류가 발생했습니다: " + e.message);
     }
 };
 

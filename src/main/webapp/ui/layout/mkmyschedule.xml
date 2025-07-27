@@ -814,7 +814,6 @@ scwin.setupPostMessageListener = function() {
                 <xf:group
                 	style="margin-left:250px;width:calc(100% - 250px);height:100%;background-color:#f5f7fa;overflow-y:auto;overflow-x:hidden;"
                 	id="grp_mainContent" class="main-content-expanded">
-                	<w2:wframe style="height: 50px;border:none;margin:0;padding:0;background:#f8f9fa;" id="wfr_tabControl" src="/InsWebApp/ui/cmmn/tabControl.xml"/>
                 	<w2:wframe id="wfr_mainContent" style="width:100%;height:calc(100% - 50px);min-height:calc(100% - 50px);border:none;margin:0;padding:0;"
                 		src="/InsWebApp/ui/duty/myschedule.xml"/>
                 </xf:group>

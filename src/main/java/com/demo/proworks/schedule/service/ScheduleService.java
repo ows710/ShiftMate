@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.HashMap;
 
 import com.inswave.elfw.exception.ElException;
+import com.demo.proworks.schedule.vo.ScheduleListVo;
 import com.demo.proworks.schedule.vo.ScheduleVo;
 import com.demo.proworks.nurse.vo.NurseVo;
 
@@ -47,11 +48,11 @@ public interface ScheduleService {
 		
 	/**
 	 * 스케줄 정보를 등록 처리한다.
-	 * @param scheduleVo 스케줄 정보 ScheduleVo
+	 * @param scheduleListVo 스케줄 정보 ScheduleVo
 	 * @return 처리 건수 int
 	 * @throws Exception
 	 */
-	public int insertSchedule(ScheduleVo scheduleVo) throws Exception;
+	public int insertSchedule(ScheduleListVo scheduleListVo) throws Exception;
 	
 	/**
 	 * 스케줄 정보를 갱신 처리한다.
@@ -76,4 +77,6 @@ public interface ScheduleService {
 	 * @throws Exception
 	 */
 	public List<NurseVo> selectListNurse(HashMap searchKeyHm) throws Exception;
+
+	public List<ScheduleVo> selectScheduleViewByDate(ScheduleVo scheduleVo);
 } 

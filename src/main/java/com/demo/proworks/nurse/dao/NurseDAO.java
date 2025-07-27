@@ -72,12 +72,11 @@ public class NurseDAO extends ProworksDefaultAbstractDAO {
 	/**
 	 * 간호사 정보 목록을 조회한다.
 	 * 
-	 * @param nurseVo 간호사 정보 NurseVo
 	 * @return 간호사 정보 목록 List<NurseVo>
 	 * @throws ElException
 	 */
-	public List<NurseVo> selectListNurse(NurseVo nurseVo) throws ElException {
-		return list("com.demo.proworks.nurse.selectListNurse", nurseVo);
+	public List<NurseVo> selectListNurse() throws ElException {
+		return list("com.demo.proworks.nurse.selectListNurse");
 	}
 
 	/**

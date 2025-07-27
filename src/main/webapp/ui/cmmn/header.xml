@@ -32,7 +32,7 @@
 			.left-section {
 				display: flex;
 				align-items: center;
-				width: 60px;
+				width: 60px;image.png
 			}
 			
 			.hamburger-menu {
@@ -176,30 +176,39 @@
 			.user-dropdown {
 				position: absolute;
 				top: 45px;
-				right: 0;
-				width: 150px;
+				right: 5px;
+				width: 100px;
 				background: white;
 				border-radius: 8px;
 				box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-				border: 1px solid #e0e0e0;
+				border: none;
 				z-index: 1002;
 				display: none;
 				overflow: hidden;
+				opacity: 0;
+				visibility: hidden;
+				transition: all 0.3s ease;
 			}
 			
 			.user-dropdown.show {
 				display: block !important;
+				opacity: 1 !important;
+				visibility: visible !important;
 			}
 			
+
+			
 			.user-menu-item {
-				padding: 12px 20px;
+				padding: 0;
 				color: #333;
 				font-size: 14px;
 				cursor: pointer;
 				transition: background-color 0.2s;
 				display: flex;
 				align-items: center;
-				gap: 8px;
+				justify-content: center;
+				width: 100%;
+				height: 30px;
 			}
 			
 			.user-menu-item:hover {
@@ -207,11 +216,64 @@
 			}
 			
 			.user-menu-item.logout {
-				color: #dc3545;
+				color: #333;
+				background: #ffffff;
+				justify-content: center;
+				text-align: center;
 			}
 			
 			.user-menu-item.logout:hover {
-				background: #fff5f5;
+				background: rgba(0,0,0,0.05);
+			}
+			
+			/* 포커스 테두리 제거 */
+			.user-menu-item.logout button:focus,
+			.user-menu-item.logout w2\\:button:focus {
+				outline: none;
+				border: none;
+			}
+			
+			/* 로그아웃 버튼 내부 요소 호버 효과 - 강제 적용 */
+			.user-menu-item.logout w2\\:button,
+			.user-menu-item.logout button,
+			.user-menu-item.logout [id*="button"],
+			.user-menu-item.logout [class*="button"],
+			.user-menu-item.logout * {
+				background-color: #FFFFFF !important;
+				transition: background-color 0.2s;
+			}
+			
+			.user-menu-item.logout w2\\:button:hover,
+			.user-menu-item.logout button:hover,
+			.user-menu-item.logout [id*="button"]:hover,
+			.user-menu-item.logout [class*="button"]:hover,
+			.user-menu-item.logout *:hover {
+				background-color: rgba(0,0,0,0.05) !important;
+			}
+			
+			/* 모든 로그아웃 관련 요소 강제 흰색 */
+			.user-dropdown .logout *,
+			#userDropdown *,
+			.logout-button {
+				background-color: #FFFFFF !important;
+				width: 100% !important;
+				height: 30px !important;
+				border: none !important;
+				padding: 0 !important;
+			}
+			
+			/* 로그아웃 버튼 호버 효과 */
+			.logout-button:hover {
+				background-color: rgba(0,0,0,0.05) !important;
+			}
+			
+			/* group 전체 호버 효과 */
+			.user-menu-item.logout:hover {
+				background-color: rgba(0,0,0,0.05) !important;
+			}
+			
+			.user-menu-item.logout:hover * {
+				background-color: rgba(0,0,0,0.05) !important;
 			}
 		</style>
 		<script lazy="false" type="text/javascript"><![CDATA[
@@ -817,6 +879,12 @@ scwin.updateHamburgerIcon = function(isVisible) {
 scwin.toggleUserMenu = function() {
 	console.log("사용자 메뉴 토글 함수 호출");
 	
+	// 이벤트 전파 중단 (body 클릭 이벤트 방지)
+	if (event) {
+		event.stopPropagation();
+		event.preventDefault();
+	}
+	
 	if (scwin.userMenuVisible) {
 		scwin.hideUserMenu();
 	} else {
@@ -828,22 +896,46 @@ scwin.showUserMenu = function() {
 	console.log("사용자 메뉴 표시 시도");
 	
 	try {
-		// 전역 jQuery 사용 시도
-		if (typeof $ !== 'undefined') {
-			$('.user-dropdown').addClass('show');
-			console.log("jQuery로 사용자 메뉴 표시됨");
-		} else if (typeof window.$ !== 'undefined') {
-			window.$('.user-dropdown').addClass('show');
-			console.log("window.jQuery로 사용자 메뉴 표시됨");
+		// 디버깅: 모든 user-dropdown 요소 찾기
+		var allDropdowns = document.querySelectorAll('.user-dropdown');
+		console.log("찾은 user-dropdown 요소 개수:", allDropdowns.length);
+		
+		// 여러 방법으로 드롭다운 메뉴 찾기
+		var dropdown = document.getElementById('userDropdown') || 
+					  document.querySelector('.user-dropdown') ||
+					  document.querySelector('[id="userDropdown"]');
+		
+		console.log("주요 드롭다운 요소:", dropdown);
+		
+		if (dropdown) {
+			// display를 먼저 block으로 설정
+			dropdown.style.display = 'block';
+			dropdown.style.visibility = 'visible';
+			dropdown.style.opacity = '1';
+			dropdown.style.zIndex = '9999';
+			
+			// 클래스 추가
+			dropdown.classList.add('show');
+			
+			console.log("✅ 사용자 메뉴 표시 완료");
+			console.log("드롭다운 스타일:", dropdown.style.cssText);
+			scwin.userMenuVisible = true;
 		} else {
-			// 순수 JavaScript 사용
-			var elements = document.querySelectorAll('.user-dropdown');
-			for (var i = 0; i < elements.length; i++) {
-				elements[i].classList.add('show');
+			console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
+			
+			// 대체 방법: 모든 user-dropdown 클래스 요소에 적용
+			for (var i = 0; i < allDropdowns.length; i++) {
+				var element = allDropdowns[i];
+				element.style.display = 'block';
+				element.style.visibility = 'visible';
+				element.style.opacity = '1';
+				element.style.zIndex = '9999';
+				element.classList.add('show');
+				console.log("요소 " + i + " 스타일 적용:", element.style.cssText);
 			}
-			console.log("순수 JavaScript로 사용자 메뉴 표시됨");
+			console.log("대체 방법으로 " + allDropdowns.length + "개 메뉴 표시");
+			scwin.userMenuVisible = true;
 		}
-		scwin.userMenuVisible = true;
 	} catch (e) {
 		console.log("사용자 메뉴 표시 오류:", e);
 	}
@@ -853,38 +945,75 @@ scwin.hideUserMenu = function() {
 	console.log("사용자 메뉴 숨김 시도");
 	
 	try {
-		// 전역 jQuery 사용 시도
-		if (typeof $ !== 'undefined') {
-			$('.user-dropdown').removeClass('show');
-			console.log("jQuery로 사용자 메뉴 숨김");
-		} else if (typeof window.$ !== 'undefined') {
-			window.$('.user-dropdown').removeClass('show');
-			console.log("window.jQuery로 사용자 메뉴 숨김");
+		// 여러 방법으로 드롭다운 메뉴 찾기
+		var dropdown = document.getElementById('userDropdown') || 
+					  document.querySelector('.user-dropdown') ||
+					  document.querySelector('[id="userDropdown"]');
+		
+		if (dropdown) {
+			// 클래스 제거
+			dropdown.classList.remove('show');
+			
+			// 스타일 직접 설정
+			dropdown.style.display = 'none';
+			dropdown.style.visibility = 'hidden';
+			dropdown.style.opacity = '0';
+			
+			console.log("✅ 사용자 메뉴 숨김 완료");
+			scwin.userMenuVisible = false;
 		} else {
-			// 순수 JavaScript 사용
+			console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
+			
+			// 대체 방법: 모든 user-dropdown 클래스 요소에 적용
 			var elements = document.querySelectorAll('.user-dropdown');
 			for (var i = 0; i < elements.length; i++) {
 				elements[i].classList.remove('show');
+				elements[i].style.display = 'none';
+				elements[i].style.visibility = 'hidden';
+				elements[i].style.opacity = '0';
 			}
-			console.log("순수 JavaScript로 사용자 메뉴 숨김");
+			console.log("대체 방법으로 " + elements.length + "개 메뉴 숨김");
+			scwin.userMenuVisible = false;
 		}
-		scwin.userMenuVisible = false;
 	} catch (e) {
 		console.log("사용자 메뉴 숨김 오류:", e);
 	}
 };
 
 scwin.logout = function() {
-	if (confirm("로그아웃 하시겠습니까?")) {
-		alert("로그아웃 됩니다.");
+	console.log("로그아웃 함수 호출됨");
+	
+	// 이벤트 전파 중단
+	if (event) {
+		event.stopPropagation();
+		event.preventDefault();
+	}
+	
+	try {
+		console.log("로그아웃 처리 시작");
+		
+		// 사용자 메뉴 숨기기
 		scwin.hideUserMenu();
-		// 여기에 실제 로그아웃 로직 추가
+		
+		// 바로 로그인 페이지로 리다이렉트
+		window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
+		console.log("로그인 페이지로 리다이렉트 완료");
+		
+	} catch (e) {
+		console.log("로그아웃 처리 중 오류:", e.message);
+		// 오류 발생 시에도 로그인 페이지로 이동
+		window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
 	}
 };
 
 // 외부 클릭 시 메뉴 닫기
 scwin.closeMenus = function() {
-	scwin.hideUserMenu();
+	console.log("메뉴 닫기 함수 호출됨");
+	
+	// 사용자 메뉴가 열려있을 때만 닫기
+	if (scwin.userMenuVisible) {
+		scwin.hideUserMenu();
+	}
 };
 
 // 로고 클릭 시 홈으로 이동
@@ -933,7 +1062,7 @@ scwin.alarm_onclick = function(e) {
 				</xf:group>
 				
 				<xf:group class="user-container">
-					<xf:group class="user-info" ev:onclick="scwin.toggleUserMenu">
+					<xf:group class="user-info" ev:onclick="scwin.toggleUserMenu" ev:onclick.stopPropagation="true">
 						<xf:group class="user-details">
 							<w2:textbox id="" class="user-name" label="김간호" style="display:block;"></w2:textbox>
 							<w2:textbox id="" class="user-role" label="수간호사" style="display:block;"></w2:textbox>
@@ -942,11 +1071,10 @@ scwin.alarm_onclick = function(e) {
 					</xf:group>
 
 					<!-- 사용자 드롭다운 메뉴 -->
-					<xf:group id="userDropdown" class="user-dropdown" style="display:none; visibility:hidden; opacity:0;">
-						<xf:group class="user-menu-item logout" ev:onclick="scwin.logout">
-							<w2:textbox id="" label="🚪" style="font-size:14px; color:#dc3545;"></w2:textbox>
-							<w2:textbox id="" label="로그아웃" style="font-size:14px; color:#dc3545;"></w2:textbox>
-						</xf:group>
+					<xf:group id="userDropdown" class="user-dropdown" style=";border-color:#FFFFFF;">
+							<w2:button id="btn_userDropdown" class="logout-button" label="로그아웃" style="font-size:14px; color:#333; font-weight:bold;" ev:onclick="scwin.logout" ev:onclick.stopPropagation="true">
+                                <xf:image src="/InsWebApp/images/iconlogout.png" style="width:20px;height:20px;" id="iconlogout" alt="로그아웃 아이콘" />
+                            </w2:button>
 					</xf:group>
 				</xf:group>
 			</xf:group>

@@ -1,198 +1,237 @@
 package com.demo.proworks.dutyrequest.vo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import com.inswave.elfw.exception.ElException;
 import com.inswave.elfw.annotation.ElDto;
 import com.inswave.elfw.annotation.ElDtoField;
+import com.inswave.elfw.annotation.ElVoField;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.inswave.elfw.log.AppLog;
 
 @JsonFilter("elExcludeFilter")
 @ElDto(FldYn = "Y", delimeterYn = "", logicalName = "근무신청정보")
 public class DutyRequestVo extends com.demo.proworks.cmmn.ProworksCommVO {
     private static final long serialVersionUID = 1L;
 
-    @ElDtoField(logicalName = "신청번호", physicalName = "req_id", type = "int", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 11, dotLen = 0, baseValue = "", desc = "신청번호")
+    private int _offset;
+
+    public DutyRequestVo(){
+        this._offset = 0;
+    }
+
+    public DutyRequestVo(int iOffset){
+        this._offset = iOffset;
+    }
+
+    @ElDtoField(logicalName = "신청번호", physicalName = "reqId", type = "int", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 11, dotLen = 0, baseValue = "", desc = "신청번호", attr = "")
     private int reqId;
 
-    @ElDtoField(logicalName = "신청일", physicalName = "req_date", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "신청일")
+    @ElDtoField(logicalName = "신청일", physicalName = "reqDate", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "신청일", attr = "")
     private String reqDate;
 
-    @ElDtoField(logicalName = "제출일", physicalName = "submitted_at", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "제출일")
+    @ElDtoField(logicalName = "제출일", physicalName = "submittedAt", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "제출일", attr = "")
     private String submittedAt;
 
-    @ElDtoField(logicalName = "생성일", physicalName = "created_at", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "생성일")
+    @ElDtoField(logicalName = "생성일", physicalName = "createdAt", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "생성일", attr = "")
     private String createdAt;
 
-    @ElDtoField(logicalName = "수정일", physicalName = "updated_at", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "수정일")
+    @ElDtoField(logicalName = "수정일", physicalName = "updatedAt", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 10, dotLen = 0, baseValue = "", desc = "수정일", attr = "")
     private String updatedAt;
 
-    @ElDtoField(logicalName = "간호사번호", physicalName = "nurse_id", type = "int", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 11, dotLen = 0, baseValue = "", desc = "간호사번호")
+    @ElDtoField(logicalName = "간호사번호", physicalName = "nurseId", type = "int", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 11, dotLen = 0, baseValue = "", desc = "간호사번호", attr = "")
     private int nurseId;
 
-    @ElDtoField(logicalName = "간호사직책", physicalName = "nurse_position", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 50, dotLen = 0, baseValue = "", desc = "간호사직책")
-    private String nursePosition;
+    @ElDtoField(logicalName = "근무유형", physicalName = "shiftType", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 1, dotLen = 0, baseValue = "", desc = "근무유형", attr = "")
+    private String shiftType;
 
-    @ElDtoField(logicalName = "병동번호", physicalName = "ward_id", type = "int", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 11, dotLen = 0, baseValue = "", desc = "병동번호")
-    private int wardId;
+    @ElDtoField(logicalName = "근무자명", physicalName = "nurseName", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 50, dotLen = 0, baseValue = "", desc = "근무자명", attr = "")
+    private String nurseName;
 
-    @ElDtoField(logicalName = "병동명", physicalName = "ward_name", type = "String", typeKind = "", fldYn = "Yes", delimeterYn = "Yes", cryptoGbn = "", cryptoKind = "", length = 50, dotLen = 0, baseValue = "", desc = "병동명")
-    private String wardName;
-
-    @ElDtoField(logicalName = "컬럼상태", physicalName = "rowStatus", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String rowStatus;
-
-    @ElDtoField(logicalName = "검색_신청번호", physicalName = "scReqId", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String scReqId;
-
-    @ElDtoField(logicalName = "검색_간호사번호", physicalName = "scNurseId", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String scNurseId;
-
-    @ElDtoField(logicalName = "검색_병동번호", physicalName = "scWardId", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String scWardId;
-
-    @ElDtoField(logicalName = "검색_신청일시작", physicalName = "scReqDateFrom", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String scReqDateFrom;
-
-    @ElDtoField(logicalName = "검색_신청일종료", physicalName = "scReqDateTo", type = "String", typeKind = "", fldYn = "No", delimeterYn = "", cryptoGbn = "", cryptoKind = "", length = 0, dotLen = 0, baseValue = "", desc = "")
-    private String scReqDateTo;
-
-    // Getters and Setters
-    public int getReqId() {
+    @ElVoField(physicalName = "reqId")
+    public int getReqId(){
         return reqId;
     }
 
-    public void setReqId(int reqId) {
+    @ElVoField(physicalName = "reqId")
+    public void setReqId(int reqId){
         this.reqId = reqId;
     }
 
-    public String getReqDate() {
-        return reqDate;
+    @ElVoField(physicalName = "reqDate")
+    public String getReqDate(){
+        String ret = this.reqDate;
+        return ret;
     }
 
-    public void setReqDate(String reqDate) {
+    @ElVoField(physicalName = "reqDate")
+    public void setReqDate(String reqDate){
         this.reqDate = reqDate;
     }
 
-    public String getSubmittedAt() {
-        return submittedAt;
+    @ElVoField(physicalName = "submittedAt")
+    public String getSubmittedAt(){
+        String ret = this.submittedAt;
+        return ret;
     }
 
-    public void setSubmittedAt(String submittedAt) {
+    @ElVoField(physicalName = "submittedAt")
+    public void setSubmittedAt(String submittedAt){
         this.submittedAt = submittedAt;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    @ElVoField(physicalName = "createdAt")
+    public String getCreatedAt(){
+        String ret = this.createdAt;
+        return ret;
     }
 
-    public void setCreatedAt(String createdAt) {
+    @ElVoField(physicalName = "createdAt")
+    public void setCreatedAt(String createdAt){
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    @ElVoField(physicalName = "updatedAt")
+    public String getUpdatedAt(){
+        String ret = this.updatedAt;
+        return ret;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    @ElVoField(physicalName = "updatedAt")
+    public void setUpdatedAt(String updatedAt){
         this.updatedAt = updatedAt;
     }
 
-    public int getNurseId() {
+    @ElVoField(physicalName = "nurseId")
+    public int getNurseId(){
         return nurseId;
     }
 
-    public void setNurseId(int nurseId) {
+    @ElVoField(physicalName = "nurseId")
+    public void setNurseId(int nurseId){
         this.nurseId = nurseId;
     }
 
-    public String getNursePosition() {
-        return nursePosition;
+    @ElVoField(physicalName = "shiftType")
+    public String getShiftType(){
+        String ret = this.shiftType;
+        return ret;
     }
 
-    public void setNursePosition(String nursePosition) {
-        this.nursePosition = nursePosition;
+    @ElVoField(physicalName = "shiftType")
+    public void setShiftType(String shiftType){
+        this.shiftType = shiftType;
     }
 
-    public int getWardId() {
-        return wardId;
+    @ElVoField(physicalName = "nurseName")
+    public String getNurseName(){
+        String ret = this.nurseName;
+        return ret;
     }
 
-    public void setWardId(int wardId) {
-        this.wardId = wardId;
-    }
-
-    public String getWardName() {
-        return wardName;
-    }
-
-    public void setWardName(String wardName) {
-        this.wardName = wardName;
-    }
-
-    public String getRowStatus() {
-        return rowStatus;
-    }
-
-    public void setRowStatus(String rowStatus) {
-        this.rowStatus = rowStatus;
-    }
-
-    public String getScReqId() {
-        return scReqId;
-    }
-
-    public void setScReqId(String scReqId) {
-        this.scReqId = scReqId;
-    }
-
-    public String getScNurseId() {
-        return scNurseId;
-    }
-
-    public void setScNurseId(String scNurseId) {
-        this.scNurseId = scNurseId;
-    }
-
-    public String getScWardId() {
-        return scWardId;
-    }
-
-    public void setScWardId(String scWardId) {
-        this.scWardId = scWardId;
-    }
-
-    public String getScReqDateFrom() {
-        return scReqDateFrom;
-    }
-
-    public void setScReqDateFrom(String scReqDateFrom) {
-        this.scReqDateFrom = scReqDateFrom;
-    }
-
-    public String getScReqDateTo() {
-        return scReqDateTo;
-    }
-
-    public void setScReqDateTo(String scReqDateTo) {
-        this.scReqDateTo = scReqDateTo;
+    @ElVoField(physicalName = "nurseName")
+    public void setNurseName(String nurseName){
+        this.nurseName = nurseName;
     }
 
     @Override
     public String toString() {
-        return "DutyRequestVo{" +
-                "reqId=" + reqId +
-                ", reqDate='" + reqDate + '\'' +
-                ", submittedAt='" + submittedAt + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", updatedAt='" + updatedAt + '\'' +
-                ", nurseId=" + nurseId +
-                ", nursePosition='" + nursePosition + '\'' +
-                ", wardId=" + wardId +
-                ", wardName='" + wardName + '\'' +
-                ", rowStatus='" + rowStatus + '\'' +
-                ", scReqId='" + scReqId + '\'' +
-                ", scNurseId='" + scNurseId + '\'' +
-                ", scWardId='" + scWardId + '\'' +
-                ", scReqDateFrom='" + scReqDateFrom + '\'' +
-                ", scReqDateTo='" + scReqDateTo + '\'' +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("DutyRequestVo [");
+        sb.append("reqId").append("=").append(reqId).append(",");
+        sb.append("reqDate").append("=").append(reqDate).append(",");
+        sb.append("submittedAt").append("=").append(submittedAt).append(",");
+        sb.append("createdAt").append("=").append(createdAt).append(",");
+        sb.append("updatedAt").append("=").append(updatedAt).append(",");
+        sb.append("nurseId").append("=").append(nurseId).append(",");
+        sb.append("shiftType").append("=").append(shiftType).append(",");
+        sb.append("nurseName").append("=").append(nurseName);
+        sb.append("]");
+        return sb.toString();
+
     }
-} 
+
+    public boolean isFixedLengthVo() {
+        return true;
+    }
+
+    public byte[] marshalFld() throws IOException{
+        return marshalFld( com.inswave.elfw.ElConfig.getFldEncode() ); 
+    }
+
+	public byte[] marshalFld(String encode) throws IOException{
+    	ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        DataOutputStream out = null;
+        try {
+            out = new DataOutputStream(bout);
+            out.write( com.inswave.elfw.util.TypeConversionUtil.intToBytes(this.reqId , 11) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.reqDate , 10, encode ) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.submittedAt , 10, encode ) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.createdAt , 10, encode ) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.updatedAt , 10, encode ) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.intToBytes(this.nurseId , 11) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.shiftType , 1, encode ) );
+            out.write( com.inswave.elfw.util.TypeConversionUtil.strToSpBytes(this.nurseName , 50, encode ) );
+        } catch (IOException e) {
+                AppLog.error("marshalFld Error:["+ toString()+"]", e);
+                throw e;
+        } finally {
+            try	{
+                if (out != null) out.close();
+           } catch (IOException ie) {
+                AppLog.error("marshalFld out close Error", ie);
+           }
+            try	{
+                if (bout != null) bout.close();
+           } catch (IOException ie) {
+                AppLog.error("marshalFld bout close Error", ie);
+           }
+        }
+        return bout.toByteArray();
+    }
+
+    public void unMarshalFld( byte[] bytes ) throws ElException{
+        unMarshalFld( bytes, com.inswave.elfw.ElConfig.getFldEncode() ); 
+    }
+
+    public void unMarshalFld( byte[] bytes , String encode) throws ElException{
+        try{ 
+             this.reqId = com.inswave.elfw.util.TypeConversionUtil.bytesToInt( bytes, _offset, 11, encode );
+             _offset += 11;
+            this.reqDate = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 10, encode );
+             _offset += 10;
+            this.submittedAt = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 10, encode );
+             _offset += 10;
+            this.createdAt = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 10, encode );
+             _offset += 10;
+            this.updatedAt = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 10, encode );
+             _offset += 10;
+             this.nurseId = com.inswave.elfw.util.TypeConversionUtil.bytesToInt( bytes, _offset, 11, encode );
+             _offset += 11;
+            this.shiftType = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 1, encode );
+             _offset += 1;
+            this.nurseName = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, _offset, 50, encode );
+             _offset += 50;
+        }catch(ElException e) { 
+            String errorLine = com.inswave.elfw.util.TypeConversionUtil.getTrimmedString( bytes, 0, bytes.length, encode );
+            AppLog.error("unMarshalFld Error:["+ errorLine+"]", e);
+            throw e;
+        } 
+    }
+
+    public int getOffset(){
+        return _offset;
+    }
+
+    @Override
+    public void _xStreamEnc() {
+    }
+
+
+    @Override
+    public void _xStreamDec() {
+    }
+
+
+}

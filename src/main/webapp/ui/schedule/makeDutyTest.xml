@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
 	xmlns:xf="http://www.w3.org/2002/xforms">
-	<head meta_screenName="듀티 자동 생성">
+	<head meta_screenName="듀티 자동 생성 테스트">
 		<w2:type>COMPONENT</w2:type>
 		<w2:buildDate />
 		<w2:MSA />
@@ -144,8 +144,8 @@
 			transform: translateY(-2px) !important;
 			}
 
-			.btn-hope {
-			background: #1C3D6B !important;
+            .btn-hope {
+            background: #1C3D6B !important;
 			color: #fff !important;
 			}
 
@@ -296,8 +296,7 @@
 			font-weight: 600;
 			}
 
-			/* 토글 스위치
-			개선 */
+			/* 토글 스위치 개선 */
 			.toggle-switch {
 			position: relative !important;
 			width: 50px !important;
@@ -445,8 +444,7 @@
 
 			/* 중요 안내 메시지 추가 */
 			.important-notice {
-			background:
-			#fff3cd;
+			background: #fff3cd;
 			border: 1px solid #ffeaa7;
 			border-radius: 4px;
 			padding: 10px;
@@ -524,8 +522,7 @@
 			display:
 			none;
 			z-index: 1000;
-			justify-content:
-			center;
+			justify-content: center;
 			align-items: center;
 			}
 
@@ -536,8 +533,7 @@
 			.progress-modal-container
 			{
 			background: white;
-			border-radius:
-			12px;
+			border-radius: 12px;
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 			width: 700px;
 			max-height: 80vh;
@@ -545,8 +541,7 @@
 			}
 
 			.progress-modal-header {
-			background:
-			#1C3D6B;
+			background: #1C3D6B;
 			color: white;
 			padding: 20px;
 			border-radius: 12px 12px 0 0;
@@ -555,8 +550,7 @@
 
 			.progress-modal-title {
 			font-size: 20px;
-			font-weight:
-			600;
+			font-weight: 600;
 			margin-bottom: 10px;
 			}
 
@@ -581,8 +575,7 @@
 			color: #1C3D6B;
 			margin-bottom:
 			20px;
-			display:
-			flex;
+			display: flex;
 			align-items: center;
 			gap: 10px;
 			}
@@ -603,8 +596,7 @@
 
 			.guideline-item {
 			display: flex;
-			align-items:
-			flex-start;
+			align-items: flex-start;
 			gap: 12px;
 			margin-bottom: 15px;
 			padding: 15px;
@@ -620,8 +612,7 @@
 			border-radius: 4px;
 			display: flex;
 			align-items: center;
-			justify-content:
-			center;
+			justify-content: center;
 			color: white;
 			font-size: 12px;
 			font-weight: bold;
@@ -644,8 +635,7 @@
 			line-height: 1.4;
 			}
 
-			/* 진행률 바 스타일
-			(모달용) */
+			/* 진행률 바 스타일 (모달용) */
 			.modal-progress-container {
 			margin-bottom: 20px;
 			}
@@ -662,8 +652,7 @@
 			.modal-progress-bar {
 			height: 100%;
 			background:
-			linear-gradient(90deg, #5CD6C0 0%,
-			#1C3D6B 100%);
+			linear-gradient(90deg, #5CD6C0 0%, #1C3D6B 100%);
 			width: 0%;
 			transition: width 1s ease;
 			border-radius: 6px;
@@ -672,8 +661,7 @@
 			.modal-progress-text {
 			text-align: center;
 			font-weight: 600;
-			color:
-			#1C3D6B;
+			color: #1C3D6B;
 			font-size: 16px;
 			}
 
@@ -747,6 +735,224 @@
 						<w2:column id="experience" name="경력" dataType="number" />
 						<w2:column id="isNightKeep" name="야간고정" dataType="number" />
 					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<nurseId>
+								1<![CDATA[1]]></nurseId>
+							<nurseName>
+								김간호<![CDATA[가]]></nurseName>
+							<experience>60</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								2<![CDATA[2]]></nurseId>
+							<nurseName>
+								이수정<![CDATA[나]]></nurseName>
+							<experience>58</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								3<![CDATA[3]]></nurseId>
+							<nurseName>
+								박지은<![CDATA[다]]></nurseName>
+							<experience>58</experience>
+							<isNightKeep>1</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								4<![CDATA[4]]></nurseId>
+							<nurseName>
+								윤서연<![CDATA[라]]></nurseName>
+							<experience>47</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								5<![CDATA[5]]></nurseId>
+							<nurseName>
+								최유진<![CDATA[마]]></nurseName>
+							<experience>45</experience>
+							<isNightKeep>1</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								6<![CDATA[6]]></nurseId>
+							<nurseName>
+								김지수<![CDATA[바]]></nurseName>
+							<experience>45</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								7<![CDATA[7]]></nurseId>
+							<nurseName>
+								정하윤<![CDATA[사]]></nurseName>
+							<experience>44</experience>
+							<isNightKeep>1</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								8<![CDATA[8]]></nurseId>
+							<nurseName>
+								한소민<![CDATA[아]]></nurseName>
+							<experience>43</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								9<![CDATA[9]]></nurseId>
+							<nurseName>
+								오지민<![CDATA[자]]></nurseName>
+							<experience>41</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								10<![CDATA[10]]></nurseId>
+							<nurseName>
+								이다은<![CDATA[차]]></nurseName>
+							<experience>40</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								11<![CDATA[11]]></nurseId>
+							<nurseName>
+								박서진<![CDATA[카]]></nurseName>
+							<experience>40</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								12<![CDATA[12]]></nurseId>
+							<nurseName>
+								조하늘<![CDATA[타]]></nurseName>
+							<experience>39</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								13<![CDATA[13]]></nurseId>
+							<nurseName>
+								정윤아<![CDATA[파]]></nurseName>
+							<experience>38</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								14<![CDATA[14]]></nurseId>
+							<nurseName>
+								김지연<![CDATA[하]]></nurseName>
+							<experience>37</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								15<![CDATA[15]]></nurseId>
+							<nurseName>
+								송예진<![CDATA[아]]></nurseName>
+							<experience>35</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								16<![CDATA[16]]></nurseId>
+							<nurseName>
+								강지우<![CDATA[야]]></nurseName>
+							<experience>25</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								17<![CDATA[17]]></nurseId>
+							<nurseName>
+								이소율<![CDATA[어]]></nurseName>
+							<experience>28</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								18<![CDATA[18]]></nurseId>
+							<nurseName>
+								문다현<![CDATA[여]]></nurseName>
+							<experience>26</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								19<![CDATA[19]]></nurseId>
+							<nurseName>
+								서채원<![CDATA[오]]></nurseName>
+							<experience>25</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								20<![CDATA[20]]></nurseId>
+							<nurseName>
+								유하진<![CDATA[요]]></nurseName>
+							<experience>18</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								21<![CDATA[21]]></nurseId>
+							<nurseName>
+								정예린<![CDATA[우]]></nurseName>
+							<experience>17</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								22<![CDATA[22]]></nurseId>
+							<nurseName>
+								이가은<![CDATA[유]]></nurseName>
+							<experience>16</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								23<![CDATA[23]]></nurseId>
+							<nurseName>
+								김나영<![CDATA[으]]></nurseName>
+							<experience>15</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								24<![CDATA[24]]></nurseId>
+							<nurseName>
+								안서윤<![CDATA[이]]></nurseName>
+							<experience>14</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								25<![CDATA[25]]></nurseId>
+							<nurseName>
+								오세린<![CDATA[기]]></nurseName>
+							<experience>5</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								26<![CDATA[26]]></nurseId>
+							<nurseName>
+								배수연<![CDATA[니]]></nurseName>
+							<experience>5</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+						<w2:row>
+							<nurseId>
+								27<![CDATA[27]]></nurseId>
+							<nurseName>
+								오원석<![CDATA[디]]></nurseName>
+							<experience>5</experience>
+							<isNightKeep>0</isNightKeep>
+						</w2:row>
+					</w2:data>
 				</w2:dataList>
 
 				<!-- 생성된 스케줄 데이터 -->
@@ -929,29 +1135,11 @@
 					</w2:columnInfo>
 				</w2:dataList>
 
-				<w2:dataMap baseNode="map" id="dma_date">
-					<w2:keyInfo>
-						<w2:key dataType="text" name="선택된 날짜" id="date"></w2:key>
-					</w2:keyInfo>
-				</w2:dataMap>
 			</w2:dataCollection>
-			<xf:submission id="sbm_generateSchedule" action="http://192.168.210.36:8090/api/schedule/generate" method="post"
+			<xf:submission id="sbm_generateSchedule" action="http://localhost:8090/api/schedule/generate" method="post"
 				mediatype="application/json" ref="data:json,dma_sample" target="data:json,dlt_sample" encoding="UTF-8" instance="" replace=""
 				errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_generateSchedule_submitdone"
 				ev:submiterror="scwin.sbm_generateSchedule_submiterror" abortTrigger="">
-			</xf:submission>
-			<xf:submission id="sbm_selectNurseList" action="/InsWebApp/list.pwkjson" method="post" mediatype="application/json" ref=""
-				target="" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
-				ev:submitdone="scwin.sbm_selectNurseList_submitdone" ev:submiterror="" abortTrigger="">
-			</xf:submission>
-			<xf:submission id="sbm_insertDuty" action="/InsWebApp/DmoScheduleIns.pwkjson" method="post" mediatype="application/json"
-				ref='data:json,{"id":"dlt_sample","key":"scheduleListVo"}' target="" encoding="UTF-8" instance="" replace="" errorHandler=""
-				customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="" ev:submiterror="" abortTrigger="">
-			</xf:submission>
-			<xf:submission id="sbm_selectHopeDuty" action="/InsWebApp/HopeDutyList.pwkjson" method="post" mediatype="application/json"
-				ref='data:json,{"id":"dma_date","key":"param"}' target='data:json,{"id":"dlt_sample","key":"dlt_sample"}' encoding="UTF-8" instance=""
-				replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
-				ev:submitdone="scwin.sbm_selectHopeDuty_submitdone" ev:submiterror="" abortTrigger="">
 			</xf:submission>
 		</xf:model>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -959,13 +1147,8 @@
 // 페이지 로드
 scwin.onpageload = function () {
     scwin.isUpdating = false;
-    scwin.hopeCells = {}; // 희망 현황 셀
-    scwin.userEditedCells = {}; // 사용자 수정 셀
-
     scwin.initializePage();
     scwin.setCurrentMonth();
-
-    $c.sbm.execute(sbm_selectNurseList);
 
     setTimeout(function () {
         scwin.initializePivotData();
@@ -973,7 +1156,9 @@ scwin.onpageload = function () {
         scwin.refreshGrids();
         scwin.updateColumnVisibility();
         scwin.initializeTooltip();
+
         scwin.initializeToggles();
+
         scwin.removeGridEffects();
     }, 500);
 
@@ -1045,12 +1230,12 @@ scwin.pivotCellStyleFunction = function (rowIndex, colIndex, colID, value) {
         return null;
     }
 
-    // 희망 현황 셀인 경우 빨간색 스타일 우선 적용
-    if (scwin.hopeCells && scwin.hopeCells[rowIndex + "_" + colID]) {
+    // 희망 현황 스타일 (빨간색 텍스트)
+    if (value === "D" || value === "E" || value === "N" || value === "O") {
         return {
             color: "#d32f2f",
             fontWeight: "bold",
-            backgroundColor: "#ffebee"
+            fontSize: "14px"
         };
     }
 
@@ -1224,9 +1409,6 @@ scwin.refreshGridStyles = function () {
     // 제약 조건 스타일 적용 (툴팁 이벤트는 별도로)
     setTimeout(function () {
         scwin.applyConstraintStylesOnly();
-
-        scwin.forceHopeTextColor();
-        scwin.addHopeCellHighPriorityStyle();
 
         // 툴팁 이벤트는 더 늦게 추가 (그리드 완전히 렌더링 후)
         setTimeout(function () {
@@ -1531,8 +1713,8 @@ scwin.validateAndConvertShiftInput = function (inputValue) {
     // 대소문자 구분 없이 변환
     var normalized = inputValue.toString().toUpperCase().trim();
 
-    // 유효한 값들
-    var validValues = ["D", "E", "N", "X"];
+    // 유효한 값들 (희망 현황 포함)
+    var validValues = ["D", "E", "N", "X", "O"];
 
     if (validValues.includes(normalized)) {
         return normalized;
@@ -1545,7 +1727,7 @@ scwin.validateAndConvertShiftInput = function (inputValue) {
 // 입력값 실시간 검증 (키 입력 시)
 scwin.validateShiftKeyInput = function (event, rowIndex, colID) {
     var key = event.key.toUpperCase();
-    var validKeys = ["D", "E", "N", "X", "BACKSPACE", "DELETE", "TAB", "ENTER"];
+    var validKeys = ["D", "E", "N", "X", "O", "BACKSPACE", "DELETE", "TAB", "ENTER"];
 
     // 유효하지 않은 키는 입력 차단
     if (!validKeys.includes(key) && key.length === 1) {
@@ -1597,7 +1779,7 @@ scwin.dl_pivotData_oncelldatachange = function (row, col, newValue, oldValue) {
         Swal.fire({
             icon: 'warning',
             title: '입력 오류',
-            html: '올바른 근무 타입을 입력하세요.<br>D(주간), E(저녁), N(야간), X(휴무)',
+            html: '올바른 근무 타입을 입력하세요.<br>D(주간), E(저녁), N(야간), X(휴무), O(오프)',
             confirmButtonText: '확인',
             confirmButtonColor: '#1C3D6B'
         });
@@ -1617,22 +1799,6 @@ scwin.dl_pivotData_oncelldatachange = function (row, col, newValue, oldValue) {
         actualNewValue = validatedValue;
     }
 
-    var cellKey = rowIndex + "_" + colID;
-
-    // 값이 실제로 변경된 경우만 처리
-    if (actualOldValue !== actualNewValue) {
-        // 사용자가 수정한 셀로 표시
-        if (!scwin.userEditedCells) {
-            scwin.userEditedCells = {};
-        }
-        scwin.userEditedCells[cellKey] = true;
-
-        // 희망 현황 셀에서 제거 (사용자 수정이 우선)
-        if (scwin.hopeCells && scwin.hopeCells[cellKey]) {
-            delete scwin.hopeCells[cellKey];
-        }
-    }
-
     scwin.isUpdating = true;
 
     setTimeout(function () {
@@ -1648,6 +1814,154 @@ scwin.dl_pivotData_oncelldatachange = function (row, col, newValue, oldValue) {
 };
 
 // ===== 설정 모달 관리 =====
+scwin.hopeDuty = function() {
+    console.log("희망 현황 버튼 클릭");
+    
+    // 희망 현황 더미데이터 생성 및 적용
+    scwin.applyHopeDutyData();
+    
+    // 성공 메시지 표시
+    Swal.fire({
+        icon: 'success',
+        title: '희망 현황 적용',
+        text: '희망 현황이 그리드에 반영되었습니다!',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
+};
+
+// 희망 현황 더미데이터 적용 함수
+scwin.applyHopeDutyData = function() {
+    try {
+        console.log("희망 현황 데이터 적용 시작");
+        
+        // 희망 현황 더미데이터 생성
+        var hopeData = scwin.generateHopeDutyData();
+        
+        // 피벗 데이터에 희망 현황 적용
+        for (var i = 0; i < dl_pivotData.getRowCount(); i++) {
+            var nurseId = dl_pivotData.getCellData(i, "nurseId");
+            var nurseHopeData = hopeData[nurseId];
+            
+            if (nurseHopeData) {
+                for (var day = 1; day <= 31; day++) {
+                    var dayKey = "day" + day;
+                    if (nurseHopeData[dayKey]) {
+                        dl_pivotData.setCellData(i, dayKey, nurseHopeData[dayKey]);
+                    }
+                }
+            }
+        }
+        
+        // 그리드 스타일 새로고침
+        setTimeout(function() {
+            scwin.refreshGridStyles();
+            scwin.updateSummaryFromPivot();
+        }, 100);
+        
+        console.log("희망 현황 데이터 적용 완료");
+        
+    } catch (e) {
+        console.error("희망 현황 데이터 적용 오류:", e);
+    }
+};
+
+// 희망 현황 더미데이터 생성 함수
+scwin.generateHopeDutyData = function() {
+    var hopeData = {};
+    var daysInMonth = dm_control.get("daysInMonth") || 31;
+    
+    // 직접 설정된 희망 현황 데이터
+    var hopeSchedule = {
+        // 간호사 ID별로 특정 날짜에 희망 근무 설정
+        1: { // 김간호
+            "day1": "D", "day2": "E", "day3": "N", "day4": "O", "day5": "D",
+            "day8": "E", "day9": "N", "day10": "O", "day11": "D", "day12": "E",
+            "day15": "N", "day16": "O", "day17": "D", "day18": "E", "day19": "N",
+            "day22": "O", "day23": "D", "day24": "E", "day25": "N", "day26": "O",
+            "day29": "D", "day30": "E", "day31": "N"
+        },
+        2: { // 이수정
+            "day1": "E", "day2": "N", "day3": "O", "day4": "D", "day5": "E",
+            "day8": "N", "day9": "O", "day10": "D", "day11": "E", "day12": "N",
+            "day15": "O", "day16": "D", "day17": "E", "day18": "N", "day19": "O",
+            "day22": "D", "day23": "E", "day24": "N", "day25": "O", "day26": "D",
+            "day29": "E", "day30": "N", "day31": "O"
+        },
+        3: { // 박지은
+            "day1": "N", "day2": "O", "day3": "D", "day4": "E", "day5": "N",
+            "day8": "O", "day9": "D", "day10": "E", "day11": "N", "day12": "O",
+            "day15": "D", "day16": "E", "day17": "N", "day18": "O", "day19": "D",
+            "day22": "E", "day23": "N", "day24": "O", "day25": "D", "day26": "E",
+            "day29": "N", "day30": "O", "day31": "D"
+        },
+        4: { // 윤서연
+            "day1": "O", "day2": "D", "day3": "E", "day4": "N", "day5": "O",
+            "day8": "D", "day9": "E", "day10": "N", "day11": "O", "day12": "D",
+            "day15": "E", "day16": "N", "day17": "O", "day18": "D", "day19": "E",
+            "day22": "N", "day23": "O", "day24": "D", "day25": "E", "day26": "N",
+            "day29": "O", "day30": "D", "day31": "E"
+        },
+        5: { // 최유진
+            "day1": "D", "day2": "E", "day3": "N", "day4": "O", "day5": "D",
+            "day8": "E", "day9": "N", "day10": "O", "day11": "D", "day12": "E",
+            "day15": "N", "day16": "O", "day17": "D", "day18": "E", "day19": "N",
+            "day22": "O", "day23": "D", "day24": "E", "day25": "N", "day26": "O",
+            "day29": "D", "day30": "E", "day31": "N"
+        },
+        6: { // 김지수
+            "day1": "E", "day2": "N", "day3": "O", "day4": "D", "day5": "E",
+            "day8": "N", "day9": "O", "day10": "D", "day11": "E", "day12": "N",
+            "day15": "O", "day16": "D", "day17": "E", "day18": "N", "day19": "O",
+            "day22": "D", "day23": "E", "day24": "N", "day25": "O", "day26": "D",
+            "day29": "E", "day30": "N", "day31": "O"
+        },
+        7: { // 정하윤
+            "day1": "N", "day2": "O", "day3": "D", "day4": "E", "day5": "N",
+            "day8": "O", "day9": "D", "day10": "E", "day11": "N", "day12": "O",
+            "day15": "D", "day16": "E", "day17": "N", "day18": "O", "day19": "D",
+            "day22": "E", "day23": "N", "day24": "O", "day25": "D", "day26": "E",
+            "day29": "N", "day30": "O", "day31": "D"
+        },
+        8: { // 한소민
+            "day1": "O", "day2": "D", "day3": "E", "day4": "N", "day5": "O",
+            "day8": "D", "day9": "E", "day10": "N", "day11": "O", "day12": "D",
+            "day15": "E", "day16": "N", "day17": "O", "day18": "D", "day19": "E",
+            "day22": "N", "day23": "O", "day24": "D", "day25": "E", "day26": "N",
+            "day29": "O", "day30": "D", "day31": "E"
+        },
+        9: { // 오지민
+            "day1": "D", "day2": "E", "day3": "N", "day4": "O", "day5": "D",
+            "day8": "E", "day9": "N", "day10": "O", "day11": "D", "day12": "E",
+            "day15": "N", "day16": "O", "day17": "D", "day18": "E", "day19": "N",
+            "day22": "O", "day23": "D", "day24": "E", "day25": "N", "day26": "O",
+            "day29": "D", "day30": "E", "day31": "N"
+        },
+        10: { // 이다은
+            "day1": "E", "day2": "N", "day3": "O", "day4": "D", "day5": "E",
+            "day8": "N", "day9": "O", "day10": "D", "day11": "E", "day12": "N",
+            "day15": "O", "day16": "D", "day17": "E", "day18": "N", "day19": "O",
+            "day22": "D", "day23": "E", "day24": "N", "day25": "O", "day26": "D",
+            "day29": "E", "day30": "N", "day31": "O"
+        }
+    };
+    
+    // 각 간호사별로 희망 현황 데이터 설정
+    for (var i = 0; i < dl_nurseList.getRowCount(); i++) {
+        var nurseId = dl_nurseList.getCellData(i, "nurseId");
+        hopeData[nurseId] = {};
+        
+        // 설정된 희망 스케줄이 있으면 사용, 없으면 빈값
+        if (hopeSchedule[nurseId]) {
+            for (var day = 1; day <= daysInMonth; day++) {
+                var dayKey = "day" + day;
+                hopeData[nurseId][dayKey] = hopeSchedule[nurseId][dayKey] || "";
+            }
+        }
+    }
+    
+    return hopeData;
+};
 
 scwin.editSettings = function () {
     if (div_settingsModal) {
@@ -1822,7 +2136,7 @@ scwin.updateSummaryFromPivot = function () {
 scwin.initializePage = function () {
     var today = new Date();
     dm_control.set("currentYear", today.getFullYear());
-    dm_control.set("currentMonth", today.getMonth() + 3);
+    dm_control.set("currentMonth", today.getMonth() + 2);
     dm_control.set("isGenerating", false);
     dm_control.set("generationProgress", 0);
     dm_control.set("dutyCounts", 5);
@@ -1952,7 +2266,7 @@ scwin.addKeyboardValidation = function () {
         // 키다운 이벤트 (입력 제한)
         input._keydownHandler = function (event) {
             var key = event.key.toUpperCase();
-            var allowedKeys = ['D', 'E', 'N', 'X', 'BACKSPACE', 'DELETE', 'TAB', 'ENTER', 'ESCAPE'];
+            var allowedKeys = ['D', 'E', 'N', 'X', 'O', 'BACKSPACE', 'DELETE', 'TAB', 'ENTER', 'ESCAPE'];
 
             // 숫자나 특수문자 입력 차단
             if (key.length === 1 && !allowedKeys.includes(key)) {
@@ -1966,7 +2280,7 @@ scwin.addKeyboardValidation = function () {
             var value = event.target.value;
             if (value && value.length > 0) {
                 var converted = value.toUpperCase().slice(-1); // 마지막 문자만
-                if (['D', 'E', 'N', 'X'].includes(converted)) {
+                if (['D', 'E', 'N', 'X', 'O'].includes(converted)) {
                     event.target.value = converted;
                 }
             }
@@ -2028,7 +2342,7 @@ scwin.generateSchedule = function () {
 scwin.startModalProgressSimulation = function () {
     var progressInterval = setInterval(function () {
         var currentProgress = dm_control.get("generationProgress");
-        var newProgress = currentProgress + (100 / 30); // 60초로 조정
+        var newProgress = currentProgress + (100 / 60); // 60초로 조정
 
         if (newProgress >= 95) {
             newProgress = 95;
@@ -2076,7 +2390,7 @@ scwin.prepareApiRequestData = function () {
         nurseList.push({
             "nurseId": parseInt(nurse.nurseId),
             "name": nurse.nurseName,
-            "experience": parseInt(nurse.career),
+            "experience": parseInt(nurse.experience),
             "isNightKeep": parseInt(nurse.isNightKeep) === 1 ? 1 : 0,
             "requests": []
         });
@@ -2183,7 +2497,6 @@ scwin.closeProgressModal = function () {
 // 듀티 확정 함수
 scwin.confirmDuty = function () {
     dm_control.set("isDutyConfirmed", true);
-    $c.sbm.execute(sbm_insertDuty);
     Swal.fire({
         icon: 'success',
         title: '듀티 확정',
@@ -2307,298 +2620,7 @@ scwin.convertShiftType = function (serverShiftType) {
         "Off": "X"
     };
     return shiftTypeMap[serverShiftType] || "X";
-};
-
-scwin.sbm_selectNurseList_submitdone = function (e) {
-    dl_nurseList.setJSON(e.responseJSON.nurseListVo.nurseVoList);
-};
-
-// ===== 설정 모달 관리 =====
-scwin.hopeDuty = function () {
-    var month = dm_control.get("currentMonth");
-    dma_date.setJSON({ date: month });
-
-    scwin.userEditedCells = {};
-
-    $c.sbm.execute(sbm_selectHopeDuty);
-
-    // 성공 메시지 표시
-    Swal.fire({
-        icon: 'success',
-        title: '희망 현황 적용',
-        text: '희망 현황이 그리드에 반영되었습니다!',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#1C3D6B'
-    });
-};
-
-scwin.sbm_selectHopeDuty_submitdone = function (e) {
-    // 희망 현황 데이터 받아서 처리
-    var hopeData = e.responseJSON.dutyRequestListVo.dutyRequestVoList;
-
-    if (hopeData && hopeData.length > 0) {
-        scwin.applyHopeDataToPivot(hopeData);
-
-        Swal.fire({
-            icon: 'success',
-            title: '희망 현황 적용',
-            text: `희망 현황 ${hopeData.length}건이 그리드에 반영되었습니다!`,
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3D6B'
-        });
-    } else {
-        Swal.fire({
-            icon: 'info',
-            title: '희망 현황',
-            text: '적용할 희망 현황 데이터가 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1C3D6B'
-        });
-    }
-};
-
-scwin.applyHopeDataToPivot = function (hopeData) {
-    // 희망 현황 데이터를 간호사별, 날짜별로 매핑
-    var hopeMap = {};
-
-    for (var i = 0; i < hopeData.length; i++) {
-        var hope = hopeData[i];
-        var nurseId = hope.nurseId;
-        var reqDate = hope.reqDate; // "2025-09-01" 형식
-        var shiftType = hope.shiftType; // D, E, N, O 등
-
-        // 날짜에서 일(day) 추출
-        var dateParts = reqDate.split("-");
-        var day = parseInt(dateParts[2]); // "01" -> 1
-
-        // shiftType 변환 (O -> X)
-        var convertedShiftType = shiftType === "O" ? "X" : shiftType;
-
-        if (!hopeMap[nurseId]) {
-            hopeMap[nurseId] = {};
-        }
-        hopeMap[nurseId]["day" + day] = convertedShiftType;
-    }
-
-    if (!scwin.hopeCells) {
-        scwin.hopeCells = {};
-    }
-
-    // 피벗 그리드에 희망 현황 데이터 적용
-    for (var nurseId in hopeMap) {
-        var rowIndex = scwin.findNurseRowIndex(nurseId);
-        if (rowIndex >= 0) {
-            var hopeSchedule = hopeMap[nurseId];
-            for (var dayColumn in hopeSchedule) {
-                var cellKey = rowIndex + "_" + dayColumn;
-
-                // 사용자가 이미 수정한 셀은 건드리지 않음
-                if (scwin.userEditedCells && Object.keys(scwin.userEditedCells).length > 0 && scwin.userEditedCells[cellKey]) {
-                    continue;
-                }
-
-                // 희망 현황 데이터 적용
-                var hopeValue = hopeSchedule[dayColumn];
-                dl_pivotData.setCellData(rowIndex, dayColumn, hopeValue);
-
-                // 희망 현황으로 적용된 셀 표시
-                scwin.hopeCells[cellKey] = true;
-            }
-        } else {
-            console.warn(`간호사 ID ${nurseId}에 해당하는 행을 찾을 수 없습니다.`);
-        }
-    }
-
-    // 그리드 스타일 및 요약 데이터 업데이트
-    setTimeout(function () {
-        scwin.updateSummaryFromPivot();
-        scwin.refreshGridStyles();
-        scwin.applyHopeDataStyles();
-    }, 100);
-};
-
-// 3. 희망 현황 셀에 빨간색 스타일 적용 함수
-scwin.applyHopeDataStyles = function () {
-    if (!scwin.hopeCells) return;
-
-    // 방법 1: DOM 직접 조작
-    setTimeout(function () {
-        scwin.forceHopeTextColor();
-    }, 100);
-
-    // 방법 2: CSS 클래스 추가 (백업)
-    setTimeout(function () {
-        scwin.addHopeCellHighPriorityStyle();
-    }, 200);
-};
-
-scwin.forceHopeTextColor = function () {
-    if ((!scwin.hopeCells || Object.keys(scwin.hopeCells).length === 0) &&
-        (!scwin.userEditedCells || Object.keys(scwin.userEditedCells).length === 0)) return;
-
-    // 그리드 테이블 찾기
-    var gridElement = document.getElementById('gv_pivotSchedule') ||
-        document.querySelector('[id*="gv_pivotSchedule"]') ||
-        document.querySelector('.w2gridview table');
-
-    if (!gridElement) return;
-
-    var tbody = gridElement.querySelector('tbody');
-    if (!tbody) return;
-
-    var rows = tbody.querySelectorAll('tr');
-
-    // 희망 현황 셀 - 빨간색
-    if (scwin.hopeCells && Object.keys(scwin.hopeCells).length > 0) {
-        for (var cellKey in scwin.hopeCells) {
-            var parts = cellKey.split("_");
-            var rowIndex = parseInt(parts[0]);
-            var colID = parts[1];
-
-            // 컬럼 인덱스 계산 수정 (간호사명 컬럼이 0번째이므로 day1은 1번째)
-            var day = parseInt(colID.replace("day", "")); // day1 -> 1
-            var colIndex = day; // day1은 1번째 컬럼 (간호사명이 0번째)
-
-            if (rows[rowIndex] && rows[rowIndex].cells[colIndex]) {
-                var cell = rows[rowIndex].cells[colIndex];
-
-                // 빨간색 텍스트 적용
-                cell.style.setProperty('color', '#d32f2f', 'important');
-                cell.style.setProperty('font-weight', 'bold', 'important');
-
-                var input = cell.querySelector('input');
-                if (input) {
-                    input.style.setProperty('color', '#d32f2f', 'important');
-                    input.style.setProperty('font-weight', 'bold', 'important');
-                }
-
-                // 텍스트 노드도 처리
-                var textNodes = Array.from(cell.childNodes).filter(node =>
-                    node.nodeType === Node.TEXT_NODE && node.textContent.trim()
-                );
-                textNodes.forEach(textNode => {
-                    if (textNode.textContent.trim()) {
-                        var span = document.createElement('span');
-                        span.style.setProperty('color', '#d32f2f', 'important');
-                        span.style.setProperty('font-weight', 'bold', 'important');
-                        span.textContent = textNode.textContent;
-                        cell.replaceChild(span, textNode);
-                    }
-                });
-            } else {
-                console.error(`셀을 찾을 수 없음: row=${rowIndex}, col=${colIndex}`);
-            }
-        }
-    }
-
-    // 사용자 수정 셀 - 검은색 (기본색)
-    if (scwin.userEditedCells && Object.keys(scwin.userEditedCells).length > 0) {
-        for (var cellKey in scwin.userEditedCells) {
-            var parts = cellKey.split("_");
-            var rowIndex = parseInt(parts[0]);
-            var colID = parts[1];
-
-            // 컬럼 인덱스 계산 수정
-            var day = parseInt(colID.replace("day", ""));
-            var colIndex = day; // day1은 1번째 컬럼
-
-            if (rows[rowIndex] && rows[rowIndex].cells[colIndex]) {
-                var cell = rows[rowIndex].cells[colIndex];
-
-                // 검은색 텍스트 적용 (기본색으로 복원)
-                cell.style.setProperty('color', '#000000', 'important');
-                cell.style.setProperty('font-weight', 'bold', 'important');
-
-                var input = cell.querySelector('input');
-                if (input) {
-                    input.style.setProperty('color', '#000000', 'important');
-                    input.style.setProperty('font-weight', 'bold', 'important');
-                }
-            } else {
-                console.error(`셀을 찾을 수 없음: row=${rowIndex}, col=${colIndex}`);
-            }
-        }
-    }
-};
-
-scwin.addHopeCellHighPriorityStyle = function () {
-    // 기존 스타일 제거
-    var existingStyle = document.getElementById('hope-text-priority-style');
-    if (existingStyle) {
-        existingStyle.remove();
-    }
-
-    // CSS 클래스 정의
-    var style = document.createElement('style');
-    style.id = 'hope-text-priority-style';
-    style.textContent = `
-        .hope-text-priority {
-            color: #d32f2f !important;
-            font-weight: bold !important;
-        }
-        .hope-text-priority * {
-            color: #d32f2f !important;
-            font-weight: bold !important;
-        }
-        .user-edited-text {
-            color: #000000 !important;
-            font-weight: bold !important;
-        }
-        .user-edited-text * {
-            color: #000000 !important;
-            font-weight: bold !important;
-        }
-    `;
-    document.head.appendChild(style);
-
-    // 클래스 적용
-    setTimeout(function () {
-        var gridElement = document.querySelector('[id*="gv_pivotSchedule"] tbody');
-
-        if (!gridElement) return;
-
-        // 희망 현황 클래스 적용
-        if (scwin.hopeCells) {
-            for (var cellKey in scwin.hopeCells) {
-                var parts = cellKey.split("_");
-                var rowIndex = parseInt(parts[0]);
-                var colID = parts[1];
-
-                // 컬럼 인덱스 계산 수정
-                var day = parseInt(colID.replace("day", ""));
-                var colIndex = day; // day1은 1번째 컬럼
-
-                if (gridElement.rows[rowIndex] && gridElement.rows[rowIndex].cells[colIndex]) {
-                    var cell = gridElement.rows[rowIndex].cells[colIndex];
-                    cell.classList.remove('user-edited-text');
-                    cell.classList.add('hope-text-priority');
-                } else {
-                    console.error(`CSS 클래스 적용 실패: row=${rowIndex}, col=${colIndex}`);
-                }
-            }
-        }
-
-        // 사용자 수정 클래스 적용
-        if (scwin.userEditedCells && Object.keys(scwin.userEditedCells).length > 0) {
-            for (var cellKey in scwin.userEditedCells) {
-                var parts = cellKey.split("_");
-                var rowIndex = parseInt(parts[0]);
-                var colID = parts[1];
-
-                // 컬럼 인덱스 계산 수정
-                var day = parseInt(colID.replace("day", ""));
-                var colIndex = day; // day1은 1번째 컬럼
-
-                if (gridElement.rows[rowIndex] && gridElement.rows[rowIndex].cells[colIndex]) {
-                    var cell = gridElement.rows[rowIndex].cells[colIndex];
-                    cell.classList.remove('hope-text-priority');
-                    cell.classList.add('user-edited-text');
-                }
-            }
-        }
-    }, 100);
-};
-]]></script>
+};]]></script>
 	</head>
 	<body ev:onpageload="scwin.onpageload" style="background-color: #f8f9fa;">
 		<!-- 메인 컨테이너 -->
@@ -2637,16 +2659,16 @@ scwin.addHopeCellHighPriorityStyle = function () {
 					</xf:group>
 				</xf:group>
 
-				<div class="important-notice">
-					⚠️ 자동 생성 후 스케줄 표에 생긴 오류를 직접 클릭하여 텍스트(대소문자 구분 없이 D: day, E: evening, N:night, X:off)로 수정할 수 있습니다!
+								<div class="important-notice">
+					⚠️ 자동 생성 후 스케줄 표에 생긴 오류를 직접 클릭하여 텍스트(대소문자 구분 없이 D: day, E: evening, N:night, X:off, O:오프)로 수정할 수 있습니다!
 				</div>
 
 				<!-- 피벗 테이블 영역 -->
 				<xf:group class="pivot-section">
 					<xf:group class="section-content">
-						<xf:group class="grid-container" style="height:1200px;">
+						<xf:group class="grid-container" style="height:1100px;">
 							<!-- 피벗 그리드뷰 (31일 정적 컬럼) -->
-							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:1200px;" scrollByColumn="false"
+							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:1100px;" scrollByColumn="false"
 								scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
 								cellStyleFunction="scwin.pivotCellStyleFunction" rowMouseOverColor="transparent" selectedCellColor="transparent"
 								selectedRowColor="transparent" selectedRowOverColor="transparent" evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa"

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,7 +71,8 @@ public class EmpController {
 	@ElService(key = "CmmLogin")
 	@RequestMapping(value = "CmmLogin")
 	@ElDescription(sub = "로그인", desc = "로그인을 처리한다.")
-	public void login(com.demo.proworks.emp.vo.LoginVo loginVo, HttpServletRequest request) throws Exception {
+	public void login(com.demo.proworks.emp.vo.LoginVo loginVo, HttpServletRequest request, HttpSession session)
+			throws Exception {
 		String id = loginVo.getId();
 		String pw = loginVo.getPw();
 
@@ -78,6 +80,8 @@ public class EmpController {
 
 		ProworksUserHeader userHeader = new ProworksUserHeader();
 		userHeader.setTestId(id);
+
+		session.setAttribute("userId", pw);
 
 		AppLog.debug("- Login 정보 : " + info.toString());
 	}

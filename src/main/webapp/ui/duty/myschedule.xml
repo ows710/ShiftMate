@@ -7,42 +7,64 @@
         <w2:buildDate/>
         <w2:MSA/>
         <xf:model>
-            <w2:dataCollection baseNode="map">
-                <w2:dataList id="dlt_schedule" baseNode="list">
-                    <w2:columnInfo>
-                        <w2:column id="id" name="일정ID" dataType="text"/>
-                        <w2:column id="title" name="제목" dataType="text"/>
-                        <w2:column id="start" name="시작일" dataType="text"/>
-                        <w2:column id="end" name="종료일" dataType="text"/>
-                        <w2:column id="allDay" name="종일" dataType="text"/>
-                        <w2:column id="color" name="색상" dataType="text"/>
-                        <w2:column id="backgroundColor" name="배경색상" dataType="text"/>
-                        <w2:column id="borderColor" name="테두리색상" dataType="text"/>
-                        <w2:column id="textColor" name="텍스트색상" dataType="text"/>
-                        <w2:column id="className" name="클래스명" dataType="text"/>
-                    </w2:columnInfo>
-                </w2:dataList>
-                <w2:dataList id="dlt_monthOptions" baseNode="list">
-                    <w2:columnInfo>
-                        <w2:column id="value" name="값" dataType="text"/>
-                        <w2:column id="label" name="라벨" dataType="text"/>
-                    </w2:columnInfo>
-                </w2:dataList>
-                <w2:dataList id="dlt_workers" baseNode="list">
-                    <w2:columnInfo>
-                        <w2:column id="name" name="이름" dataType="text"/>
-                        <w2:column id="isLeader" name="팀장여부" dataType="text"/>
-                        <w2:column id="isAbsent" name="결근여부" dataType="text"/>
-                    </w2:columnInfo>
-                </w2:dataList>
-                <w2:dataMap baseNode="map" id="dm_selectedDate">
-                    <w2:keyInfo>
-                        <w2:key id="date" name="선택날짜" dataType="text"/>
-                        <w2:key id="dayOfWeek" name="요일" dataType="text"/>
-                    </w2:keyInfo>
-                </w2:dataMap>
-            </w2:dataCollection>
-            <w2:workflowCollection/>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dlt_schedule" baseNode="list">
+        			<w2:columnInfo>
+        				<w2:column id="id" name="일정ID" dataType="text" />
+        				<w2:column id="title" name="제목" dataType="text" />
+        				<w2:column id="start" name="시작일" dataType="text" />
+        				<w2:column id="end" name="종료일" dataType="text" />
+        				<w2:column id="allDay" name="종일" dataType="text" />
+        				<w2:column id="color" name="색상" dataType="text" />
+        				<w2:column id="backgroundColor" name="배경색상" dataType="text" />
+        				<w2:column id="borderColor" name="테두리색상" dataType="text" />
+        				<w2:column id="textColor" name="텍스트색상" dataType="text" />
+        				<w2:column id="className" name="클래스명" dataType="text" />
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataList id="dlt_monthOptions" baseNode="list">
+        			<w2:columnInfo>
+        				<w2:column id="value" name="값" dataType="text" />
+        				<w2:column id="label" name="라벨" dataType="text" />
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataList id="dlt_workers" baseNode="list">
+        			<w2:columnInfo>
+        				<w2:column id="name" name="이름" dataType="text" />
+        				<w2:column id="isLeader" name="팀장여부" dataType="text" />
+        				<w2:column id="isAbsent" name="결근여부" dataType="text" />
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataMap baseNode="map" id="dm_selectedDate">
+        			<w2:keyInfo>
+        				<w2:key id="date" name="선택날짜" dataType="text" />
+        				<w2:key id="dayOfWeek" name="요일" dataType="text" />
+        			</w2:keyInfo>
+        		</w2:dataMap>
+        		<w2:dataList baseNode="list" repeatNode="map" id="dlt_myDuty" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column dataType="text" name="근무날짜" id="shiftType"></w2:column>
+        				<w2:column dataType="number" name="간호사고유번호" id="nurseId"></w2:column>
+        				<w2:column dataType="text" name="간호사명" id="nurseName"></w2:column>
+        				<w2:column dataType="text" name="근무형태" id="shiftType"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataMap baseNode="map" id="dma_date">
+        			<w2:keyInfo>
+        				<w2:key dataType="text" name="선택된 달" id="date"></w2:key>
+        			</w2:keyInfo>
+        		</w2:dataMap>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        	<xf:submission id="sbm_selectMyDuty" action="/InsWebApp/DmoScheduleView.pwkjson" method="post" mediatype="application/json"
+        		ref='data:json,{"id":"dma_date","key":"param"}' target="data:json,dlt_myDuty" encoding="UTF-8" instance="" replace="" errorHandler=""
+        		customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_selectMyDuty_submitdone"
+        		ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        	<xf:submission id="sbm_selectDutyByDate" action="/InsWebApp/DmoScheduleViewByDate.pwkjson" method="post" mediatype="application/json" ref='data:json,{"id":"dm_selectedDate","key":"param"}' target="data:json,dlt_myDuty" encoding="UTF-8"
+        		instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_selectDutyByDate_submitdone"
+        		ev:submiterror="" abortTrigger="">
+        	</xf:submission>
         </xf:model>
         <w2:layoutInfo/>
         <w2:publicInfo method=""/>
@@ -181,27 +203,31 @@
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script lazy="false" type="text/javascript"><![CDATA[
-scwin.onpageload = function() {
+scwin.onpageload = function () {
     console.log("내 스케줄 보기 페이지가 로드되었습니다.");
-    
+
     // 월 선택 옵션 초기화
     scwin.initMonthOptions();
-    
+
     // 8월 기본값 설정
-    setTimeout(function() {
+    setTimeout(function () {
         if (typeof sbx_month !== 'undefined') {
             sbx_month.setValue("202508");
             sbx_month.setSelectedIndex(0);
             console.log("페이지 로드 시 8월 기본값 설정됨");
         }
     }, 1000);
-    
+
+    // DB 연동
+    dma_date.setJSON({ date: sbx_month.getValue() });
+    $c.sbm.execute(sbm_selectMyDuty);
+
     // 캘린더 컴포넌트 로드 대기 후 초기화
-    setTimeout(function() {
+    setTimeout(function () {
         console.log("캘린더 컴포넌트 확인 중...");
-        
+
         // 캘린더 컴포넌트가 준비될 때까지 대기
-        var checkCalendar = function() {
+        var checkCalendar = function () {
             if (shc_myschedule && typeof shc_myschedule.gotoDate === 'function') {
                 console.log("캘린더 컴포넌트 준비 완료");
                 scwin.initScheduleData();
@@ -210,84 +236,84 @@ scwin.onpageload = function() {
                 setTimeout(checkCalendar, 200);
             }
         };
-        
+
         checkCalendar();
     }, 300);
 };
 
-scwin.initMonthOptions = function() {
+scwin.initMonthOptions = function () {
     // 2025년 8월과 9월로 고정
     var currentYear = 2025;
-    
+
     // 월 옵션 데이터 생성 (8월과 9월만)
     var monthOptions = [
         {
-            value: "202508", 
+            value: "202508",
             label: "2025년 8월"
         },
         {
-            value: "202509", 
+            value: "202509",
             label: "2025년 9월"
         }
     ];
-    
+
     console.log("월 선택 옵션: 2025년 8월, 9월");
-    
+
     // 데이터리스트 초기화 및 설정
     dlt_monthOptions.removeAll();
     dlt_monthOptions.setJSON(monthOptions);
-    
+
     console.log("데이터 설정 완료, 총 " + dlt_monthOptions.getTotalRow() + "개 항목");
-    
+
     // 데이터 변경 알림
     dlt_monthOptions.broadcast();
-    
+
     // 컴포넌트 새로고침을 위한 다단계 처리
-    setTimeout(function() {
+    setTimeout(function () {
         if (typeof sbx_month !== 'undefined') {
             try {
                 console.log("1단계: 컴포넌트 새로고침 시작");
-                
+
                 // 강제 새로고침 시퀀스
                 sbx_month.refresh();
-                
+
                 // 8월(첫 번째 옵션)을 기본값으로 설정
-                setTimeout(function() {
+                setTimeout(function () {
                     try {
                         console.log("2단계: 기본값 설정 시도");
                         sbx_month.setValue("202508"); // 8월 설정
                         sbx_month.setSelectedIndex(0); // 첫 번째 옵션 선택
-                        
+
                         console.log("8월이 기본값으로 설정됨");
                         console.log("현재 선택된 값:", sbx_month.getValue());
                         console.log("현재 선택된 인덱스:", sbx_month.getSelectedIndex());
                     } catch (e) {
                         console.log("기본값 설정 실패:", e);
                     }
-                    
+
                     // 최종 검증 및 강제 업데이트
-                    setTimeout(function() {
+                    setTimeout(function () {
                         try {
                             console.log("3단계: 최종 업데이트");
-                            
+
                             // 컴포넌트 재초기화
                             sbx_month.refresh();
-                            
+
                             // 데이터 재브로드캐스트
                             dlt_monthOptions.broadcast();
-                            
+
                             // 값 재설정 (확실하게)
                             sbx_month.setValue("202508");
-                            
+
                             console.log("sbx_month 컴포넌트 준비 완료");
                             console.log("최종 선택된 값:", sbx_month.getValue());
-                            
+
                         } catch (e) {
                             console.error("최종 업데이트 오류:", e);
                         }
                     }, 400);
                 }, 300);
-                
+
             } catch (e) {
                 console.error("sbx_month 설정 오류:", e);
             }
@@ -295,26 +321,26 @@ scwin.initMonthOptions = function() {
             console.error("sbx_month를 찾을 수 없습니다.");
         }
     }, 500);
-    
+
     // 전역 변수에 저장 (다른 함수에서 사용하기 위해)
     scwin.currentYearMonth = "202508";
     scwin.nextYearMonth = "202509";
 };
 
-scwin.sbx_month_onchange = function(info) {
+scwin.sbx_month_onchange = function (info) {
     var selectedMonth = sbx_month.getValue();
     console.log("선택된 월:", selectedMonth);
-    
+
     if (!selectedMonth) {
         console.log("선택된 월이 없습니다.");
         return;
     }
-    
+
     try {
         // 9월 선택 시 HopeWorkEntry.xml로 이동
         if (selectedMonth === "202509") {
             console.log("9월 선택됨 - HopeWorkEntry.xml로 이동 준비");
-            
+
             // 확인 대화상자 표시
             Swal.fire({
                 title: '페이지 이동',
@@ -353,7 +379,7 @@ scwin.sbx_month_onchange = function(info) {
                     }
                 } else {
                     // 취소한 경우 8월로 다시 선택
-                    setTimeout(function() {
+                    setTimeout(function () {
                         sbx_month.setValue("202508");
                         sbx_month.setSelectedIndex(0);
                         console.log("9월 이동 취소 - 8월로 복귀");
@@ -362,30 +388,30 @@ scwin.sbx_month_onchange = function(info) {
             });
             return;
         }
-        
+
         // 8월 선택 시 현재 페이지 유지 및 데이터 로드
         if (selectedMonth === "202508") {
             console.log("8월 선택됨 - 내 스케줄 데이터 로드");
-            
+
             // 드롭다운 값 유지
-            setTimeout(function() {
+            setTimeout(function () {
                 sbx_month.setValue("202508");
                 sbx_month.setSelectedIndex(0);
                 console.log("8월 선택 상태 유지됨");
             }, 50);
-            
+
             // 1. 먼저 데이터 로드
             scwin.loadScheduleData(selectedMonth);
-            
+
             // 2. 캘린더 날짜 이동
             var year = selectedMonth.substring(0, 4);
             var month = selectedMonth.substring(4, 6);
             var gotoDate = year + month + "01";
-            
+
             console.log("캘린더 이동 날짜:", gotoDate);
-            
+
             // 3. 캘린더 이동 (여러 방법 시도)
-            setTimeout(function() {
+            setTimeout(function () {
                 try {
                     if (shc_myschedule && shc_myschedule.gotoDate) {
                         // 다양한 날짜 형식 시도
@@ -395,7 +421,7 @@ scwin.sbx_month_onchange = function(info) {
                             new Date(parseInt(year), parseInt(month) - 1, 1), // Date 객체
                             year + "/" + month + "/01"          // 2025/07/01
                         ];
-                        
+
                         var success = false;
                         for (var i = 0; i < dateFormats.length; i++) {
                             try {
@@ -407,24 +433,24 @@ scwin.sbx_month_onchange = function(info) {
                                 console.log("gotoDate 실패 (형식 " + i + "):", dateFormats[i], e.message);
                             }
                         }
-                        
+
                         if (!success) {
                             console.log("모든 날짜 형식 시도 실패");
                         }
                     } else {
                         console.log("gotoDate 함수를 찾을 수 없습니다.");
                     }
-                    
+
                     // 4. 캘린더 새로고침 (다양한 방법 시도)
-                    setTimeout(function() {
+                    setTimeout(function () {
                         var refreshMethods = [
-                            function() { if (shc_myschedule.refresh) shc_myschedule.refresh(); },
-                            function() { if (shc_myschedule.render) shc_myschedule.render(); },
-                            function() { if (shc_myschedule.refetchEvents) shc_myschedule.refetchEvents(); },
-                            function() { if (shc_myschedule.rerenderEvents) shc_myschedule.rerenderEvents(); }
+                            function () { if (shc_myschedule.refresh) shc_myschedule.refresh(); },
+                            function () { if (shc_myschedule.render) shc_myschedule.render(); },
+                            function () { if (shc_myschedule.refetchEvents) shc_myschedule.refetchEvents(); },
+                            function () { if (shc_myschedule.rerenderEvents) shc_myschedule.rerenderEvents(); }
                         ];
-                        
-                        refreshMethods.forEach(function(method, index) {
+
+                        refreshMethods.forEach(function (method, index) {
                             try {
                                 method();
                                 console.log("새로고침 방법 " + index + " 실행됨");
@@ -432,66 +458,66 @@ scwin.sbx_month_onchange = function(info) {
                                 console.log("새로고침 방법 " + index + " 실패:", e.message);
                             }
                         });
-                        
+
                         // 5. 데이터 브로드캐스트
                         if (dlt_schedule && dlt_schedule.broadcast) {
                             dlt_schedule.broadcast();
                             console.log("데이터 브로드캐스트 실행됨");
                         }
-                        
+
                         // 6. 드롭다운 값 재확인 및 유지
-                        setTimeout(function() {
+                        setTimeout(function () {
                             sbx_month.setValue("202507");
                             console.log("최종 7월 선택 상태 확인됨");
                         }, 100);
                     }, 50);
-                    
+
                 } catch (e) {
                     console.error("캘린더 이동 중 오류:", e);
                 }
             }, 100);
         }
-        
+
     } catch (e) {
         console.error("월 변경 처리 중 오류:", e);
     }
 };
 
-scwin.initScheduleData = function() {
+scwin.initScheduleData = function () {
     // 8월 데이터로 시작
     scwin.loadScheduleData("202508");
 };
 
-scwin.loadScheduleData = function(yearMonth) {
+scwin.loadScheduleData = function (yearMonth) {
     try {
         var scheduleData = [];
-        
+
         // 현재 달인지 다음 달인지 확인
         var isCurrentMonth = (yearMonth === scwin.currentYearMonth);
         var year = yearMonth.substring(0, 4);
         var month = yearMonth.substring(4, 6);
-        
+
         // 해당 월의 마지막 날 계산
         var lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
-        
+
         // 샘플 스케줄 패턴 (E, N, O, D를 순환)
         var schedulePattern = ["E", "N", "O", "D"];
         var colorMap = {
-            "E": {color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night"},
-            "N": {color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation"},
-            "O": {color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal"},
-            "D": {color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime"}
+            "E": { color: "#ffffff", backgroundColor: "#3F51B5", borderColor: "#303F9F", textColor: "#ffffff", className: "work-night" },
+            "N": { color: "#ffffff", backgroundColor: "#9C27B0", borderColor: "#7B1FA2", textColor: "#ffffff", className: "work-vacation" },
+            "O": { color: "#ffffff", backgroundColor: "#4CAF50", borderColor: "#388E3C", textColor: "#ffffff", className: "work-normal" },
+            "D": { color: "#ffffff", backgroundColor: "#FF9800", borderColor: "#F57C00", textColor: "#ffffff", className: "work-overtime" }
         };
-        
+
         // 해당 월의 모든 날짜에 대해 스케줄 생성
         for (var day = 1; day <= lastDay; day++) {
             var dayStr = (day < 10 ? "0" : "") + day;
             var dateStr = year + month + dayStr;
-            
+
             // 패턴 순환 (날짜에 따라 다른 스케줄 타입)
             var scheduleType = schedulePattern[day % 4];
             var colors = colorMap[scheduleType];
-            
+
             scheduleData.push({
                 id: yearMonth + "_" + day,
                 title: scheduleType,
@@ -505,35 +531,35 @@ scwin.loadScheduleData = function(yearMonth) {
                 className: colors.className
             });
         }
-        
+
         // 데이터리스트에 데이터 설정
         dlt_schedule.setJSON(scheduleData);
         console.log(year + "년 " + parseInt(month) + "월 스케줄 데이터가 로드되었습니다. (총 " + lastDay + "일)");
-        
+
         // 데이터 변경 알림
         if (dlt_schedule.broadcast) {
             dlt_schedule.broadcast();
         }
-        
+
         // 캘린더 새로고침
-        setTimeout(function() {
+        setTimeout(function () {
             try {
                 if (shc_myschedule && shc_myschedule.refresh) {
                     shc_myschedule.refresh();
                 } else if (shc_myschedule && shc_myschedule.render) {
                     shc_myschedule.render();
                 }
-                
+
                 // 클래스 적용
-                setTimeout(function() {
+                setTimeout(function () {
                     scwin.applyEventClasses();
                 }, 500);
-                
+
             } catch (e) {
                 console.error("캘린더 새로고침 오류:", e);
             }
         }, 200);
-        
+
     } catch (e) {
         console.error("스케줄 데이터 로드 중 오류:", e);
     }
@@ -541,11 +567,11 @@ scwin.loadScheduleData = function(yearMonth) {
 
 scwin.shc_myschedule_onclick = function (dateInfo) {
     console.log("클릭된 날짜:", dateInfo);
-    
+
     if (dateInfo && dateInfo.start) {
         var clickedDate = dateInfo.start;
         var dateStr = "";
-        
+
         // 날짜 형식 처리
         if (typeof clickedDate === 'string') {
             if (clickedDate.length === 8) {
@@ -560,98 +586,102 @@ scwin.shc_myschedule_onclick = function (dateInfo) {
         } else if (clickedDate instanceof Date) {
             dateStr = clickedDate.toISOString().split('T')[0];
         }
-        
+
         // 요일 계산
         var date = new Date(dateStr);
         var dayNames = ['일', '월', '화', '수', '목', '금', '토'];
         var dayOfWeek = dayNames[date.getDay()];
-        
+
         // 선택된 날짜 정보 저장
         var formattedDate = (date.getMonth() + 1) + "월 " + date.getDate() + "일 (" + dayOfWeek + ")";
         dm_selectedDate.set("date", formattedDate);
         dm_selectedDate.set("dayOfWeek", dayOfWeek);
-        
+
         // 해당 날짜의 근무자 데이터 로드
         scwin.loadWorkersForDate(dateStr);
-        
+
         // 팝업 표시
         scwin.showWorkerPopup();
     }
 };
 
-scwin.loadWorkersForDate = function(dateStr) {
+scwin.loadWorkersForDate = function (dateStr) {
     // 샘플 근무자 데이터 (실제로는 서버에서 가져와야 함)
     var workersData = [
-        {name: "김지연", isLeader: "Y", isAbsent: "N"},
-        {name: "박지연", isLeader: "N", isAbsent: "N"},
-        {name: "이서연", isLeader: "N", isAbsent: "N"},
-        {name: "김민지", isLeader: "N", isAbsent: "N"},
-        {name: "오원석", isLeader: "N", isAbsent: "Y"}
+        { name: "김지연", isLeader: "Y", isAbsent: "N" },
+        { name: "박지연", isLeader: "N", isAbsent: "N" },
+        { name: "이서연", isLeader: "N", isAbsent: "N" },
+        { name: "김민지", isLeader: "N", isAbsent: "N" },
+        { name: "오원석", isLeader: "N", isAbsent: "Y" }
     ];
-    
+
     dlt_workers.setJSON(workersData);
+
+    // DB 연동
+    $c.sbm.execute(sbm_selectDutyByDate);
+
     console.log("근무자 데이터 로드됨:", workersData.length + "명");
 };
 
-scwin.showWorkerPopup = function() {
+scwin.showWorkerPopup = function () {
     // 팝업 오버레이와 팝업 표시
     document.getElementById("popup-overlay").classList.remove("hidden");
     document.getElementById("worker-popup").classList.remove("hidden");
-    
+
     // 선택된 날짜 표시
     var selectedDate = dm_selectedDate.get("date");
     document.getElementById("popup-date").textContent = selectedDate;
-    
+
     // 근무자 목록 생성
     var workerListHtml = "";
     var workerCount = dlt_workers.getTotalRow();
-    
+
     for (var i = 0; i < workerCount; i++) {
         var worker = dlt_workers.getRowJSON(i);
         var leaderIcon = worker.isLeader === "Y" ? '<img src="/InsWebApp/images/crown.png" class="leader-crown-img" alt="리더" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; border: none; box-shadow: none;">' : '';
         var absentMark = worker.isAbsent === "Y" ? '<img src="/InsWebApp/images/new.png" class="absent-mark-img" alt="신입" style="width: 20px; height: 20px; margin-left: 4px; vertical-align: middle; border: none; box-shadow: none;">' : '';
-        
+
         workerListHtml += '<div class="worker-item">' +
-                         '<span class="worker-name">' + worker.name + '</span>' +
-                         leaderIcon +
-                         absentMark +
-                         '</div>';
+            '<span class="worker-name">' + worker.name + '</span>' +
+            leaderIcon +
+            absentMark +
+            '</div>';
     }
-    
+
     document.getElementById("worker-list").innerHTML = workerListHtml;
 };
 
-scwin.hideWorkerPopup = function() {
+scwin.hideWorkerPopup = function () {
     // 팝업 숨기기
     document.getElementById("popup-overlay").classList.add("hidden");
     document.getElementById("worker-popup").classList.add("hidden");
 };
 
-scwin.btn_confirm_onclick = function() {
+scwin.btn_confirm_onclick = function () {
     // 팝업만 닫고 myschedule.xml 페이지에 그대로 머물기
     scwin.hideWorkerPopup();
 };
 
 // 이벤트 클래스 강제 적용 함수
-scwin.applyEventClasses = function() {
+scwin.applyEventClasses = function () {
     try {
         console.log("이벤트 클래스 적용 시작");
-        
+
         // 모든 fc-event 요소 찾기
         var events = document.querySelectorAll('.fc-event');
         console.log("찾은 이벤트 수:", events.length);
-        
-        events.forEach(function(event, index) {
+
+        events.forEach(function (event, index) {
             var title = event.querySelector('.fc-title');
             if (title) {
                 var workType = title.textContent.trim();
                 console.log("이벤트 " + index + " 근무타입:", workType);
-                
+
                 // 기존 work- 클래스 제거
                 event.classList.remove('work-normal', 'work-overtime', 'work-night', 'work-vacation');
-                
+
                 // 근무 타입에 따라 클래스 추가
-                switch(workType) {
+                switch (workType) {
                     case 'O':
                         event.classList.add('work-normal');
                         console.log("work-normal 클래스 추가");
@@ -669,13 +699,21 @@ scwin.applyEventClasses = function() {
                         console.log("work-vacation 클래스 추가");
                         break;
                 }
-                
+
                 console.log("최종 클래스:", event.className);
             }
         });
     } catch (e) {
         console.error("클래스 적용 중 오류:", e);
     }
+};
+
+scwin.sbm_selectMyDuty_submitdone = function (e) {
+    console.log("듀티 전체 보기 : ", e.responseJSON.scheduleListVo.scheduleVoList);
+};
+
+scwin.sbm_selectDutyByDate_submitdone = function (e) {
+    console.log("듀티 상세 보기 : ", e.responseJSON.scheduleListVo.scheduleVoList);
 };
 ]]></script>
     </head>
@@ -703,7 +741,7 @@ scwin.applyEventClasses = function() {
     		<div class="calendar-container">
     			<w2:scheduleCalendar 
     				id="shc_myschedule" 
-    				style="height:400px;margin-bottom:20px;" 
+    				style="height: 400px;margin-bottom:20px;" 
     				dataList="data:dlt_schedule" 
     				defaultDate="20250801"
     				editable="false" 

@@ -37,8 +37,8 @@ public class NurseServiceImpl implements NurseService {
 	 * @return 간호사 정보 목록 List<NurseVo>
 	 * @throws ElException
 	 */
-	public List<NurseVo> selectNurseList(NurseVo nurseVo) throws ElException {
-		List<NurseVo> list = nurseDAO.selectListNurse(nurseVo);
+	public List<NurseVo> selectNurseList() throws ElException {
+		List<NurseVo> list = nurseDAO.selectListNurse();
 		return list;
 	}
 

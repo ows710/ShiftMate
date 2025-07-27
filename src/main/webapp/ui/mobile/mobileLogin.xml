@@ -107,7 +107,7 @@ scwin.inputCheck = function () {
 					<xf:image src="/InsWebApp/images/email.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
 						id="img_email">
 					</xf:image>
-					<xf:input class="" id="ui_id" placeholder="비밀번호"
+					<xf:input class="" id="ui_id" placeholder="아이디"
 						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
 						ev:onkeydown="scwin.ui_id_onkeydown" ref="data:dma_login.id">
 					</xf:input>
@@ -117,7 +117,7 @@ scwin.inputCheck = function () {
 					<xf:image src="/InsWebApp/images/pwd.png" style="position:absolute;left:12px;width:24px;height:24px;z-index:1;"
 						id="img_password">
 					</xf:image>
-					<xf:input class="" id="ui_password" type="password" placeholder="사원번호"
+					<xf:input class="" id="ui_password" type="password" placeholder="비밀번호"
 						style="width:300px;height:50px;padding-left:50px;padding-right:20px;border-radius:25px;border:1px solid #ccc;font-size:16px;outline:none;"
 						ev:onkeydown="scwin.ui_password_onkeydown" ref="data:dma_login.pw">
 					</xf:input>

@@ -22,11 +22,10 @@ public interface NurseService {
 	/**
 	 * 페이징을 처리하여 간호사 정보 목록을 조회한다.
 	 * 
-	 * @param nurseVo 간호사 정보 NurseVo
 	 * @return 간호사 정보 목록 List<NurseVo>
 	 * @throws ElException
 	 */
-	List<NurseVo> selectNurseList(NurseVo nurseVo) throws ElException;
+	List<NurseVo> selectNurseList() throws ElException;
 
 	/**
 	 * 간호사 정보를 상세 조회한다.
