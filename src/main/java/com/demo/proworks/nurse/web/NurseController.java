@@ -1,10 +1,7 @@
 package com.demo.proworks.nurse.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,14 +56,15 @@ public class NurseController {
 	@ElService(key = "view")
 	@RequestMapping(value = "view")
 	@ElDescription(sub = "간호사 상세 조회", desc = "간호사 상세 정보를 조회한다.")
-	@ResponseBody
-	public NurseVo selectNurse(NurseVo nurseVo, HttpServletRequest request) throws Exception {
+	public NurseVo selectNurse(NurseVo nurseVo, HttpServletRequest request, HttpSession session) throws Exception {
 		AppLog.debug("=== 간호사 상세 조회 시작 ===");
 		AppLog.debug("조회할 간호사: " + nurseVo);
-		
-		nurseService.selectNurse(nurseVo);
+		String userId = (String) session.getAttribute("userId");
 
-		return nurseVo;
+		nurseVo.setNurseId(Integer.parseInt(userId));
+		AppLog.debug("간호사ID:" + nurseVo.getNurseId());
+
+		return nurseService.selectNurse(nurseVo);
 	}
 
 	/**

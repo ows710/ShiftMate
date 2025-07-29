@@ -22,6 +22,7 @@
 		</xf:model>
 		<w2:layoutInfo />
 		<w2:publicInfo method="" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function () {
     // $p.url(w2xPath, options)
@@ -44,7 +45,43 @@ scwin.ui_password_onkeydown = function (e) {
 
 // 로그인 버튼 클릭시 로그인 처리
 scwin.btn_login_onclick = function (e) {
-    $c.sbm.execute(sbm_login);
+    console.log("로그인 클릭");
+    if (scwin.inputCheck()) {
+        $p.executeSubmission("sbm_login");
+    }
+};
+
+scwin.inputCheck = function () {
+    var id = ui_id.getValue();
+    var pw = ui_password.getValue();
+
+    if (!id || id.trim() === "") {
+        // 기존: alert("아이디를 입력하세요.");
+        Swal.fire({
+            icon: 'warning',
+            title: '입력 필요',
+            text: '아이디를 입력하세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+        ui_id.focus();
+        return false;
+    }
+
+    if (!pw || pw.trim() === "") {
+        // 기존: alert("비밀번호를 입력하세요.");
+        Swal.fire({
+            icon: 'warning',
+            title: '입력 필요', 
+            text: '비밀번호를 입력하세요.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+        ui_password.focus();
+        return false;
+    }
+
+    return true;
 };
 
 // 정상 처리 후 내 스케줄 보기 페이지 이동처리
@@ -58,32 +95,19 @@ scwin.sbm_login_submitdone = function (e) {
             //$p.url("/ui/dept/Dept.xml");
             //$c.win.moveUrl("/InsWebApp/ui/dept/Dept.xml");
             //location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/dept/Dept.xml";
-            location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
+            location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule2.xml";
         } else {
             //exceptionAlert("로그인", elHeader.resCode, elHeader.resMsg);
-            alert(elHeader.resMsg);
+            Swal.fire({
+                icon: 'error',
+                title: '로그인 실패',
+                text: elHeader.resMsg || "로그인에 실패했습니다.",
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1C3D6B'
+            });
         }
 
     }
-};
-
-scwin.inputCheck = function () {
-    var id = ui_id.getValue();
-    var pw = ui_password.getValue();
-
-    if (!id || id.trim() === "") {
-        alert("비밀번호를 입력하세요.");
-        ui_id.focus();
-        return false;
-    }
-
-    if (!pw || pw.trim() === "") {
-        alert("사원번호를 입력하세요.");
-        ui_password.focus();
-        return false;
-    }
-
-    return true;
 };
 ]]></script>
 	</head>

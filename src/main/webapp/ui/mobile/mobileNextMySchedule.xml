@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ev="http://www.w3.org/2001/xml-events"
-    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
-    <head meta_screenName="내 스케줄 보기(웹)">
-        <w2:type>COMPONENT</w2:type>
-        <w2:buildDate/>
-        <w2:MSA/>
-        <xf:model>
-        	<w2:dataCollection baseNode="map">
-        		<w2:dataList id="dlt_schedule" baseNode="list">
-        			<w2:columnInfo>
-        				<w2:column id="id" name="일정ID" dataType="text" />
-        				<w2:column id="title" name="제목" dataType="text" />
-        				<w2:column id="start" name="시작일" dataType="text" />
-        				<w2:column id="end" name="종료일" dataType="text" />
-        				<w2:column id="allDay" name="종일" dataType="text" />
-        				<w2:column id="color" name="색상" dataType="text" />
-        				<w2:column id="backgroundColor" name="배경색상" dataType="text" />
-        				<w2:column id="borderColor" name="테두리색상" dataType="text" />
-        				<w2:column id="textColor" name="텍스트색상" dataType="text" />
-        				<w2:column id="className" name="클래스명" dataType="text" />
-        			</w2:columnInfo>
-        		</w2:dataList>
-        		<w2:dataList id="dlt_monthOptions" baseNode="list">
-        			<w2:columnInfo>
-        				<w2:column id="value" name="값" dataType="text" />
-        				<w2:column id="label" name="라벨" dataType="text" />
-        			</w2:columnInfo>
-        		</w2:dataList>
-        		<w2:dataList id="dlt_workers" baseNode="list">
-        			<w2:columnInfo>
-        				<w2:column id="name" name="이름" dataType="text" />
-        				<w2:column id="isLeader" name="팀장여부" dataType="text" />
-        				<w2:column id="isAbsent" name="결근여부" dataType="text" />
-        			</w2:columnInfo>
-        		</w2:dataList>
-        		<w2:dataMap baseNode="map" id="dm_selectedDate">
-        			<w2:keyInfo>
-        				<w2:key id="date" name="선택날짜" dataType="text" />
-        				<w2:key id="dayOfWeek" name="요일" dataType="text" />
-        			</w2:keyInfo>
-        		</w2:dataMap>
-        		<w2:dataList baseNode="list" repeatNode="map" id="dlt_myDuty" saveRemovedData="true">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="내 스케줄 보기(웹)">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_schedule" baseNode="list">
+					<w2:columnInfo>
+						<w2:column id="id" name="일정ID" dataType="text" />
+						<w2:column id="title" name="제목" dataType="text" />
+						<w2:column id="start" name="시작일" dataType="text" />
+						<w2:column id="end" name="종료일" dataType="text" />
+						<w2:column id="allDay" name="종일" dataType="text" />
+						<w2:column id="color" name="색상" dataType="text" />
+						<w2:column id="backgroundColor" name="배경색상" dataType="text" />
+						<w2:column id="borderColor" name="테두리색상" dataType="text" />
+						<w2:column id="textColor" name="텍스트색상" dataType="text" />
+						<w2:column id="className" name="클래스명" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_monthOptions" baseNode="list">
+					<w2:columnInfo>
+						<w2:column id="value" name="값" dataType="text" />
+						<w2:column id="label" name="라벨" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_workers" baseNode="list">
+					<w2:columnInfo>
+						<w2:column id="name" name="이름" dataType="text" />
+						<w2:column id="isLeader" name="팀장여부" dataType="text" />
+						<w2:column id="isAbsent" name="결근여부" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dm_selectedDate">
+					<w2:keyInfo>
+						<w2:key id="date" name="선택날짜" dataType="text" />
+						<w2:key id="dayOfWeek" name="요일" dataType="text" />
+					</w2:keyInfo>
+				</w2:dataMap>
+                <w2:dataList baseNode="list" repeatNode="map" id="dlt_myDuty" saveRemovedData="true">
         			<w2:columnInfo>
         				<w2:column dataType="text" name="근무날짜" id="shiftDate"></w2:column>
         				<w2:column dataType="number" name="간호사고유번호" id="nurseId"></w2:column>
@@ -54,9 +53,9 @@
         				<w2:key dataType="text" name="선택된 달" id="date"></w2:key>
         			</w2:keyInfo>
         		</w2:dataMap>
-        	</w2:dataCollection>
-        	<w2:workflowCollection />
-        	<xf:submission id="sbm_selectMyDuty" action="/InsWebApp/DmoScheduleView.pwkjson" method="post" mediatype="application/json"
+			</w2:dataCollection>
+			<w2:workflowCollection />
+            <xf:submission id="sbm_selectMyDuty" action="/InsWebApp/DmoScheduleView.pwkjson" method="post" mediatype="application/json"
         		ref='data:json,{"id":"dma_date","key":"param"}' target="data:json,dlt_myDuty" encoding="UTF-8" instance="" replace="" errorHandler=""
         		customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_selectMyDuty_submitdone"
         		ev:submiterror="" abortTrigger="">
@@ -65,157 +64,140 @@
         		instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_selectDutyByDate_submitdone"
         		ev:submiterror="" abortTrigger="">
         	</xf:submission>
-        </xf:model>
-        <w2:layoutInfo/>
-        <w2:publicInfo method=""/>
-        <style type="text/css">
-            /* 팝업 스타일 */
-            .worker-popup {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-                z-index: 1000;
-                width: 280px;
-                padding: 0;
-                font-family: Arial, sans-serif;
-            }
-            
-            .popup-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-            
-            .popup-header {
-                background: #f8f9fa;
-                padding: 16px 20px;
-                border-radius: 8px 8px 0 0;
-                border-bottom: 1px solid #e9ecef;
-                text-align: center;
-            }
-            
-            .popup-date {
-                font-size: 16px;
-                font-weight: bold;
-                color: #333;
-                margin: 0;
-            }
-            
-            .popup-content {
-                padding: 16px 20px;
-                max-height: 300px;
-                overflow-y: auto;
-            }
-            
-            .worker-item {
-                display: flex;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid #f1f3f4;
-            }
-            
-            .worker-item:last-child {
-                border-bottom: none;
-            }
-            
-            .worker-name {
-                font-size: 14px;
-                color: #333;
-                margin-right: 8px;
-            }
-            
-            .leader-crown {
-                color: #ffd700;
-                font-size: 16px;
-                margin-right: 4px;
-            }
-            
-            .absent-mark {
-                color: #17a2b8;
-                font-size: 12px;
-                margin-left: auto;
-            }
-            
-            .popup-footer {
-                padding: 16px 20px;
-                border-top: 1px solid #e9ecef;
-                text-align: center;
-            }
-            
-            .confirm-btn {
-                background: #1e3a8a;
-                color: white;
-                border: none;
-                padding: 8px 24px;
-                border-radius: 4px;
-                font-size: 14px;
-                cursor: pointer;
-                min-width: 60px;
-            }
-            
-            .confirm-btn:hover {
-                background: #1e40af;
-            }
-            
-            .hidden {
-                display: none !important;
-            }
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<style type="text/css">
+			/* 팝업 스타일 */
+			.worker-popup {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: white;
+			border-radius: 8px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+			z-index: 1000;
+			width: 280px;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			}
 
-            /* 월 선택 영역 스타일 */
-            .schbox {
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-                padding: 10px;
-                background: #f8f9fa;
-                border-radius: 4px;
-                border: 1px solid #e9ecef;
-            }
+			.popup-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 999;
+			}
+
+			.popup-header {
+			background: #f8f9fa;
+			padding: 16px 20px;
+			border-radius: 8px 8px 0 0;
+			border-bottom: 1px solid #e9ecef;
+			text-align: center;
+			}
+
+			.popup-date {
+			font-size: 16px;
+			font-weight: bold;
+			color: #333;
+			margin: 0;
+			}
+
+			.popup-content {
+			padding: 16px 20px;
+			max-height: 300px;
+			overflow-y: auto;
+			}
+
+			.worker-item {
+			display: flex;
+			align-items: center;
+			padding: 8px 0;
+			border-bottom: 1px solid #f1f3f4;
+			}
+
+			.worker-item:last-child {
+			border-bottom: none;
+			}
+
+			.worker-name {
+			font-size: 14px;
+			color: #333;
+			margin-right: 8px;
+			}
+
+			.leader-crown {
+			color: #ffd700;
+			font-size: 16px;
+			margin-right: 4px;
+			}
+
+			.absent-mark {
+			color: #17a2b8;
+			font-size: 12px;
+			margin-left: auto;
+			}
+
+			.popup-footer {
+			padding: 16px 20px;
+			border-top: 1px solid #e9ecef;
+			text-align: center;
+			}
+
+			.confirm-btn {
+			background: #1e3a8a;
+			color: white;
+			border: none;
+			padding: 8px 24px;
+			border-radius: 4px;
+			font-size: 14px;
+			cursor: pointer;
+			min-width: 60px;
+			}
+
+			.confirm-btn:hover {
+			background: #1e40af;
+			}
+
+			.hidden {
+			display: none !important;
+			}
+
             
-            .schbox_tit {
-                font-weight: bold;
-                color: #495057;
-                margin-right: 10px;
-            }
-            
-            /* 달력 컨테이너 가운데 정렬 */
-            .calendar-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                margin: 0 auto;
-            }
-            
-            /* 달력 컴포넌트 스타일 */
-            .schedule-calendar {
-                margin: 0 auto;
-                display: block;
-            }
-        </style>
+		</style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script lazy="false" type="text/javascript"><![CDATA[
+		<script lazy="false" type="text/javascript"><![CDATA[
 scwin.onpageload = function () {
     console.log("내 스케줄 보기 페이지가 로드되었습니다.");
+
+    // 알림 시스템 초기화
+    setTimeout(function () {
+        try {
+            console.log("내 스케줄 알림 시스템 초기화 중...");
+            if (scwin.notifications && scwin.updateNotificationBadge) {
+                scwin.updateNotificationBadge();
+                console.log("내 스케줄 알림 배지 초기화 완료");
+            }
+        } catch (e) {
+            console.log("알림 시스템 초기화 중 오류:", e.message);
+        }
+    }, 1000);
 
     // 월 선택 옵션 초기화
     scwin.initMonthOptions();
 
-    // 8월 기본값 설정
+    // 9월 기본값 설정
     setTimeout(function () {
         if (typeof sbx_month !== 'undefined') {
-            sbx_month.setValue("202508");
-            sbx_month.setSelectedIndex(0);
-            console.log("페이지 로드 시 8월 기본값 설정됨");
-        
+            sbx_month.setValue("202509");
+            sbx_month.setSelectedIndex(1);
+            console.log("페이지 로드 시 9월 기본값 설정됨");
+            
             // DB 연동
             dma_date.setJSON({ date: sbx_month.getValue() });
             $c.sbm.execute(sbm_selectMyDuty);
@@ -263,11 +245,6 @@ scwin.initMonthOptions = function () {
     dlt_monthOptions.removeAll();
     dlt_monthOptions.setJSON(monthOptions);
 
-    console.log("데이터 설정 완료, 총 " + dlt_monthOptions.getTotalRow() + "개 항목");
-
-    // 데이터 변경 알림
-    dlt_monthOptions.broadcast();
-
     // 컴포넌트 새로고침을 위한 다단계 처리
     setTimeout(function () {
         if (typeof sbx_month !== 'undefined') {
@@ -281,10 +258,10 @@ scwin.initMonthOptions = function () {
                 setTimeout(function () {
                     try {
                         console.log("2단계: 기본값 설정 시도");
-                        sbx_month.setValue("202508"); // 8월 설정
-                        sbx_month.setSelectedIndex(0); // 첫 번째 옵션 선택
+                        sbx_month.setValue("202509"); // 8월 설정
+                        sbx_month.setSelectedIndex(1); // 첫 번째 옵션 선택
 
-                        console.log("8월이 기본값으로 설정됨");
+                        console.log("9월이 기본값으로 설정됨");
                         console.log("현재 선택된 값:", sbx_month.getValue());
                         console.log("현재 선택된 인덱스:", sbx_month.getSelectedIndex());
                     } catch (e) {
@@ -303,7 +280,8 @@ scwin.initMonthOptions = function () {
                             dlt_monthOptions.broadcast();
 
                             // 값 재설정 (확실하게)
-                            sbx_month.setValue("202508");
+                            sbx_month.setValue("202509");
+                            sbx_month.setSelectedIndex(1);
 
                             console.log("sbx_month 컴포넌트 준비 완료");
                             console.log("최종 선택된 값:", sbx_month.getValue());
@@ -323,8 +301,8 @@ scwin.initMonthOptions = function () {
     }, 500);
 
     // 전역 변수에 저장 (다른 함수에서 사용하기 위해)
-    scwin.currentYearMonth = "202508";
-    scwin.nextYearMonth = "202509";
+    scwin.currentYearMonth = "202509";
+    scwin.nextYearMonth = "202508";
 };
 
 scwin.sbx_month_onchange = function (info) {
@@ -337,14 +315,14 @@ scwin.sbx_month_onchange = function (info) {
     }
 
     try {
-        // 9월 선택 시 HopeWorkEntry.xml로 이동
-        if (selectedMonth === "202509") {
-            console.log("9월 선택됨 - HopeWorkEntry.xml로 이동 준비");
+        // 8월 선택 시 mobileMySchedule.xml로 이동
+        if (selectedMonth === "202508") {
+            console.log("8월 선택됨 - mobileMySchedule.xml로 이동 준비");
 
             // 확인 대화상자 표시
             Swal.fire({
                 title: '페이지 이동',
-                text: '확정된 9월 스케줄 페이지로 이동합니다. 이동하시겠습니까?',
+                text: '8월 현재 스케줄 페이지로 이동합니다. 이동하시겠습니까?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: '이동',
@@ -353,16 +331,16 @@ scwin.sbx_month_onchange = function (info) {
                 cancelButtonColor: '#6c757d'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // HopeWorkEntry.xml로 이동
+                    // mobileMySchedule.xml로 이동
                     try {
                         console.log("페이지 이동 시도 중...");
                         // 메인 프레임의 컨텐츠 변경
                         if (window.parent && window.parent.parent && window.parent.parent.wfr_mainContent) {
-                            window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/layout/mkNextmyschedule.xml");
+                            window.parent.parent.wfr_mainContent.setSrc("/InsWebApp/ui/mobile/mobileMySchedule.xml");
                             console.log("메인 프레임 컨텐츠 변경 완료");
                         } else {
                             // 직접 이동 시도
-                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkNextmyschedule.xml";
+                            var targetUrl = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileMySchedule.xml";
                             console.log("이동할 URL:", targetUrl);
                             window.location.href = targetUrl;
                         }
@@ -379,23 +357,23 @@ scwin.sbx_month_onchange = function (info) {
                     }
                 } else {
                     // 취소한 경우 8월로 다시 선택
-                    sbx_month.setValue("202508");
-                    sbx_month.setSelectedIndex(0);
-                    console.log("9월 이동 취소 - 8월로 복귀");
+                    sbx_month.setValue("202509");
+                    sbx_month.setSelectedIndex(1);
+                    console.log("8월 이동 취소 - 9월로 복귀");
                 }
             });
             return;
         }
 
-        // 8월 선택 시 현재 페이지 유지 및 데이터 로드
-        if (selectedMonth === "202508") {
-            console.log("8월 선택됨 - 내 스케줄 데이터 로드");
+        // 9월 선택 시 현재 페이지 유지 및 데이터 로드
+        if (selectedMonth === "202509") {
+            console.log("9월 선택됨 - 내 스케줄 데이터 로드");
 
             // 드롭다운 값 유지
             setTimeout(function () {
-                sbx_month.setValue("202508");
-                sbx_month.setSelectedIndex(0);
-                console.log("8월 선택 상태 유지됨");
+                sbx_month.setValue("202509");
+                sbx_month.setSelectedIndex(1);
+                console.log("9월 선택 상태 유지됨");
             }, 50);
 
             // 1. 먼저 데이터 로드
@@ -465,7 +443,8 @@ scwin.sbx_month_onchange = function (info) {
 
                         // 6. 드롭다운 값 재확인 및 유지
                         setTimeout(function () {
-                            sbx_month.setValue("202507");
+                            sbx_month.setValue("202509");
+                            sbx_month.setSelectedIndex(1);
                             console.log("최종 7월 선택 상태 확인됨");
                         }, 100);
                     }, 50);
@@ -482,12 +461,35 @@ scwin.sbx_month_onchange = function (info) {
 };
 
 scwin.initScheduleData = function () {
-    // 8월 데이터로 시작
-    scwin.loadScheduleData("202508");
+    // 9월 데이터로 시작
+    scwin.loadScheduleData("202509");
+    // 초기 제목 설정
+    scwin.updateCalendarTitle("202509");
+};
+
+// 캘린더 헤더 제목 업데이트
+scwin.updateCalendarTitle = function (yearMonth) {
+    try {
+        var year = yearMonth.substring(0, 4);
+        var month = yearMonth.substring(4, 6);
+        var monthInt = parseInt(month);
+        var title = year + "년 " + monthInt + "월";
+
+        var titleElement = document.getElementById("calendar-title");
+        if (titleElement) {
+            titleElement.textContent = title;
+            console.log("캘린더 제목 업데이트:", title);
+        }
+    } catch (e) {
+        console.error("캘린더 제목 업데이트 오류:", e);
+    }
 };
 
 scwin.loadScheduleData = function (yearMonth) {
     try {
+        // 캘린더 헤더 제목 업데이트
+        scwin.updateCalendarTitle(yearMonth);
+
         var scheduleData = [];
 
         // 색상 매핑
@@ -696,7 +698,6 @@ scwin.showWorkerPopup = function () {
         var leaderIcon = worker.isLeader === "Y" ? '<img src="/InsWebApp/images/crown.png" class="leader-crown-img" alt="리더" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; border: none; box-shadow: none;">' : '';
         var absentMark = worker.isAbsent === "Y" ? '<img src="/InsWebApp/images/new.png" class="absent-mark-img" alt="신입" style="width: 20px; height: 20px; margin-left: 4px; vertical-align: middle; border: none; box-shadow: none;">' : '';
 
-        // 로그인한 사용자의 nurseId와 일치하는 경우 민트색으로 표시
         var nameStyle = "";
         if (dlt_myDuty.getRowJSON(i).nurseName == worker.name) {
             nameStyle = 'style="color: #5CD6C0; font-weight: bold;"'; // 민트색
@@ -720,7 +721,7 @@ scwin.hideWorkerPopup = function () {
 };
 
 scwin.btn_confirm_onclick = function () {
-    // 팝업만 닫고 myschedule.xml 페이지에 그대로 머물기
+    // 팝업만 닫고 mobileMySchedule.xml 페이지에 그대로 머물기
     scwin.hideWorkerPopup();
 };
 
@@ -767,6 +768,517 @@ scwin.applyEventClasses = function () {
         });
     } catch (e) {
         console.error("클래스 적용 중 오류:", e);
+    }
+};
+
+// ========== 알림 시스템 설정 상수 ==========
+scwin.CONFIG = {
+    MODAL: {
+        ID: "custom_notification_modal",
+        MAX_WIDTH: "700px",
+        MAX_HEIGHT: "80%",
+        Z_INDEX: 10000
+    },
+    STYLES: {
+        COLORS: {
+            INFO: "#E3F2FD",
+            WORK: "#E8F5E8",
+            WARNING: "#FFF3E0",
+            DEFAULT: "#F5F5F5",
+            BORDER: "#2196F3",
+            READ_BG: "#FFFFFF",
+            UNREAD_BG: "#F0F8FF",
+            READ_TEXT: "#666666",
+            UNREAD_TEXT: "#333333",
+            READ_BORDER: "#E0E0E0",
+            UNREAD_BORDER: "#2196F3"
+        },
+        GRADIENT: "linear-gradient(135deg, #2196F3, #1976D2)"
+    },
+    ICONS: {
+        INFO: "[정보]",
+        WORK: "[업무]",
+        WARNING: "[경고]",
+        DEFAULT: "[알림]",
+        UNREAD: "",
+        BELL: "",
+        CALENDAR: "",
+        EMPTY: "",
+        SUMMARY: "",
+        TIP: ""
+    },
+    TIMINGS: {
+        MARK_READ_DELAY: 3000,
+        REFRESH_DELAY: 100,
+        BADGE_UPDATE_DELAY: 500
+    }
+};
+
+// ========== 알림 데이터 (내 스케줄 관련) ==========
+scwin.notifications = [
+    {
+        id: "noti_1",
+        title: "스케줄 조회 안내",
+        message: "스케줄의 변경 사항이 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 09:00:00",
+        isRead: false
+    },
+    {
+        id: "noti_2",
+        title: "스케줄 조회 안내",
+        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 10:30:00",
+        isRead: false
+    },
+    {
+        id: "noti_3",
+        title: "근무자 정보 안내",
+        message: "날짜를 클릭하면 해당 날짜의 근무자 명단과 차지 간호사, 신입 정보를 확인할 수 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 11:45:00",
+        isRead: true
+    },
+    {
+        id: "noti_4",
+        title: "스케줄 타입 안내",
+        message: "스케줄 타입: E(Evening), N(Night), O(Off), D(Day) - 각각 다른 색상으로 표시됩니다.",
+        type: "work",
+        createDate: "2025-01-15 14:20:00",
+        isRead: true
+    },
+    {
+        id: "noti_5",
+        title: "스케줄 조회 안내",
+        message: "스케줄이 결정되었습니다. 2025년 8월 스케줄을 조회할 수 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 15:10:00",
+        isRead: true
+    },
+    {
+        id: "noti_6",
+        title: "월별 전환 기능",
+        message: "상단의 월 선택 드롭다운을 통해 8월과 9월 스케줄을 자유롭게 전환할 수 있습니다.",
+        type: "info",
+        createDate: "2025-01-15 16:30:00",
+        isRead: true
+    }
+];
+
+// ========== 알림 유틸리티 함수 ==========
+// 알림 타입에 따른 아이콘과 색상 가져오기
+scwin.getNotificationStyle = function (type) {
+    switch (type) {
+        case "info":
+            return {
+                icon: scwin.CONFIG.ICONS.INFO,
+                bgColor: scwin.CONFIG.STYLES.COLORS.INFO
+            };
+        case "work":
+            return {
+                icon: scwin.CONFIG.ICONS.WORK,
+                bgColor: scwin.CONFIG.STYLES.COLORS.WORK
+            };
+        case "warning":
+            return {
+                icon: scwin.CONFIG.ICONS.WARNING,
+                bgColor: scwin.CONFIG.STYLES.COLORS.WARNING
+            };
+        default:
+            return {
+                icon: scwin.CONFIG.ICONS.DEFAULT,
+                bgColor: scwin.CONFIG.STYLES.COLORS.DEFAULT
+            };
+    }
+};
+
+// 미읽은 알림 개수 계산
+scwin.getUnreadCount = function () {
+    var count = 0;
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (!scwin.notifications[i].isRead) {
+            count++;
+        }
+    }
+    return count;
+};
+
+// 알림 HTML 생성 (모달용)
+scwin.generateNotificationHTML = function () {
+    var notificationHtml = "";
+
+    if (scwin.notifications.length === 0) {
+        return "<div style='text-align: center; color: #999; font-size: 16px; padding: 40px;'>" +
+            scwin.CONFIG.ICONS.EMPTY + " 알림이 없습니다.</div>";
+    }
+
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        var notification = scwin.notifications[i];
+        var style = scwin.getNotificationStyle(notification.type);
+        var readStatus = notification.isRead ? "" : " " + scwin.CONFIG.ICONS.UNREAD + " (미읽음)";
+
+        // 읽음/미읽음에 따른 스타일 설정
+        var bgColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BG : scwin.CONFIG.STYLES.COLORS.UNREAD_BG;
+        var textColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_TEXT : scwin.CONFIG.STYLES.COLORS.UNREAD_TEXT;
+        var borderColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BORDER : scwin.CONFIG.STYLES.COLORS.UNREAD_BORDER;
+        var fontWeight = notification.isRead ? "normal" : "bold";
+        var boxShadow = notification.isRead ? "0 1px 3px rgba(0,0,0,0.1)" : "0 2px 8px rgba(33,150,243,0.2)";
+
+        notificationHtml +=
+            "<div onclick='scwin.markNotificationAsRead(\"" + notification.id + "\")' style='margin-bottom: 15px; padding: 15px; background-color: " + bgColor + "; border-radius: 8px; border-left: 5px solid " + borderColor + "; box-shadow: " + boxShadow + "; transition: all 0.3s ease; cursor: " + (notification.isRead ? "default" : "pointer") + ";'>" +
+            "<div style='font-size: 16px; font-weight: " + fontWeight + "; color: " + textColor + "; margin-bottom: 8px;'>" +
+            style.icon + " " + notification.title + readStatus + "</div>" +
+            "<div style='font-size: 14px; color: " + (notification.isRead ? "#777" : "#555") + "; margin-bottom: 8px; line-height: 1.4;'>" + notification.message + "</div>" +
+            "<div style='font-size: 12px; color: " + (notification.isRead ? "#999" : "#888") + "; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
+            "</div>";
+    }
+
+    return notificationHtml;
+};
+
+// 알림 메시지 생성 (Alert용)
+scwin.generateAlertMessage = function () {
+    var unreadCount = scwin.getUnreadCount();
+    var message = scwin.CONFIG.ICONS.BELL + " [내 스케줄 알림 센터] " + scwin.CONFIG.ICONS.BELL + "\n\n";
+
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        var notification = scwin.notifications[i];
+        var style = scwin.getNotificationStyle(notification.type);
+        var statusText = notification.isRead ? "[읽음]" : "[미읽음]";
+
+        message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        message += (i + 1) + ". " + style.icon + " " + notification.title + " " + statusText + "\n";
+        message += "내용: " + notification.message + "\n";
+        message += "시간: " + notification.createDate + "\n\n";
+    }
+
+    message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+    message += scwin.CONFIG.ICONS.SUMMARY + " 요약: 총 " + scwin.notifications.length + "개 알림 (미읽음 " + unreadCount + "개)\n\n";
+    message += scwin.CONFIG.ICONS.TIP + " 이 창을 닫으면 모든 알림이 읽음 처리됩니다.";
+
+    return message;
+};
+
+// 모달 이벤트 리스너 등록
+scwin.attachModalEventListeners = function () {
+    var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
+    if (!modal) return;
+
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            scwin.closeCustomModal();
+        }
+    });
+
+    // ESC 키로 닫기 (한 번만 등록)
+    if (!scwin._escListenerAttached) {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.getElementById(scwin.CONFIG.MODAL.ID)) {
+                scwin.closeCustomModal();
+            }
+        });
+        scwin._escListenerAttached = true;
+    }
+};
+
+// ========== 알림 모달 관리 함수 ==========
+// 알림 모달 표시
+scwin.showNotificationModal = function () {
+    console.log("=== 내 스케줄 알림 모달 표시 시도 ===");
+
+    try {
+        // 먼저 알림 데이터 확인
+        console.log("현재 알림 개수:", scwin.notifications.length);
+
+        // DOM 기반 커스텀 모달로 직접 표시
+        scwin.showCustomModal();
+
+    } catch (e) {
+        console.log("모달 표시 중 오류 발생:", e.message);
+        console.log("alert로 대체 표시");
+        scwin.showAlertNotification();
+    }
+};
+
+// 커스텀 DOM 모달로 표시
+scwin.showCustomModal = function () {
+    console.log("=== 내 스케줄 커스텀 모달 생성 시작 ===");
+
+    try {
+        // 기존 모달이 있으면 제거
+        var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        var unreadCount = scwin.getUnreadCount();
+        var notificationHtml = scwin.generateNotificationHTML();
+
+        console.log("알림 HTML 생성 완료, 총 " + scwin.notifications.length + "개");
+
+        // 모달 HTML 생성
+        var modalHtml =
+            "<div id='" + scwin.CONFIG.MODAL.ID + "' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: " + scwin.CONFIG.MODAL.Z_INDEX + "; display: flex; justify-content: center; align-items: center;'>" +
+            "<div style='background: white; border-radius: 12px; width: 90%; max-width: " + scwin.CONFIG.MODAL.MAX_WIDTH + "; max-height: " + scwin.CONFIG.MODAL.MAX_HEIGHT + "; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;'>" +
+
+            // 헤더
+            "<div style='background: #1C3D6B; color: white; padding: 20px; text-align: center;'>" +
+            "<h2 style='margin: 0; font-size: 20px; font-weight: bold;'>" + scwin.CONFIG.ICONS.BELL + " 내 스케줄 알림 센터</h2>" +
+            "<p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>총 " + scwin.notifications.length + "개 알림" + (unreadCount > 0 ? " (" + scwin.CONFIG.ICONS.UNREAD + "미읽음 " + unreadCount + "개)" : "") + "</p>" +
+            "</div>" +
+
+            // 내용
+            "<div style='padding: 20px; max-height: 400px; overflow-y: auto;'>" +
+            notificationHtml +
+            "</div>" +
+
+
+
+            "</div>" +
+            "</div>";
+
+        // DOM에 추가
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        console.log("내 스케줄 커스텀 모달 생성 완료");
+
+        // 이벤트 리스너 등록
+        scwin.attachModalEventListeners();
+
+        // 자동 읽음 처리 (시간을 늘려서 사용자가 개별 클릭할 시간 확보)
+        setTimeout(function () {
+            scwin.markAllAsRead();
+        }, 10000); // 10초로 변경
+
+        console.log("=== 내 스케줄 커스텀 모달 표시 완료 ===");
+
+    } catch (e) {
+        console.log("커스텀 모달 생성 중 오류:", e.message);
+        scwin.showAlertNotification();
+    }
+};
+
+// Alert로 알림 표시 (대체 방법)
+scwin.showAlertNotification = function () {
+    console.log("=== Alert로 내 스케줄 알림 표시 시작 ===");
+
+    try {
+        var message = scwin.generateAlertMessage();
+        var unreadCount = scwin.getUnreadCount();
+
+        console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
+        Swal.fire({
+            icon: 'info',
+            title: '알림',
+            text: message,
+            confirmButtonText: '확인'
+        });
+
+        // 1초 후 모든 알림을 읽음 처리
+        setTimeout(function () {
+            scwin.markAllAsRead();
+        }, 1000);
+
+        console.log("=== Alert 내 스케줄 알림 표시 완료 ===");
+
+    } catch (e) {
+        console.log("Alert 표시 중 오류:", e.message);
+        // 최후의 수단
+        Swal.fire({
+            icon: 'error',
+            title: '알림 표시 중 오류',
+            text: '알림 표시 중 오류가 발생했습니다.\n현재 ' + scwin.notifications.length + '개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.',
+            confirmButtonText: '확인'
+        });
+    }
+};
+
+// ========== 알림 관리 함수 ==========
+// 모든 알림을 읽음 처리
+scwin.markAllAsRead = function () {
+    var hasChanges = false;
+
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (!scwin.notifications[i].isRead) {
+            scwin.notifications[i].isRead = true;
+            hasChanges = true;
+        }
+    }
+
+    if (hasChanges) {
+        scwin.updateNotificationBadge();
+        console.log("모든 내 스케줄 알림을 읽음 처리 완료");
+    }
+};
+
+// 개별 알림 읽음 처리
+scwin.markNotificationAsRead = function (notificationId) {
+    for (var i = 0; i < scwin.notifications.length; i++) {
+        if (scwin.notifications[i].id === notificationId && !scwin.notifications[i].isRead) {
+            scwin.notifications[i].isRead = true;
+            scwin.updateNotificationBadge();
+            console.log("알림 읽음 처리:", notificationId);
+
+            // 모달 새로고침하여 색상 변경
+            scwin.refreshModal();
+            return true;
+        }
+    }
+    return false;
+};
+
+// 알림 배지 업데이트 (성능 최적화)
+scwin.updateNotificationBadge = function () {
+    try {
+        var unreadCount = scwin.getUnreadCount();
+
+        // 버튼 찾기 (캐싱)
+        if (!scwin._btnAlarmCache) {
+            scwin._btnAlarmCache = $w.getComponentById("btn_alarm") || document.getElementById("btn_alarm");
+        }
+
+        var btnAlarm = scwin._btnAlarmCache;
+        if (!btnAlarm) {
+            console.log("내 스케줄 알림 버튼을 찾을 수 없습니다");
+            return;
+        }
+
+        // 현재 상태와 비교하여 필요한 경우만 업데이트
+        var shouldShowBadge = unreadCount > 0;
+        var currentlyShowingBadge = btnAlarm._badgeActive || false;
+
+        if (shouldShowBadge !== currentlyShowingBadge) {
+            if (shouldShowBadge) {
+                // 미읽은 알림이 있으면 빨간 테두리
+                var badgeStyle = "border: 3px solid #FF0000; border-radius: 50%; box-shadow: 0 0 10px #FF0000;";
+                if (btnAlarm.setStyle) {
+                    btnAlarm.setStyle(badgeStyle);
+                } else {
+                    btnAlarm.style.border = "3px solid #FF0000";
+                    btnAlarm.style.borderRadius = "50%";
+                    btnAlarm.style.boxShadow = "0 0 10px #FF0000";
+                }
+                btnAlarm._badgeActive = true;
+                console.log("내 스케줄 알림 배지 활성화 (" + unreadCount + "개 미읽음)");
+            } else {
+                // 미읽은 알림이 없으면 원래 상태
+                if (btnAlarm.setStyle) {
+                    btnAlarm.setStyle("border: none; box-shadow: none;");
+                } else {
+                    btnAlarm.style.border = "none";
+                    btnAlarm.style.boxShadow = "none";
+                }
+                btnAlarm._badgeActive = false;
+                console.log("내 스케줄 알림 배지 비활성화");
+            }
+        }
+
+    } catch (e) {
+        console.log("배지 업데이트 중 오류:", e.message);
+    }
+};
+
+// 테스트 알림 추가 (내 스케줄 관련)
+scwin.addTestNotification = function () {
+    var testMessages = [
+        {
+            title: "스케줄 업데이트",
+            message: "8월 " + (Math.floor(Math.random() * 28) + 1) + "일 스케줄이 업데이트되었습니다.",
+            type: "work"
+        },
+        {
+            title: "근무자 변경",
+            message: "금일 근무자 명단이 변경되었습니다. 확인해 주세요.",
+            type: "info"
+        },
+        {
+            title: "팀장 지정",
+            message: "새로운 팀장이 지정되었습니다.",
+            type: "warning"
+        },
+        {
+            title: "월별 스케줄 마감",
+            message: "8월 스케줄 확정이 완료되었습니다.",
+            type: "info"
+        },
+        {
+            title: "근무 패턴 변경",
+            message: "다음 주부터 근무 패턴이 변경됩니다.",
+            type: "work"
+        }
+    ];
+
+    var randomIndex = Math.floor(Math.random() * testMessages.length);
+    var testMessage = testMessages[randomIndex];
+
+    // 새 알림 추가
+    var newNotification = {
+        id: "test_" + new Date().getTime(),
+        title: testMessage.title,
+        message: testMessage.message,
+        type: testMessage.type,
+        createDate: new Date().toLocaleString(),
+        isRead: false
+    };
+
+    scwin.notifications.unshift(newNotification); // 맨 앞에 추가
+
+    console.log("내 스케줄 테스트 알림 추가:", testMessage.title);
+
+    // 배지 업데이트
+    scwin.updateNotificationBadge();
+
+    // 모달 새로고침 (성능 최적화)
+    scwin.refreshModal();
+};
+
+// 모달 새로고침 (성능 최적화)
+scwin.refreshModal = function () {
+    var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
+    if (existingModal) {
+        scwin.closeCustomModal();
+        setTimeout(function () {
+            scwin.showNotificationModal();
+        }, scwin.CONFIG.TIMINGS.REFRESH_DELAY);
+    }
+};
+
+// 커스텀 모달 닫기 (개선된 버전)
+scwin.closeCustomModal = function () {
+    console.log("내 스케줄 커스텀 모달 닫기");
+    try {
+        var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
+        if (modal) {
+            modal.remove();
+            console.log("내 스케줄 커스텀 모달 제거 완료");
+        }
+    } catch (e) {
+        console.log("모달 닫기 중 오류:", e.message);
+    }
+};
+
+// 알림 모달 닫기 (호환성)
+scwin.closeNotificationModal = function () {
+    scwin.closeCustomModal();
+};
+
+scwin.btn_booking_onclick = function (e) {
+    location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/mobile/mobileHopeWorkEntryfinal.xml";;
+};
+
+// ========== 메인 이벤트 핸들러 ==========
+// 알림 버튼 클릭 (단일 이벤트 핸들러)
+scwin.btn_alarm_onclick = function (e) {
+    console.log("=== 내 스케줄 알림 버튼 클릭됨 ===");
+
+    try {
+        console.log("현재 내 스케줄 알림 개수:", scwin.notifications.length);
+        scwin.showNotificationModal();
+    } catch (error) {
+        console.log("버튼 클릭 처리 중 오류:", error.message);
+        scwin.showAlertNotification();
     }
 };
 
@@ -893,13 +1405,19 @@ scwin.sbm_selectDutyByDate_submitdone = function (e) {
     }
 };
 ]]></script>
-    </head>
-    <body ev:onpageload="scwin.onpageload">
-    	<xf:group class="sub_contents" id="" meta_snippetCategory="00_화면시작" meta_snippetKeyComponent="true" meta_snippetName="0_01 페이지시작"
-    		style="">
-    		<!-- 월 선택 드롭다운 -->
-    		<xf:group class="schbox" id="" style="margin-bottom: 10px;">
-    			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px;"></w2:textbox>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_contents" id="" meta_snippetCategory="00_화면시작" meta_snippetKeyComponent="true" meta_snippetName="0_01 페이지시작"
+			style="">
+			<!-- 월 선택 드롭다운 -->
+			<xf:group class="pgtbox" id="" meta_snippetCategory="02_타이틀" meta_snippetKeyComponent="true" meta_snippetName="2_01 페이지타이틀"
+				style="">
+				<xf:group class="breadcrumb" id="" style=""></xf:group>
+				<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;cursor: pointer;" id="btn_alarm"
+					ev:onclick="scwin.btn_alarm_onclick"></xf:image>
+			</xf:group>
+			<xf:group class="schbox" id="" style="margin-bottom: 10px;">
+    			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px; vertical-align: middle;"></w2:textbox>
     			                <xf:select1 appearance="minimal" class="" id="sbx_month" style="width: 150px;" ref="" chooseOptionLabel="2025년 8월"
                 	ev:onchange="scwin.sbx_month_onchange" submitValue="true" allOption="" chooseOption="false">
     				<xf:itemset nodeset="data:dlt_monthOptions">
@@ -914,57 +1432,45 @@ scwin.sbm_selectDutyByDate_submitdone = function (e) {
     				</xf:choices>
     			</xf:select1>
     		</xf:group>
-    		
-    		<div class="calendar-container">
-    			<w2:scheduleCalendar 
-    				id="shc_myschedule" 
-    				style="height: 600px;margin-bottom:20px;" 
-    				dataList="data:dlt_schedule" 
-    				defaultDate="20250801"
-    				editable="false" 
-    				endColumn="end" 
-    				allDayColumn="allDay"
-    				eventLimit="true" 
-    				headerLeftBtn="false" 
-    				headerRightBtn="false" 
-    				headerTitle="true" 
-    				idColumn="id" 
-    				ioFormat="yyyyMMdd" 
-    				lang="ko" 
-    				locale="ko" 
-    				selectable="true" 
-    				startColumn="start"
-    				titleColumn="title" 
-    				colorColumn="color"
-    				backgroundColorColumn="backgroundColor"
-    				borderColorColumn="borderColor"
-    				textColorColumn="textColor"
-    				classNameColumn="className"
-    				tooltipDisplay="false"
-    				version="3.6"
-    				ev:onclick="scwin.shc_myschedule_onclick" noUsePrompt="true">
-    			</w2:scheduleCalendar>
-    		</div>
-    		
-    		<!-- 근무자 팝업 오버레이 -->
-    		<div id="popup-overlay" class="popup-overlay hidden" onclick="scwin.hideWorkerPopup()"></div>
-    		
-    		<!-- 근무자 팝업 -->
-    		<div id="worker-popup" class="worker-popup hidden">
-    			<div class="popup-header">
-    				<h3 id="popup-date" class="popup-date">7월 21일 (토)</h3>
-    			</div>
-    			<div class="popup-content">
-    				<div id="worker-list">
-    					<!-- 근무자 목록이 동적으로 생성됩니다 -->
-    				</div>
-    			</div>
-    						<div class="popup-footer">
-				<xf:trigger class="confirm-btn" id="btn_confirm" style="background: #1e3a8a; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 60px;" ev:onclick="scwin.btn_confirm_onclick">
-					<xf:label>확인</xf:label>
-				</xf:trigger>
+
+		<!-- 커스텀 캘린더 헤더 (제목 + 버튼) -->
+		<div id="calendar-header" style="background: #f8f9fa;border: 1px solid #dee2e6;padding: 10px 15px; 			display: flex; 			justify-content: space-between; 			align-items: center;font-weight: bold;font-size: 16px;color: #495057;width: 100%;box-sizing: border-box;">
+			<span id="calendar-title">2025년 8월</span>
+			<xf:trigger class="btn_cm" ev:onclick="scwin.btn_booking_onclick" id="btn_trigger4"
+				style="background-color:#1C3D6B;color:#FFFFFF;padding:0 12px;border-radius:5px;font-size:15px;text-align:center;font-weight: bold;" type="button">
+				<xf:label><![CDATA[듀티신청]]></xf:label>
+			</xf:trigger>
+		</div>
+
+		<w2:scheduleCalendar id="shc_myschedule" style="height:900px;" dataList="data:dlt_schedule"
+			defaultDate="20250801" editable="false" endColumn="end" allDayColumn="allDay" eventLimit="true" headerLeftBtn="false"
+			headerRightBtn="false" headerTitle="false" idColumn="id" ioFormat="yyyyMMdd" lang="ko" locale="ko" selectable="true" startColumn="start"
+			titleColumn="title" colorColumn="color" backgroundColorColumn="backgroundColor" borderColorColumn="borderColor"
+			textColorColumn="textColor" classNameColumn="className" tooltipDisplay="false" version="3.6" ev:onclick="scwin.shc_myschedule_onclick"
+			noUsePrompt="true">
+		</w2:scheduleCalendar>
+
+			<!-- 근무자 팝업 오버레이 -->
+			<div id="popup-overlay" class="popup-overlay hidden" onclick="scwin.hideWorkerPopup()"></div>
+
+			<!-- 근무자 팝업 -->
+			<div id="worker-popup" class="worker-popup hidden">
+				<div class="popup-header">
+					<h3 id="popup-date" class="popup-date">8월 21일 (토)</h3>
+				</div>
+				<div class="popup-content">
+					<div id="worker-list">
+						<!-- 근무자 목록이 동적으로 생성됩니다 -->
+					</div>
+				</div>
+				<div class="popup-footer">
+					<xf:trigger class="confirm-btn" id="btn_confirm"
+						style="background: #1e3a8a; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; cursor: pointer; min-width: 60px;"
+						ev:onclick="scwin.btn_confirm_onclick">
+						<xf:label>확인</xf:label>
+					</xf:trigger>
+				</div>
 			</div>
-    		</div>
-    	</xf:group>
-    </body>
+		</xf:group>
+	</body>
 </html>

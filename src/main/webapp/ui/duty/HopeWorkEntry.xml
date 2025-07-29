@@ -449,10 +449,10 @@ scwin.initEmptyCalendar = function () {
         }
 
         // 캘린더 새로고침
-        setTimeout(function () {
+        setTimeout(function() {
             try {
                 if (shc_hopeWork && shc_hopeWork.refresh) {
-
+                    shc_hopeWork.refresh();
                 }
                 console.log("캘린더 새로고침 완료 - 빈 상태");
             } catch (e) {
@@ -1637,7 +1637,7 @@ scwin.btn_submit_onclick = function () {
     console.log("희망근무 신청:", selectedDate, selectedWorkType, "기존:", currentWorkType);
     // 날짜 형식 변환 (YYYYMMDD -> YYYY-MM-DD)
     var formattedDate = selectedDate.substring(0, 4) + "-" + selectedDate.substring(4, 6) + "-" + selectedDate.substring(6, 8);
-
+    console.log("선택한 날짜", formattedDate);
     if (selectedWorkType === "clear") {
         // 비우기 = 일정 삭제
         console.log("삭제 요청 - 현재 근무타입:", currentWorkType);
@@ -2919,7 +2919,20 @@ scwin.sbm_deleteHopeDuty_submitdone = function (e) {
 };
 
 scwin.sbm_updateHopeDuty_submitdone = function (e) {
+    // 수정 완료 후 모달 닫기
+    scwin.hideWorkSelectModal();
+    
+    // 목록 다시 조회
     $c.sbm.execute(sbm_selectListHopeDuty);
+    
+    // 성공 메시지 표시
+    Swal.fire({
+        icon: 'success',
+        title: '수정 완료',
+        text: '희망근무가 성공적으로 수정되었습니다.',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#1C3D6B'
+    });
 };
 
 scwin.sbm_selectListHopeDutyByDate_submitdone = function (e) {
@@ -2956,11 +2969,8 @@ scwin.createApplicationStatusView = function (dutyRequestList) {
             noApplications.className = "status-item";
             noApplications.style.color = "#6c757d";
             noApplications.style.fontStyle = "italic";
-            noApplications.style.textAlign = "center";
-            noApplications.style.padding = "10px";
             noApplications.textContent = "아직 신청한 사람이 없습니다.";
             statusList.appendChild(noApplications);
-            console.log("신청자 없음 메시지 표시");
             return;
         }
 
@@ -2970,10 +2980,10 @@ scwin.createApplicationStatusView = function (dutyRequestList) {
 
         // 신청 현황 HTML 생성
         var workTypes = [
-            { code: "O", name: "Off", class: "work-o", color: "#4CAF50" },
-            { code: "D", name: "Day", class: "work-d", color: "#FF9800" },
-            { code: "E", name: "Evening", class: "work-e", color: "#3F51B5" },
-            { code: "N", name: "Night", class: "work-n", color: "#9C27B0" }
+            { code: "O", name: "Off 휴무", class: "work-o"},
+            { code: "D", name: "Day 근무", class: "work-d"},
+            { code: "E", name: "Evening 근무", class: "work-e"},
+            { code: "N", name: "Night 근무", class: "work-n"}
         ];
 
         var hasApplications = false;
@@ -2985,47 +2995,15 @@ scwin.createApplicationStatusView = function (dutyRequestList) {
 
                 var statusItem = document.createElement("div");
                 statusItem.className = "status-item";
-                statusItem.style.cssText = `
-                    display: flex;
-                    align-items: center;
-                    padding: 8px 12px;
-                    margin: 4px 0;
-                    background: #f8f9fa;
-                    border-radius: 6px;
-                    border-left: 4px solid ${workType.color};
-                `;
 
                 var badge = document.createElement("span");
                 badge.className = "status-badge " + workType.class;
-                badge.style.cssText = `
-                    display: inline-block;
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    background-color: ${workType.color};
-                    margin-right: 8px;
-                `;
 
                 var text = document.createElement("span");
-                text.style.cssText = `
-                    font-size: 14px;
-                    color: #333;
-                    font-weight: 500;
-                    flex: 1;
-                `;
                 text.textContent = workType.name + ": ";
 
                 var countSpan = document.createElement("span");
                 countSpan.className = "status-count";
-                countSpan.style.cssText = `
-                    font-size: 14px;
-                    color: ${workType.color};
-                    font-weight: bold;
-                    background: white;
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    border: 1px solid ${workType.color};
-                `;
                 countSpan.textContent = count + "명";
 
                 statusItem.appendChild(badge);
@@ -3042,15 +3020,6 @@ scwin.createApplicationStatusView = function (dutyRequestList) {
         if (!hasApplications) {
             var noApplications = document.createElement("div");
             noApplications.className = "status-item";
-            noApplications.style.cssText = `
-                color: #6c757d;
-                font-style: italic;
-                text-align: center;
-                padding: 15px;
-                background: #f8f9fa;
-                border-radius: 6px;
-                border: 1px dashed #dee2e6;
-            `;
             noApplications.textContent = "아직 신청한 사람이 없습니다.";
             statusList.appendChild(noApplications);
             console.log("신청자 없음 메시지 표시");
@@ -3166,7 +3135,7 @@ scwin.aggregateApplicationsByShiftType = function (dutyRequestList) {
             <div class="calendar-container">
                 <w2:scheduleCalendar 
                     id="shc_hopeWork" 
-                    style="height:200px;" 
+                    style="height:600px;" 
                     dataList="data:dlt_hopeWork" 
                     defaultDate="20250901"
                     editable="false" 

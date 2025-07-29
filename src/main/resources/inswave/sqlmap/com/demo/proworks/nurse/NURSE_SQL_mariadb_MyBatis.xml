@@ -64,19 +64,17 @@
 	</delete>
 
 	<select id="selectNurse" parameterType="com.demo.proworks.nurse.vo.NurseVo" resultType="com.demo.proworks.nurse.vo.NurseVo">
-		<!-- 간호사 정보를 상세 조회한다. -->
-		<![CDATA[
-        SELECT nurseName, position, career, DATE_FORMAT(hireDate, '%Y-%m-%d') AS hireDate, specialNote
+<!-- 간호사 정보를 상세 조회한다. -->
+        SELECT nurseName, position
         FROM nurse
-        WHERE nurseName = #{nurseName}
-		]]>
-		</select>
+        WHERE nurseId = #{nurseId}
+</select>
 
 	<select id="selectListNurse" resultType="com.demo.proworks.nurse.vo.NurseVo">
 		<!-- 간호사 정보 목록을 조회한다. -->
 		SELECT *
 		FROM nurse
-		ORDER BY career desc
+		ORDER BY nurseId
 	</select>
 
 	<select id="selectListCountNurse" parameterType="com.demo.proworks.nurse.vo.NurseVo" resultType="long">

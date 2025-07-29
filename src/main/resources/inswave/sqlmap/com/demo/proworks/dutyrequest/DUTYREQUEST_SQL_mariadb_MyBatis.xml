@@ -89,6 +89,7 @@
 		shiftType, (SELECT nurseName FROM nurse WHERE nurseId = #{nurseId}) AS nurseName
 		FROM dutyrequest
 		where nurseId = #{nurseId}
+		order by reqId
 	</select>
 
 	<select id="selectListHopeDutyList" resultType="com.demo.proworks.dutyrequest.vo.DutyRequestVo">

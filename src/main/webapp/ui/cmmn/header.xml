@@ -6,8 +6,20 @@
 		<w2:buildDate />
 		<w2:MSA />
 		<xf:model>
-			<w2:dataCollection baseNode="map" />
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_nurse">
+					<w2:keyInfo>
+						<w2:key dataType="text" name="간호사ID" id="nurseId"></w2:key>
+						<w2:key dataType="text" name="간호사명" id="nurseName"></w2:key>
+						<w2:key dataType="text" name="직급" id="position"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
 			<w2:workflowCollection />
+			<xf:submission id="sbm_selectNurse" action="/InsWebApp/view.pwkjson" method="post" mediatype="application/json" ref='data:json,{"id":"dma_nurse","key":"nurseVo"}' target='data:json,{"id":"dma_nurse","key":"nurseVo"}' encoding="UTF-8"
+				instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+				ev:submitdone="scwin.sbm_selectNurse_submitdone" ev:submiterror="" abortTrigger="">
+			</xf:submission>
 		</xf:model>
 		<w2:layoutInfo />
 		<w2:publicInfo method="" />
@@ -292,7 +304,7 @@ scwin.CONFIG = {
     STYLES: {
         COLORS: {
             INFO: "#E3F2FD",
-            WORK: "#E8F5E8", 
+            WORK: "#E8F5E8",
             WARNING: "#FFF3E0",
             DEFAULT: "#F5F5F5",
             BORDER: "#2196F3",
@@ -328,7 +340,7 @@ scwin.CONFIG = {
 scwin.notifications = [
     {
         id: "header_noti_1",
-        title: "시스템 알림", 
+        title: "시스템 알림",
         message: "새로운 업데이트가 적용되었습니다.",
         type: "info",
         createDate: "2025-01-15 09:00:00",
@@ -337,24 +349,24 @@ scwin.notifications = [
     {
         id: "header_noti_2",
         title: "근무표 확정",
-        message: "7월 근무표가 확정되었습니다. 확인해 주세요.", 
+        message: "7월 근무표가 확정되었습니다. 확인해 주세요.",
         type: "work",
         createDate: "2025-01-15 10:30:00",
         isRead: false
     },
     {
-        id: "header_noti_3", 
+        id: "header_noti_3",
         title: "시스템 점검",
         message: "오늘 밤 12시부터 2시까지 시스템 점검이 예정되어 있습니다.",
         type: "warning",
-        createDate: "2025-01-15 11:45:00", 
+        createDate: "2025-01-15 11:45:00",
         isRead: true
     },
     {
         id: "header_noti_4",
         title: "새로운 기능",
         message: "알림 센터 기능이 추가되었습니다. 헤더의 알림 아이콘을 클릭해보세요.",
-        type: "info", 
+        type: "info",
         createDate: "2025-01-15 14:20:00",
         isRead: true
     }
@@ -362,8 +374,8 @@ scwin.notifications = [
 
 // ========== 알림 유틸리티 함수 ==========
 // 알림 타입에 따른 아이콘과 색상 가져오기
-scwin.getNotificationStyle = function(type) {
-    switch(type) {
+scwin.getNotificationStyle = function (type) {
+    switch (type) {
         case "info":
             return {
                 icon: scwin.CONFIG.ICONS.INFO,
@@ -388,7 +400,7 @@ scwin.getNotificationStyle = function(type) {
 };
 
 // 미읽은 알림 개수 계산
-scwin.getUnreadCount = function() {
+scwin.getUnreadCount = function () {
     var count = 0;
     for (var i = 0; i < scwin.notifications.length; i++) {
         if (!scwin.notifications[i].isRead) {
@@ -399,27 +411,27 @@ scwin.getUnreadCount = function() {
 };
 
 // 알림 HTML 생성 (모달용)
-scwin.generateNotificationHTML = function() {
+scwin.generateNotificationHTML = function () {
     var notificationHtml = "";
-    
+
     if (scwin.notifications.length === 0) {
-        return "<div style='text-align: center; color: #999; font-size: 16px; padding: 40px;'>" + 
-               scwin.CONFIG.ICONS.EMPTY + " 알림이 없습니다.</div>";
+        return "<div style='text-align: center; color: #999; font-size: 16px; padding: 40px;'>" +
+            scwin.CONFIG.ICONS.EMPTY + " 알림이 없습니다.</div>";
     }
-    
+
     for (var i = 0; i < scwin.notifications.length; i++) {
         var notification = scwin.notifications[i];
         var style = scwin.getNotificationStyle(notification.type);
         var readStatus = notification.isRead ? "" : " " + scwin.CONFIG.ICONS.UNREAD + " (미읽음)";
-        
+
         // 읽음/미읽음에 따른 스타일 설정
         var bgColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BG : scwin.CONFIG.STYLES.COLORS.UNREAD_BG;
         var textColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_TEXT : scwin.CONFIG.STYLES.COLORS.UNREAD_TEXT;
         var borderColor = notification.isRead ? scwin.CONFIG.STYLES.COLORS.READ_BORDER : scwin.CONFIG.STYLES.COLORS.UNREAD_BORDER;
         var fontWeight = notification.isRead ? "normal" : "bold";
         var boxShadow = notification.isRead ? "0 1px 3px rgba(0,0,0,0.1)" : "0 2px 8px rgba(33,150,243,0.2)";
-        
-        notificationHtml += 
+
+        notificationHtml +=
             "<div onclick='scwin.markNotificationAsRead(\"" + notification.id + "\")' style='margin-bottom: 15px; padding: 15px; background-color: " + bgColor + "; border-radius: 8px; border-left: 5px solid " + borderColor + "; box-shadow: " + boxShadow + "; transition: all 0.3s ease; cursor: " + (notification.isRead ? "default" : "pointer") + ";'>" +
             "<div style='font-size: 16px; font-weight: " + fontWeight + "; color: " + textColor + "; margin-bottom: 8px;'>" +
             style.icon + " " + notification.title + readStatus + "</div>" +
@@ -427,45 +439,45 @@ scwin.generateNotificationHTML = function() {
             "<div style='font-size: 12px; color: " + (notification.isRead ? "#999" : "#888") + "; text-align: right;'>" + scwin.CONFIG.ICONS.CALENDAR + " " + notification.createDate + "</div>" +
             "</div>";
     }
-    
+
     return notificationHtml;
 };
 
 // 알림 메시지 생성 (Alert용)
-scwin.generateAlertMessage = function() {
+scwin.generateAlertMessage = function () {
     var unreadCount = scwin.getUnreadCount();
     var message = scwin.CONFIG.ICONS.BELL + " [헤더 알림 센터] " + scwin.CONFIG.ICONS.BELL + "\n\n";
-    
+
     for (var i = 0; i < scwin.notifications.length; i++) {
         var notification = scwin.notifications[i];
         var style = scwin.getNotificationStyle(notification.type);
         var statusText = notification.isRead ? "[읽음]" : "[미읽음]";
-        
+
         message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
         message += (i + 1) + ". " + style.icon + " " + notification.title + " " + statusText + "\n";
         message += "내용: " + notification.message + "\n";
         message += "시간: " + notification.createDate + "\n\n";
     }
-    
+
     message += "━━━━━━━━━━━━━━━━━━━━━━━\n";
     message += scwin.CONFIG.ICONS.SUMMARY + " 요약: 총 " + scwin.notifications.length + "개 알림 (미읽음 " + unreadCount + "개)\n\n";
     message += scwin.CONFIG.ICONS.TIP + " 이 창을 닫으면 모든 알림이 읽음 처리됩니다.";
-    
+
     return message;
 };
 
 // ========== 알림 모달 관리 함수 ==========
 // 알림 모달 표시
-scwin.showNotificationModal = function() {
+scwin.showNotificationModal = function () {
     console.log("=== 헤더 알림 모달 표시 시도 ===");
-    
+
     try {
         // 먼저 알림 데이터 확인
         console.log("현재 알림 개수:", scwin.notifications.length);
-        
+
         // DOM 기반 커스텀 모달로 직접 표시
         scwin.showCustomModal();
-        
+
     } catch (e) {
         console.log("모달 표시 중 오류 발생:", e.message);
         console.log("alert로 대체 표시");
@@ -474,60 +486,60 @@ scwin.showNotificationModal = function() {
 };
 
 // 커스텀 DOM 모달로 표시
-scwin.showCustomModal = function() {
+scwin.showCustomModal = function () {
     console.log("=== 헤더 커스텀 모달 생성 시작 ===");
-    
+
     try {
         // 기존 모달이 있으면 제거
         var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
         if (existingModal) {
             existingModal.remove();
         }
-        
+
         var unreadCount = scwin.getUnreadCount();
         var notificationHtml = scwin.generateNotificationHTML();
-        
+
         console.log("알림 HTML 생성 완료, 총 " + scwin.notifications.length + "개");
-        
+
         // 모달 HTML 생성
-        var modalHtml = 
+        var modalHtml =
             "<div id='" + scwin.CONFIG.MODAL.ID + "' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: " + scwin.CONFIG.MODAL.Z_INDEX + "; display: flex; justify-content: center; align-items: center;'>" +
             "<div style='background: white; border-radius: 12px; width: 90%; max-width: " + scwin.CONFIG.MODAL.MAX_WIDTH + "; max-height: " + scwin.CONFIG.MODAL.MAX_HEIGHT + "; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;'>" +
-            
+
             // 헤더
             "<div style='background: #1C3D6B; color: white; padding: 20px; text-align: center;'>" +
             "<h2 style='margin: 0; font-size: 20px; font-weight: bold;'>" + scwin.CONFIG.ICONS.BELL + " 헤더 알림 센터</h2>" +
             "<p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>총 " + scwin.notifications.length + "개 알림" + (unreadCount > 0 ? " (" + scwin.CONFIG.ICONS.UNREAD + "미읽음 " + unreadCount + "개)" : "") + "</p>" +
             "</div>" +
-            
+
             // 내용
             "<div style='padding: 20px; max-height: 400px; overflow-y: auto;'>" +
             notificationHtml +
             "</div>" +
-            
+
             // 버튼 영역
             "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
             "<button onclick='console.log(\"닫기 버튼 클릭됨\"); closeCustomModal();' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>닫기</button>" +
             "</div>" +
-            
+
             "</div>" +
             "</div>";
-        
+
         // DOM에 추가
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
+
         console.log("헤더 커스텀 모달 생성 완료");
-        
+
         // 이벤트 리스너 등록
         scwin.attachModalEventListeners();
-        
+
         // 자동 읽음 처리 (시간을 늘려서 사용자가 개별 클릭할 시간 확보)
-        setTimeout(function() {
+        setTimeout(function () {
             scwin.markAllAsRead();
         }, 10000); // 10초로 변경
-        
+
         console.log("=== 헤더 커스텀 모달 표시 완료 ===");
-        
+
     } catch (e) {
         console.log("커스텀 모달 생성 중 오류:", e.message);
         scwin.showAlertNotification();
@@ -535,23 +547,23 @@ scwin.showCustomModal = function() {
 };
 
 // Alert로 알림 표시 (대체 방법)
-scwin.showAlertNotification = function() {
+scwin.showAlertNotification = function () {
     console.log("=== Alert로 헤더 알림 표시 시작 ===");
-    
+
     try {
         var message = scwin.generateAlertMessage();
         var unreadCount = scwin.getUnreadCount();
-        
+
         console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
         alert(message);
-        
+
         // 1초 후 모든 알림을 읽음 처리
-        setTimeout(function() {
+        setTimeout(function () {
             scwin.markAllAsRead();
         }, 1000);
-        
+
         console.log("=== Alert 헤더 알림 표시 완료 ===");
-        
+
     } catch (e) {
         console.log("Alert 표시 중 오류:", e.message);
         // 최후의 수단
@@ -561,16 +573,16 @@ scwin.showAlertNotification = function() {
 
 // ========== 알림 관리 함수 ==========
 // 모든 알림을 읽음 처리
-scwin.markAllAsRead = function() {
+scwin.markAllAsRead = function () {
     var hasChanges = false;
-    
+
     for (var i = 0; i < scwin.notifications.length; i++) {
         if (!scwin.notifications[i].isRead) {
             scwin.notifications[i].isRead = true;
             hasChanges = true;
         }
     }
-    
+
     if (hasChanges) {
         scwin.updateNotificationBadge();
         console.log("모든 헤더 알림을 읽음 처리 완료");
@@ -578,13 +590,13 @@ scwin.markAllAsRead = function() {
 };
 
 // 개별 알림 읽음 처리
-scwin.markNotificationAsRead = function(notificationId) {
+scwin.markNotificationAsRead = function (notificationId) {
     for (var i = 0; i < scwin.notifications.length; i++) {
         if (scwin.notifications[i].id === notificationId && !scwin.notifications[i].isRead) {
             scwin.notifications[i].isRead = true;
             scwin.updateNotificationBadge();
             console.log("알림 읽음 처리:", notificationId);
-            
+
             // 모달 새로고침하여 색상 변경
             scwin.refreshModal();
             return true;
@@ -597,29 +609,29 @@ scwin.markNotificationAsRead = function(notificationId) {
 window.markNotificationAsRead = scwin.markNotificationAsRead;
 
 // 알림 배지 업데이트 (헤더용)
-scwin.updateNotificationBadge = function() {
+scwin.updateNotificationBadge = function () {
     try {
         var unreadCount = scwin.getUnreadCount();
-        
+
         // 버튼 찾기 (캐싱)
         if (!scwin._btnAlarmCache) {
             scwin._btnAlarmCache = $w.getComponentById("alarm") || document.getElementById("alarm");
         }
-        
+
         var btnAlarm = scwin._btnAlarmCache;
         if (!btnAlarm) {
             console.log("헤더 알림 버튼을 찾을 수 없습니다");
             return;
         }
-        
+
         // 배지 요소 찾기
         var badgeElement = document.getElementById("notificationBadge");
         var countElement = document.getElementById("notificationCount");
-        
+
         // 현재 상태와 비교하여 필요한 경우만 업데이트
         var shouldShowBadge = unreadCount > 0;
         var currentlyShowingBadge = btnAlarm._badgeActive || false;
-        
+
         if (shouldShowBadge !== currentlyShowingBadge) {
             if (shouldShowBadge) {
                 // 미읽은 알림이 있으면 빨간 테두리
@@ -632,7 +644,7 @@ scwin.updateNotificationBadge = function() {
                     btnAlarm.style.boxShadow = "0 0 10px #FF0000";
                 }
                 btnAlarm._badgeActive = true;
-                
+
                 // 배지 표시 및 숫자 업데이트
                 if (badgeElement) {
                     badgeElement.style.display = "block";
@@ -640,7 +652,7 @@ scwin.updateNotificationBadge = function() {
                 if (countElement) {
                     countElement.setValue(unreadCount.toString());
                 }
-                
+
                 console.log("헤더 알림 배지 활성화 (" + unreadCount + "개 미읽음)");
             } else {
                 // 미읽은 알림이 없으면 원래 상태
@@ -651,19 +663,19 @@ scwin.updateNotificationBadge = function() {
                     btnAlarm.style.boxShadow = "none";
                 }
                 btnAlarm._badgeActive = false;
-                
+
                 // 배지 숨기기
                 if (badgeElement) {
                     badgeElement.style.display = "none";
                 }
-                
+
                 console.log("헤더 알림 배지 비활성화");
             }
         } else if (shouldShowBadge && countElement) {
             // 배지가 이미 표시되어 있지만 숫자가 다른 경우 업데이트
             countElement.setValue(unreadCount.toString());
         }
-        
+
     } catch (e) {
         console.log("배지 업데이트 중 오류:", e.message);
     }
@@ -672,7 +684,7 @@ scwin.updateNotificationBadge = function() {
 // 테스트 알림 추가 함수는 제거됨
 
 // 간단한 모달 닫기 함수 (테스트용)
-scwin.simpleCloseModal = function() {
+scwin.simpleCloseModal = function () {
     console.log("간단한 모달 닫기 시도");
     try {
         var modal = document.getElementById("header_notification_modal");
@@ -691,18 +703,18 @@ scwin.simpleCloseModal = function() {
 window.simpleCloseModal = scwin.simpleCloseModal;
 
 // 모달 새로고침 (성능 최적화)
-scwin.refreshModal = function() {
+scwin.refreshModal = function () {
     var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
     if (existingModal) {
         scwin.closeCustomModal();
-        setTimeout(function() {
+        setTimeout(function () {
             scwin.showNotificationModal();
         }, scwin.CONFIG.TIMINGS.REFRESH_DELAY);
     }
 };
 
 // 커스텀 모달 닫기 (개선된 버전)
-scwin.closeCustomModal = function() {
+scwin.closeCustomModal = function () {
     console.log("헤더 커스텀 모달 닫기");
     try {
         var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
@@ -733,7 +745,7 @@ scwin.closeCustomModal = function() {
 };
 
 // 전역 함수로도 등록 (HTML onclick에서 접근 가능하도록)
-window.closeCustomModal = function() {
+window.closeCustomModal = function () {
     if (scwin && scwin.closeCustomModal) {
         scwin.closeCustomModal();
     } else {
@@ -751,20 +763,20 @@ window.closeCustomModal = function() {
 };
 
 // 모달 이벤트 리스너 등록
-scwin.attachModalEventListeners = function() {
+scwin.attachModalEventListeners = function () {
     var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
     if (!modal) return;
-    
+
     // 모달 외부 클릭 시 닫기
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) {
             scwin.closeCustomModal();
         }
     });
-    
+
     // ESC 키로 닫기 (한 번만 등록)
     if (!scwin._escListenerAttached) {
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && document.getElementById(scwin.CONFIG.MODAL.ID)) {
                 scwin.closeCustomModal();
             }
@@ -773,263 +785,306 @@ scwin.attachModalEventListeners = function() {
     }
 };
 
-scwin.onpageload = function() {
-	console.log("헤더 초기화 완료");
-	// 초기 상태 설정
-	scwin.hideUserMenu();
-	
-	// 알림 시스템 초기화
-	setTimeout(function() {
-		try {
-			console.log("헤더 알림 시스템 초기화 중...");
-			if (scwin.updateNotificationBadge) {
-				scwin.updateNotificationBadge();
-				console.log("헤더 알림 배지 초기화 완료");
-			}
-		} catch (e) {
-			console.log("알림 시스템 초기화 중 오류:", e.message);
-		}
-	}, 1000);
+scwin.onpageload = function () {
+    console.log("헤더 초기화 완료");
+    // 초기 상태 설정
+    scwin.hideUserMenu();
+
+    // 알림 시스템 초기화
+    setTimeout(function () {
+        try {
+            console.log("헤더 알림 시스템 초기화 중...");
+            if (scwin.updateNotificationBadge) {
+                scwin.updateNotificationBadge();
+                console.log("헤더 알림 배지 초기화 완료");
+            }
+        } catch (e) {
+            console.log("알림 시스템 초기화 중 오류:", e.message);
+        }
+    }, 100);
+
+    // 로그인한 사용자 정보 가져오기
+    try {
+        // 세션에서 로그인한 사용자 ID 가져오기
+        var loggedInUserId = "";
+
+        // WebSquare에서 세션 정보 가져오기
+        if (typeof $w !== 'undefined' && $w.getSession) {
+            var session = $w.getSession();
+            if (session && session.userId) {
+                loggedInUserId = session.userId;
+                console.log("세션에서 userId 가져옴:", loggedInUserId);
+            } else if (session && session.empno) {
+                loggedInUserId = session.empno;
+                console.log("세션에서 empno 가져옴:", loggedInUserId);
+            } else {
+                console.log("세션 정보:", session);
+            }
+        }
+
+        // 세션에서 가져오지 못한 경우 기본값 사용
+        if (!loggedInUserId) {
+            loggedInUserId = "1111"; // 임시 기본값
+            console.log("세션에서 userId를 찾을 수 없어 기본값 사용:", loggedInUserId);
+        } else {
+            console.log("세션에서 가져온 사용자 ID:", loggedInUserId);
+            // nurseId로 사용할 값 설정 (로그인 ID에서 숫자 부분만 추출)
+            var nurseId = loggedInUserId.replace(/[^0-9]/g, '');
+            if (nurseId) {
+                loggedInUserId = nurseId;
+                console.log("nurseId로 변환된 값:", loggedInUserId);
+            }
+        }
+
+        // dma_nurse에 사용자 ID 설정
+        dma_nurse.set("nurseId", loggedInUserId);
+        dma_nurse.broadcast();
+
+        // 서브미션 실행
+        $c.sbm.execute(sbm_selectNurse);
+    } catch (e) {
+        console.log("사용자 정보 로드 중 오류:", e.message);
+    }
 };
 
-scwin.toggleSidebar = function() {
-	console.log("햄버거 아이콘 클릭됨 - 사이드바 토글 시도");
-	
-	var success = false;
-	
-	// 방법 1: 부모 프레임에서 직접 함수 호출
-	try {
-		if (window.parent && window.parent.scwin && window.parent.scwin.toggleSidebar) {
-			window.parent.scwin.toggleSidebar();
-			console.log("✅ 방법 1 성공: parent.scwin.toggleSidebar");
-			success = true;
-		}
-	} catch (e) {
-		console.log("방법 1 실패:", e);
-	}
-	
-	// 방법 2: 전역 함수로 등록된 함수 호출
-	if (!success) {
-		try {
-			if (window.parent && window.parent.toggleSidebarFromHeader) {
-				window.parent.toggleSidebarFromHeader();
-				console.log("✅ 방법 2 성공: parent.toggleSidebarFromHeader");
-				success = true;
-			}
-		} catch (e) {
-			console.log("방법 2 실패:", e);
-		}
-	}
-	
-	// 방법 3: 최상위 프레임에서 함수 찾기
-	if (!success) {
-		try {
-			if (window.top && window.top.scwin && window.top.scwin.toggleSidebar) {
-				window.top.scwin.toggleSidebar();
-				console.log("✅ 방법 3 성공: top.scwin.toggleSidebar");
-				success = true;
-			}
-		} catch (e) {
-			console.log("방법 3 실패:", e);
-		}
-	}
-	
-	// 방법 4: postMessage 사용
-	if (!success) {
-		try {
-			window.parent.postMessage({
-				action: 'toggleSidebar',
-				source: 'header'
-			}, '*');
-			console.log("✅ 방법 4 성공: postMessage 전송");
-			success = true;
-		} catch (e) {
-			console.log("방법 4 실패:", e);
-		}
-	}
-	
-	if (!success) {
-		console.error("❌ 모든 통신 방법 실패");
-		alert("사이드바 토글 기능에 문제가 있습니다. 페이지를 새로고침해주세요.");
-	}
+scwin.toggleSidebar = function () {
+    console.log("햄버거 아이콘 클릭됨 - 사이드바 토글 시도");
+
+    var success = false;
+
+    // 방법 1: 부모 프레임에서 직접 함수 호출
+    try {
+        if (window.parent && window.parent.scwin && window.parent.scwin.toggleSidebar) {
+            window.parent.scwin.toggleSidebar();
+            console.log("✅ 방법 1 성공: parent.scwin.toggleSidebar");
+            success = true;
+        }
+    } catch (e) {
+        console.log("방법 1 실패:", e);
+    }
+
+    // 방법 2: 전역 함수로 등록된 함수 호출
+    if (!success) {
+        try {
+            if (window.parent && window.parent.toggleSidebarFromHeader) {
+                window.parent.toggleSidebarFromHeader();
+                console.log("✅ 방법 2 성공: parent.toggleSidebarFromHeader");
+                success = true;
+            }
+        } catch (e) {
+            console.log("방법 2 실패:", e);
+        }
+    }
+
+    // 방법 3: 최상위 프레임에서 함수 찾기
+    if (!success) {
+        try {
+            if (window.top && window.top.scwin && window.top.scwin.toggleSidebar) {
+                window.top.scwin.toggleSidebar();
+                console.log("✅ 방법 3 성공: top.scwin.toggleSidebar");
+                success = true;
+            }
+        } catch (e) {
+            console.log("방법 3 실패:", e);
+        }
+    }
+
+    // 방법 4: postMessage 사용
+    if (!success) {
+        try {
+            window.parent.postMessage({
+                action: 'toggleSidebar',
+                source: 'header'
+            }, '*');
+            console.log("✅ 방법 4 성공: postMessage 전송");
+            success = true;
+        } catch (e) {
+            console.log("방법 4 실패:", e);
+        }
+    }
+
+    if (!success) {
+        console.error("❌ 모든 통신 방법 실패");
+        alert("사이드바 토글 기능에 문제가 있습니다. 페이지를 새로고침해주세요.");
+    }
 };
 
 // 햄버거 아이콘 업데이트 함수
-scwin.updateHamburgerIcon = function(isVisible) {
-	try {
-		var hamburgerMenu = document.querySelector('.hamburger-menu');
-		if (hamburgerMenu) {
-			if (isVisible) {
-				// 사이드바가 열려있을 때 → X 모양 유지 (collapsed 클래스 제거)
-				hamburgerMenu.classList.remove('collapsed');
-				console.log("✅ 햄버거 아이콘: X 모양 (사이드바 열림)");
-			} else {
-				// 사이드바가 닫혀있을 때 → 일반 햄버거 아이콘 (collapsed 클래스 추가)
-				hamburgerMenu.classList.add('collapsed');
-				console.log("✅ 햄버거 아이콘: 일반 모양 (사이드바 닫힘)");
-			}
-		}
-	} catch (e) {
-		console.error("햄버거 아이콘 업데이트 오류:", e);
-	}
+scwin.updateHamburgerIcon = function (isVisible) {
+    try {
+        var hamburgerMenu = document.querySelector('.hamburger-menu');
+        if (hamburgerMenu) {
+            if (isVisible) {
+                // 사이드바가 열려있을 때 → X 모양 유지 (collapsed 클래스 제거)
+                hamburgerMenu.classList.remove('collapsed');
+                console.log("✅ 햄버거 아이콘: X 모양 (사이드바 열림)");
+            } else {
+                // 사이드바가 닫혀있을 때 → 일반 햄버거 아이콘 (collapsed 클래스 추가)
+                hamburgerMenu.classList.add('collapsed');
+                console.log("✅ 햄버거 아이콘: 일반 모양 (사이드바 닫힘)");
+            }
+        }
+    } catch (e) {
+        console.error("햄버거 아이콘 업데이트 오류:", e);
+    }
 };
 
 // 알림 토글 함수는 alarm_onclick으로 대체됨
 
-scwin.toggleUserMenu = function() {
-	console.log("사용자 메뉴 토글 함수 호출");
-	
-	// 이벤트 전파 중단 (body 클릭 이벤트 방지)
-	if (event) {
-		event.stopPropagation();
-		event.preventDefault();
-	}
-	
-	if (scwin.userMenuVisible) {
-		scwin.hideUserMenu();
-	} else {
-		scwin.showUserMenu();
-	}
+scwin.toggleUserMenu = function () {
+    console.log("사용자 메뉴 토글 함수 호출");
+
+    // 이벤트 전파 중단 (body 클릭 이벤트 방지)
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    if (scwin.userMenuVisible) {
+        scwin.hideUserMenu();
+    } else {
+        scwin.showUserMenu();
+    }
 };
 
-scwin.showUserMenu = function() {
-	console.log("사용자 메뉴 표시 시도");
-	
-	try {
-		// 디버깅: 모든 user-dropdown 요소 찾기
-		var allDropdowns = document.querySelectorAll('.user-dropdown');
-		console.log("찾은 user-dropdown 요소 개수:", allDropdowns.length);
-		
-		// 여러 방법으로 드롭다운 메뉴 찾기
-		var dropdown = document.getElementById('userDropdown') || 
-					  document.querySelector('.user-dropdown') ||
-					  document.querySelector('[id="userDropdown"]');
-		
-		console.log("주요 드롭다운 요소:", dropdown);
-		
-		if (dropdown) {
-			// display를 먼저 block으로 설정
-			dropdown.style.display = 'block';
-			dropdown.style.visibility = 'visible';
-			dropdown.style.opacity = '1';
-			dropdown.style.zIndex = '9999';
-			
-			// 클래스 추가
-			dropdown.classList.add('show');
-			
-			console.log("✅ 사용자 메뉴 표시 완료");
-			console.log("드롭다운 스타일:", dropdown.style.cssText);
-			scwin.userMenuVisible = true;
-		} else {
-			console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
-			
-			// 대체 방법: 모든 user-dropdown 클래스 요소에 적용
-			for (var i = 0; i < allDropdowns.length; i++) {
-				var element = allDropdowns[i];
-				element.style.display = 'block';
-				element.style.visibility = 'visible';
-				element.style.opacity = '1';
-				element.style.zIndex = '9999';
-				element.classList.add('show');
-				console.log("요소 " + i + " 스타일 적용:", element.style.cssText);
-			}
-			console.log("대체 방법으로 " + allDropdowns.length + "개 메뉴 표시");
-			scwin.userMenuVisible = true;
-		}
-	} catch (e) {
-		console.log("사용자 메뉴 표시 오류:", e);
-	}
+scwin.showUserMenu = function () {
+    console.log("사용자 메뉴 표시 시도");
+
+    try {
+        // 디버깅: 모든 user-dropdown 요소 찾기
+        var allDropdowns = document.querySelectorAll('.user-dropdown');
+        console.log("찾은 user-dropdown 요소 개수:", allDropdowns.length);
+
+        // 여러 방법으로 드롭다운 메뉴 찾기
+        var dropdown = document.getElementById('userDropdown') ||
+            document.querySelector('.user-dropdown') ||
+            document.querySelector('[id="userDropdown"]');
+
+        console.log("주요 드롭다운 요소:", dropdown);
+
+        if (dropdown) {
+            // display를 먼저 block으로 설정
+            dropdown.style.display = 'block';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            dropdown.style.zIndex = '9999';
+
+            // 클래스 추가
+            dropdown.classList.add('show');
+
+            console.log("✅ 사용자 메뉴 표시 완료");
+            console.log("드롭다운 스타일:", dropdown.style.cssText);
+            scwin.userMenuVisible = true;
+        } else {
+            console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
+
+            // 대체 방법: 모든 user-dropdown 클래스 요소에 적용
+            for (var i = 0; i < allDropdowns.length; i++) {
+                var element = allDropdowns[i];
+                element.style.display = 'block';
+                element.style.visibility = 'visible';
+                element.style.opacity = '1';
+                element.style.zIndex = '9999';
+                element.classList.add('show');
+                console.log("요소 " + i + " 스타일 적용:", element.style.cssText);
+            }
+            console.log("대체 방법으로 " + allDropdowns.length + "개 메뉴 표시");
+            scwin.userMenuVisible = true;
+        }
+    } catch (e) {
+        console.log("사용자 메뉴 표시 오류:", e);
+    }
 };
 
-scwin.hideUserMenu = function() {
-	console.log("사용자 메뉴 숨김 시도");
-	
-	try {
-		// 여러 방법으로 드롭다운 메뉴 찾기
-		var dropdown = document.getElementById('userDropdown') || 
-					  document.querySelector('.user-dropdown') ||
-					  document.querySelector('[id="userDropdown"]');
-		
-		if (dropdown) {
-			// 클래스 제거
-			dropdown.classList.remove('show');
-			
-			// 스타일 직접 설정
-			dropdown.style.display = 'none';
-			dropdown.style.visibility = 'hidden';
-			dropdown.style.opacity = '0';
-			
-			console.log("✅ 사용자 메뉴 숨김 완료");
-			scwin.userMenuVisible = false;
-		} else {
-			console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
-			
-			// 대체 방법: 모든 user-dropdown 클래스 요소에 적용
-			var elements = document.querySelectorAll('.user-dropdown');
-			for (var i = 0; i < elements.length; i++) {
-				elements[i].classList.remove('show');
-				elements[i].style.display = 'none';
-				elements[i].style.visibility = 'hidden';
-				elements[i].style.opacity = '0';
-			}
-			console.log("대체 방법으로 " + elements.length + "개 메뉴 숨김");
-			scwin.userMenuVisible = false;
-		}
-	} catch (e) {
-		console.log("사용자 메뉴 숨김 오류:", e);
-	}
+scwin.hideUserMenu = function () {
+    console.log("사용자 메뉴 숨김 시도");
+
+    try {
+        // 여러 방법으로 드롭다운 메뉴 찾기
+        var dropdown = document.getElementById('userDropdown') ||
+            document.querySelector('.user-dropdown') ||
+            document.querySelector('[id="userDropdown"]');
+
+        if (dropdown) {
+            // 클래스 제거
+            dropdown.classList.remove('show');
+
+            // 스타일 직접 설정
+            dropdown.style.display = 'none';
+            dropdown.style.visibility = 'hidden';
+            dropdown.style.opacity = '0';
+
+            console.log("✅ 사용자 메뉴 숨김 완료");
+            scwin.userMenuVisible = false;
+        } else {
+            console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
+
+            // 대체 방법: 모든 user-dropdown 클래스 요소에 적용
+            var elements = document.querySelectorAll('.user-dropdown');
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].classList.remove('show');
+                elements[i].style.display = 'none';
+                elements[i].style.visibility = 'hidden';
+                elements[i].style.opacity = '0';
+            }
+            console.log("대체 방법으로 " + elements.length + "개 메뉴 숨김");
+            scwin.userMenuVisible = false;
+        }
+    } catch (e) {
+        console.log("사용자 메뉴 숨김 오류:", e);
+    }
 };
 
-scwin.logout = function() {
-	console.log("로그아웃 함수 호출됨");
-	
-	// 이벤트 전파 중단
-	if (event) {
-		event.stopPropagation();
-		event.preventDefault();
-	}
-	
-	try {
-		console.log("로그아웃 처리 시작");
-		
-		// 사용자 메뉴 숨기기
-		scwin.hideUserMenu();
-		
-		// 바로 로그인 페이지로 리다이렉트
-		window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
-		console.log("로그인 페이지로 리다이렉트 완료");
-		
-	} catch (e) {
-		console.log("로그아웃 처리 중 오류:", e.message);
-		// 오류 발생 시에도 로그인 페이지로 이동
-		window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
-	}
+scwin.logout = function () {
+    console.log("로그아웃 함수 호출됨");
+
+    // 이벤트 전파 중단
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    try {
+        console.log("로그아웃 처리 시작");
+
+        // 사용자 메뉴 숨기기
+        scwin.hideUserMenu();
+
+        // 바로 로그인 페이지로 리다이렉트
+        window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
+        console.log("로그인 페이지로 리다이렉트 완료");
+
+    } catch (e) {
+        console.log("로그아웃 처리 중 오류:", e.message);
+        // 오류 발생 시에도 로그인 페이지로 이동
+        window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
+    }
 };
 
 // 외부 클릭 시 메뉴 닫기
-scwin.closeMenus = function() {
-	console.log("메뉴 닫기 함수 호출됨");
-	
-	// 사용자 메뉴가 열려있을 때만 닫기
-	if (scwin.userMenuVisible) {
-		scwin.hideUserMenu();
-	}
+scwin.closeMenus = function () {
+    console.log("메뉴 닫기 함수 호출됨");
+
+    // 사용자 메뉴가 열려있을 때만 닫기
+    if (scwin.userMenuVisible) {
+        scwin.hideUserMenu();
+    }
 };
 
 // 로고 클릭 시 홈으로 이동
-scwin.goToHome = function() {
-	try {
-		console.log("로고 클릭 - 홈으로 이동");
-		window.location.href = "http://localhost:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
-	} catch (e) {
-		console.error("홈 이동 오류:", e);
-		alert("페이지 이동 중 오류가 발생했습니다.");
-	}
+scwin.goToHome = function () {
+    try {
+        console.log("로고 클릭 - 홈으로 이동");
+        window.location.href = "http://shiftmate.com:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
+    } catch (e) {
+        console.error("홈 이동 오류:", e);
+        alert("페이지 이동 중 오류가 발생했습니다.");
+    }
 };
 
-scwin.alarm_onclick = function(e) {
+scwin.alarm_onclick = function (e) {
     console.log("=== 헤더 알림 버튼 클릭됨 ===");
-    
+
     try {
         console.log("현재 헤더 알림 개수:", scwin.notifications.length);
         scwin.showNotificationModal();
@@ -1037,6 +1092,52 @@ scwin.alarm_onclick = function(e) {
         console.log("버튼 클릭 처리 중 오류:", error.message);
         scwin.showAlertNotification();
     }
+};
+
+scwin.sbm_selectNurse_submitdone = function (e) {
+    console.log("=== 헤더 사용자 정보 응답 처리 시작 ===");
+    console.log("전체 응답 객체:", e);
+
+    // 서버 오류 체크
+    if (e.responseJSON && e.responseJSON.elHeader && e.responseJSON.elHeader.resSuc === false) {
+        console.log("서버 오류 발생:", e.responseJSON.elHeader.resMsg);
+        // 기본값 설정
+        dma_nurse.set("nurseId", "1111");
+        dma_nurse.set("nurseName", "김간호");
+        dma_nurse.set("position", "수간호사");
+        dma_nurse.broadcast();
+        return;
+    }
+
+    // 성공적인 응답 처리 (NurseVo 객체)
+    if (e.responseJSON) {
+        var userInfo = e.responseJSON.elData;
+        console.log("서버에서 받은 사용자 정보:", userInfo);
+        console.log("nurseName 값:", userInfo.nurseName);
+        console.log("position 값:", userInfo.position);
+
+        dma_nurse.set("nurseId", userInfo.nurseId);
+        dma_nurse.set("nurseName", userInfo.nurseName || "");
+        dma_nurse.set("position", userInfo.position || "");
+
+        console.log("헤더 사용자 정보 설정 완료:", userInfo.nurseName, userInfo.position);
+        console.log("dma_nurse 현재 값:", dma_nurse.getJSON());
+
+        // 데이터 변경 알림
+        dma_nurse.broadcast();
+    } else {
+        console.log("사용자 정보를 찾을 수 없습니다. 서버 응답:", e.responseJSON);
+        console.log("e.responseJSON.nurseName 존재 여부:", e.responseJSON && e.responseJSON.nurseName);
+        console.log("e.responseJSON 키들:", e.responseJSON ? Object.keys(e.responseJSON) : "undefined");
+
+        // 기본값 설정
+        dma_nurse.set("nurseId", loggedInUserId || "1111");
+        dma_nurse.set("nurseName", "김간호");
+        dma_nurse.set("position", "수간호사");
+        dma_nurse.broadcast();
+    }
+
+    console.log("=== 헤더 사용자 정보 응답 처리 완료 ===");
 };
 ]]></script>
 	</head>
@@ -1064,8 +1165,8 @@ scwin.alarm_onclick = function(e) {
 				<xf:group class="user-container">
 					<xf:group class="user-info" ev:onclick="scwin.toggleUserMenu" ev:onclick.stopPropagation="true">
 						<xf:group class="user-details">
-							<w2:textbox id="" class="user-name" label="김간호" style="display:block;"></w2:textbox>
-							<w2:textbox id="" class="user-role" label="수간호사" style="display:block;"></w2:textbox>
+							<w2:textbox id="txt_userName" class="user-name" ref="data:dma_nurse.nurseName" style="display:block;"></w2:textbox>
+							<w2:textbox id="txt_userRole" class="user-role" ref="data:dma_nurse.position" style="display:block;"></w2:textbox>
 						</xf:group>
 						<w2:textbox id="" class="dropdown-arrow" label="▼"></w2:textbox>
 					</xf:group>

@@ -87,7 +87,6 @@
 		select shiftDate, nurseId, nurseName, shiftType
 		from schedule
 		where shiftDate = #{shiftDate}
-		and shiftType != 'O'
 		and shiftType = (select
 		shiftType from schedule
 		where nurseId = #{nurseId} and shiftDate = #{shiftDate})

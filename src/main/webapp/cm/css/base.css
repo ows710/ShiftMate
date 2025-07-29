@@ -583,7 +583,7 @@ span.w2autoComplete_label {padding:0 0 0 8px;text-align:left;color:var(--ws-form
 .fc .fc-day-sat .fc-daygrid-day-number {color:var(--ws-blue-500)}
 .fc-basic-view .fc-sun .fc-day-number,
 .fc .fc-day-sun .fc-daygrid-day-number {color:var(--ws-red-500)}
-.w2widget_content .fc-day-grid-container.fc-scroller {height:224px !important}
+.w2widget_content .fc-day-grid-container.fc-scroller {height:500px !important}
 .fc-event.fc-event {border-color:transparent;text-align:center}
 .fc-event .fc-title {font-size:12px;font-weight:400;vertical-align:middle}
 
