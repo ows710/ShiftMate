@@ -147,10 +147,11 @@ scwin.waitForFramesAndSetup = function() {
                 console.log("모든 WFrame 로드 완료 (" + attempts + "/10)");
                 scwin.setupFrameCommunication();
                 
-                // 현재 URL에 해당하는 메뉴 활성화 (약간의 지연 후)
-                setTimeout(function() {
-                    scwin.activateMenuForCurrentUrl();
-                }, 30);
+                            // 현재 URL에 해당하는 메뉴 활성화 (약간의 지연 후)
+            setTimeout(function() {
+                scwin.activateMenuForCurrentUrl();
+                scwin.updateScrollbarForCurrentPage();
+            }, 30);
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkInterval);
                 console.warn("WFrame 로드 타임아웃");
@@ -197,6 +198,7 @@ scwin.setupMainContentLoadListener = function() {
                 // 약간의 지연 후 현재 URL에 해당하는 메뉴 활성화
                 setTimeout(function() {
                     scwin.activateMenuForCurrentUrl();
+                    scwin.updateScrollbarForCurrentPage();
                 }, 300);
             });
             
@@ -206,9 +208,10 @@ scwin.setupMainContentLoadListener = function() {
                 originalSetSrc.call(this, src);
                 console.log("메인 콘텐츠 src 변경:", src);
                 
-                // src 변경 후 약간의 지연을 두고 메뉴 활성화
+                // src 변경 후 약간의 지연을 두고 메뉴 활성화 및 스크롤바 업데이트
                 setTimeout(function() {
                     scwin.activateMenuForCurrentUrl();
+                    scwin.updateScrollbarForCurrentPage();
                 }, 30);
             };
             
@@ -392,6 +395,11 @@ scwin.handleMenuClick = function(menuId, menuUrl) {
         // 현재 활성 메뉴 ID 저장
         scwin.currentActiveMenuId = menuId;
         
+        // 스크롤바 업데이트
+        setTimeout(function() {
+            scwin.updateScrollbarForCurrentPage();
+        }, 100);
+        
     } catch (e) {
         console.error("메뉴 클릭 처리 오류:", e);
     }
@@ -491,6 +499,11 @@ scwin.changeMainContent = function(src, menuId) {
                 scwin.updateSideMenuActiveMenuWithRetry(menuId, 0);
                 scwin.currentActiveMenuId = menuId;
             }
+            
+            // 스크롤바 업데이트
+            setTimeout(function() {
+                scwin.updateScrollbarForCurrentPage();
+            }, 100);
         }
     } catch (e) {
         console.error("메인 콘텐츠 변경 오류:", e);
@@ -524,6 +537,30 @@ scwin.activateMenuForCurrentUrl = function() {
         }
     } catch (e) {
         console.error("현재 URL 메뉴 활성화 오류:", e);
+    }
+};
+
+// 현재 페이지에 따라 스크롤바 표시/숨김 처리
+scwin.updateScrollbarForCurrentPage = function() {
+    try {
+        if (wfr_mainContent) {
+            var currentSrc = wfr_mainContent.getSrc();
+            var mainContentArea = document.getElementById('mf_grp_mainContent') || scwin.findElement('grp_mainContent');
+            
+            if (mainContentArea) {
+                // makeDuty.xml 페이지인 경우 스크롤바 제거
+                if (currentSrc && currentSrc.includes('makeDuty.xml')) {
+                    mainContentArea.style.overflow = 'hidden';
+                    console.log("makeDuty.xml 페이지 - 스크롤바 제거");
+                } else {
+                    // 다른 페이지는 스크롤바 표시
+                    mainContentArea.style.overflow = 'auto';
+                    console.log("다른 페이지 - 스크롤바 표시");
+                }
+            }
+        }
+    } catch (e) {
+        console.error("스크롤바 업데이트 오류:", e);
     }
 };
 

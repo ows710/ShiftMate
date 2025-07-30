@@ -25,23 +25,22 @@
 			/* 메인 컨테이너 */
 			.main-container {
 			width: 100%;
-			min-height: 100vh;
-			background-color: #f8f9fa; /* 배경색으로 구분감 추가 */
-			overflow: visible; /* 스크롤 문제 방지 */
+			height: 100vh; /* 추가 */
+			background-color: #f8f9fa;
+			overflow-y: auto; /* visible → auto로 변경 */
+			overflow-x: hidden; /* auto → hidden으로 변경 */
 			}
 
 			/* 상단 컨트롤 영역 */
 			.control-header {
 			background: #f8f9fa;
 			padding: 20px 30px;
-			margin-bottom: 20px;
-			border-bottom: 1px solid
-			#e9ecef;
-			box-shadow: 0
-			2px 4px rgba(0,
-			0, 0, 0.08);
+			border-bottom: 1px solid #e9ecef;
+			box-shadow: 0 2px 4px rgba(0, 0,
+			0, 0.08);
 			position: relative;
 			z-index: 100;
+			margin-bottom: 20px; /* 마진 줄임 */
 			}
 
 			.control-row {
@@ -75,10 +74,12 @@
 			padding:
 			8px 12px;
 			box-shadow: 0
-			2px 8px rgba(28, 61, 107,
+			2px 8px
+			rgba(28, 61, 107,
 			0.2);
 			border:
-			2px solid
+			2px
+			solid
 			#1C3D6B;
 			}
 
@@ -90,7 +91,8 @@
 			#1C3D6B !important;
 			color: white
 			!important;
-			border: none
+			border:
+			none
 			!important;
 			border-radius: 6px !important;
 			cursor: pointer
@@ -162,7 +164,8 @@
 			!important;
 			color: #fff
 			!important;
-			font-weight: 700
+			font-weight:
+			700
 			!important;
 			}
 
@@ -176,7 +179,8 @@
 			width:
 			100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
+			background-color:
+			rgba(0, 0, 0, 0.5);
 			display: none;
 			z-index: 1000;
 			justify-content: center;
@@ -207,7 +211,8 @@
 			0;
 			display:
 			flex;
-			justify-content: space-between;
+			justify-content:
+			space-between;
 			align-items: center;
 			}
 
@@ -220,7 +225,8 @@
 			.modal-close {
 			background: none;
 			border: none;
-			color: white;
+			color:
+			white;
 			font-size:
 			24px;
 			cursor: pointer;
@@ -329,7 +335,8 @@
 			}
 
 			.toggle-switch.active:hover {
-			background: #4ac5b0 !important;
+			background: #4ac5b0
+			!important;
 			}
 
 			.toggle-slider {
@@ -339,19 +346,22 @@
 			left: 2px
 			!important;
 			width: 20px !important;
-			height: 20px !important;
+			height: 20px
+			!important;
 			background: white
 			!important;
 			border-radius: 50% !important;
 			transition: transform
 			0.3s ease !important;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+			box-shadow: 0 2px 4px
+			rgba(0, 0, 0, 0.2) !important;
 			pointer-events: none !important;
 			}
 
 			.toggle-switch.active
 			.toggle-slider {
-			transform: translateX(26px) !important;
+			transform: translateX(26px)
+			!important;
 			}
 
 			/* 설정 아이템 내부 정렬 개선 */
@@ -378,7 +388,8 @@
 			}
 
 			.btn-modal-cancel {
-			background: #f8f9fa
+			background:
+			#f8f9fa
 			!important;
 			color: #666
 			!important;
@@ -402,7 +413,8 @@
 			color: #1C3D6B
 			!important;
 			border:
-			none !important;
+			none
+			!important;
 			padding: 10px
 			20px
 			!important;
@@ -480,16 +492,18 @@
 			영역 */
 			.pivot-section {
 			background: white;
-			padding: 30px;
-			/*
-			내부 여백 추가 */
-			box-shadow: 0 4px 20px
-			rgba(0, 0, 0,
-			0.08);
-			border-radius: 12px; /* 모서리
-			둥글게
-			*/
-			margin: 0 30px 30px 30px;
+			padding: 20px
+			30px; /* 상단 패딩 줄임 */
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			border-radius: 12px;
+			margin: 30px 30px 100px 30px;
+			}
+
+			.pivot-section
+			.grid-container {
+			height: auto; /*
+			자동 높이로 변경 */
+			min-height: 400px;
 			}
 
 			.section-content {
@@ -497,50 +511,112 @@
 			100%;
 			}
 
+			/* 5. 피벗 그리드뷰 높이 조정 */
+			#gv_pivotSchedule {
+			height: auto !important; /* 1200px → auto */
+			min-height: 600px !important; /* 추가 */
+			}
+
+			/* 6. 소계 그리드뷰 높이 고정 */
+			#gv_summarySchedule {
+			width: 100%
+			!important;
+			height:
+			150px !important;
+			overflow: hidden !important;
+			}
+
+			/* 7. 스크롤 방지 추가 */
+			.main-container {
+			width: 100%;
+			min-height:
+			100vh;
+			background-color: #f8f9fa;
+			overflow-x: auto; /* 가로 스크롤만 허용 */
+			overflow-y: visible;
+			}
+
+			/* 8. 그리드
+			내부 스크롤 제거 */
+			.w2gridview {
+			overflow:
+			visible
+			!important;
+			}
+
+			.w2gridview table
+			{
+			width: 100% !important;
+			}
+
 			/* 소계 섹션 스타일
 			수정 */
 			.summary-section {
-			background: white;
-			padding: 30px;
-			box-shadow: 0 4px 20px
-			rgba(0, 0, 0,
-			0.08);
-			border-radius: 12px; /* 모서리 둥글게 */
-			margin: 0 30px 30px 30px;
+			background: white !important;
+			padding:
+			20px 30px
+			!important;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+			border-radius: 12px
+			!important;
+			margin: 0 30px 30px 30px !important;
+			position:
+			sticky
+			!important;
+			top: 0 !important;
+			z-index: 999 !important;
+			border-bottom: 2px solid #e9ecef
+			!important;
+			}
+
+			.summary-section
+			.grid-container {
+			height: 150px; /* 높이 줄임 */
 			}
 
 			/* 소계 그리드 뷰 행 구분선 제거 */
-			#gv_summarySchedule .w2grid_row {
-			border-bottom: none !important;
+			#gv_summarySchedule
+			.w2grid_row {
+			border-bottom: none
+			!important;
 			}
 
 			#gv_summarySchedule
 			.w2grid_cell {
-			border-bottom: none !important;
-			border-right: none !important;
+			border-bottom:
+			none !important;
+			border-right: none
+			!important;
 			}
 
 			.summary-grid-container {
-			width: 100%;
+			width:
+			100%;
 			border-radius: 8px;
-			box-shadow: 0 2px 8px rgba(0,
+			box-shadow: 0 2px
+			8px rgba(0,
 			0,
 			0,
 			0.1);
 			}
 
 			/* 진행률
-			모달 스타일 */
+			모달 스타일
+			*/
 			.progress-modal-overlay {
 			position: fixed;
 			top: 0;
 			left: 0;
-			width: 100%;
+			width:
+			100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
+			background-color:
+			rgba(0, 0, 0,
+			0.5);
 			display:
 			none;
-			z-index: 1000;
+			z-index:
+			1000;
 			justify-content:
 			center;
 			align-items: center;
@@ -552,7 +628,8 @@
 
 			.progress-modal-container
 			{
-			background: white;
+			background:
+			white;
 			border-radius:
 			12px;
 			box-shadow: 0 10px 30px
@@ -666,7 +743,8 @@
 			}
 
 			/* 진행률 바 스타일
-			(모달용) */
+			(모달용)
+			*/
 			.modal-progress-container {
 			margin-bottom: 20px;
 			}
@@ -996,11 +1074,11 @@ scwin.onpageload = function () {
         scwin.initializeTooltip();
         scwin.initializeToggles();
         scwin.removeGridEffects();
-    }, 500);
+    }, 200);
 
     setTimeout(function () {
         scwin.removeGridEffects();
-    }, 2000);
+    }, 200);
 };
 
 // JavaScript에서 그리드뷰 속성 수정
@@ -1976,8 +2054,8 @@ scwin.refreshGrids = function () {
         setTimeout(function () {
             try {
                 // 그리드 스크롤 설정 비활성화
-                gv_pivotSchedule.setScrollByRow(false);
-                gv_pivotSchedule.setScrollByColumn(false);
+                // gv_pivotSchedule.setScrollByRow(false);
+                // gv_pivotSchedule.setScrollByColumn(false);
 
                 // DOM 요소에서도 스크롤 제거
                 var gridElement = document.getElementById('gv_pivotSchedule');
@@ -2766,14 +2844,15 @@ scwin.addHopeCellHighPriorityStyle = function () {
 
 					<!-- 우측 컨트롤 -->
 					<xf:group class="control-right">
-						<xf:trigger class="btn btn-hope" ev:onclick="scwin.hopeDuty">
-							<xf:label>희망 현황</xf:label>
-						</xf:trigger>
+
 						<xf:trigger class="btn btn-settings" ev:onclick="scwin.editSettings">
 							<xf:label>설정 편집</xf:label>
 						</xf:trigger>
 						<xf:trigger class="btn btn-generate" ev:onclick="scwin.generateSchedule">
 							<xf:label>자동 생성</xf:label>
+						</xf:trigger>
+						<xf:trigger class="btn btn-hope" ev:onclick="scwin.hopeDuty">
+							<xf:label>희망 현황</xf:label>
 						</xf:trigger>
 						<xf:trigger class="btn btn-settings" ev:onclick="scwin.confirmDuty">
 							<xf:label>듀티 확정</xf:label>
@@ -2783,414 +2862,415 @@ scwin.addHopeCellHighPriorityStyle = function () {
 				</xf:group>
 
 				<div class="important-notice">
-					⚠️ 자동 생성 후 스케줄 표에 생긴 오류를 직접 클릭하여 텍스트(대소문자 구분 없이 D: day, E: evening, N:night, X:off)로 수정할 수 있습니다!
+					⚠️ 자동 생성 후 희망 현황 반영한 뒤 스케줄 표에 생긴 오류를 직접 클릭하여 텍스트(대소문자 구분 없이 D: day, E: evening, N:night, X:off)로 수정할 수 있습니다!
 				</div>
+			</xf:group>
 
-				<!-- 피벗 테이블 영역 -->
-				<xf:group class="pivot-section">
-					<xf:group class="section-content">
-						<xf:group class="grid-container" style="height:1200px;">
-							<!-- 피벗 그리드뷰 (31일 정적 컬럼) -->
-							<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:1200px;" scrollByColumn="false"
-								scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
-								cellStyleFunction="scwin.pivotCellStyleFunction" rowMouseOverColor="transparent" selectedCellColor="transparent"
-								selectedRowColor="transparent" selectedRowOverColor="transparent" evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa"
-								oddEvenColorDisplay="true" rowMouseOver="false" editModeEvent="onclick">
-								<w2:header id="header1" style="height:70px;background-color:#1C3D6B;color:white;font-weight:bold;"
-									applyAllColumnStyle="true" evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa" oddEvenColorDisplay="true"
-									rowMouseOverColor="#e3f2fd" selectedCellColor="#bbdefb" selectedRowColor="#e3f2fd" selectedRowOverColor="#d1c4e9"
-									rowNumBackgroundColor="#f5f5f5">
-									<w2:row id="row1" style="height:35px;background-color:#1C3D6B;color:white;">
-										<w2:column width="70" inputType="text" value=""
-											style="background-color:#103E6B;color:white;font-weight:bold;border:none;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="1"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="2"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="3"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="4"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="5"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="6"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="7"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="8"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="9"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="10"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="11"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="12"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="13"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="14"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="15"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="16"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="17"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="18"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="19"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="20"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="21"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="22"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="23"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="24"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="25"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="26"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="27"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="28"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="29"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="30"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-										<w2:column width="45" inputType="text" value="31"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
-										</w2:column>
-									</w2:row>
-								</w2:header>
-								<w2:gBody>
-									<w2:row id="row2" style="height:35px">
-										<!-- 간호사명 컬럼 - 스타일 직접 지정 -->
-										<w2:column width="70" inputType="text" id="nurseName"
-											style="background-color:#C3F4E6;font-weight:bold;text-align:center;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day1" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day2" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day3" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day4" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day5" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day6" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day7" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day8" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day9" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day10" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day11" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day12" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day13" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day14" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day15" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day16" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day17" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day18" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day19" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day20" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day21" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day22" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day23" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day24" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day25" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day26" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day27" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day28" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day29" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day30" style="text-align:center;font-weight:600;">
-										</w2:column>
-
-										<w2:column width="45" inputType="text" id="day31" style="text-align:center;font-weight:600;">
-										</w2:column>
-									</w2:row>
-								</w2:gBody>
-							</w2:gridView>
-
-						</xf:group>
-					</xf:group>
-				</xf:group>
-				<xf:group class="summary-section">
-					<xf:group class="section-content">
-						<xf:group class="grid-container" style="height:180px;">
-							<w2:gridView scrollByColumnAdaptive="false" oddEvenColorDisplay="true" selectedRowColor="transparent"
-								useInputEnterKey="false" scrollByColumn="false" readOnly="true" rowNumRowMouseOverColor="false" selectedRowOverColor="transparent"
-								applyAllColumnStyle="true" selectedCellColor="transparent" rowMouseOver="false" dataList="dl_summaryData"
-								evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa" style="width:100%;height:180px;" id="gv_summarySchedule"
-								useFilterList="false" rowMouseOverColor="transparent">
-								<w2:header applyAllColumnStyle="true" style="height:35px;background-color:#1C3D6B;color:white;font-weight:bold;"
-									id="header2">
-									<w2:row style="height:35px;background-color:#1C3D6B;color:white;" id="row3">
-										<w2:column width="70" inputType="text" readOnly="true"
-											style="background-color:#103E6B;color:white;font-weight:bold;border:none;text-align:center;" id="shiftLabel" value="">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day1" value="1">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day2" value="2">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day3" value="3">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day4" value="4">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day5" value="5">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day6" value="6">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day7" value="7">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day8" value="8">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day9" value="9">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day10" value="10">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day11" value="11">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day12" value="12">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day13" value="13">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day14" value="14">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day15" value="15">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day16" value="16">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day17" value="17">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day18" value="18">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day19" value="19">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day20" value="20">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day21" value="21">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day22" value="22">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day23" value="23">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day24" value="24">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day25" value="25">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day26" value="26">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day27" value="27">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day28" value="28">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day29" value="29">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day30" value="30">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true"
-											style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day31" value="31">
-										</w2:column>
-									</w2:row>
-								</w2:header>
-								<w2:gBody>
-									<w2:row style="height:35px" id="row4">
-										<w2:column width="70" inputType="text" readOnly="true"
-											style="background-color:#C3F4E6;font-weight:bold;text-align:center;" id="shiftLabel" value="">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day1">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day2">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day3">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day4">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day5">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day6">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day7">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day8">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day9">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day10">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day11">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day12">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day13">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day14">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day15">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day16">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day17">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day18">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day19">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day20">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day21">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day22">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day23">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day24">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day25">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day26">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day27">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day28">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day29">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day30">
-										</w2:column>
-										<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day31">
-										</w2:column>
-									</w2:row>
-								</w2:gBody>
-							</w2:gridView>
-						</xf:group>
+			<xf:group class="summary-section" style="position: sticky; top: 200px; z-index: 10000;">
+				<xf:group class="section-content">
+					<xf:group class="grid-container" style="height:180px;">
+						<w2:gridView scrollByColumnAdaptive="false" oddEvenColorDisplay="true" selectedRowColor="transparent"
+							useInputEnterKey="false" scrollByColumn="false" readOnly="true" rowNumRowMouseOverColor="false" selectedRowOverColor="transparent"
+							applyAllColumnStyle="true" selectedCellColor="transparent" rowMouseOver="false" dataList="dl_summaryData"
+							evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa" style="width:100%;height:180px;" id="gv_summarySchedule"
+							useFilterList="false" rowMouseOverColor="transparent">
+							<w2:header applyAllColumnStyle="true" style="height:35px;background-color:#1C3D6B;color:white;font-weight:bold;"
+								id="header2">
+								<w2:row style="height:35px;background-color:#1C3D6B;color:white;" id="row3">
+									<w2:column width="70" inputType="text" readOnly="true"
+										style="background-color:#103E6B;color:white;font-weight:bold;border:none;text-align:center;" id="shiftLabel" value="">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day1" value="1">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day2" value="2">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day3" value="3">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day4" value="4">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day5" value="5">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day6" value="6">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day7" value="7">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day8" value="8">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day9" value="9">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day10" value="10">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day11" value="11">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day12" value="12">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day13" value="13">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day14" value="14">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day15" value="15">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day16" value="16">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day17" value="17">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day18" value="18">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day19" value="19">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day20" value="20">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day21" value="21">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day22" value="22">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day23" value="23">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day24" value="24">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day25" value="25">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day26" value="26">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day27" value="27">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day28" value="28">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day29" value="29">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day30" value="30">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;" id="day31" value="31">
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody>
+								<w2:row style="height:35px" id="row4">
+									<w2:column width="70" inputType="text" readOnly="true"
+										style="background-color:#C3F4E6;font-weight:bold;text-align:center;" id="shiftLabel" value="">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day1">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day2">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day3">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day4">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day5">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day6">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day7">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day8">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day9">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day10">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day11">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day12">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day13">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day14">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day15">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day16">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day17">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day18">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day19">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day20">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day21">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day22">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day23">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day24">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day25">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day26">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day27">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day28">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day29">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day30">
+									</w2:column>
+									<w2:column width="45" inputType="text" readOnly="true" style="text-align:center;font-weight:600;" id="day31">
+									</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
 					</xf:group>
 				</xf:group>
 			</xf:group>
 
-			<!-- 일별 소계 영역 -->
+			<!-- 피벗 테이블 영역 -->
+			<xf:group class="pivot-section">
+				<xf:group class="section-content">
+					<xf:group class="grid-container" style="height:1200px;">
+						<!-- 피벗 그리드뷰 (31일 정적 컬럼) -->
+						<w2:gridView id="gv_pivotSchedule" dataList="dl_pivotData" style="width:100%;height:1200px;" scrollByColumn="false"
+							scrollByColumnAdaptive="false" useFilterList="false" useInputEnterKey="false" applyAllColumnStyle="true"
+							cellStyleFunction="scwin.pivotCellStyleFunction" rowMouseOverColor="transparent" selectedCellColor="transparent"
+							selectedRowColor="transparent" selectedRowOverColor="transparent" evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa"
+							oddEvenColorDisplay="true" rowMouseOver="false" editModeEvent="onclick">
+							<w2:header id="header1" style="height:70px;background-color:#1C3D6B;color:white;font-weight:bold;"
+								applyAllColumnStyle="true" evenRowBackgroundColor="#f8f9fa" oddRowBackgroundColor="#f8f9fa" oddEvenColorDisplay="true"
+								rowMouseOverColor="#e3f2fd" selectedCellColor="#bbdefb" selectedRowColor="#e3f2fd" selectedRowOverColor="#d1c4e9"
+								rowNumBackgroundColor="#f5f5f5">
+								<w2:row id="row1" style="height:35px;background-color:#1C3D6B;color:white;">
+									<w2:column width="70" inputType="text" value=""
+										style="background-color:#103E6B;color:white;font-weight:bold;border:none;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="1"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="2"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="3"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="4"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="5"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="6"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="7"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="8"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="9"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="10"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="11"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="12"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="13"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="14"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="15"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="16"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="17"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="18"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="19"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="20"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="21"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="22"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="23"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="24"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="25"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="26"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="27"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="28"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="29"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="30"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+									<w2:column width="45" inputType="text" value="31"
+										style="background-color:#1C3D6B;color:white;font-weight:bold;text-align:center;">
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody>
+								<w2:row id="row2" style="height:35px">
+									<!-- 간호사명 컬럼 - 스타일 직접 지정 -->
+									<w2:column width="70" inputType="text" id="nurseName"
+										style="background-color:#C3F4E6;font-weight:bold;text-align:center;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day1" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day2" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day3" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day4" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day5" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day6" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day7" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day8" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day9" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day10" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day11" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day12" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day13" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day14" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day15" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day16" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day17" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day18" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day19" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day20" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day21" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day22" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day23" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day24" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day25" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day26" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day27" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day28" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day29" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day30" style="text-align:center;font-weight:600;">
+									</w2:column>
+
+									<w2:column width="45" inputType="text" id="day31" style="text-align:center;font-weight:600;">
+									</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+
+					</xf:group>
+				</xf:group>
+			</xf:group>
 		</xf:group>
+
+		<!-- 일별 소계 영역 -->
 		<!-- 설정 편집 모달 -->
 		<xf:group id="div_settingsModal" class="modal-overlay">
 			<xf:group class="modal-container">

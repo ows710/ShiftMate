@@ -459,9 +459,7 @@ scwin.fn_selectNurseList = function () {
         // 검색 조건 설정
         var searchData = {
             scNurseName: dmp_nurseVo.get("scNurseName") || "",
-            scPosition: dmp_nurseVo.get("scPosition") || "",
-            pageIndex: dmp_nurseVo.get("pageIndex") || 1,
-            pageSize: dmp_nurseVo.get("pageSize") || 10
+            scPosition: dmp_nurseVo.get("scPosition") || ""
         };
 
         console.log("검색 조건:", searchData);
@@ -469,8 +467,6 @@ scwin.fn_selectNurseList = function () {
         // 검색 조건을 dataMap에 설정
         dmp_nurseVo.set("scNurseName", searchData.scNurseName);
         dmp_nurseVo.set("scPosition", searchData.scPosition);
-        dmp_nurseVo.set("pageIndex", searchData.pageIndex);
-        dmp_nurseVo.set("pageSize", searchData.pageSize);
 
         // 서브미션 실행
         $c.sbm.execute(sbm_selectNurseList);
@@ -780,7 +776,7 @@ scwin.btn_search_onclick = function () {
         Swal.fire({
             icon: 'info',
             title: '검색 조건 필요',
-            text: '검색 조건을 입력해주세요.\n• 근무자명 또는 직급 중 하나만 입력해도 검색됩니다.\n• 글자 일부만 입력해도 검색됩니다.',
+            html: '검색 조건을 입력해주세요.',
             confirmButtonText: '확인',
             confirmButtonColor: '#1B73E8'
         });
@@ -796,19 +792,92 @@ scwin.btn_search_onclick = function () {
         scPosition: dmp_nurseVo.get("scPosition")
     });
 
-    // 서브미션 실행
-    $c.sbm.execute(sbm_selectNurseList);
+    // 클라이언트 사이드 검색 실행
+    scwin.fn_searchNurses(scNurseName.trim(), scPosition.trim());
+};
 
-    // 검색 결과 안내
-    setTimeout(function () {
-        var resultCount = dlt_nurseList.getRowCount();
-        console.log("검색 완료 - 조건: 근무자명='" + scNurseName + "', 직급='" + scPosition + "', 결과: " + resultCount + "건");
+// 클라이언트 사이드 검색 함수
+scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
+    try {
+        console.log("=== 클라이언트 사이드 검색 시작 ===");
+        console.log("검색 조건 - 근무자명:", searchNurseName, "직급:", searchPosition);
+        
+        var allNurses = [];
+        var rowCount = dlt_nurseList.getRowCount();
+        console.log("전체 행 수:", rowCount);
+        
+        // 모든 데이터 수집
+        for (var i = 0; i < rowCount; i++) {
+            try {
+                var nurseName = dlt_nurseList.getCellData(i, "nurseName") || "";
+                var position = dlt_nurseList.getCellData(i, "position") || "";
+                var career = dlt_nurseList.getCellData(i, "career") || "";
+                var specialNote = dlt_nurseList.getCellData(i, "specialNote") || "";
+                var hireDate = dlt_nurseList.getCellData(i, "hireDate") || "";
+                var chk_select = dlt_nurseList.getCellData(i, "chk_select") || "0";
+                
+                // 빈 데이터가 아닌 경우만 추가
+                if (nurseName && position) {
+                    allNurses.push({
+                        chk_select: chk_select,
+                        nurseName: nurseName,
+                        position: position,
+                        career: career,
+                        specialNote: specialNote,
+                        hireDate: hireDate
+                    });
+                }
+            } catch (error) {
+                console.error("행 " + i + " 데이터 추출 오류:", error);
+            }
+        }
+        
+        console.log("전체 간호사 데이터:", allNurses);
+        
+        // 검색 조건에 맞는 데이터 필터링
+        var filteredNurses = allNurses.filter(function(nurse) {
+            var nurseNameMatch = true;
+            var positionMatch = true;
+            
+            // 근무자명 검색
+            if (searchNurseName && searchNurseName.trim() !== "") {
+                nurseNameMatch = nurse.nurseName.toLowerCase().includes(searchNurseName.toLowerCase());
+            }
+            
+            // 직급 검색
+            if (searchPosition && searchPosition.trim() !== "") {
+                positionMatch = nurse.position.toLowerCase().includes(searchPosition.toLowerCase());
+            }
+            
+            // 둘 다 입력된 경우 AND 조건, 하나만 입력된 경우 해당 조건만 확인
+            if (searchNurseName && searchPosition) {
+                return nurseNameMatch && positionMatch;
+            } else if (searchNurseName) {
+                return nurseNameMatch;
+            } else if (searchPosition) {
+                return positionMatch;
+            } else {
+                return true; // 검색 조건이 없으면 모든 데이터 반환
+            }
+        });
+        
+        console.log("필터링된 결과:", filteredNurses);
+        
+        // 검색 결과를 그리드에 표시
+        if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
+            dlt_nurseList.setJSON(filteredNurses);
+            console.log("검색 결과를 그리드에 설정 완료");
+        }
+        
+        // 검색 결과 안내
+        var resultCount = filteredNurses.length;
+        console.log("검색 완료 - 조건: 근무자명='" + searchNurseName + "', 직급='" + searchPosition + "', 결과: " + resultCount + "건");
 
         if (resultCount === 0) {
             Swal.fire({
                 icon: 'warning',
                 title: '검색 결과 없음',
-                text: '검색 결과가 없습니다.\n• 검색어를 다시 확인해주세요.\n• 부분 검색이 가능하니 더 짧은 단어로 검색해보세요.',
+                html: '검색 결과가 없습니다.<br>• 검색어를 다시 확인해주세요.<br>• 부분 검색이 가능하니 더 짧은 단어로 검색해보세요.',
                 confirmButtonText: '확인',
                 confirmButtonColor: '#1B73E8'
             });
@@ -817,12 +886,22 @@ scwin.btn_search_onclick = function () {
             Swal.fire({
                 icon: 'success',
                 title: '검색 완료',
-                text: '검색이 완료되었습니다.\n총 ' + resultCount + '건의 결과가 조회되었습니다.',
+                html: '검색이 완료되었습니다.<br>총 ' + resultCount + '건의 결과가 조회되었습니다.',
                 confirmButtonText: '확인',
                 confirmButtonColor: '#1B73E8'
             });
         }
-    }, 500);
+        
+    } catch (error) {
+        console.error("클라이언트 사이드 검색 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '검색 오류',
+            text: '검색 처리 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 전체조회 버튼 클릭
@@ -918,378 +997,702 @@ scwin.btn_delete_onclick = function () {
 
 // 전체선택 버튼 클릭
 scwin.btn_select_all_onclick = function () {
-    var rowCount = dlt_nurseList.getRowCount();
+    try {
+        console.log("=== 전체선택 버튼 클릭 ===");
+        
+        var rowCount = dlt_nurseList.getRowCount();
+        console.log("전체 행 수:", rowCount);
 
-    if (rowCount === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: '데이터 없음',
-            text: '표시할 데이터가 없습니다.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        return;
-    }
-
-    var allSelected = true;
-
-    // 모든 행이 선택되었는지 확인
-    for (var i = 0; i < rowCount; i++) {
-        var isChecked = dlt_nurseList.getCellData(i, "chk_select");
-        if (isChecked !== "1" && isChecked !== true && isChecked !== "true") {
-            allSelected = false;
-            break;
+        if (rowCount === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: '데이터 없음',
+                text: '표시할 데이터가 없습니다.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1B73E8'
+            });
+            return;
         }
-    }
 
-    // 모든 행이 선택되었으면 해제, 아니면 모두 선택
-    var newValue = allSelected ? false : true;
-    for (var i = 0; i < rowCount; i++) {
-        dlt_nurseList.setCellData(i, "chk_select", newValue);
-    }
+        var allSelected = true;
 
-    var message = allSelected ? "전체 선택 해제" : "전체 선택";
-    console.log(message + " - " + rowCount + "행");
+        // 모든 행이 선택되었는지 확인
+        for (var i = 0; i < rowCount; i++) {
+            try {
+                var isChecked = dlt_nurseList.getCellData(i, "chk_select");
+                console.log("행 " + i + " 체크 상태:", isChecked);
+                
+                if (isChecked !== "1" && isChecked !== true && isChecked !== "true") {
+                    allSelected = false;
+                    break;
+                }
+            } catch (error) {
+                console.error("행 " + i + " 체크 상태 확인 오류:", error);
+                allSelected = false;
+                break;
+            }
+        }
 
-    // 버튼 라벨 업데이트
-    if (btn_select_all) {
-        btn_select_all.setValue(allSelected ? "☑️ 전체선택" : "☐ 전체해제");
+        console.log("모든 행 선택 상태:", allSelected);
+
+        // 모든 행이 선택되었으면 해제, 아니면 모두 선택
+        var newValue = allSelected ? false : true;
+        console.log("설정할 새로운 값:", newValue);
+        
+        for (var i = 0; i < rowCount; i++) {
+            try {
+                dlt_nurseList.setCellData(i, "chk_select", newValue);
+                console.log("행 " + i + " 체크 상태 설정:", newValue);
+            } catch (error) {
+                console.error("행 " + i + " 체크 상태 설정 오류:", error);
+            }
+        }
+
+        var message = allSelected ? "전체 선택 해제" : "전체 선택";
+        console.log(message + " - " + rowCount + "행");
+
+        // 버튼 라벨 업데이트
+        if (btn_select_all) {
+            var newLabel = allSelected ? "☐ 전체선택" : "☑️ 전체해제";
+            btn_select_all.setValue(newLabel);
+            console.log("버튼 라벨 업데이트:", newLabel);
+        }
+        
+        // 성공 메시지
+        Swal.fire({
+            icon: 'success',
+            title: message,
+            text: rowCount + '행이 ' + (allSelected ? '해제' : '선택') + '되었습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B',
+            timer: 1500,
+            timerProgressBar: true
+        });
+        
+    } catch (error) {
+        console.error("전체선택 버튼 클릭 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: '전체선택 기능 실행 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
     }
 };
 
 // 다중 등록 버튼 클릭
 scwin.btn_insert_multi_onclick = function () {
-    Swal.fire({
-        title: '간호사 다중 등록',
-        html: `
-            <div style="text-align:left;margin-bottom:20px;">
-                <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
-                    <div style="display:flex;align-items:center;margin-bottom:10px;">
-                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">1</div>
-                        <strong style="color:#1C3D6B;">등록할 간호사 수</strong>
+    try {
+        console.log("=== 다중 등록 시작 ===");
+        
+        Swal.fire({
+            title: '간호사 다중 등록',
+            html: `
+                <div style="text-align:left;margin-bottom:20px;">
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">1</div>
+                            <strong style="color:#1C3D6B;">등록할 간호사 수</strong>
+                        </div>
+                        <input id="nurseCount" type="number" min="1" max="10" value="1" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="등록할 간호사 수를 입력하세요">
                     </div>
-                    <input id="nurseCount" type="number" min="1" max="10" value="1" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="등록할 간호사 수를 입력하세요">
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">2</div>
+                            <strong style="color:#1C3D6B;">입력 가이드</strong>
+                        </div>
+                        <div style="color:#495057;font-size:14px;line-height:1.5;">
+                            • 필수 입력: 간호사명, 직급<br>
+                            • 선택 입력: 연차(개월수), 특이사항<br>
+                            • 각 간호사별로 개별 입력 폼이 생성됩니다
+                        </div>
+                    </div>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">3</div>
+                            <strong style="color:#1C3D6B;">자동 처리</strong>
+                        </div>
+                        <div style="color:#495057;font-size:14px;line-height:1.5;">
+                            입력된 데이터는 자동으로 검증되고 일괄 등록됩니다.
+                        </div>
+                    </div>
                 </div>
-                <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
-                    <div style="display:flex;align-items:center;margin-bottom:10px;">
-                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">2</div>
-                        <strong style="color:#1C3D6B;">입력 가이드</strong>
-                    </div>
-                    <div style="color:#495057;font-size:14px;line-height:1.5;">
-                        • 필수 입력: 간호사명, 직급<br>
-                        • 선택 입력: 연차, 특이사항<br>
-                        • 각 간호사별로 개별 입력 폼이 생성됩니다
-                    </div>
-                </div>
-                <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
-                    <div style="display:flex;align-items:center;margin-bottom:10px;">
-                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">3</div>
-                        <strong style="color:#1C3D6B;">자동 처리</strong>
-                    </div>
-                    <div style="color:#495057;font-size:14px;line-height:1.5;">
-                        입력된 데이터는 자동으로 검증되고 일괄 등록됩니다.
-                    </div>
-                </div>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: '다음',
-        cancelButtonText: '취소',
-        confirmButtonColor: '#1C3D6B',
-        cancelButtonColor: '#6c757d',
-        width: '500px',
-        preConfirm: () => {
-            const count = document.getElementById('nurseCount').value;
-            if (!count || count < 1 || count > 10) {
-                Swal.showValidationMessage('1~10 사이의 숫자를 입력해주세요.');
-                return false;
+            `,
+            showCancelButton: true,
+            confirmButtonText: '다음',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#1C3D6B',
+            cancelButtonColor: '#6c757d',
+            width: '500px',
+            preConfirm: () => {
+                const count = document.getElementById('nurseCount').value;
+                if (!count || count < 1 || count > 10) {
+                    Swal.showValidationMessage('1~10 사이의 숫자를 입력해주세요.');
+                    return false;
+                }
+                return parseInt(count);
             }
-            return parseInt(count);
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var nurseCount = result.value;
-            scwin.showNurseInputForms(nurseCount);
-        }
-    });
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var nurseCount = result.value;
+                console.log("다중 등록할 간호사 수:", nurseCount);
+                scwin.showNurseInputForms(nurseCount);
+            }
+        });
+    } catch (error) {
+        console.error("다중 등록 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: '다중 등록 기능 실행 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 간호사 입력 폼 표시
 scwin.showNurseInputForms = function (nurseCount) {
-    var formHtml = '<div style="text-align:left;max-height:400px;overflow-y:auto;">';
+    try {
+        console.log("=== 간호사 입력 폼 표시 시작 ===");
+        console.log("등록할 간호사 수:", nurseCount);
+        
+        var formHtml = '<div style="text-align:left;max-height:400px;overflow-y:auto;">';
 
-    for (var i = 1; i <= nurseCount; i++) {
-        formHtml += `
-            <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #5CD6C0;">
-                <div style="display:flex;align-items:center;margin-bottom:15px;">
-                    <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">${i}</div>
-                    <strong style="color:#1C3D6B;">간호사 ${i}</strong>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-                    <div>
-                        <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">근무자명 *</label>
-                        <input id="nurseName_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="간호사명 입력">
+        for (var i = 1; i <= nurseCount; i++) {
+            formHtml += `
+                <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #5CD6C0;">
+                    <div style="display:flex;align-items:center;margin-bottom:15px;">
+                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">${i}</div>
+                        <strong style="color:#1C3D6B;">간호사 ${i}</strong>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                        <div>
+                            <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">근무자명 <span style="color:red">*</span></label>
+                            <input id="nurseName_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="간호사명 입력">
+                        </div>
+                        <div>
+                            <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">직급 <span style="color:red">*</span></label>
+                            <input id="position_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="직급 입력">
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                        <div>
+                            <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">연차(개월수)</label>
+                            <input id="career_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="예: 20">
+                        </div>
+                        <div>
+                            <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">입사일</label>
+                            <input id="hireDate_${i}" type="date" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;">
+                        </div>
                     </div>
                     <div>
-                        <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">직급 *</label>
-                        <input id="position_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="직급 입력">
+                        <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">특이사항</label>
+                        <textarea id="specialNote_${i}" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;resize:vertical;height:60px;" placeholder="특이사항 입력"></textarea>
                     </div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-                    <div>
-                        <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">연차</label>
-                        <input id="career_${i}" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="예: 3년차">
-                    </div>
-                    <div>
-                        <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">입사일</label>
-                        <input id="hireDate_${i}" type="date" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;">
-                    </div>
-                </div>
-                <div>
-                    <label style="display:block;font-weight:600;color:#495057;margin-bottom:5px;font-size:12px;">특이사항</label>
-                    <textarea id="specialNote_${i}" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;resize:vertical;height:60px;" placeholder="특이사항 입력"></textarea>
-                </div>
-            </div>
-        `;
+            `;
+        }
+
+        formHtml += '</div>';
+
+        Swal.fire({
+            title: '간호사 정보 입력',
+            html: formHtml,
+            showCancelButton: true,
+            confirmButtonText: '등록',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#1C3D6B',
+            cancelButtonColor: '#6c757d',
+            width: '700px',
+            preConfirm: () => {
+                try {
+                    console.log("=== 폼 데이터 검증 시작 ===");
+                    var nursesToAdd = [];
+                    var hasError = false;
+                    var errorMessage = '';
+
+                    for (var i = 1; i <= nurseCount; i++) {
+                        var nurseName = document.getElementById(`nurseName_${i}`).value.trim();
+                        var position = document.getElementById(`position_${i}`).value.trim();
+                        var career = document.getElementById(`career_${i}`).value.trim();
+                        var hireDate = document.getElementById(`hireDate_${i}`).value;
+                        var specialNote = document.getElementById(`specialNote_${i}`).value.trim();
+
+                        console.log(`간호사 ${i} 데이터:`, { nurseName, position, career, hireDate, specialNote });
+
+                        // 필수 필드 검증
+                        if (!nurseName) {
+                            errorMessage = `간호사 ${i}의 근무자명을 입력해주세요.`;
+                            hasError = true;
+                            break;
+                        }
+                        if (!position) {
+                            errorMessage = `간호사 ${i}의 직급을 입력해주세요.`;
+                            hasError = true;
+                            break;
+                        }
+
+                        // 중복 검사 (기존 데이터와 비교)
+                        var duplicateNurse = scwin.nurseData.find(function (item) {
+                            return item.nurseName === nurseName && item.delYn !== "Y";
+                        });
+                        if (duplicateNurse) {
+                            errorMessage = `간호사명 "${nurseName}"은 이미 등록되어 있습니다.`;
+                            hasError = true;
+                            break;
+                        }
+
+                        var newNurse = {
+                            chk_select: "0",
+                            nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
+                            nurseName: nurseName,
+                            position: position,
+                            career: career,
+                            specialNote: specialNote,
+                            hireDate: hireDate || scwin.fn_getCurrentDate(),
+                            useYn: "Y",
+                            delYn: "N"
+                        };
+                        nursesToAdd.push(newNurse);
+                        scwin.nurseCounter++;
+                    }
+
+                    if (hasError) {
+                        console.log("검증 실패:", errorMessage);
+                        Swal.showValidationMessage(errorMessage);
+                        return false;
+                    }
+
+                    console.log("검증 성공, 등록할 간호사:", nursesToAdd);
+                    return nursesToAdd;
+                } catch (error) {
+                    console.error("폼 데이터 검증 오류:", error);
+                    Swal.showValidationMessage('데이터 검증 중 오류가 발생했습니다.');
+                    return false;
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    var nursesToAdd = result.value;
+                    console.log("등록할 간호사 데이터:", nursesToAdd);
+
+                    if (nursesToAdd && nursesToAdd.length > 0) {
+                        try {
+                            console.log("=== 다중 등록 데이터 처리 시작 ===");
+                            
+                            // 기존 데이터에 추가
+                            if (!scwin.nurseData) {
+                                scwin.nurseData = [];
+                            }
+                            
+                            // 방법 1: 기존 그리드 데이터 가져오기
+                            var existingGridData = [];
+                            var gridRowCount = dlt_nurseList.getRowCount();
+                            console.log("기존 그리드 행 수:", gridRowCount);
+                            
+                            for (var j = 0; j < gridRowCount; j++) {
+                                try {
+                                    var existingRow = {
+                                        chk_select: dlt_nurseList.getCellData(j, "chk_select") || "0",
+                                        nurseName: dlt_nurseList.getCellData(j, "nurseName") || "",
+                                        position: dlt_nurseList.getCellData(j, "position") || "",
+                                        career: dlt_nurseList.getCellData(j, "career") || "",
+                                        specialNote: dlt_nurseList.getCellData(j, "specialNote") || "",
+                                        hireDate: dlt_nurseList.getCellData(j, "hireDate") || ""
+                                    };
+                                    
+                                    // 빈 행이 아닌 경우만 추가
+                                    if (existingRow.nurseName && existingRow.position) {
+                                        existingGridData.push(existingRow);
+                                    }
+                                } catch (error) {
+                                    console.error("기존 행 " + j + " 데이터 추출 오류:", error);
+                                }
+                            }
+                            
+                            console.log("기존 그리드 데이터:", existingGridData);
+                            console.log("새로 추가할 데이터:", nursesToAdd);
+                            
+                            // 기존 데이터와 새 데이터 합치기
+                            var combinedData = [];
+                            
+                            // 방법 1: 기존 그리드 데이터를 우선적으로 사용
+                            if (existingGridData.length > 0) {
+                                combinedData = existingGridData.concat(nursesToAdd);
+                                console.log("기존 그리드 데이터 + 새 데이터 사용");
+                            } else {
+                                // 방법 2: 메모리 데이터가 있으면 사용
+                                if (scwin.nurseData && scwin.nurseData.length > 0) {
+                                    combinedData = scwin.nurseData.concat(nursesToAdd);
+                                    console.log("메모리 데이터 + 새 데이터 사용");
+                                } else {
+                                    // 방법 3: 새 데이터만 사용
+                                    combinedData = nursesToAdd;
+                                    console.log("새 데이터만 사용");
+                                }
+                            }
+                            
+                            console.log("합쳐진 전체 데이터:", combinedData);
+                            console.log("총 데이터 수:", combinedData.length);
+                            
+                            // 메모리 데이터 업데이트
+                            scwin.nurseData = combinedData;
+
+                            // 그리드에 전체 데이터 설정
+                            if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
+                                dlt_nurseList.setJSON(combinedData);
+                                console.log("그리드에 전체 데이터 설정 완료, 총 " + combinedData.length + "건");
+                            }
+                            
+                        } catch (error) {
+                            console.error("다중 등록 데이터 처리 오류:", error);
+                            throw error;
+                        }
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: '다중 등록 완료',
+                            html: `
+                                <div style="text-align:center;margin-bottom:20px;">
+                                    <div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;border-left:4px solid #28a745;">
+                                        <strong>등록 성공!</strong><br>
+                                        ${nursesToAdd.length}건의 간호사 정보가 등록되었습니다.
+                                    </div>
+                                </div>
+                                <div style="text-align:left;font-size:14px;color:#495057;">
+                                    <strong>등록된 간호사 목록:</strong><br>
+                                    ${nursesToAdd.map(nurse => `• ${nurse.nurseName} (${nurse.position})`).join('<br>')}
+                                </div>
+                            `,
+                            confirmButtonText: '확인',
+                            confirmButtonColor: '#1C3D6B'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '등록 실패',
+                            text: '등록할 수 있는 유효한 데이터가 없습니다.',
+                            confirmButtonText: '확인',
+                            confirmButtonColor: '#1C3D6B'
+                        });
+                    }
+                } catch (error) {
+                    console.error("다중 등록 처리 오류:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '등록 오류',
+                        text: '다중 등록 처리 중 오류가 발생했습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                }
+            }
+        });
+    } catch (error) {
+        console.error("간호사 입력 폼 표시 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: '입력 폼 표시 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
     }
-
-    formHtml += '</div>';
-
-    Swal.fire({
-        title: '간호사 정보 입력',
-        html: formHtml,
-        showCancelButton: true,
-        confirmButtonText: '등록',
-        cancelButtonText: '취소',
-        confirmButtonColor: '#1C3D6B',
-        cancelButtonColor: '#6c757d',
-        width: '700px',
-        preConfirm: () => {
-            var nursesToAdd = [];
-            var hasError = false;
-            var errorMessage = '';
-
-            for (var i = 1; i <= nurseCount; i++) {
-                var nurseName = document.getElementById(`nurseName_${i}`).value.trim();
-                var position = document.getElementById(`position_${i}`).value.trim();
-                var career = document.getElementById(`career_${i}`).value.trim();
-                var hireDate = document.getElementById(`hireDate_${i}`).value;
-                var specialNote = document.getElementById(`specialNote_${i}`).value.trim();
-
-                // 필수 필드 검증
-                if (!nurseName) {
-                    errorMessage = `간호사 ${i}의 근무자명을 입력해주세요.`;
-                    hasError = true;
-                    break;
-                }
-                if (!position) {
-                    errorMessage = `간호사 ${i}의 직급을 입력해주세요.`;
-                    hasError = true;
-                    break;
-                }
-
-                // 중복 검사
-                var duplicateNurse = scwin.nurseData.find(function (item) {
-                    return item.nurseName === nurseName && item.delYn !== "Y";
-                });
-                if (duplicateNurse) {
-                    errorMessage = `간호사명 "${nurseName}"은 이미 등록되어 있습니다.`;
-                    hasError = true;
-                    break;
-                }
-
-                var newNurse = {
-                    chk_select: "0",
-                    nurseId: "N" + String(scwin.nurseCounter).padStart(3, '0'),
-                    nurseName: nurseName,
-                    position: position,
-                    career: career,
-                    specialNote: specialNote,
-                    hireDate: hireDate || scwin.fn_getCurrentDate(),
-                    useYn: "Y",
-                    delYn: "N"
-                };
-                nursesToAdd.push(newNurse);
-                scwin.nurseCounter++;
-            }
-
-            if (hasError) {
-                Swal.showValidationMessage(errorMessage);
-                return false;
-            }
-
-            return nursesToAdd;
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var nursesToAdd = result.value;
-
-            if (nursesToAdd.length > 0) {
-                scwin.nurseData = scwin.nurseData.concat(nursesToAdd);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '다중 등록 완료',
-                    html: `
-                        <div style="text-align:center;margin-bottom:20px;">
-                            <div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;border-left:4px solid #28a745;">
-                                <strong>등록 성공!</strong><br>
-                                ${nursesToAdd.length}건의 간호사 정보가 등록되었습니다.
-                            </div>
-                        </div>
-                        <div style="text-align:left;font-size:14px;color:#495057;">
-                            <strong>등록된 간호사 목록:</strong><br>
-                            ${nursesToAdd.map(nurse => `• ${nurse.nurseName} (${nurse.position})`).join('<br>')}
-                        </div>
-                    `,
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-                scwin.fn_selectNurseList();
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '등록 실패',
-                    text: '등록할 수 있는 유효한 데이터가 없습니다.',
-                    confirmButtonText: '확인',
-                    confirmButtonColor: '#1C3D6B'
-                });
-            }
-        }
-    });
 };
 
 // 다중 수정 버튼 클릭
 scwin.btn_update_multi_onclick = function () {
-    var selectedRows = scwin.fn_getSelectedRows();
-    if (selectedRows.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: '선택 필요',
-            text: '수정할 간호사를 선택해주세요.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        return;
-    }
-    Swal.fire({
-        title: '다중 수정',
-        html: `
-            <div style="text-align:left;margin-bottom:20px;">
-                <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
-                    <div style="display:flex;align-items:center;margin-bottom:10px;">
-                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">1</div>
-                        <strong style="color:#1C3D6B;">수정할 필드 선택</strong>
-                    </div>
-                    <select id="multiUpdateField" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;">
-                        <option value="position">직급</option>
-                        <option value="career">연차</option>
-                        <option value="specialNote">특이사항</option>
-                    </select>
-                </div>
-                <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
-                    <div style="display:flex;align-items:center;margin-bottom:10px;">
-                        <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">2</div>
-                        <strong style="color:#1C3D6B;">새로운 값 입력</strong>
-                    </div>
-                    <input id="multiUpdateValue" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="새로운 값을 입력하세요">
-                </div>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: '수정',
-        cancelButtonText: '취소',
-        confirmButtonColor: '#1C3D6B',
-        cancelButtonColor: '#6c757d',
-        width: '500px',
-        preConfirm: () => {
-            const field = document.getElementById('multiUpdateField').value;
-            const value = document.getElementById('multiUpdateValue').value;
-            if (!value || value.trim() === "") {
-                Swal.showValidationMessage('새로운 값을 입력해주세요.');
-                return false;
-            }
-            return { field, value };
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            var field = result.value.field;
-            var newValue = result.value.value;
-            var updatedCount = 0;
-            selectedRows.forEach(function (row) {
-                var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-                var index = scwin.nurseData.findIndex(function (item) {
-                    return item.nurseName === nurseName;
-                });
-                if (index > -1) {
-                    scwin.nurseData[index][field] = newValue;
-                    updatedCount++;
-                }
-            });
+    try {
+        console.log("=== 다중 수정 시작 ===");
+        
+        var selectedRows = scwin.fn_getSelectedRows();
+        console.log("선택된 행:", selectedRows);
+        
+        if (selectedRows.length === 0) {
             Swal.fire({
-                icon: 'success',
-                title: '다중 수정 완료',
-                text: '다중 수정 완료: ' + updatedCount + '건의 간호사 정보가 수정되었습니다.',
+                icon: 'warning',
+                title: '선택 필요',
+                text: '수정할 간호사를 선택해주세요.',
                 confirmButtonText: '확인',
-                confirmButtonColor: '#1C3D6B'
+                confirmButtonColor: '#1B73E8'
             });
-            scwin.fn_selectNurseList();
+            return;
         }
-    });
+
+        Swal.fire({
+            title: '다중 수정',
+            html: `
+                <div style="text-align:left;margin-bottom:20px;">
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;margin-bottom:15px;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">1</div>
+                            <strong style="color:#1C3D6B;">수정할 필드 선택</strong>
+                        </div>
+                        <select id="multiUpdateField" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;">
+                            <option value="position">직급</option>
+                            <option value="career">연차(개월수)</option>
+                            <option value="specialNote">특이사항</option>
+                        </select>
+                    </div>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">2</div>
+                            <strong style="color:#1C3D6B;">새로운 값 입력</strong>
+                        </div>
+                        <input id="multiUpdateValue" type="text" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e9ecef;font-size:14px;" placeholder="새로운 값을 입력하세요">
+                    </div>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="background:#1C3D6B;color:white;width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:10px;">3</div>
+                            <strong style="color:#1C3D6B;">선택된 간호사</strong>
+                        </div>
+                        <div style="color:#495057;font-size:14px;line-height:1.5;">
+                            ${selectedRows.length}명의 간호사가 선택되었습니다.
+                        </div>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '수정',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#1C3D6B',
+            cancelButtonColor: '#6c757d',
+            width: '500px',
+            preConfirm: () => {
+                try {
+                    const field = document.getElementById('multiUpdateField').value;
+                    const value = document.getElementById('multiUpdateValue').value;
+                    
+                    if (!value || value.trim() === "") {
+                        Swal.showValidationMessage('새로운 값을 입력해주세요.');
+                        return false;
+                    }
+                    
+                    console.log("수정할 필드:", field, "새로운 값:", value);
+                    return { field, value };
+                } catch (error) {
+                    console.error("다중 수정 검증 오류:", error);
+                    Swal.showValidationMessage('입력값 검증 중 오류가 발생했습니다.');
+                    return false;
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    var field = result.value.field;
+                    var newValue = result.value.value;
+                    var updatedCount = 0;
+                    
+                    console.log("다중 수정 실행:", field, newValue);
+                    
+                    selectedRows.forEach(function (row) {
+                        try {
+                            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+                            console.log("수정할 간호사:", nurseName);
+                            
+                            // 그리드 데이터 직접 수정
+                            dlt_nurseList.setCellData(row, field, newValue);
+                            
+                            // 메모리 데이터도 수정
+                            if (scwin.nurseData) {
+                                var index = scwin.nurseData.findIndex(function (item) {
+                                    return item.nurseName === nurseName;
+                                });
+                                if (index > -1) {
+                                    scwin.nurseData[index][field] = newValue;
+                                }
+                            }
+                            
+                            updatedCount++;
+                        } catch (error) {
+                            console.error("행 " + row + " 수정 오류:", error);
+                        }
+                    });
+                    
+                    console.log("수정 완료된 행 수:", updatedCount);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: '다중 수정 완료',
+                        text: '다중 수정 완료: ' + updatedCount + '건의 간호사 정보가 수정되었습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                } catch (error) {
+                    console.error("다중 수정 처리 오류:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '수정 오류',
+                        text: '다중 수정 처리 중 오류가 발생했습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                }
+            }
+        });
+    } catch (error) {
+        console.error("다중 수정 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: '다중 수정 기능 실행 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 다중 삭제 버튼 클릭
 scwin.btn_delete_multi_onclick = function () {
-    var selectedRows = scwin.fn_getSelectedRows();
-    if (selectedRows.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: '선택 필요',
-            text: '삭제할 간호사를 선택해주세요.',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#1B73E8'
-        });
-        return;
-    }
-
-    var deletedCount = 0;
-    var nursesToDelete = [];
-    selectedRows.forEach(function (row) {
-        var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-        nursesToDelete.push(nurseName);
-    });
-
-    nursesToDelete.forEach(function (nurseName) {
-        if (scwin.fn_deleteNurse(nurseName)) {
-            deletedCount++;
+    try {
+        console.log("=== 다중 삭제 시작 ===");
+        
+        var selectedRows = scwin.fn_getSelectedRows();
+        console.log("선택된 행:", selectedRows);
+        
+        if (selectedRows.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: '선택 필요',
+                text: '삭제할 간호사를 선택해주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: '#1B73E8'
+            });
+            return;
         }
-    });
 
-    Swal.fire({
-        icon: 'success',
-        title: '다중 삭제 완료',
-        text: '다중 삭제 완료: ' + deletedCount + '건의 간호사 정보가 삭제되었습니다.',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#1B73E8'
-    });
-    scwin.fn_clearForm();
-    scwin.fn_selectNurseList();
+        // 삭제 확인 다이얼로그
+        var nursesToDelete = [];
+        selectedRows.forEach(function (row) {
+            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+            nursesToDelete.push(nurseName);
+        });
+
+        Swal.fire({
+            title: '다중 삭제 확인',
+            html: `
+                <div style="text-align:left;margin-bottom:20px;">
+                    <div style="background:#fff3cd;color:#856404;padding:15px;border-radius:8px;border-left:4px solid #ffc107;margin-bottom:15px;">
+                        <strong>⚠️ 주의사항</strong><br>
+                        선택된 ${selectedRows.length}명의 간호사 정보가 삭제됩니다.
+                    </div>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:8px;border-left:4px solid #5CD6C0;">
+                        <strong>삭제할 간호사 목록:</strong><br>
+                        ${nursesToDelete.map(nurse => `• ${nurse}`).join('<br>')}
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            width: '500px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    console.log("다중 삭제 실행");
+                    var deletedCount = 0;
+                    
+                    // 선택된 행들을 역순으로 삭제 (인덱스 변화 방지)
+                    var sortedRows = selectedRows.sort(function(a, b) {
+                        return b - a; // 내림차순 정렬
+                    });
+                    
+                    sortedRows.forEach(function (row) {
+                        try {
+                            var nurseName = dlt_nurseList.getCellData(row, "nurseName");
+                            console.log("삭제할 간호사:", nurseName, "행:", row);
+                            
+                            // 그리드에서 행 삭제
+                            dlt_nurseList.removeRow(row);
+                            
+                            // 메모리 데이터에서도 삭제
+                            if (scwin.nurseData) {
+                                var index = scwin.nurseData.findIndex(function (item) {
+                                    return item.nurseName === nurseName;
+                                });
+                                if (index > -1) {
+                                    scwin.nurseData.splice(index, 1);
+                                }
+                            }
+                            
+                            deletedCount++;
+                        } catch (error) {
+                            console.error("행 " + row + " 삭제 오류:", error);
+                        }
+                    });
+                    
+                    console.log("삭제 완료된 행 수:", deletedCount);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: '다중 삭제 완료',
+                        text: '다중 삭제 완료: ' + deletedCount + '건의 간호사 정보가 삭제되었습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                    
+                    // 폼 초기화
+                    scwin.fn_clearForm();
+                    
+                } catch (error) {
+                    console.error("다중 삭제 처리 오류:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '삭제 오류',
+                        text: '다중 삭제 처리 중 오류가 발생했습니다.',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#1C3D6B'
+                    });
+                }
+            }
+        });
+    } catch (error) {
+        console.error("다중 삭제 오류:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: '다중 삭제 기능 실행 중 오류가 발생했습니다.',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#1C3D6B'
+        });
+    }
 };
 
 // 선택된 행 가져오기
 scwin.fn_getSelectedRows = function () {
-    var selectedRows = [];
-    var rowCount = dlt_nurseList.getRowCount();
+    try {
+        var selectedRows = [];
+        var rowCount = dlt_nurseList.getRowCount();
+        
+        console.log("전체 행 수:", rowCount);
 
-    for (var i = 0; i < rowCount; i++) {
-        var isChecked = dlt_nurseList.getCellData(i, "chk_select");
-        if (isChecked === "1" || isChecked === true || isChecked === "true") {
-            selectedRows.push(i);
+        for (var i = 0; i < rowCount; i++) {
+            try {
+                var isChecked = dlt_nurseList.getCellData(i, "chk_select");
+                console.log("행 " + i + " 체크 상태:", isChecked);
+                
+                if (isChecked === "1" || isChecked === true || isChecked === "true") {
+                    selectedRows.push(i);
+                    console.log("선택된 행 추가:", i);
+                }
+            } catch (error) {
+                console.error("행 " + i + " 체크 상태 확인 오류:", error);
+            }
         }
-    }
 
-    console.log("선택된 행 개수: " + selectedRows.length);
-    return selectedRows;
+        console.log("선택된 행 개수: " + selectedRows.length);
+        console.log("선택된 행 인덱스:", selectedRows);
+        return selectedRows;
+    } catch (error) {
+        console.error("선택된 행 가져오기 오류:", error);
+        return [];
+    }
 };
 
 // 모든 체크박스 해제
@@ -1410,10 +1813,18 @@ scwin.fn_getCurrentDate = function () {
 // 엑셀 업로드
 scwin.btn_excel_onclick = function () {
     try {
+        // 화면 중앙 위치 계산
+        var screenWidth = window.screen.width || 1920;
+        var screenHeight = window.screen.height || 1080;
+        var modalWidth = 450;
+        var modalHeight = 450;
+        var left = Math.max(0, (screenWidth - modalWidth) / 2);
+        var top = Math.max(0, (screenHeight - modalHeight) / 2);
+        
         var jsnOptions = {
             headerExist: "1", // Excel 파일에 헤더가 있는지 여부
             uploadDataCallBack: scwin.fn_excelUploadCallback, // 업로드 완료 후 콜백
-            features: "top=" + 250 + ",height=" + 450 + ",left=" + 650 + ",width=" + 450,
+            features: "top=" + top + ",height=" + modalHeight + ",left=" + left + ",width=" + modalWidth,
             wframe: true
         };
 
@@ -1526,9 +1937,9 @@ scwin.fn_excelUploadCallback = function (uploadData) {
                         </div>
                         <div style="text-align:left;font-size:12px;color:#6c757d;margin-top:15px;padding-top:15px;border-top:1px solid #dee2e6;">
                             <strong>다음 단계:</strong><br>
-                            • 그리드에서 데이터를 확인하세요<br>
+                            • 간호사 목록에서 데이터를 확인하세요<br>
                             • 필요시 데이터를 수정하세요<br>
-                            • DB 저장은 자동으로 진행됩니다
+                            • 저장은 자동으로 진행됩니다
                         </div>
                     `,
                         confirmButtonText: '확인',
@@ -2544,7 +2955,6 @@ scwin.sbm_insertNurseList_submitdone = function (e) {
 			.btn_search:hover {
 			background: #5C5DB0 !important;
 			transform: translateY(-2px) !important;
-			box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 			}
 
 			/* 버튼 내부 이미지 스타일 */
@@ -2617,7 +3027,6 @@ scwin.sbm_insertNurseList_submitdone = function (e) {
 			.btn_list_all:hover {
 			background: #5C5DB0 !important;
 			transform: translateY(-2px) !important;
-			box-shadow: 0 4px 15px rgba(92, 214, 192, 0.3) !important;
 			}
 
 			.content_area {

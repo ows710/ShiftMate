@@ -1075,7 +1075,7 @@ scwin.closeMenus = function () {
 scwin.goToHome = function () {
     try {
         console.log("로고 클릭 - 홈으로 이동");
-        window.location.href = "http://shiftmate.com:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
+        window.location.href = "http://shiftmate:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
     } catch (e) {
         console.error("홈 이동 오류:", e);
         alert("페이지 이동 중 오류가 발생했습니다.");
@@ -1159,7 +1159,6 @@ scwin.sbm_selectNurse_submitdone = function (e) {
 			
 			<xf:group class="right-section">
 				<xf:group class="notification-container">
-					<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;" id="alarm" ev:onclick="scwin.alarm_onclick"></xf:image>
 				</xf:group>
 				
 				<xf:group class="user-container">

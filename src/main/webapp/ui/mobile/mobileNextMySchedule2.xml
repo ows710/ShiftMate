@@ -1439,8 +1439,6 @@ scwin.sbm_selectDutyByDate_submitdone = function (e) {
 			<xf:group class="pgtbox" id="" meta_snippetCategory="02_타이틀" meta_snippetKeyComponent="true" meta_snippetName="2_01 페이지타이틀"
 				style="">
 				<xf:group class="breadcrumb" id="" style=""></xf:group>
-				<xf:image src="/InsWebApp/images/jong.png" style="width: 30px;height: 30px;cursor: pointer;" id="btn_alarm"
-					ev:onclick="scwin.btn_alarm_onclick"></xf:image>
 			</xf:group>
 			<xf:group class="schbox" id="" style="margin-bottom: 10px;">
     			<w2:textbox class="schbox_tit" id="" label="월 선택:" style="display: inline-block; margin-right: 10px; vertical-align: middle;"></w2:textbox>
