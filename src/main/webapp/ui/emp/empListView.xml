@@ -636,10 +636,6 @@
 	scwin.sbm_empList_submitdone = function(e) {
         // debugger;
 		
-		console.log("-------------------- scwin.sbm_empList_submitdone --------------------");
-		console.log( e.responseJSON);
-		console.log("----------------------------------------------------------------------");
-		
 		var elHeader  = e.responseJSON.elHeader;
 		//var empVo     = e.responseJSON.empVo;
 		var empVoList = e.responseJSON.elData.empVoList;
@@ -672,10 +668,6 @@
 	 */
 	scwin.sbm_selectEmpVo_submitdone = function(e) {
 		
-		console.log("------------------ scwin.sbm_selectEmpVo_submitdone ------------------");
-		console.log(e.responseJSON);
-		console.log("----------------------------------------------------------------------");
-		
 		var elHeader  = e.responseJSON.elHeader;
 		
 		if(elHeader == null || elHeader == "" || elHeader == "undefiend" || elHeader.resSuc == false) {
@@ -705,10 +697,6 @@
 	 * @example
 	 */
 	scwin.sbm_insertEmpVo_submitdone = function(e) {
-		
-		console.log("------------------ scwin.sbm_insertEmpVo_submitdone ------------------");
-		console.log(e.responseJSON);
-		console.log("----------------------------------------------------------------------");
 		
 		var elHeader  = e.responseJSON.elHeader;
 		
@@ -755,10 +743,6 @@
 	 * @example
 	 */
 	scwin.sbm_deleteEmpVo_submitdone = function(e) {
-		
-		console.log("------------------ scwin.sbm_deleteEmpVo_submitdone ------------------");
-		console.log(e.responseJSON);
-		console.log("----------------------------------------------------------------------");
 		
 		var submission = $p.getSubmission("sbm_deleteEmpVo");
 		

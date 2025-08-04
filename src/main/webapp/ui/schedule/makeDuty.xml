@@ -1131,7 +1131,7 @@ scwin.removeGridEffects = function () {
         }
 
     } catch (e) {
-        console.error("그리드 효과 제거 중 오류:", e);
+        // 그리드 효과 제거 중 오류 무시
     }
 };
 
@@ -1378,7 +1378,6 @@ scwin.showTooltip = function (event, message) {
     }
 
     if (!tooltip) {
-        console.error("툴팁 생성 실패!");
         return;
     }
 
@@ -1415,8 +1414,6 @@ scwin.hideTooltip = function () {
     if (tooltip) {
         tooltip.style.opacity = '0';
         tooltip.style.transform = 'translateY(10px)';
-    } else {
-        console.log("숨길 툴팁이 없음");
     }
 };
 
@@ -1472,7 +1469,6 @@ scwin.addTooltipEvents = function () {
                 setTimeout(tryAddTooltips, 500); // 0.5초 후 재시도
                 return;
             } else {
-                console.error("최대 시도 횟수 초과 - 그리드 요소를 찾을 수 없습니다");
                 return;
             }
         }
@@ -1481,10 +1477,9 @@ scwin.addTooltipEvents = function () {
         var tbody = gridElement.querySelector('tbody');
         if (!tbody) {
             var rows = gridElement.querySelectorAll('tr');
-            if (rows.length === 0) {
-                console.error("테이블 행을 찾을 수 없습니다");
-                return;
-            }
+                    if (rows.length === 0) {
+            return;
+        }
             // 첫 번째 행이 헤더일 가능성이 높으므로 제외
             rows = Array.from(rows).slice(1);
         } else {
@@ -1492,7 +1487,6 @@ scwin.addTooltipEvents = function () {
         }
 
         if (rows.length === 0) {
-            console.error("데이터 행을 찾을 수 없습니다");
             return;
         }
 
@@ -1612,7 +1606,7 @@ scwin.applyConstraintStylesOnly = function () {
                         gv_pivotSchedule.setCellBackgroundColor(row, colID, "#fff3e0");
                     }
                 } catch (e) {
-                    console.error(`배경색 설정 실패: row=${row}, col=${colID}`, e);
+                    // 배경색 설정 실패 무시
                 }
             }
         }
@@ -1740,7 +1734,7 @@ scwin.dl_pivotData_oncelldatachange = function (row, col, newValue, oldValue) {
             scwin.updateSummaryFromPivot();
             scwin.refreshGridStyles();
         } catch (e) {
-            console.error("업데이트 중 오류:", e);
+            // 업데이트 중 오류 무시
         } finally {
             scwin.isUpdating = false;
         }
@@ -2067,7 +2061,7 @@ scwin.refreshGrids = function () {
                     });
                 }
             } catch (e) {
-                console.log("그리드 스크롤 설정 실패:", e);
+                // 그리드 스크롤 설정 실패 무시
             }
         }, 100);
 
@@ -2347,8 +2341,6 @@ scwin.confirmDuty = function () {
 // 헤더 알림 이미지 변경 함수
 scwin.updateHeaderAlarmIcon = function () {
     try {
-        console.log("=== 헤더 알림 이미지 변경 시작 ===");
-
         // 여러 방법으로 알림 이미지 찾기
         var alarmImage = null;
 
@@ -2377,8 +2369,6 @@ scwin.updateHeaderAlarmIcon = function () {
         }
 
         if (alarmImage) {
-            console.log("알림 이미지 발견, newalarm으로 변경");
-
             // 이미지 소스 변경
             alarmImage.setAttribute("src", "/InsWebApp/images/newalarm.png");
 
@@ -2388,30 +2378,15 @@ scwin.updateHeaderAlarmIcon = function () {
             alarmImage.style.boxShadow = "0 0 10px #FF0000";
             alarmImage._badgeActive = true;
 
-            console.log("알림 이미지 변경 완료");
-
-            // 변경 확인을 위한 로그
-            setTimeout(function () {
-                console.log("변경된 이미지 src:", alarmImage.getAttribute("src"));
-                console.log("변경된 이미지 스타일:", alarmImage.style.cssText);
-            }, 100);
-
-        } else {
-            console.log("알림 이미지를 찾을 수 없습니다. 모든 이미지 요소:");
-            var allImages = document.querySelectorAll("xf\\:image, img");
-            for (var i = 0; i < allImages.length; i++) {
-                console.log("이미지", i, ":", allImages[i].id, allImages[i].getAttribute("src"));
-            }
         }
 
     } catch (error) {
-        console.error("헤더 알림 이미지 변경 중 오류:", error);
+        // 헤더 알림 이미지 변경 중 오류 무시
     }
 };
 
 // 테스트용 함수 (개발 중에 사용)
 scwin.testAlarmIconChange = function () {
-    console.log("=== 테스트: 알림 이미지 변경 ===");
     scwin.updateHeaderAlarmIcon();
 };
 
@@ -2626,8 +2601,6 @@ scwin.applyHopeDataToPivot = function (hopeData) {
                 // 희망 현황으로 적용된 셀 표시
                 scwin.hopeCells[cellKey] = true;
             }
-        } else {
-            console.warn(`간호사 ID ${nurseId}에 해당하는 행을 찾을 수 없습니다.`);
         }
     }
 
@@ -2708,8 +2681,6 @@ scwin.forceHopeTextColor = function () {
                         cell.replaceChild(span, textNode);
                     }
                 });
-            } else {
-                console.error(`셀을 찾을 수 없음: row=${rowIndex}, col=${colIndex}`);
             }
         }
     }
@@ -2737,8 +2708,6 @@ scwin.forceHopeTextColor = function () {
                     input.style.setProperty('color', '#000000', 'important');
                     input.style.setProperty('font-weight', 'bold', 'important');
                 }
-            } else {
-                console.error(`셀을 찾을 수 없음: row=${rowIndex}, col=${colIndex}`);
             }
         }
     }
@@ -2795,8 +2764,6 @@ scwin.addHopeCellHighPriorityStyle = function () {
                     var cell = gridElement.rows[rowIndex].cells[colIndex];
                     cell.classList.remove('user-edited-text');
                     cell.classList.add('hope-text-priority');
-                } else {
-                    console.error(`CSS 클래스 적용 실패: row=${rowIndex}, col=${colIndex}`);
                 }
             }
         }

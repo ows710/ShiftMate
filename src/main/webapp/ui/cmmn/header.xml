@@ -469,26 +469,17 @@ scwin.generateAlertMessage = function () {
 // ========== 알림 모달 관리 함수 ==========
 // 알림 모달 표시
 scwin.showNotificationModal = function () {
-    console.log("=== 헤더 알림 모달 표시 시도 ===");
-
     try {
-        // 먼저 알림 데이터 확인
-        console.log("현재 알림 개수:", scwin.notifications.length);
-
         // DOM 기반 커스텀 모달로 직접 표시
         scwin.showCustomModal();
 
     } catch (e) {
-        console.log("모달 표시 중 오류 발생:", e.message);
-        console.log("alert로 대체 표시");
         scwin.showAlertNotification();
     }
 };
 
 // 커스텀 DOM 모달로 표시
 scwin.showCustomModal = function () {
-    console.log("=== 헤더 커스텀 모달 생성 시작 ===");
-
     try {
         // 기존 모달이 있으면 제거
         var existingModal = document.getElementById(scwin.CONFIG.MODAL.ID);
@@ -498,8 +489,6 @@ scwin.showCustomModal = function () {
 
         var unreadCount = scwin.getUnreadCount();
         var notificationHtml = scwin.generateNotificationHTML();
-
-        console.log("알림 HTML 생성 완료, 총 " + scwin.notifications.length + "개");
 
         // 모달 HTML 생성
         var modalHtml =
@@ -519,7 +508,7 @@ scwin.showCustomModal = function () {
 
             // 버튼 영역
             "<div style='border-top: 1px solid #eee; padding: 15px 20px; text-align: right; background-color: #f9f9f9;'>" +
-            "<button onclick='console.log(\"닫기 버튼 클릭됨\"); closeCustomModal();' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>닫기</button>" +
+            "<button onclick='closeCustomModal();' style='background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;'>닫기</button>" +
             "</div>" +
 
             "</div>" +
@@ -527,8 +516,6 @@ scwin.showCustomModal = function () {
 
         // DOM에 추가
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        console.log("헤더 커스텀 모달 생성 완료");
 
         // 이벤트 리스너 등록
         scwin.attachModalEventListeners();
@@ -538,23 +525,17 @@ scwin.showCustomModal = function () {
             scwin.markAllAsRead();
         }, 10000); // 10초로 변경
 
-        console.log("=== 헤더 커스텀 모달 표시 완료 ===");
-
     } catch (e) {
-        console.log("커스텀 모달 생성 중 오류:", e.message);
         scwin.showAlertNotification();
     }
 };
 
 // Alert로 알림 표시 (대체 방법)
 scwin.showAlertNotification = function () {
-    console.log("=== Alert로 헤더 알림 표시 시작 ===");
-
     try {
         var message = scwin.generateAlertMessage();
         var unreadCount = scwin.getUnreadCount();
 
-        console.log("Alert 창 표시, 미읽음 " + unreadCount + "개");
         alert(message);
 
         // 1초 후 모든 알림을 읽음 처리
@@ -562,10 +543,7 @@ scwin.showAlertNotification = function () {
             scwin.markAllAsRead();
         }, 1000);
 
-        console.log("=== Alert 헤더 알림 표시 완료 ===");
-
     } catch (e) {
-        console.log("Alert 표시 중 오류:", e.message);
         // 최후의 수단
         alert("알림 표시 중 오류가 발생했습니다.\n현재 " + scwin.notifications.length + "개의 알림이 있습니다.\n개발자 도구 콘솔을 확인해주세요.");
     }
@@ -585,7 +563,6 @@ scwin.markAllAsRead = function () {
 
     if (hasChanges) {
         scwin.updateNotificationBadge();
-        console.log("모든 헤더 알림을 읽음 처리 완료");
     }
 };
 
@@ -595,7 +572,6 @@ scwin.markNotificationAsRead = function (notificationId) {
         if (scwin.notifications[i].id === notificationId && !scwin.notifications[i].isRead) {
             scwin.notifications[i].isRead = true;
             scwin.updateNotificationBadge();
-            console.log("알림 읽음 처리:", notificationId);
 
             // 모달 새로고침하여 색상 변경
             scwin.refreshModal();
@@ -620,7 +596,6 @@ scwin.updateNotificationBadge = function () {
 
         var btnAlarm = scwin._btnAlarmCache;
         if (!btnAlarm) {
-            console.log("헤더 알림 버튼을 찾을 수 없습니다");
             return;
         }
 
@@ -653,7 +628,7 @@ scwin.updateNotificationBadge = function () {
                     countElement.setValue(unreadCount.toString());
                 }
 
-                console.log("헤더 알림 배지 활성화 (" + unreadCount + "개 미읽음)");
+                // 헤더 알림 배지 활성화
             } else {
                 // 미읽은 알림이 없으면 원래 상태
                 if (btnAlarm.setStyle) {
@@ -668,8 +643,6 @@ scwin.updateNotificationBadge = function () {
                 if (badgeElement) {
                     badgeElement.style.display = "none";
                 }
-
-                console.log("헤더 알림 배지 비활성화");
             }
         } else if (shouldShowBadge && countElement) {
             // 배지가 이미 표시되어 있지만 숫자가 다른 경우 업데이트
@@ -677,7 +650,7 @@ scwin.updateNotificationBadge = function () {
         }
 
     } catch (e) {
-        console.log("배지 업데이트 중 오류:", e.message);
+        // 배지 업데이트 중 오류
     }
 };
 
@@ -685,17 +658,13 @@ scwin.updateNotificationBadge = function () {
 
 // 간단한 모달 닫기 함수 (테스트용)
 scwin.simpleCloseModal = function () {
-    console.log("간단한 모달 닫기 시도");
     try {
         var modal = document.getElementById("header_notification_modal");
         if (modal) {
             modal.style.display = 'none';
-            console.log("모달을 display none으로 숨김 완료");
-        } else {
-            console.log("모달을 찾을 수 없음");
         }
     } catch (e) {
-        console.log("간단한 모달 닫기 오류:", e.message);
+        // 간단한 모달 닫기 오류
     }
 };
 
@@ -715,7 +684,6 @@ scwin.refreshModal = function () {
 
 // 커스텀 모달 닫기 (개선된 버전)
 scwin.closeCustomModal = function () {
-    console.log("헤더 커스텀 모달 닫기");
     try {
         var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
         if (modal) {
@@ -725,21 +693,17 @@ scwin.closeCustomModal = function () {
             } else {
                 modal.remove();
             }
-            console.log("헤더 커스텀 모달 제거 완료");
-        } else {
-            console.log("모달을 찾을 수 없습니다");
         }
     } catch (e) {
-        console.log("모달 닫기 중 오류:", e.message);
+        // 모달 닫기 중 오류
         // 최후의 수단: display none으로 숨기기
         try {
             var modal = document.getElementById(scwin.CONFIG.MODAL.ID);
             if (modal) {
                 modal.style.display = 'none';
-                console.log("모달을 display none으로 숨김");
             }
         } catch (e2) {
-            console.log("모달 숨기기 실패:", e2.message);
+            // 모달 숨기기 실패
         }
     }
 };
@@ -749,15 +713,13 @@ window.closeCustomModal = function () {
     if (scwin && scwin.closeCustomModal) {
         scwin.closeCustomModal();
     } else {
-        console.log("전역 closeCustomModal 호출");
         try {
             var modal = document.getElementById("header_notification_modal");
             if (modal) {
                 modal.style.display = 'none';
-                console.log("전역 함수로 모달 숨김 완료");
             }
         } catch (e) {
-            console.log("전역 함수 오류:", e.message);
+            // 전역 함수 오류
         }
     }
 };
@@ -786,20 +748,17 @@ scwin.attachModalEventListeners = function () {
 };
 
 scwin.onpageload = function () {
-    console.log("헤더 초기화 완료");
     // 초기 상태 설정
     scwin.hideUserMenu();
 
     // 알림 시스템 초기화
     setTimeout(function () {
         try {
-            console.log("헤더 알림 시스템 초기화 중...");
             if (scwin.updateNotificationBadge) {
                 scwin.updateNotificationBadge();
-                console.log("헤더 알림 배지 초기화 완료");
             }
         } catch (e) {
-            console.log("알림 시스템 초기화 중 오류:", e.message);
+            // 알림 시스템 초기화 중 오류
         }
     }, 100);
 
@@ -813,26 +772,19 @@ scwin.onpageload = function () {
             var session = $w.getSession();
             if (session && session.userId) {
                 loggedInUserId = session.userId;
-                console.log("세션에서 userId 가져옴:", loggedInUserId);
             } else if (session && session.empno) {
                 loggedInUserId = session.empno;
-                console.log("세션에서 empno 가져옴:", loggedInUserId);
-            } else {
-                console.log("세션 정보:", session);
             }
         }
 
         // 세션에서 가져오지 못한 경우 기본값 사용
         if (!loggedInUserId) {
             loggedInUserId = "1111"; // 임시 기본값
-            console.log("세션에서 userId를 찾을 수 없어 기본값 사용:", loggedInUserId);
         } else {
-            console.log("세션에서 가져온 사용자 ID:", loggedInUserId);
             // nurseId로 사용할 값 설정 (로그인 ID에서 숫자 부분만 추출)
             var nurseId = loggedInUserId.replace(/[^0-9]/g, '');
             if (nurseId) {
                 loggedInUserId = nurseId;
-                console.log("nurseId로 변환된 값:", loggedInUserId);
             }
         }
 
@@ -843,24 +795,20 @@ scwin.onpageload = function () {
         // 서브미션 실행
         $c.sbm.execute(sbm_selectNurse);
     } catch (e) {
-        console.log("사용자 정보 로드 중 오류:", e.message);
+        // 사용자 정보 로드 중 오류
     }
 };
 
 scwin.toggleSidebar = function () {
-    console.log("햄버거 아이콘 클릭됨 - 사이드바 토글 시도");
-
     var success = false;
 
     // 방법 1: 부모 프레임에서 직접 함수 호출
     try {
         if (window.parent && window.parent.scwin && window.parent.scwin.toggleSidebar) {
             window.parent.scwin.toggleSidebar();
-            console.log("✅ 방법 1 성공: parent.scwin.toggleSidebar");
             success = true;
         }
     } catch (e) {
-        console.log("방법 1 실패:", e);
     }
 
     // 방법 2: 전역 함수로 등록된 함수 호출
@@ -868,11 +816,9 @@ scwin.toggleSidebar = function () {
         try {
             if (window.parent && window.parent.toggleSidebarFromHeader) {
                 window.parent.toggleSidebarFromHeader();
-                console.log("✅ 방법 2 성공: parent.toggleSidebarFromHeader");
                 success = true;
             }
         } catch (e) {
-            console.log("방법 2 실패:", e);
         }
     }
 
@@ -881,11 +827,9 @@ scwin.toggleSidebar = function () {
         try {
             if (window.top && window.top.scwin && window.top.scwin.toggleSidebar) {
                 window.top.scwin.toggleSidebar();
-                console.log("✅ 방법 3 성공: top.scwin.toggleSidebar");
                 success = true;
             }
         } catch (e) {
-            console.log("방법 3 실패:", e);
         }
     }
 
@@ -896,15 +840,12 @@ scwin.toggleSidebar = function () {
                 action: 'toggleSidebar',
                 source: 'header'
             }, '*');
-            console.log("✅ 방법 4 성공: postMessage 전송");
             success = true;
         } catch (e) {
-            console.log("방법 4 실패:", e);
         }
     }
 
     if (!success) {
-        console.error("❌ 모든 통신 방법 실패");
         alert("사이드바 토글 기능에 문제가 있습니다. 페이지를 새로고침해주세요.");
     }
 };
@@ -917,23 +858,18 @@ scwin.updateHamburgerIcon = function (isVisible) {
             if (isVisible) {
                 // 사이드바가 열려있을 때 → X 모양 유지 (collapsed 클래스 제거)
                 hamburgerMenu.classList.remove('collapsed');
-                console.log("✅ 햄버거 아이콘: X 모양 (사이드바 열림)");
             } else {
                 // 사이드바가 닫혀있을 때 → 일반 햄버거 아이콘 (collapsed 클래스 추가)
                 hamburgerMenu.classList.add('collapsed');
-                console.log("✅ 햄버거 아이콘: 일반 모양 (사이드바 닫힘)");
             }
         }
     } catch (e) {
-        console.error("햄버거 아이콘 업데이트 오류:", e);
     }
 };
 
 // 알림 토글 함수는 alarm_onclick으로 대체됨
 
 scwin.toggleUserMenu = function () {
-    console.log("사용자 메뉴 토글 함수 호출");
-
     // 이벤트 전파 중단 (body 클릭 이벤트 방지)
     if (event) {
         event.stopPropagation();
@@ -948,19 +884,14 @@ scwin.toggleUserMenu = function () {
 };
 
 scwin.showUserMenu = function () {
-    console.log("사용자 메뉴 표시 시도");
-
     try {
         // 디버깅: 모든 user-dropdown 요소 찾기
         var allDropdowns = document.querySelectorAll('.user-dropdown');
-        console.log("찾은 user-dropdown 요소 개수:", allDropdowns.length);
 
         // 여러 방법으로 드롭다운 메뉴 찾기
         var dropdown = document.getElementById('userDropdown') ||
             document.querySelector('.user-dropdown') ||
             document.querySelector('[id="userDropdown"]');
-
-        console.log("주요 드롭다운 요소:", dropdown);
 
         if (dropdown) {
             // display를 먼저 block으로 설정
@@ -972,12 +903,8 @@ scwin.showUserMenu = function () {
             // 클래스 추가
             dropdown.classList.add('show');
 
-            console.log("✅ 사용자 메뉴 표시 완료");
-            console.log("드롭다운 스타일:", dropdown.style.cssText);
             scwin.userMenuVisible = true;
         } else {
-            console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
-
             // 대체 방법: 모든 user-dropdown 클래스 요소에 적용
             for (var i = 0; i < allDropdowns.length; i++) {
                 var element = allDropdowns[i];
@@ -986,19 +913,14 @@ scwin.showUserMenu = function () {
                 element.style.opacity = '1';
                 element.style.zIndex = '9999';
                 element.classList.add('show');
-                console.log("요소 " + i + " 스타일 적용:", element.style.cssText);
             }
-            console.log("대체 방법으로 " + allDropdowns.length + "개 메뉴 표시");
             scwin.userMenuVisible = true;
         }
     } catch (e) {
-        console.log("사용자 메뉴 표시 오류:", e);
     }
 };
 
 scwin.hideUserMenu = function () {
-    console.log("사용자 메뉴 숨김 시도");
-
     try {
         // 여러 방법으로 드롭다운 메뉴 찾기
         var dropdown = document.getElementById('userDropdown') ||
@@ -1014,11 +936,8 @@ scwin.hideUserMenu = function () {
             dropdown.style.visibility = 'hidden';
             dropdown.style.opacity = '0';
 
-            console.log("✅ 사용자 메뉴 숨김 완료");
             scwin.userMenuVisible = false;
         } else {
-            console.log("❌ 사용자 드롭다운 메뉴를 찾을 수 없습니다");
-
             // 대체 방법: 모든 user-dropdown 클래스 요소에 적용
             var elements = document.querySelectorAll('.user-dropdown');
             for (var i = 0; i < elements.length; i++) {
@@ -1027,17 +946,13 @@ scwin.hideUserMenu = function () {
                 elements[i].style.visibility = 'hidden';
                 elements[i].style.opacity = '0';
             }
-            console.log("대체 방법으로 " + elements.length + "개 메뉴 숨김");
             scwin.userMenuVisible = false;
         }
     } catch (e) {
-        console.log("사용자 메뉴 숨김 오류:", e);
     }
 };
 
 scwin.logout = function () {
-    console.log("로그아웃 함수 호출됨");
-
     // 이벤트 전파 중단
     if (event) {
         event.stopPropagation();
@@ -1045,17 +960,13 @@ scwin.logout = function () {
     }
 
     try {
-        console.log("로그아웃 처리 시작");
-
         // 사용자 메뉴 숨기기
         scwin.hideUserMenu();
 
         // 바로 로그인 페이지로 리다이렉트
         window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
-        console.log("로그인 페이지로 리다이렉트 완료");
 
     } catch (e) {
-        console.log("로그아웃 처리 중 오류:", e.message);
         // 오류 발생 시에도 로그인 페이지로 이동
         window.location.href = "/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/user/Login.xml";
     }
@@ -1063,8 +974,6 @@ scwin.logout = function () {
 
 // 외부 클릭 시 메뉴 닫기
 scwin.closeMenus = function () {
-    console.log("메뉴 닫기 함수 호출됨");
-
     // 사용자 메뉴가 열려있을 때만 닫기
     if (scwin.userMenuVisible) {
         scwin.hideUserMenu();
@@ -1074,33 +983,23 @@ scwin.closeMenus = function () {
 // 로고 클릭 시 홈으로 이동
 scwin.goToHome = function () {
     try {
-        console.log("로고 클릭 - 홈으로 이동");
-        window.location.href = "http://shiftmate:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/mkduty.xml";
+        window.location.href = "http://shiftmate:9093/InsWebApp/websquare/websquare.html?w2xPath=/InsWebApp/ui/layout/MainPage.xml";
     } catch (e) {
-        console.error("홈 이동 오류:", e);
         alert("페이지 이동 중 오류가 발생했습니다.");
     }
 };
 
 scwin.alarm_onclick = function (e) {
-    console.log("=== 헤더 알림 버튼 클릭됨 ===");
-
     try {
-        console.log("현재 헤더 알림 개수:", scwin.notifications.length);
         scwin.showNotificationModal();
     } catch (error) {
-        console.log("버튼 클릭 처리 중 오류:", error.message);
         scwin.showAlertNotification();
     }
 };
 
 scwin.sbm_selectNurse_submitdone = function (e) {
-    console.log("=== 헤더 사용자 정보 응답 처리 시작 ===");
-    console.log("전체 응답 객체:", e);
-
     // 서버 오류 체크
     if (e.responseJSON && e.responseJSON.elHeader && e.responseJSON.elHeader.resSuc === false) {
-        console.log("서버 오류 발생:", e.responseJSON.elHeader.resMsg);
         // 기본값 설정
         dma_nurse.set("nurseId", "1111");
         dma_nurse.set("nurseName", "김간호");
@@ -1112,32 +1011,20 @@ scwin.sbm_selectNurse_submitdone = function (e) {
     // 성공적인 응답 처리 (NurseVo 객체)
     if (e.responseJSON) {
         var userInfo = e.responseJSON.elData;
-        console.log("서버에서 받은 사용자 정보:", userInfo);
-        console.log("nurseName 값:", userInfo.nurseName);
-        console.log("position 값:", userInfo.position);
 
         dma_nurse.set("nurseId", userInfo.nurseId);
         dma_nurse.set("nurseName", userInfo.nurseName || "");
         dma_nurse.set("position", userInfo.position || "");
 
-        console.log("헤더 사용자 정보 설정 완료:", userInfo.nurseName, userInfo.position);
-        console.log("dma_nurse 현재 값:", dma_nurse.getJSON());
-
         // 데이터 변경 알림
         dma_nurse.broadcast();
     } else {
-        console.log("사용자 정보를 찾을 수 없습니다. 서버 응답:", e.responseJSON);
-        console.log("e.responseJSON.nurseName 존재 여부:", e.responseJSON && e.responseJSON.nurseName);
-        console.log("e.responseJSON 키들:", e.responseJSON ? Object.keys(e.responseJSON) : "undefined");
-
         // 기본값 설정
         dma_nurse.set("nurseId", loggedInUserId || "1111");
         dma_nurse.set("nurseName", "김간호");
         dma_nurse.set("position", "수간호사");
         dma_nurse.broadcast();
     }
-
-    console.log("=== 헤더 사용자 정보 응답 처리 완료 ===");
 };
 ]]></script>
 	</head>

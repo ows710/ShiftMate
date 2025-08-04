@@ -72,7 +72,6 @@
 // scwin 객체 초기화 확인 및 생성
 if (typeof scwin === 'undefined') {
     var scwin = {};
-    console.log("scwin 객체를 새로 생성했습니다.");
 }
 
 // 글로벌 변수 안전하게 초기화
@@ -81,8 +80,6 @@ scwin.nurseData = scwin.nurseData || []; // 간호사 데이터 저장용
 scwin.isExcelUploaded = scwin.isExcelUploaded || false; // 엑셀 업로드 여부
 
 scwin.onpageload = function (e) {
-    console.log("=== NurseManage 페이지 로드 시작 ===");
-
     // 폼 초기화
     scwin.fn_clearForm();
 
@@ -90,46 +87,38 @@ scwin.onpageload = function (e) {
     scwin.fn_loadSavedData();
 
     // WebSquare 컴포넌트 완전 로드 대기 후 날짜 설정
-    console.log("WebSquare 컴포넌트 로드 대기 시작...");
     scwin.waitForWebSquareComponents();
 
     // 현재 날짜 설정 (즉시 실행 - 백업용)
-    console.log("현재 날짜 설정 시도 1...");
     scwin.fn_setCurrentDate();
 
     // DOM이 완전히 로드된 후 다시 한번 날짜 설정 (안전장치)
     setTimeout(function () {
-        console.log("현재 날짜 설정 시도 2...");
         scwin.fn_setCurrentDate();
     }, 100);
 
     // 추가 안전장치 - 500ms 후
     setTimeout(function () {
-        console.log("현재 날짜 설정 시도 3...");
         scwin.fn_setCurrentDate();
     }, 500);
 
     // 추가 안전장치 - 1초 후
     setTimeout(function () {
-        console.log("현재 날짜 설정 시도 4...");
         scwin.fn_setCurrentDate();
     }, 1000);
 
     // 추가 안전장치 - 2초 후
     setTimeout(function () {
-        console.log("현재 날짜 설정 시도 5...");
         scwin.fn_setCurrentDate();
     }, 2000);
 
     // 추가 안전장치 - 3초 후
     setTimeout(function () {
-        console.log("현재 날짜 설정 시도 6...");
         scwin.fn_setCurrentDate();
     }, 3000);
 
     // 현재 날짜 자동 업데이트 (1분마다)
     setInterval(function () {
-        console.log("현재 날짜 자동 업데이트...");
         scwin.fn_setCurrentDate();
     }, 60000); // 60초 = 1분
 
@@ -142,23 +131,17 @@ scwin.onpageload = function (e) {
 
 // DOM 완전 로드 이벤트 리스너 추가
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("=== DOMContentLoaded 이벤트 발생 ===");
-    console.log("DOM 완전 로드 후 날짜 설정 시도...");
     scwin.fn_setCurrentDate();
 });
 
 // window load 이벤트 리스너 추가
 window.addEventListener('load', function () {
-    console.log("=== window load 이벤트 발생 ===");
-    console.log("모든 리소스 로드 후 날짜 설정 시도...");
     scwin.fn_setCurrentDate();
 });
 
 // WebSquare 특화 이벤트 리스너
 if (typeof w2 !== 'undefined' && w2.onload) {
     w2.onload = function () {
-        console.log("=== WebSquare onload 이벤트 발생 ===");
-        console.log("WebSquare 완전 로드 후 날짜 설정 시도...");
         scwin.fn_setCurrentDate();
     };
 }
@@ -188,7 +171,6 @@ if (typeof w2 !== 'undefined' && w2.onload) {
             if (txt_currentDate && txt_currentDate.setValue) {
                 txt_currentDate.setValue(currentDate);
                 txt_currentDate.setLabel(currentDate);
-                console.log("✅ 현재 날짜 설정 완료:", currentDate);
                 return;
             }
 
@@ -197,7 +179,6 @@ if (typeof w2 !== 'undefined' && w2.onload) {
             if (dateElement) {
                 dateElement.textContent = currentDate;
                 dateElement.setAttribute('label', currentDate);
-                console.log("✅ 현재 날짜 설정 완료 (DOM):", currentDate);
                 return;
             }
 
@@ -206,14 +187,11 @@ if (typeof w2 !== 'undefined' && w2.onload) {
             if (w2Element) {
                 w2Element.textContent = currentDate;
                 w2Element.setAttribute('label', currentDate);
-                console.log("✅ 현재 날짜 설정 완료 (WebSquare ID):", currentDate);
                 return;
             }
 
-            console.warn("⚠️ 날짜 표시 요소를 찾을 수 없습니다: txt_currentDate");
-
         } catch (e) {
-            console.error("❌ 현재 날짜 설정 오류:", e);
+            // 날짜 설정 오류 처리
         }
     };
 
@@ -233,18 +211,14 @@ if (typeof w2 !== 'undefined' && w2.onload) {
 
 // WebSquare 컴포넌트 완전 로드 대기 함수
 scwin.waitForWebSquareComponents = function () {
-    console.log("=== WebSquare 컴포넌트 로드 대기 시작 ===");
-
     var attempts = 0;
     var maxAttempts = 50; // 최대 5초 대기
 
     var checkComponents = function () {
         attempts++;
-        console.log("WebSquare 컴포넌트 확인 시도:", attempts + "/" + maxAttempts);
 
         // txt_currentDate 컴포넌트가 완전히 로드되었는지 확인
         if (typeof txt_currentDate !== 'undefined' && txt_currentDate && txt_currentDate.setValue) {
-            console.log("✅ WebSquare 컴포넌트 로드 완료!");
             scwin.fn_setCurrentDate();
             return;
         }
@@ -252,7 +226,6 @@ scwin.waitForWebSquareComponents = function () {
         if (attempts < maxAttempts) {
             setTimeout(checkComponents, 100);
         } else {
-            console.warn("⚠️ WebSquare 컴포넌트 로드 타임아웃!");
             // 타임아웃되어도 시도
             scwin.fn_setCurrentDate();
         }
@@ -263,69 +236,37 @@ scwin.waitForWebSquareComponents = function () {
 
 // 현재 날짜 설정
 scwin.fn_setCurrentDate = function () {
-    console.log("=== 현재 날짜 설정 함수 시작 ===");
-
     var now = new Date();
     var year = now.getFullYear();
     var month = String(now.getMonth() + 1).padStart(2, '0');
     var day = String(now.getDate()).padStart(2, '0');
     var currentDate = year + "-" + month + "-" + day;
 
-    console.log("생성된 날짜:", currentDate);
-    console.log("현재 시간:", now.toLocaleString());
-
     try {
         // 방법 1: WebSquare 컴포넌트로 직접 접근
-        console.log("방법 1 시도: WebSquare 컴포넌트 직접 접근");
-        console.log("txt_currentDate 존재:", typeof txt_currentDate !== 'undefined');
-        console.log("txt_currentDate 값:", txt_currentDate);
-
         if (txt_currentDate && txt_currentDate.setValue) {
-            console.log("txt_currentDate.setValue 함수 존재:", typeof txt_currentDate.setValue === 'function');
             txt_currentDate.setValue(currentDate);
             txt_currentDate.setLabel(currentDate);
-            console.log("✅ 현재 날짜 설정 완료 (WebSquare):", currentDate);
             return;
-        } else {
-            console.log("❌ txt_currentDate가 없거나 setValue 함수가 없음");
         }
 
         // 방법 2: DOM 요소로 직접 접근
-        console.log("방법 2 시도: DOM 요소 직접 접근");
         var dateElement = document.getElementById('txt_currentDate');
-        console.log("DOM 요소 찾기 결과:", dateElement);
-
         if (dateElement) {
-            console.log("DOM 요소 속성들:", {
-                tagName: dateElement.tagName,
-                id: dateElement.id,
-                className: dateElement.className,
-                textContent: dateElement.textContent
-            });
             dateElement.textContent = currentDate;
             dateElement.setAttribute('label', currentDate);
-            console.log("✅ 현재 날짜 설정 완료 (DOM):", currentDate);
             return;
-        } else {
-            console.log("❌ DOM에서 txt_currentDate 요소를 찾을 수 없음");
         }
 
         // 방법 3: WebSquare ID 패턴으로 검색
-        console.log("방법 3 시도: WebSquare ID 패턴 검색");
         var w2Element = document.getElementById('mf_txt_currentDate');
-        console.log("WebSquare ID 패턴 검색 결과:", w2Element);
-
         if (w2Element) {
             w2Element.textContent = currentDate;
             w2Element.setAttribute('label', currentDate);
-            console.log("✅ 현재 날짜 설정 완료 (WebSquare ID):", currentDate);
             return;
-        } else {
-            console.log("❌ WebSquare ID 패턴으로도 요소를 찾을 수 없음");
         }
 
         // 방법 4: 모든 가능한 ID 패턴으로 검색
-        console.log("방법 4 시도: 모든 가능한 ID 패턴 검색");
         var allPossibleIds = [
             'txt_currentDate',
             'mf_txt_currentDate',
@@ -335,40 +276,24 @@ scwin.fn_setCurrentDate = function () {
 
         for (var i = 0; i < allPossibleIds.length; i++) {
             var element = document.getElementById(allPossibleIds[i]);
-            console.log("ID '" + allPossibleIds[i] + "' 검색 결과:", element);
             if (element) {
                 element.textContent = currentDate;
                 element.setAttribute('label', currentDate);
-                console.log("✅ 현재 날짜 설정 완료 (ID 패턴 " + allPossibleIds[i] + "):", currentDate);
                 return;
             }
         }
 
         // 방법 5: querySelector로 부분 매칭 검색
-        console.log("방법 5 시도: querySelector 부분 매칭 검색");
         var partialElement = document.querySelector('[id*="currentDate"]');
-        console.log("부분 매칭 검색 결과:", partialElement);
-
         if (partialElement) {
             partialElement.textContent = currentDate;
             partialElement.setAttribute('label', currentDate);
-            console.log("✅ 현재 날짜 설정 완료 (부분 매칭):", currentDate);
             return;
         }
 
-        console.warn("⚠️ 모든 방법으로 시도했지만 날짜 표시 요소를 찾을 수 없습니다");
-        console.log("페이지의 모든 ID 목록:");
-        var allElements = document.querySelectorAll('[id]');
-        for (var j = 0; j < Math.min(allElements.length, 20); j++) {
-            console.log("  - " + allElements[j].tagName + "#" + allElements[j].id);
-        }
-
     } catch (e) {
-        console.error("❌ 현재 날짜 설정 오류:", e);
-        console.error("오류 스택:", e.stack);
+        // 날짜 설정 오류 처리
     }
-
-    console.log("=== 현재 날짜 설정 함수 종료 ===");
 };
 
 // 업로드 버튼 비활성화
@@ -379,8 +304,6 @@ scwin.fn_disableUploadButton = function () {
         btn_excel.setStyle("color", "#666");
         btn_excel.setStyle("cursor", "not-allowed");
     }
-
-    console.log("엑셀 업로드 버튼이 비활성화되었습니다.");
 };
 
 // 업로드 버튼 활성화
@@ -391,8 +314,6 @@ scwin.fn_enableUploadButton = function () {
         btn_excel.setStyle("color", "");
         btn_excel.setStyle("cursor", "");
     }
-
-    console.log("엑셀 업로드 버튼이 활성화되었습니다.");
 };
 
 // 저장된 데이터 로드 (localStorage 사용)
@@ -406,13 +327,13 @@ scwin.fn_loadSavedData = function () {
             var parsedData = JSON.parse(savedData);
             if (Array.isArray(parsedData) && parsedData.length > 0) {
                 scwin.nurseData = parsedData;
-                console.log("✅ 저장된 간호사 데이터 로드 성공:", scwin.nurseData.length + "건");
+
 
                 // nurseCounter 재설정 (기존 데이터 수 + 1)
                 scwin.nurseCounter = scwin.nurseData.length + 1;
-                console.log("nurseCounter 설정:", scwin.nurseCounter);
+
             } else {
-                console.log("저장된 데이터가 빈 배열이거나 유효하지 않음");
+
                 scwin.nurseData = [];
                 scwin.nurseCounter = 1;
             }
@@ -420,19 +341,18 @@ scwin.fn_loadSavedData = function () {
             // 저장된 데이터가 없으면 빈 배열로 초기화
             scwin.nurseData = [];
             scwin.nurseCounter = 1;
-            console.log("������ 저장된 데이터 없음 - 빈 목록으로 초기화");
         }
 
         // 엑셀 업로드 상태 복원
         if (uploadStatus === "true") {
             scwin.isExcelUploaded = true;
-            console.log("✅ 엑셀 업로드 상태 복원됨");
+
         } else {
             scwin.isExcelUploaded = false;
         }
 
     } catch (e) {
-        console.error("❌ 데이터 로드 오류:", e);
+
         Swal.fire({
             icon: 'error',
             title: '데이터 로드 오류',
@@ -454,7 +374,7 @@ scwin.fn_loadSavedData = function () {
 // 간호사 목록 조회
 scwin.fn_selectNurseList = function () {
     try {
-        console.log("=== 간호사 목록 조회 시작 ===");
+
 
         // 검색 조건 설정
         var searchData = {
@@ -462,7 +382,7 @@ scwin.fn_selectNurseList = function () {
             scPosition: dmp_nurseVo.get("scPosition") || ""
         };
 
-        console.log("검색 조건:", searchData);
+
 
         // 검색 조건을 dataMap에 설정
         dmp_nurseVo.set("scNurseName", searchData.scNurseName);
@@ -472,7 +392,7 @@ scwin.fn_selectNurseList = function () {
         $c.sbm.execute(sbm_selectNurseList);
 
     } catch (error) {
-        console.error("간호사 목록 조회 오류:", error);
+
         Swal.fire({
             icon: 'error',
             title: '조회 오류',
@@ -485,13 +405,7 @@ scwin.fn_selectNurseList = function () {
 
 // 간호사 목록 조회 완료 (ProWorks 연동)
 scwin.sbm_selectNurseList_submitdone = function (e) {
-    console.log("=== 간호사 목록 조회 응답 수신 ===");
-    console.log("응답 객체:", e);
-    console.log("서브미션 결과 ", e.responseJSON.nurseListVo.nurseVoList);
-
     dlt_nurseList.setJSON(e.responseJSON.nurseListVo.nurseVoList);
-
-    console.log("전체조회 완료 - 총 " + e.responseJSON.nurseListVo.nurseVoList.length + "건");
     /* Swal.fire({
         icon: 'success',
         title: '전체조회 완료',
@@ -504,10 +418,6 @@ scwin.sbm_selectNurseList_submitdone = function (e) {
 
 // 간호사 목록 조회 에러 처리
 scwin.sbm_selectNurseList_submiterror = function (e) {
-    console.error("=== 간호사 목록 조회 에러 ===");
-    console.error("에러 객체:", e);
-    console.error("에러 상태:", e.status);
-    console.error("에러 메시지:", e.statusText);
 
     Swal.fire({
         icon: 'error',
@@ -521,8 +431,7 @@ scwin.sbm_selectNurseList_submiterror = function (e) {
 // 간호사 상세 조회
 scwin.fn_selectNurse = function (nurseName, position, career, specialNote, hireDate) {
     try {
-        console.log("=== 간호사 상세 조회 시작 ===");
-        console.log("조회할 간호사명:", nurseName + "," + position + "," + career + "," + specialNote + "," + hireDate);
+
 
         // 조회할 간호사 정보 설정
         dmp_nurseVo.set("nurseName", nurseName);
@@ -532,7 +441,7 @@ scwin.fn_selectNurse = function (nurseName, position, career, specialNote, hireD
         dmp_nurseVo.set("hireDate", hireDate);
 
     } catch (error) {
-        console.error("간호사 상세 조회 오류:", error);
+
         Swal.fire({
             icon: 'error',
             title: '조회 오류',
@@ -545,18 +454,15 @@ scwin.fn_selectNurse = function (nurseName, position, career, specialNote, hireD
 
 // 간호사 상세 조회 완료 (ProWorks 연동)
 scwin.sbm_selectNurse_submitdone = function (e) {
-    console.log("=== 간호사 상세 조회 응답 수신 ===");
-    console.log("응답 객체:", e);
     try {
         var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
 
         if (responseData && responseData.elHeader) {
             var elHeader = responseData.elHeader;
 
             if (elHeader.resSuc === true) {
                 var nurseInfo = responseData.nurseVo;
-                console.log("조회된 간호사 정보:", nurseInfo);
+
 
                 // 폼에 데이터 설정
                 dmp_nurseVo.setJSON(nurseInfo);
@@ -570,7 +476,6 @@ scwin.sbm_selectNurse_submitdone = function (e) {
                 });
 
             } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
                 Swal.fire({
                     icon: 'error',
                     title: '조회 실패',
@@ -580,7 +485,6 @@ scwin.sbm_selectNurse_submitdone = function (e) {
                 });
             }
         } else {
-            console.error("응답 데이터 형식 오류:", responseData);
             Swal.fire({
                 icon: 'error',
                 title: '응답 오류',
@@ -591,7 +495,6 @@ scwin.sbm_selectNurse_submitdone = function (e) {
         }
 
     } catch (error) {
-        console.error("응답 처리 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '처리 오류',
@@ -604,18 +507,14 @@ scwin.sbm_selectNurse_submitdone = function (e) {
 
 // 간호사 등록 완료 (ProWorks 연동)
 scwin.sbm_insertNurse_submitdone = function (e) {
-    console.log("=== 간호사 등록 응답 수신 ===");
-    console.log("응답 객체:", e);
     $c.sbm.execute(sbm_selectNurseList);
     try {
         var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
 
         if (responseData && responseData.elHeader) {
             var elHeader = responseData.elHeader;
 
             if (elHeader.resSuc === true) {
-                console.log("간호사 등록 성공");
 
                 // 폼 초기화
                 scwin.fn_clearForm();
@@ -629,7 +528,6 @@ scwin.sbm_insertNurse_submitdone = function (e) {
                 });
 
             } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
                 Swal.fire({
                     icon: 'error',
                     title: '등록 실패',
@@ -639,7 +537,6 @@ scwin.sbm_insertNurse_submitdone = function (e) {
                 });
             }
         } else {
-            console.error("응답 데이터 형식 오류:", responseData);
             Swal.fire({
                 icon: 'error',
                 title: '응답 오류',
@@ -650,7 +547,6 @@ scwin.sbm_insertNurse_submitdone = function (e) {
         }
 
     } catch (error) {
-        console.error("응답 처리 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '처리 오류',
@@ -664,7 +560,7 @@ scwin.sbm_insertNurse_submitdone = function (e) {
 // 간호사 수정
 scwin.fn_updateNurse = function () {
     try {
-        console.log("=== 간호사 수정 시작 ===");
+
 
         // 폼 검증
         if (!scwin.fn_validateForm()) {
@@ -692,13 +588,13 @@ scwin.fn_updateNurse = function () {
             hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
         };
 
-        console.log("수정할 데이터:", nurseData);
+
 
         // ProWorks 서버 호출
         $c.sbm.execute(sbm_updateNurse);
 
     } catch (error) {
-        console.error("간호사 수정 오류:", error);
+
         Swal.fire({
             icon: 'error',
             title: '수정 오류',
@@ -711,8 +607,6 @@ scwin.fn_updateNurse = function () {
 
 // 간호사 수정 완료 (ProWorks 연동)
 scwin.sbm_updateNurse_submitdone = function (e) {
-    console.log("=== 간호사 수정 응답 수신 ===");
-    console.log("응답 객체:", e);
     Swal.fire({
         icon: 'success',
         title: '수정 완료',
@@ -726,8 +620,7 @@ scwin.sbm_updateNurse_submitdone = function (e) {
 // 간호사 삭제
 scwin.fn_deleteNurse = function (nurseName) {
     try {
-        console.log("=== 간호사 삭제 시작 ===");
-        console.log("삭제할 간호사명:", nurseName);
+
 
         // 삭제할 간호사 정보 설정
         dmp_nurseVo.set("nurseName", nurseName);
@@ -736,7 +629,7 @@ scwin.fn_deleteNurse = function (nurseName) {
         $c.sbm.execute(sbm_deleteNurse);
 
     } catch (error) {
-        console.error("간호사 삭제 오류:", error);
+
         Swal.fire({
             icon: 'error',
             title: '삭제 오류',
@@ -750,8 +643,6 @@ scwin.fn_deleteNurse = function (nurseName) {
 
 // 간호사 삭제 완료 (ProWorks 연동)
 scwin.sbm_deleteNurse_submitdone = function (e) {
-    console.log("=== 간호사 삭제 응답 수신 ===");
-    console.log("응답 객체:", e);
     Swal.fire({
         icon: 'success',
         title: '삭제 완료',
@@ -764,12 +655,8 @@ scwin.sbm_deleteNurse_submitdone = function (e) {
 
 // 검색 버튼 클릭
 scwin.btn_search_onclick = function () {
-    console.log("=== 검색 버튼 클릭 ===");
-    
     var scNurseName = dmp_nurseVo.get("scNurseName") || "";
     var scPosition = dmp_nurseVo.get("scPosition") || "";
-    
-    console.log("검색 조건 - 근무자명:", scNurseName, "직급:", scPosition);
 
     // 검색 조건이 하나도 없으면 안내
     if (scNurseName.trim() === "" && scPosition.trim() === "") {
@@ -787,10 +674,7 @@ scwin.btn_search_onclick = function () {
     dmp_nurseVo.set("scNurseName", scNurseName.trim());
     dmp_nurseVo.set("scPosition", scPosition.trim());
     
-    console.log("검색 조건 설정 완료:", {
-        scNurseName: dmp_nurseVo.get("scNurseName"),
-        scPosition: dmp_nurseVo.get("scPosition")
-    });
+
 
     // 클라이언트 사이드 검색 실행
     scwin.fn_searchNurses(scNurseName.trim(), scPosition.trim());
@@ -799,12 +683,8 @@ scwin.btn_search_onclick = function () {
 // 클라이언트 사이드 검색 함수
 scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
     try {
-        console.log("=== 클라이언트 사이드 검색 시작 ===");
-        console.log("검색 조건 - 근무자명:", searchNurseName, "직급:", searchPosition);
-        
-        var allNurses = [];
-        var rowCount = dlt_nurseList.getRowCount();
-        console.log("전체 행 수:", rowCount);
+            var allNurses = [];
+    var rowCount = dlt_nurseList.getRowCount();
         
         // 모든 데이터 수집
         for (var i = 0; i < rowCount; i++) {
@@ -828,11 +708,9 @@ scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
                     });
                 }
             } catch (error) {
-                console.error("행 " + i + " 데이터 추출 오류:", error);
+                // 행 데이터 추출 오류 처리
             }
         }
-        
-        console.log("전체 간호사 데이터:", allNurses);
         
         // 검색 조건에 맞는 데이터 필터링
         var filteredNurses = allNurses.filter(function(nurse) {
@@ -861,17 +739,13 @@ scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
             }
         });
         
-        console.log("필터링된 결과:", filteredNurses);
-        
         // 검색 결과를 그리드에 표시
         if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
             dlt_nurseList.setJSON(filteredNurses);
-            console.log("검색 결과를 그리드에 설정 완료");
         }
         
         // 검색 결과 안내
         var resultCount = filteredNurses.length;
-        console.log("검색 완료 - 조건: 근무자명='" + searchNurseName + "', 직급='" + searchPosition + "', 결과: " + resultCount + "건");
 
         if (resultCount === 0) {
             Swal.fire({
@@ -882,7 +756,6 @@ scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
                 confirmButtonColor: '#1B73E8'
             });
         } else {
-            console.log("검색 성공: " + resultCount + "건 조회됨");
             Swal.fire({
                 icon: 'success',
                 title: '검색 완료',
@@ -893,7 +766,6 @@ scwin.fn_searchNurses = function(searchNurseName, searchPosition) {
         }
         
     } catch (error) {
-        console.error("클라이언트 사이드 검색 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '검색 오류',
@@ -915,14 +787,14 @@ scwin.btn_list_all_onclick = function (e) {
 scwin.btn_reset_onclick = function () {
     scwin.fn_clearForm();
     scwin.fn_selectNurseList();
-    console.log("검색 조건 초기화");
+
 };
 
 // 등록 버튼 클릭
 scwin.btn_insert_onclick = function () {
     if (scwin.fn_validateForm()) {
         try {
-            console.log("=== 간호사 등록 시작 ===");
+    
 
             // 폼 검증
             if (!scwin.fn_validateForm()) {
@@ -938,7 +810,7 @@ scwin.btn_insert_onclick = function () {
                 hireDate: dmp_nurseVo.get("hireDate") || scwin.fn_getCurrentDate()
             };
 
-            console.log("등록할 데이터:", nurseData);
+
 
             // 데이터를 dataMap에 설정
             dmp_nurseVo.setJSON(nurseData);
@@ -947,7 +819,6 @@ scwin.btn_insert_onclick = function () {
             $c.sbm.execute(sbm_insertNurse);
 
         } catch (error) {
-            console.error("간호사 등록 오류:", error);
             Swal.fire({
                 icon: 'error',
                 title: '등록 오류',
@@ -998,10 +869,8 @@ scwin.btn_delete_onclick = function () {
 // 전체선택 버튼 클릭
 scwin.btn_select_all_onclick = function () {
     try {
-        console.log("=== 전체선택 버튼 클릭 ===");
         
         var rowCount = dlt_nurseList.getRowCount();
-        console.log("전체 행 수:", rowCount);
 
         if (rowCount === 0) {
             Swal.fire({
@@ -1020,42 +889,30 @@ scwin.btn_select_all_onclick = function () {
         for (var i = 0; i < rowCount; i++) {
             try {
                 var isChecked = dlt_nurseList.getCellData(i, "chk_select");
-                console.log("행 " + i + " 체크 상태:", isChecked);
                 
                 if (isChecked !== "1" && isChecked !== true && isChecked !== "true") {
                     allSelected = false;
                     break;
                 }
             } catch (error) {
-                console.error("행 " + i + " 체크 상태 확인 오류:", error);
                 allSelected = false;
                 break;
             }
         }
 
-        console.log("모든 행 선택 상태:", allSelected);
-
         // 모든 행이 선택되었으면 해제, 아니면 모두 선택
         var newValue = allSelected ? false : true;
-        console.log("설정할 새로운 값:", newValue);
         
         for (var i = 0; i < rowCount; i++) {
-            try {
-                dlt_nurseList.setCellData(i, "chk_select", newValue);
-                console.log("행 " + i + " 체크 상태 설정:", newValue);
-            } catch (error) {
-                console.error("행 " + i + " 체크 상태 설정 오류:", error);
-            }
+            dlt_nurseList.setCellData(i, "chk_select", newValue);
         }
 
         var message = allSelected ? "전체 선택 해제" : "전체 선택";
-        console.log(message + " - " + rowCount + "행");
 
         // 버튼 라벨 업데이트
         if (btn_select_all) {
             var newLabel = allSelected ? "☐ 전체선택" : "☑️ 전체해제";
             btn_select_all.setValue(newLabel);
-            console.log("버튼 라벨 업데이트:", newLabel);
         }
         
         // 성공 메시지
@@ -1070,7 +927,6 @@ scwin.btn_select_all_onclick = function () {
         });
         
     } catch (error) {
-        console.error("전체선택 버튼 클릭 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '오류',
@@ -1084,7 +940,6 @@ scwin.btn_select_all_onclick = function () {
 // 다중 등록 버튼 클릭
 scwin.btn_insert_multi_onclick = function () {
     try {
-        console.log("=== 다중 등록 시작 ===");
         
         Swal.fire({
             title: '간호사 다중 등록',
@@ -1136,12 +991,10 @@ scwin.btn_insert_multi_onclick = function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 var nurseCount = result.value;
-                console.log("다중 등록할 간호사 수:", nurseCount);
                 scwin.showNurseInputForms(nurseCount);
             }
         });
     } catch (error) {
-        console.error("다중 등록 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '오류',
@@ -1155,8 +1008,6 @@ scwin.btn_insert_multi_onclick = function () {
 // 간호사 입력 폼 표시
 scwin.showNurseInputForms = function (nurseCount) {
     try {
-        console.log("=== 간호사 입력 폼 표시 시작 ===");
-        console.log("등록할 간호사 수:", nurseCount);
         
         var formHtml = '<div style="text-align:left;max-height:400px;overflow-y:auto;">';
 
@@ -1208,7 +1059,6 @@ scwin.showNurseInputForms = function (nurseCount) {
             width: '700px',
             preConfirm: () => {
                 try {
-                    console.log("=== 폼 데이터 검증 시작 ===");
                     var nursesToAdd = [];
                     var hasError = false;
                     var errorMessage = '';
@@ -1219,8 +1069,6 @@ scwin.showNurseInputForms = function (nurseCount) {
                         var career = document.getElementById(`career_${i}`).value.trim();
                         var hireDate = document.getElementById(`hireDate_${i}`).value;
                         var specialNote = document.getElementById(`specialNote_${i}`).value.trim();
-
-                        console.log(`간호사 ${i} 데이터:`, { nurseName, position, career, hireDate, specialNote });
 
                         // 필수 필드 검증
                         if (!nurseName) {
@@ -1260,15 +1108,12 @@ scwin.showNurseInputForms = function (nurseCount) {
                     }
 
                     if (hasError) {
-                        console.log("검증 실패:", errorMessage);
                         Swal.showValidationMessage(errorMessage);
                         return false;
                     }
 
-                    console.log("검증 성공, 등록할 간호사:", nursesToAdd);
                     return nursesToAdd;
                 } catch (error) {
-                    console.error("폼 데이터 검증 오류:", error);
                     Swal.showValidationMessage('데이터 검증 중 오류가 발생했습니다.');
                     return false;
                 }
@@ -1277,11 +1122,9 @@ scwin.showNurseInputForms = function (nurseCount) {
             if (result.isConfirmed) {
                 try {
                     var nursesToAdd = result.value;
-                    console.log("등록할 간호사 데이터:", nursesToAdd);
 
                     if (nursesToAdd && nursesToAdd.length > 0) {
                         try {
-                            console.log("=== 다중 등록 데이터 처리 시작 ===");
                             
                             // 기존 데이터에 추가
                             if (!scwin.nurseData) {
@@ -1291,30 +1134,22 @@ scwin.showNurseInputForms = function (nurseCount) {
                             // 방법 1: 기존 그리드 데이터 가져오기
                             var existingGridData = [];
                             var gridRowCount = dlt_nurseList.getRowCount();
-                            console.log("기존 그리드 행 수:", gridRowCount);
-                            
+                           
                             for (var j = 0; j < gridRowCount; j++) {
-                                try {
-                                    var existingRow = {
-                                        chk_select: dlt_nurseList.getCellData(j, "chk_select") || "0",
-                                        nurseName: dlt_nurseList.getCellData(j, "nurseName") || "",
-                                        position: dlt_nurseList.getCellData(j, "position") || "",
-                                        career: dlt_nurseList.getCellData(j, "career") || "",
-                                        specialNote: dlt_nurseList.getCellData(j, "specialNote") || "",
-                                        hireDate: dlt_nurseList.getCellData(j, "hireDate") || ""
-                                    };
-                                    
-                                    // 빈 행이 아닌 경우만 추가
-                                    if (existingRow.nurseName && existingRow.position) {
-                                        existingGridData.push(existingRow);
-                                    }
-                                } catch (error) {
-                                    console.error("기존 행 " + j + " 데이터 추출 오류:", error);
+                                var existingRow = {
+                                    chk_select: dlt_nurseList.getCellData(j, "chk_select") || "0",
+                                    nurseName: dlt_nurseList.getCellData(j, "nurseName") || "",
+                                    position: dlt_nurseList.getCellData(j, "position") || "",
+                                    career: dlt_nurseList.getCellData(j, "career") || "",
+                                    specialNote: dlt_nurseList.getCellData(j, "specialNote") || "",
+                                    hireDate: dlt_nurseList.getCellData(j, "hireDate") || ""
+                                };
+                                
+                                // 빈 행이 아닌 경우만 추가
+                                if (existingRow.nurseName && existingRow.position) {
+                                    existingGridData.push(existingRow);
                                 }
                             }
-                            
-                            console.log("기존 그리드 데이터:", existingGridData);
-                            console.log("새로 추가할 데이터:", nursesToAdd);
                             
                             // 기존 데이터와 새 데이터 합치기
                             var combinedData = [];
@@ -1322,21 +1157,15 @@ scwin.showNurseInputForms = function (nurseCount) {
                             // 방법 1: 기존 그리드 데이터를 우선적으로 사용
                             if (existingGridData.length > 0) {
                                 combinedData = existingGridData.concat(nursesToAdd);
-                                console.log("기존 그리드 데이터 + 새 데이터 사용");
                             } else {
                                 // 방법 2: 메모리 데이터가 있으면 사용
                                 if (scwin.nurseData && scwin.nurseData.length > 0) {
                                     combinedData = scwin.nurseData.concat(nursesToAdd);
-                                    console.log("메모리 데이터 + 새 데이터 사용");
                                 } else {
                                     // 방법 3: 새 데이터만 사용
                                     combinedData = nursesToAdd;
-                                    console.log("새 데이터만 사용");
                                 }
                             }
-                            
-                            console.log("합쳐진 전체 데이터:", combinedData);
-                            console.log("총 데이터 수:", combinedData.length);
                             
                             // 메모리 데이터 업데이트
                             scwin.nurseData = combinedData;
@@ -1344,11 +1173,9 @@ scwin.showNurseInputForms = function (nurseCount) {
                             // 그리드에 전체 데이터 설정
                             if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
                                 dlt_nurseList.setJSON(combinedData);
-                                console.log("그리드에 전체 데이터 설정 완료, 총 " + combinedData.length + "건");
                             }
                             
                         } catch (error) {
-                            console.error("다중 등록 데이터 처리 오류:", error);
                             throw error;
                         }
 
@@ -1380,7 +1207,6 @@ scwin.showNurseInputForms = function (nurseCount) {
                         });
                     }
                 } catch (error) {
-                    console.error("다중 등록 처리 오류:", error);
                     Swal.fire({
                         icon: 'error',
                         title: '등록 오류',
@@ -1392,7 +1218,6 @@ scwin.showNurseInputForms = function (nurseCount) {
             }
         });
     } catch (error) {
-        console.error("간호사 입력 폼 표시 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '오류',
@@ -1406,10 +1231,8 @@ scwin.showNurseInputForms = function (nurseCount) {
 // 다중 수정 버튼 클릭
 scwin.btn_update_multi_onclick = function () {
     try {
-        console.log("=== 다중 수정 시작 ===");
         
         var selectedRows = scwin.fn_getSelectedRows();
-        console.log("선택된 행:", selectedRows);
         
         if (selectedRows.length === 0) {
             Swal.fire({
@@ -1471,10 +1294,8 @@ scwin.btn_update_multi_onclick = function () {
                         return false;
                     }
                     
-                    console.log("수정할 필드:", field, "새로운 값:", value);
                     return { field, value };
                 } catch (error) {
-                    console.error("다중 수정 검증 오류:", error);
                     Swal.showValidationMessage('입력값 검증 중 오류가 발생했습니다.');
                     return false;
                 }
@@ -1486,12 +1307,9 @@ scwin.btn_update_multi_onclick = function () {
                     var newValue = result.value.value;
                     var updatedCount = 0;
                     
-                    console.log("다중 수정 실행:", field, newValue);
-                    
                     selectedRows.forEach(function (row) {
                         try {
                             var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-                            console.log("수정할 간호사:", nurseName);
                             
                             // 그리드 데이터 직접 수정
                             dlt_nurseList.setCellData(row, field, newValue);
@@ -1507,12 +1325,8 @@ scwin.btn_update_multi_onclick = function () {
                             }
                             
                             updatedCount++;
-                        } catch (error) {
-                            console.error("행 " + row + " 수정 오류:", error);
                         }
                     });
-                    
-                    console.log("수정 완료된 행 수:", updatedCount);
                     
                     Swal.fire({
                         icon: 'success',
@@ -1522,7 +1336,6 @@ scwin.btn_update_multi_onclick = function () {
                         confirmButtonColor: '#1C3D6B'
                     });
                 } catch (error) {
-                    console.error("다중 수정 처리 오류:", error);
                     Swal.fire({
                         icon: 'error',
                         title: '수정 오류',
@@ -1534,7 +1347,6 @@ scwin.btn_update_multi_onclick = function () {
             }
         });
     } catch (error) {
-        console.error("다중 수정 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '오류',
@@ -1548,10 +1360,8 @@ scwin.btn_update_multi_onclick = function () {
 // 다중 삭제 버튼 클릭
 scwin.btn_delete_multi_onclick = function () {
     try {
-        console.log("=== 다중 삭제 시작 ===");
         
         var selectedRows = scwin.fn_getSelectedRows();
-        console.log("선택된 행:", selectedRows);
         
         if (selectedRows.length === 0) {
             Swal.fire({
@@ -1595,7 +1405,6 @@ scwin.btn_delete_multi_onclick = function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 try {
-                    console.log("다중 삭제 실행");
                     var deletedCount = 0;
                     
                     // 선택된 행들을 역순으로 삭제 (인덱스 변화 방지)
@@ -1606,7 +1415,6 @@ scwin.btn_delete_multi_onclick = function () {
                     sortedRows.forEach(function (row) {
                         try {
                             var nurseName = dlt_nurseList.getCellData(row, "nurseName");
-                            console.log("삭제할 간호사:", nurseName, "행:", row);
                             
                             // 그리드에서 행 삭제
                             dlt_nurseList.removeRow(row);
@@ -1622,12 +1430,8 @@ scwin.btn_delete_multi_onclick = function () {
                             }
                             
                             deletedCount++;
-                        } catch (error) {
-                            console.error("행 " + row + " 삭제 오류:", error);
                         }
                     });
-                    
-                    console.log("삭제 완료된 행 수:", deletedCount);
                     
                     Swal.fire({
                         icon: 'success',
@@ -1641,7 +1445,6 @@ scwin.btn_delete_multi_onclick = function () {
                     scwin.fn_clearForm();
                     
                 } catch (error) {
-                    console.error("다중 삭제 처리 오류:", error);
                     Swal.fire({
                         icon: 'error',
                         title: '삭제 오류',
@@ -1653,7 +1456,6 @@ scwin.btn_delete_multi_onclick = function () {
             }
         });
     } catch (error) {
-        console.error("다중 삭제 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '오류',
@@ -1669,28 +1471,19 @@ scwin.fn_getSelectedRows = function () {
     try {
         var selectedRows = [];
         var rowCount = dlt_nurseList.getRowCount();
-        
-        console.log("전체 행 수:", rowCount);
 
         for (var i = 0; i < rowCount; i++) {
             try {
                 var isChecked = dlt_nurseList.getCellData(i, "chk_select");
-                console.log("행 " + i + " 체크 상태:", isChecked);
                 
                 if (isChecked === "1" || isChecked === true || isChecked === "true") {
                     selectedRows.push(i);
-                    console.log("선택된 행 추가:", i);
                 }
-            } catch (error) {
-                console.error("행 " + i + " 체크 상태 확인 오류:", error);
             }
         }
 
-        console.log("선택된 행 개수: " + selectedRows.length);
-        console.log("선택된 행 인덱스:", selectedRows);
         return selectedRows;
     } catch (error) {
-        console.error("선택된 행 가져오기 오류:", error);
         return [];
     }
 };
@@ -1701,7 +1494,6 @@ scwin.fn_clearAllChecks = function () {
     for (var i = 0; i < rowCount; i++) {
         dlt_nurseList.setCellData(i, "chk_select", false);
     }
-    console.log("모든 체크박스가 해제되었습니다.");
 };
 
 // 그리드 행 클릭
@@ -1717,7 +1509,6 @@ scwin.grd_nurseList_oncellclick = function (row, col) {
         var hireDate = dlt_nurseList.getCellData(row, "hireDate");
         if (nurseName && position && career && specialNote && hireDate) {
             scwin.fn_selectNurse(nurseName, position, career, specialNote, hireDate);
-            console.log("선택된 간호사: " + nurseName + "," + position + "," + career + "," + specialNote + "," + hireDate);
         }
     }
 };
@@ -1830,17 +1621,14 @@ scwin.btn_excel_onclick = function () {
 
         // WebSquare의 엑셀 업로드 기능 사용
         if (typeof grd_nurseList !== 'undefined' && grd_nurseList && grd_nurseList.advancedExcelUpload) {
-            console.log("WebSquare 엑셀 업로드 기능 사용");
 
             // 그리드 데이터 변경 감지를 위한 타이머 설정
             scwin.startGridDataMonitoring();
 
             grd_nurseList.advancedExcelUpload(jsnOptions);
 
-            console.log("DB 등록함!!");
         }
     } catch (error) {
-        console.error("엑셀 업로드 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '업로드 오류',
@@ -1854,18 +1642,10 @@ scwin.btn_excel_onclick = function () {
 // 엑셀 업로드 완료 콜백
 scwin.fn_excelUploadCallback = function (uploadData) {
     try {
-        console.log("=== 엑셀 업로드 콜백 시작 ===");
-        console.log("업로드된 데이터:", uploadData);
-        console.log("데이터 타입:", typeof uploadData);
-        console.log("데이터 길이:", uploadData ? uploadData.length : 0);
 
         // 로딩 메시지 닫기 (안전하게)
-        try {
-            if (typeof Swal !== 'undefined' && Swal.close) {
-                Swal.close();
-            }
-        } catch (e) {
-            console.warn("SweetAlert 닫기 실패:", e);
+        if (typeof Swal !== 'undefined' && Swal.close) {
+            Swal.close();
         }
 
         if (uploadData && uploadData.length > 0) {
@@ -1873,7 +1653,6 @@ scwin.fn_excelUploadCallback = function (uploadData) {
             var nursesToSave = [];
 
             uploadData.forEach(function (data) {
-                console.log("업로드된 데이터:", data);
 
                 // 필수 필드 검증
                 if (data.nurseName && data.position) {
@@ -1888,102 +1667,68 @@ scwin.fn_excelUploadCallback = function (uploadData) {
                         delYn: "N"
                     };
 
-                    console.log("생성된 간호사 데이터:", newNurse);
-
                     scwin.nurseData.push(newNurse);
                     nursesToSave.push(newNurse);
                     scwin.nurseCounter++;
                     addedCount++;
-                } else {
-                    console.warn("필수 필드 누락:", data);
                 }
             });
 
-            console.log("처리된 간호사 데이터:", scwin.nurseData);
-            console.log("저장할 간호사 수:", nursesToSave.length);
-
             // 그리드에 데이터 표시 (안전하게)
-            try {
-                if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
-                    dlt_nurseList.setJSON(scwin.nurseData);
-                    console.log("그리드에 데이터 설정 완료");
-                } else {
-                    console.error("dlt_nurseList가 정의되지 않았습니다.");
-                }
-            } catch (e) {
-                console.error("그리드 데이터 설정 실패:", e);
+            if (typeof dlt_nurseList !== 'undefined' && dlt_nurseList.setJSON) {
+                dlt_nurseList.setJSON(scwin.nurseData);
             }
 
             // SweetAlert2로 엑셀 업로드 완료 메시지 표시 (안전하게)
-            try {
-                if (typeof Swal !== 'undefined' && Swal.fire) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '엑셀 업로드 완료',
-                        html: `
-                        <div style="text-align:center;margin-bottom:20px;">
-                            <div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;border-left:4px solid #28a745;">
-                                <strong>업로드 성공!</strong><br>
-                                ${addedCount}건의 간호사 정보가 그리드에 표시되었습니다.
-                            </div>
+            if (typeof Swal !== 'undefined' && Swal.fire) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '엑셀 업로드 완료',
+                    html: `
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <div style="background:#d4edda;color:#155724;padding:15px;border-radius:8px;border-left:4px solid #28a745;">
+                            <strong>업로드 성공!</strong><br>
+                            ${addedCount}건의 간호사 정보가 그리드에 표시되었습니다.
                         </div>
-                        <div style="text-align:left;font-size:14px;color:#495057;">
-                            <strong>업로드된 데이터:</strong><br>
-                            • 근무자명: ${addedCount}건<br>
-                            • 직급: ${addedCount}건<br>
-                            • 연차: ${nursesToSave.filter(n => n.career).length}건<br>
-                            • 특이사항: ${nursesToSave.filter(n => n.specialNote).length}건<br>
-                            • 입사일: ${nursesToSave.filter(n => n.hireDate).length}건
-                        </div>
-                        <div style="text-align:left;font-size:12px;color:#6c757d;margin-top:15px;padding-top:15px;border-top:1px solid #dee2e6;">
-                            <strong>다음 단계:</strong><br>
-                            • 간호사 목록에서 데이터를 확인하세요<br>
-                            • 필요시 데이터를 수정하세요<br>
-                            • 저장은 자동으로 진행됩니다
-                        </div>
-                    `,
-                        confirmButtonText: '확인',
-                        confirmButtonColor: '#1C3D6B',
-                        width: '500px'
-                    });
+                    </div>
+                    <div style="text-align:left;font-size:14px;color:#495057;">
+                        <strong>업로드된 데이터:</strong><br>
+                        • 근무자명: ${addedCount}건<br>
+                        • 직급: ${addedCount}건<br>
+                        • 연차: ${nursesToSave.filter(n => n.career).length}건<br>
+                        • 특이사항: ${nursesToSave.filter(n => n.specialNote).length}건<br>
+                        • 입사일: ${nursesToSave.filter(n => n.hireDate).length}건
+                    </div>
+                    <div style="text-align:left;font-size:12px;color:#6c757d;margin-top:15px;padding-top:15px;border-top:1px solid #dee2e6;">
+                        <strong>다음 단계:</strong><br>
+                        • 간호사 목록에서 데이터를 확인하세요<br>
+                        • 필요시 데이터를 수정하세요<br>
+                        • 저장은 자동으로 진행됩니다
+                    </div>
+                `,
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1C3D6B',
+                    width: '500px'
+                });
 
-                } else {
-                    console.error("SweetAlert가 정의되지 않았습니다.");
-                    alert("엑셀 업로드 완료: " + addedCount + "건의 간호사 정보가 등록되었습니다.");
-                }
-            } catch (e) {
-                console.error("SweetAlert 표시 실패:", e);
-                alert("엑셀 업로드 완료: " + addedCount + "건의 간호사 정보가 등록되었습니다.");
             }
 
         } else {
-            try {
-                if (typeof Swal !== 'undefined' && Swal.fire) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '업로드 실패',
-                        text: '업로드할 데이터가 없습니다.',
-                        confirmButtonText: '확인',
-                        confirmButtonColor: '#1B73E8'
-                    });
-                } else {
-                    console.error("SweetAlert가 정의되지 않았습니다.");
-                    alert("업로드할 데이터가 없습니다.");
-                }
-            } catch (e) {
-                console.error("업로드 실패 메시지 표시 실패:", e);
-                alert("업로드할 데이터가 없습니다.");
+            if (typeof Swal !== 'undefined' && Swal.fire) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '업로드 실패',
+                    text: '업로드할 데이터가 없습니다.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: '#1B73E8'
+                });
             }
         }
-    } catch (e) {
-        console.error("엑셀 업로드 콜백 전체 오류:", e);
-        alert("엑셀 업로드 처리 중 오류가 발생했습니다: " + e.message);
     }
 };
 
 // 그리드 데이터 변경 감지 시작
 scwin.startGridDataMonitoring = function () {
-    console.log("=== 그리드 데이터 모니터링 시작 ===");
 
     var checkCount = 0;
     var maxChecks = 60; // 최대 30초 대기 (500ms * 60)
@@ -1999,12 +1744,10 @@ scwin.startGridDataMonitoring = function () {
                 currentRowCount = dlt_nurseList.getRowCount();
             }
 
-            console.log("그리드 데이터 체크 (" + checkCount + "/" + maxChecks + "): 현재 행 수 = " + currentRowCount);
-
+            
             // 데이터가 추가되었는지 확인
             if (currentRowCount > previousRowCount && currentRowCount > 0) {
-                console.log("그리드에 새 데이터가 추가됨! 행 수: " + previousRowCount + " → " + currentRowCount);
-
+                
                 // 그리드에서 데이터 추출
                 var gridData = [];
                 for (var i = 0; i < currentRowCount; i++) {
@@ -2021,16 +1764,11 @@ scwin.startGridDataMonitoring = function () {
                         if (rowData.nurseName && rowData.position) {
                             gridData.push(rowData);
                         }
-                    } catch (e) {
-                        console.warn("행 " + i + " 데이터 추출 실패:", e);
                     }
                 }
 
-                console.log("추출된 그리드 데이터:", gridData);
-
                 // 새로 추가된 데이터만 필터링
                 var newData = gridData.slice(previousRowCount);
-                console.log("새로 추가된 데이터:", newData);
 
                 if (newData.length > 0) {
                     // 콜백 함수 호출
@@ -2043,7 +1781,6 @@ scwin.startGridDataMonitoring = function () {
 
             // 최대 체크 횟수 초과 시 중단
             if (checkCount >= maxChecks) {
-                console.warn("그리드 데이터 모니터링 타임아웃");
                 return;
             }
 
@@ -2051,7 +1788,6 @@ scwin.startGridDataMonitoring = function () {
             setTimeout(checkGridData, 500);
 
         } catch (e) {
-            console.error("그리드 데이터 체크 중 오류:", e);
 
             if (checkCount < maxChecks) {
                 setTimeout(checkGridData, 500);
@@ -2065,11 +1801,6 @@ scwin.startGridDataMonitoring = function () {
 
 // 간호사 등록 에러 처리
 scwin.sbm_insertNurse_submiterror = function (e) {
-    console.error("=== 간호사 등록 에러 ===");
-    console.error("에러 객체:", e);
-    console.error("에러 상태:", e.status);
-    console.error("에러 메시지:", e.statusText);
-
     Swal.fire({
         icon: 'error',
         title: '등록 실패',
@@ -2080,18 +1811,14 @@ scwin.sbm_insertNurse_submiterror = function (e) {
 };
 
 scwin.sbm_insertNurseList_submitdone = function (e) {
-    console.log("=== 간호사 다중 등록 응답 수신 ===");
-    console.log("응답 객체:", e);
 
     try {
         var responseData = e.responseJSON;
-        console.log("응답 데이터:", responseData);
 
         if (responseData && responseData.elHeader) {
             var elHeader = responseData.elHeader;
 
             if (elHeader.resSuc === true) {
-                console.log("간호사 다중 등록 성공");
 
                 // 폼 초기화
                 scwin.fn_clearForm();
@@ -2105,7 +1832,6 @@ scwin.sbm_insertNurseList_submitdone = function (e) {
                 });
 
             } else {
-                console.error("서버 응답 실패:", elHeader.resMsg);
                 Swal.fire({
                     icon: 'error',
                     title: '등록 실패',
@@ -2115,7 +1841,6 @@ scwin.sbm_insertNurseList_submitdone = function (e) {
                 });
             }
         } else {
-            console.error("응답 데이터 형식 오류:", responseData);
             Swal.fire({
                 icon: 'error',
                 title: '응답 오류',
@@ -2126,7 +1851,6 @@ scwin.sbm_insertNurseList_submitdone = function (e) {
         }
 
     } catch (error) {
-        console.error("응답 처리 오류:", error);
         Swal.fire({
             icon: 'error',
             title: '처리 오류',
